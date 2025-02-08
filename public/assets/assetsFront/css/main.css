@@ -30,6 +30,37 @@ a {
 
 
 
+/* Styling for the icon and text */
+.sidebar-link i {
+  margin-right: 10px;
+}
+
+/* Submenu styling */
+.sidebar-dropdown {
+  list-style-type: none;
+  padding-left: 0;
+  margin-top: 5px;
+}
+
+.sidebar-item a {
+  display: block;
+  padding: 10px 40px;
+  font-size: 14px;
+  color: #1F4E3D;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+/* Hover effect for submenu items */
+.sidebar-item a:hover {
+  color: #f8f8f8;
+  background-color: #69866f; /* Slightly lighter background */
+
+}
+
+
+
+
 .widget-26 {
   color: #3c4142;
   font-weight: 400;

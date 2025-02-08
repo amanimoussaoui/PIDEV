@@ -1,0 +1,21 @@
+{% extends 'FrontEnd/front.html.twig' %}
+
+{% block title %}New Parcelle{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-3">Create New Parcelle</h5>
+            </div>
+            <div class="card-body">
+                {{ include('parcelle/_form.html.twig') }}
+            </div>
+            <div class="card-footer text-end">
+                <a href="{{ path('app_parcelle_index') }}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Back to List
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

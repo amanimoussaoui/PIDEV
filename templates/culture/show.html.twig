@@ -1,0 +1,55 @@
+{% extends 'FrontEnd/front.html.twig' %}
+
+{% block title %}Culture{% endblock %}
+
+{% block content %}
+    <div class="container my-4">
+        <h1 class="mb-4">Culture Details</h1>
+
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Culture Information</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                            <th scope="row">Id</th>
+                            <td>{{ culture.id }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">NomCulture</th>
+                            <td>{{ culture.nomCulture }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">DateSemis</th>
+                            <td>{{ culture.dateSemis ? culture.dateSemis|date('Y-m-d') : '' }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Duree</th>
+                            <td>{{ culture.duree }} Jours </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Statut</th>
+                            <td>{{ culture.statut }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Parcelle</th>
+                            <td>{{ culture.parcelle.nom }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="d-flex justify-content-between">
+                    <a href="{{ path('app_culture_index') }}" class="btn btn-secondary">Back to List</a>
+                    <div class="d-flex">
+                        <a href="{{ path('app_culture_edit', {'id': culture.id}) }}" class="btn btn-primary me-2">Edit</a>
+                        <div>
+                            {{ include('culture/_delete_form.html.twig') }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

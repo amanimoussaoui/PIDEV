@@ -1,0 +1,43 @@
+{% extends 'BackEnd/back.html.twig' %}
+
+{% block title %}Récolte Index{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">Liste des Récoltes</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Date Récolte</th>
+                            <th>Quantité (kg)</th>
+                            <th>Qualité</th>
+                            <th>Prix Unitaire (€)</th>
+                            <th>Culture</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for recolte in recoltes %}
+                        <tr>
+                            <td>{{ recolte.id }}</td>
+                            <td>{{ recolte.dateRecolte ? recolte.dateRecolte|date('Y-m-d') : '' }}</td>
+                            <td>{{ recolte.quantite }}</td>
+                            <td>{{ recolte.qualite | capitalize }}</td>
+                            <td>{{ recolte.prixUnitaire }}</td>
+                            <td>{{ recolte.culture.nomCulture }}</td> 
+                        </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="7" class="text-center">Aucune récolte trouvée</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

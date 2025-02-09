@@ -15,7 +15,6 @@ class ParcelleType extends AbstractType
             ->add('nom')
             ->add('superficie')
             ->add('localisation')
-            // Change 'typeSol' to use string choices for soil types
             ->add('typeSol', ChoiceType::class, [
                 'choices' => [
                     'Argileux' => 'argileux',

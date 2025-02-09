@@ -22,7 +22,7 @@ final class ParcelleController extends AbstractController
         ]);
     }
 
-    #[Route('/list',name: 'app_parcelle_back', methods: ['GET'])]
+    #[Route('/listparcelles',name: 'app_parcelle_back', methods: ['GET'])]
     public function listParcellesBackend(ParcelleRepository $parcelleRepository): Response
     {
         return $this->render('parcelle/listParcellesBackend.html.twig', [

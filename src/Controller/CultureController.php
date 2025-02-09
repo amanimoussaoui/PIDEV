@@ -22,6 +22,14 @@ final class CultureController extends AbstractController
         ]);
     }
 
+    #[Route('/listcultures',name: 'app_culture_back', methods: ['GET'])]
+    public function listCulturesBackend(CultureRepository $cultureRepository): Response
+    {
+        return $this->render('culture/listCulturesBackend.html.twig', [
+            'cultures' => $cultureRepository->findAll(),
+        ]);
+    }
+
     #[Route('/new', name: 'app_culture_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {

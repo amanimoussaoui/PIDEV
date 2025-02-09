@@ -29,7 +29,7 @@ class Culture
     #[Assert\Type(type: "integer", message: "La durée doit être un nombre entier.")]
     private ?int $duree = null;
 
-    #[ORM\ManyToOne(targetEntity: 'App\Entity\Parcelle')]
+    #[ORM\ManyToOne(targetEntity: 'App\Entity\Parcelle',cascade: ["persist"])]
     #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotBlank(message: "La parcelle est requise.")]
     private ?Parcelle $parcelle = null;

@@ -470,8 +470,6 @@ a.sidebar-link:hover {
   color: var(--contrast-color); /* White text */
 }
 
-
-
 .btn-primary:hover,
 .btn-primary:focus,
 .btn-primary:active {
@@ -491,6 +489,31 @@ a.sidebar-link:hover {
   background-color: #1F4E3D; /* Dark green for hover */
   border-color: #1F4E3D;
 }
+
+
+/* Custom btn-info (cool mint green for modern tech feel) */
+.btn-info {
+  background-color: #66FF99;  /* Fresh mint green */
+  border-color: #66FF99;
+}
+
+.btn-info:hover {
+  background-color: #33CC66;  /* Darker mint for hover effect */
+  border-color: #33CC66;
+}
+
+/* Custom btn-warning (modern soft yellow) */
+.btn-warning {
+  background-color: #F4D03F;  /* Muted yellow */
+  border-color: #F4D03F;
+}
+
+.btn-warning:hover {
+  background-color: #F39C12;  /* Brighter yellow for hover effect */
+  border-color: #F39C12;
+}
+
+
 
 .badge-primary {
   background-color: #49A760; /* New green for badges */

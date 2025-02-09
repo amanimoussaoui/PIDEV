@@ -12,14 +12,13 @@
                 </a>
             </div>
             <div class="card-body">
-                <table class="table table-bordered table-striped">
-                    <thead>
+                <table class="table table-bordered table-striped table-hover ">                    <thead>
                         <tr>
                             <th>#</th>
                             <th>Date Récolte</th>
                             <th>Quantité (kg)</th>
                             <th>Qualité</th>
-                            <th>Prix Unitaire (€)</th>
+                            <th>Prix Unitaire (TND)</th>
                             <th>Culture</th>
                             <th>Actions</th>
                         </tr>
@@ -32,7 +31,7 @@
                             <td>{{ recolte.quantite }}</td>
                             <td>{{ recolte.qualite | capitalize }}</td>
                             <td>{{ recolte.prixUnitaire }}</td>
-                            <td>{{ recolte.culture.nomCulture }}</td> <!-- Display culture name -->
+                            <td>{{ recolte.culture.nomCulture }}</td> 
                             <td>
                                 <a href="{{ path('app_recolte_show', {'id': recolte.id}) }}" class="btn btn-info btn-sm">
                                     <i class="bi bi-eye"></i> Voir

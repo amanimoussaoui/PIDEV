@@ -1,0 +1,42 @@
+{% extends 'BackEnd/back.html.twig' %}
+
+{% block title %}Activités{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">Liste des Activités</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered table-striped table-hover ">                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Description</th>
+                            <th>Type</th>
+                            <th>Date</th>
+                            <th>Culture</th>
+                            <th>Parcelle</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for activite in activites %}
+                        <tr>
+                            <td>{{ activite.id }}</td>
+                            <td>{{ activite.description }}</td>
+                            <td>{{ activite.type }}</td>
+                            <td>{{ activite.date ? activite.date|date('Y-m-d') : '' }}</td>
+                            <td>{{ activite.culture.nomCulture }}</td>
+                            <td>{{ activite.parcelle.nom }}</td> 
+                        </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="7" class="text-center">Aucun enregistrement trouvé</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

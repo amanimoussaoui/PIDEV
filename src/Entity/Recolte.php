@@ -34,7 +34,7 @@ class Recolte
     #[Assert\Positive(message: "Le prix unitaire doit être un nombre positif.")]
     private ?float $prixUnitaire = null;
 
-    #[ORM\ManyToOne(targetEntity: Culture::class)]
+    #[ORM\ManyToOne(targetEntity: Culture::class,cascade: ["persist"])]
     #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotBlank(message: "La culture est requise.")]
     private ?Culture $culture = null;

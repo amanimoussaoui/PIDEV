@@ -1,0 +1,27 @@
+{% extends 'FrontEnd/front.html.twig' %}
+
+{% block title %}Edit Activite{% endblock %}
+
+{% block content %}
+    <div class="container my-4">
+        <h1 class="mb-4">Edit Activite</h1>
+
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Edit Activite Information</h5>
+            </div>
+            <div class="card-body">
+                {{ include('activite/_form.html.twig', {'button_label': 'Update'}) }}
+
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{{ path('app_activite_index') }}" class="btn btn-secondary">Back to List</a>
+                    <div class="d-flex">
+                        <div>
+                            {{ include('activite/_delete_form.html.twig') }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

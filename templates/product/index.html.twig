@@ -1,0 +1,195 @@
+{% extends 'BackEnd/back.html.twig' %}
+
+{% block title %}Liste des produits{% endblock %}
+
+{% block content %}
+<style>
+/* 🎨 Amélioration générale du tableau */
+.table-container {
+    width: 100%;
+    overflow-x: auto; /* Permet le défilement horizontal sur mobile */
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+    background: white;
+}
+
+/* 📌 En-tête du tableau */
+.table thead {
+    background-color: #218838;
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.table th, .table td {
+    padding: 15px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+/* 🖱️ Effet au survol des lignes */
+.table tbody tr:hover {
+    background-color: #f8f9fa;
+    transition: 0.3s;
+}
+
+/* 📌 Stylisation des images */
+.table img {
+    border-radius: 8px;
+    transition: transform 0.3s;
+}
+
+.table img:hover {
+    transform: scale(1.1);
+}
+
+/* 🎨 Style des boutons */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: 0.3s;
+    font-size: 14px;
+    text-decoration: none;
+}
+
+/* 📝 Bouton Update */
+.btn-warning {
+    background-color: #ffc107;
+    color: black;
+    border: none;
+}
+
+.btn-warning:hover {
+    background-color: #e0a800;
+}
+
+/* 🗑️ Bouton Delete */
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+}
+
+/* 🛒 Bouton Ajouter */
+.btn-primary {
+    background-color: #28a745;
+    border: none;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #218838;
+}
+
+/* 📌 Icônes dans les boutons */
+.btn i {
+    font-size: 16px;
+    margin-right: 5px;
+}
+
+/* 🎨 Personnalisation du titre */
+h2.mb-4 {
+    color: #4Cae4c; /* Couleur verte */
+    font-family: 'Arial', sans-serif; /* Police moderne */
+    font-weight: 700; /* Texte en gras */
+    font-size: 36px; /* Taille du texte plus grande */
+    text-transform: uppercase; /* Met en majuscule */
+    letter-spacing: 2px; /* Espacement des lettres */
+    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2); /* Ombre du texte */
+    text-align: center; /* Centrer le texte */
+    margin-top: 100px; /* Ajout d'une marge pour espacer du haut de la page */
+    margin-bottom: 30px; /* Espacement sous le titre */
+}
+
+/* 🖥️ Responsive */
+@media (max-width: 768px) {
+    .table thead {
+        display: none;
+    }
+
+    .table, .table tbody, .table tr, .table td {
+        display: block;
+        width: 100%;
+    }
+
+    .table tr {
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        padding: 10px;
+        background: white;
+    }
+
+    .table td {
+        text-align: left;
+        padding-left: 50%;
+        position: relative;
+    }
+
+    .table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        font-weight: bold;
+        text-transform: uppercase;
+        color:#218838;
+    }
+}
+
+</style>
+
+<div class="container mt-4">
+    <h2 class="mb-4">Liste des produits</h2>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>Description</th>
+                <th>Prix</th>
+                <th>Stock</th>
+                <th>Catégorie</th>
+                <th>Utilisateur</th>
+                <th>Image</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+                <tr>
+                    <td>{{ product.id }}</td>
+                    <td>{{ product.nom }}</td>
+                    <td>{{ product.description }}</td>
+                    <td>{{ product.prix }} €</td>
+                    <td>{{ product.stock }}</td>
+                    <td>{{ product.category }}</td>
+                    <td>{{ product.user.nom }}</td>
+                    <td><img src="{{ product.image }}" alt="Image du produit" width="100"></td>
+                    <td><a href="{{ path('product_update', {'id': product.id}) }}" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a></td>
+                    <td><a href="{{ path('product_delete', {'id': product.id}) }}" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i></a></td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="8" class="text-center">Aucun produit disponible.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('product_new') }}" class="btn btn-primary">Ajouter un produit</a>
+</div>
+{% endblock %}

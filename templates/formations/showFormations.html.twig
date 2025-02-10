@@ -1,0 +1,392 @@
+{% block stylesheets %}
+
+	<link href="https://fonts.gstatic.com" rel="preconnect" />
+	<link
+		href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+		rel="stylesheet" />
+
+	<link href="assets/assetsBack/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+	<link href="assets/assetsBack/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet" />
+	<link href="assets/assetsBack/vendor/boxicons/css/boxicons.min.css" rel="stylesheet" />
+	<link href="assets/assetsBack/vendor/quill/quill.snow.css" rel="stylesheet" />
+	<link href="assets/assetsBack/vendor/quill/quill.bubble.css" rel="stylesheet" />
+	<link href="assets/assetsBack/vendor/remixicon/remixicon.css" rel="stylesheet" />
+	<link href="assets/assetsBack/vendor/simple-datatables/style.css" rel="stylesheet" />
+
+	<link href="assets/assetsBack/css/style.css" rel="stylesheet" />
+            <style>
+                /* Amélioration de la table */
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+    background: white; /* Fond blanc pour le tableau */
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd; /* Encadrement */
+}
+
+/* En-tête de la table */
+th {
+    background: #4CAF50 !important; /* Vert */
+    color: white !important;
+    font-weight: bold;
+    text-align: center;
+    padding: 15px;
+    width: auto;
+    white-space: nowrap;
+}
+
+/* Contenu de la table */
+td {
+    padding: 12px 15px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+/* Lignes du tableau */
+tr {
+    background: white; /* Fond blanc pour les lignes */
+}
+
+tr:hover {
+    background: #f1f1f1; /* Gris clair au survol */
+}
+
+/* Boutons Update et Delete */
+td a {
+    display: inline-block;
+    padding: 8px 12px;
+    margin: 5px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    text-align: center;
+}
+
+td a[href*="updateFormation"] {
+    background: #007bff;
+    color: white;
+}
+
+td a[href*="deleteFormation"] {
+    background: #dc3545;
+    color: white;
+}
+
+td a:hover {
+    opacity: 0.8;
+}
+
+/* Image des formations */
+td img {
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Titre "Liste des formations" */
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    background: #4CAF50; /* Fond vert */
+    color: white;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+/* Bouton "Ajouter une nouvelle formation" */
+.btn-primary {
+    background-color: #4CAF50 !important; /* Vert */
+    border-color: #4CAF50 !important;
+    color: white !important;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    display: block;
+    margin: 20px auto;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+.btn-primary:hover {
+    background-color: #45a049 !important; /* Vert légèrement plus foncé au survol */
+    border-color: #45a049 !important;
+}
+
+                </style>
+                
+		{% endblock %}
+
+
+{% block body %}
+<body>
+
+	<!-- ======= Header ======= -->
+	<header id="header" class="header fixed-top d-flex align-items-center">
+		<div class="d-flex align-items-center justify-content-between">
+			<a href="index.html" class="logo d-flex align-items-center">
+				<img src="assets/assetsBack/img/logo.png" alt="">
+			</a>
+			<i class="bi bi-list toggle-sidebar-btn"></i>
+		</div>
+
+		<nav class="header-nav ms-auto">
+			<ul class="d-flex align-items-center">
+				<li class="nav-item d-block d-lg-none">
+					<a class="nav-link nav-icon search-bar-toggle " href="#">
+						<i class="bi bi-search"></i>
+					</a>
+				</li>
+				<li class="nav-item dropdown pe-3">
+					<a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+						<img src="assets/assetsBack/img/profile.png" alt="Profile" class="rounded-circle">
+						<span class="d-none d-md-block dropdown-toggle ps-2">Administrateur</span>
+					</a>
+					<ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+						<li class="dropdown-header">
+							<h6>Administrateur</h6>
+						</li>
+						<li>
+							<hr class="dropdown-divider">
+						</li>
+						<li>
+							<a class="dropdown-item d-flex align-items-center" href="#">
+								<i class="bi bi-box-arrow-right"></i>
+								<span>Sign Out</span>
+							</a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</nav>
+	</header>
+	<!-- End Header -->
+
+
+	<!-- ======= Sidebar ======= -->
+	<aside id="sidebar" class="sidebar">
+
+		<ul class="sidebar-nav" id="sidebar-nav">
+
+			<li class="nav-item">
+				<a class="nav-link " href="index.html">
+					<i class="bi bi-grid"></i>
+					<span>Dashboard</span>
+				</a>
+			</li>
+
+			<li class="nav-item">
+				<a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
+					<i class="bi bi-person"></i>
+					<span>Gestion des utilisateurs</span>
+					<i class="bi bi-chevron-down ms-auto"></i>
+				</a>
+				<ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+
+					<li>
+						<a href="components-modal.html">
+							<i class="bi bi-circle"></i>
+							<span>Modal</span>
+						</a>
+					</li>
+
+					<li>
+						<a href="components-progress.html">
+							<i class="bi bi-circle"></i>
+							<span>Progress</span>
+						</a>
+					</li>
+
+
+				</ul>
+			</li>
+
+			<li class="nav-item">
+				<a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
+					<i class="bi bi-shop-window"></i>
+					<span>Gestion de Marketplace</span>
+					<i class="bi bi-chevron-down ms-auto"></i>
+				</a>
+				<ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+					<li>
+						<a href="forms-elements.html">
+							<i class="bi bi-circle"></i>
+							<span>Form Elements</span>
+						</a>
+					</li>
+					<li>
+						<a href="forms-layouts.html">
+							<i class="bi bi-circle"></i>
+							<span>Form Layouts</span>
+						</a>
+					</li>
+					<li>
+						<a href="forms-editors.html">
+							<i class="bi bi-circle"></i>
+							<span>Form Editors</span>
+						</a>
+					</li>
+					<li>
+						<a href="forms-validation.html">
+							<i class="bi bi-circle"></i>
+							<span>Form Validation</span>
+						</a>
+					</li>
+				</ul>
+			</li>
+
+			<li class="nav-item">
+				<a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
+					<i class="ri-leaf-line"></i>
+					</i>
+					<span>Gestion Agricole</span>
+					<i class="bi bi-chevron-down ms-auto"></i>
+				</a>
+				<ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+				<li>
+					<a href="tables-general.html">
+						<i class="bi bi-circle"></i>
+						<span>General Tables</span>
+					</a>
+				</li>
+				<li>
+					<a href="tables-data.html">
+						<i class="bi bi-circle"></i>
+						<span>Data Tables</span>
+					</a>
+				</li>
+			</ul>
+			</li>
+		
+
+
+			<li class="nav-item">
+				<a class="nav-link collapsed" data-bs-target="#charts-nav" data-bs-toggle="collapse" href="#">
+					<i class="bi bi-mortarboard"></i>
+					<span>Gestion des Formations</span>
+					<i class="bi bi-chevron-down ms-auto"></i>
+				</a>
+				<ul id="charts-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+					<li>
+						<a href="charts-chartjs.html">
+							<i class="bi bi-circle"></i>
+							<span>Chart.js</span>
+						</a>
+					</li>
+					<li>
+						<a href="charts-apexcharts.html">
+							<i class="bi bi-circle"></i>
+							<span>ApexCharts</span>
+						</a>
+					</li>
+					<li>
+						<a href="charts-echarts.html">
+							<i class="bi bi-circle"></i>
+							<span>ECharts</span>
+						</a>
+					</li>
+				</ul>
+			</li>
+
+			<li class="nav-item">
+				<a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#">
+					<i class="ri-tools-line"></i>
+					<span>Gestion du Matériel</span>
+					<i class="bi bi-chevron-down ms-auto"></i>
+				</a>
+			</li>
+
+			<li class="nav-item">
+				<a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#">
+					<i class="ri-shake-hands-line"></i>
+					<span>Gestion de candidature</span>
+					<i class="bi bi-chevron-down ms-auto"></i>
+				</a>
+			</li>
+
+			<li class="nav-heading">Pages</li>
+			<li class="nav-item">
+				<a class="nav-link collapsed" href="users-profile.html">
+					<i class="bi bi-person"></i>
+					<span>Profile</span>
+				</a>
+			</li>
+
+			<li class="nav-item">
+				<a class="nav-link collapsed" href="pages-faq.html">
+					<i class="bi bi-gear"></i>
+					<span>Settings</span>
+				</a>
+			</li>
+		</ul>
+	</aside><!-- End Sidebar-->
+	
+
+	<!-- ======= Main ======= -->
+	<main id="main" class="main">
+	 {% block content %}
+	 <h1>Liste des formations</h1>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Titre</th>
+                        <th>Description</th>
+                        <th>Prix</th>
+                        <th>Date</th>
+                        <th>Image</th>
+                        <th>Action1</th>
+						<th>Action2</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for formation in formations %}
+                        <tr>
+                            <td>{{ formation.titre }}</td>
+                            <td>{{ formation.description }}</td>
+                            <td>{{ formation.prix }}</td>
+                            <td>{{ formation.date|date('Y-m-d') }}</td>
+                            <td><img src="{{ formation.image }}" alt="Image" width="100"></td>
+                            <td><a href="{{path('updateFormation', {'id': formation.id})}}">Update</a></td>
+                            <td><a href="{{path('deleteFormation', {'id': formation.id})}}">Delete</a></td>
+                           
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        
+            <a href="{{ path('addFormation') }}" class="btn btn-primary">Ajouter une nouvelle formation</a>
+	 {% endblock %}
+	 </main>
+	<!-- End #main -->
+	
+
+	<!-- ======= Footer ======= -->
+	<footer id="footer" class="footer">
+		<div class="copyright">
+			&copy; Copyright
+			<strong>
+				<span>Agrowise</span>
+			</strong>. All Rights Reserved
+		</div>
+	</footer><!-- End Footer -->
+	
+	
+	
+	<a href="#" class="back-to-top d-flex align-items-center justify-content-center"> <i class="bi bi-arrow-up-short"></i></a><!-- Vendor JS Files -->
+	
+	<script src="assets/assetsBack/vendor/apexcharts/apexcharts.min.js"></script>
+	<script src="assets/assetsBack/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+	<script src="assets/assetsBack/vendor/chart.js/chart.umd.js"></script>
+	<script src="assets/assetsBack/vendor/echarts/echarts.min.js"></script>
+	<script src="assets/assetsBack/vendor/quill/quill.js"></script>
+	<script src="assets/assetsBack/vendor/simple-datatables/simple-datatables.js"></script>
+	<script src="assets/assetsBack/vendor/tinymce/tinymce.min.js"></script>
+	<script src="assets/assetsBack/vendor/php-email-form/validate.js"></script><!-- Template Main JS File -->
+	<script src="assets/assetsBack/js/main.js"></script>
+</body>
+
+
+    {% endblock %}

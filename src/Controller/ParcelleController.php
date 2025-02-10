@@ -4,32 +4,78 @@ namespace App\Controller;
 
 use App\Entity\Parcelle;
 use App\Form\ParcelleType;
+use App\Form\SearchParcelleType;
 use App\Repository\ParcelleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Knp\Component\Pager\PaginatorInterface;
+use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
+
 
 #[Route('/parcelle')]
 final class ParcelleController extends AbstractController
 {
-    #[Route(name: 'app_parcelle_index', methods: ['GET'])]
-    public function index(ParcelleRepository $parcelleRepository): Response
+    #[Route('/', name: 'app_parcelle_index', methods: ['GET', 'POST'])]
+    public function index(ParcelleRepository $parcelleRepository, Request $request): Response
     {
+        // Créer le formulaire de recherche et de filtrage
+        $form = $this->createForm(SearchParcelleType::class);
+        $form->handleRequest($request);
+
+        // Récupérer les critères de recherche et de filtrage
+        $searchCriteria = [];
+        if ($form->isSubmitted() && $form->isValid()) {
+            $searchCriteria = $form->getData();
+        }
+
+        // Récupérer les paramètres de tri
+        $sort = $request->query->get('sort', 'superficie'); // Par défaut : tri par superficie
+        $direction = $request->query->get('direction', 'ASC'); // Par défaut : ordre croissant
+
+        // Récupérer les parcelles filtrées et triées
+        $parcelles = $parcelleRepository->findBySearchCriteria($searchCriteria, $sort, $direction);
+
         return $this->render('parcelle/index.html.twig', [
-            'parcelles' => $parcelleRepository->findAll(),
+            'parcelles' => $parcelles,
+            'form' => $form->createView(),
+            'sort' => $sort,
+            'direction' => $direction,
+        ]);
+    }
+    #[Route('/listparcelles', name: 'app_parcelle_back', methods: ['GET', 'POST'])]
+    public function listParcellesBackend(
+        ParcelleRepository $parcelleRepository,
+        Request $request,
+        PaginatorInterface $paginator
+    ): Response {
+        // Créer le formulaire de recherche et de filtrage
+        $form = $this->createForm(SearchParcelleType::class);
+        $form->handleRequest($request);
+
+        // Récupérer les critères de recherche et de filtrage
+        $searchCriteria = [];
+        if ($form->isSubmitted() && $form->isValid()) {
+            $searchCriteria = $form->getData();
+        }
+
+        // Récupérer les paramètres de tri
+        $sort = $request->query->get('sort', 'superficie'); // Par défaut : tri par superficie
+        $direction = $request->query->get('direction', 'ASC'); // Par défaut : ordre croissant
+
+        // Récupérer les parcelles filtrées et triées
+        $parcelles = $parcelleRepository->findBySearchCriteria($searchCriteria, $sort, $direction);
+
+        return $this->render('parcelle/listParcellesBackend.html.twig', [
+            'parcelles' => $parcelles,
+            'form' => $form->createView(),
+            'sort' => $sort,
+            'direction' => $direction,
         ]);
     }
 
-    #[Route('/listparcelles',name: 'app_parcelle_back', methods: ['GET'])]
-    public function listParcellesBackend(ParcelleRepository $parcelleRepository): Response
-    {
-        return $this->render('parcelle/listParcellesBackend.html.twig', [
-            'parcelles' => $parcelleRepository->findAll(),
-        ]);
-    }
-    
 
     #[Route('/new', name: 'app_parcelle_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
@@ -42,7 +88,10 @@ final class ParcelleController extends AbstractController
             $entityManager->persist($parcelle);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_parcelle_index', [], Response::HTTP_SEE_OTHER);
+            $this->addFlash('success', 'La parcelle a été créée avec succès.');
+            return $this->redirectToRoute('app_parcelle_index');
+        } else {
+            $this->addFlash('error', 'Il y a des erreurs dans le formulaire.');
         }
 
         return $this->render('parcelle/new.html.twig', [
@@ -80,7 +129,7 @@ final class ParcelleController extends AbstractController
     #[Route('/{id}', name: 'app_parcelle_delete', methods: ['POST'])]
     public function delete(Request $request, Parcelle $parcelle, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$parcelle->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $parcelle->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($parcelle);
             $entityManager->flush();
         }
@@ -88,5 +137,14 @@ final class ParcelleController extends AbstractController
         return $this->redirectToRoute('app_parcelle_index', [], Response::HTTP_SEE_OTHER);
     }
 
-
+    #[Route('listparcelles/{id}', name: 'app_parcelle_delete_back', methods: ['POST'])]
+    public function deleteBack(Request $request, Parcelle $parcelle, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('delete' . $parcelle->getId(), $request->getPayload()->getString('_token'))) {
+            $entityManager->remove($parcelle);
+            $entityManager->flush();
+        }
+    
+        return $this->redirectToRoute('app_parcelle_back', [], Response::HTTP_SEE_OTHER);
+    }
 }

@@ -40,4 +40,49 @@ class ParcelleRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    public function findBySearchCriteria(array $criteria, string $sort = 'superficie', string $direction = 'ASC')
+    {
+        $queryBuilder = $this->createQueryBuilder('p');
+    
+        // Filtrer par nom si un nom est fourni
+        if (!empty($criteria['nom'])) {
+            $queryBuilder->andWhere('p.nom LIKE :nom')
+                ->setParameter('nom', '%' . $criteria['nom'] . '%');
+        }
+    
+        // Filtrer par type de sol si un type est sélectionné
+        if (!empty($criteria['typeSol'])) {
+            $queryBuilder->andWhere('p.typeSol = :typeSol')
+                ->setParameter('typeSol', $criteria['typeSol']);
+        }
+    
+        // Trier par le champ spécifié (par défaut : superficie)
+        $queryBuilder->orderBy('p.' . $sort, $direction);
+    
+        return $queryBuilder->getQuery()->getResult();
+    }
+
+
+    public function findBySearchCriteriaQuery(array $criteria, string $sort = 'superficie', string $direction = 'ASC')
+{
+    $queryBuilder = $this->createQueryBuilder('p');
+
+    // Filtrer par nom si un nom est fourni
+    if (!empty($criteria['nom'])) {
+        $queryBuilder->andWhere('p.nom LIKE :nom')
+            ->setParameter('nom', '%' . $criteria['nom'] . '%');
+    }
+
+    // Filtrer par type de sol si un type est sélectionné
+    if (!empty($criteria['typeSol'])) {
+        $queryBuilder->andWhere('p.typeSol = :typeSol')
+            ->setParameter('typeSol', $criteria['typeSol']);
+    }
+
+    // Trier par le champ spécifié (par défaut : superficie)
+    $queryBuilder->orderBy('p.' . $sort, $direction);
+
+    return $queryBuilder->getQuery();
+}
 }

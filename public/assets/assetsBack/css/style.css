@@ -13,6 +13,41 @@
   scroll-behavior: smooth;
 }
 
+
+/* Global Colors - Updated with the new palette */
+:root {
+  --background-color: #FFFFFF; /* White background */
+  --default-color: #242424; /* Dark gray for text */
+  --heading-color: #1F4E3D; /* Dark green for headings */
+  --accent-color: #1a9738  ; /* New green for accents */
+  --surface-color: #f9fbff; /* White for cards and surfaces */
+  --contrast-color: #FFFFFF; /* White for text on darker backgrounds */
+
+  /* Nav Menu Colors */
+  --nav-color: #1F4E3D; /* Dark green for navigation links */
+  --nav-hover-color: #1a9738; /* New green for hover states */
+  --nav-mobile-background-color: #FFFFFF; /* White for mobile menu background */
+  --nav-dropdown-background-color: #FFFFFF; /* White for dropdowns */
+  --nav-dropdown-color: #1F4E3D; /* Dark green for dropdown links */
+  --nav-dropdown-hover-color: #49A760; /* New green for dropdown hover states */
+}
+
+/* Light Background Preset */
+.light-background {
+  --background-color: #FFFFFF; /* White background */
+  --surface-color: #FFFFFF;
+}
+
+/* Dark Background Preset */
+.dark-background {
+  --background-color: #353535; /* Dark green for depth */
+  --default-color: #FFFFFF; /* White text for contrast */
+  --heading-color: #49A760; /* New green for headings */
+  --accent-color: #1a9738; /* New green for accents */
+  --surface-color: #242424; /* Dark gray for surfaces */
+  --contrast-color: #FFFFFF; /* White for text on darker backgrounds */
+}
+
 body {
   font-family: "Open Sans", sans-serif;
   background: #f9fbff;
@@ -218,10 +253,32 @@ h6 {
 
 /* Card */
 .card {
-  margin-bottom: 30px;
-  border: none;
-  border-radius: 5px;
-  box-shadow: 0px 0 30px rgba(1, 41, 112, 0.1);
+  border: 0;
+  box-shadow: 0px 0px 10px 0px rgba(82, 63, 105, 0.1);
+  -webkit-box-shadow: 0px 0px 10px 0px rgba(82, 63, 105, 0.1);
+  -moz-box-shadow: 0px 0px 10px 0px rgba(82, 63, 105, 0.1);
+  -ms-box-shadow: 0px 0px 10px 0px rgba(82, 63, 105, 0.1);
+}
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  word-wrap: break-word;
+  background-color: #ffffff;
+  background-clip: border-box;
+  border: 1px solid #e6e4e9;
+  border-radius: 8px;
+}
+
+.card-body {
+  flex: 1 1 auto;
+  padding: var(--bs-card-spacer-y) var(--bs-card-spacer-x) !important;
+  color: var(--bs-card-color);
+}
+
+.card-margin {
+  margin-bottom: 1.875rem;
 }
 
 .card-header,
@@ -229,11 +286,10 @@ h6 {
   border-color: #ebeef4;
   background-color: #fff;
   color: #798eb3;
-  padding: 15px;
 }
 
 .card-title {
-  padding: 20px 0 15px 0;
+  padding: 10px 0 10px 0;
   font-size: 18px;
   font-weight: 500;
   color: #1F4E3D;
@@ -761,6 +817,121 @@ h6 {
 .sidebar-nav .nav-content a.active i {
   background-color: #1a9738;
 }
+
+
+.table th a {
+  color: #212529; /* Set the color to black */
+  text-decoration: none; /* Remove underline */
+}
+
+/* Optional: Add hover effect */
+.table th a:hover {
+  color: #333; /* Slightly darker on hover */
+}
+
+.input-group-text {
+  background-color: #e9ecef;
+  border: 1px solid #ced4da;
+}
+
+.btn-outline-secondary {
+  border-color: #6c757d;
+  color: #6c757d;
+}
+
+.btn-outline-secondary:hover {
+  background-color: #6c757d;
+  color: white;
+}
+
+.input-group:not(.has-validation)>.dropdown-toggle:nth-last-child(n+3), .input-group:not(.has-validation)>.form-floating:not(:last-child)>.form-control, .input-group:not(.has-validation)>.form-floating:not(:last-child)>.form-select, .input-group:not(.has-validation)>:not(:last-child):not(.dropdown-toggle):not(.dropdown-menu):not(.form-floating)
+{
+  border-color: #1F4E3D;
+}
+
+.input-group>:not(:first-child):not(.dropdown-menu):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(.invalid-feedback)
+{
+  border-color: #1F4E3D;
+}
+
+.col-md-8 {
+  flex: 0 0 auto;
+  width: 66.66666667%;
+}
+
+.mb-4 {
+  margin-bottom: 1.5rem !important;
+}
+
+/* Buttons */
+.btn-primary {
+  background-color: var(--accent-color) !important; /* New green for primary buttons */
+  border-color: var(--accent-color) !important;
+  color: var(--contrast-color) !important; /* White text */
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+  background-color: #1F4E3D !important; /* Darker green for hover */
+  border-color: #1F4E3D !important;
+}
+
+.btn-secondary {
+  background-color: #242424 !important; /* Dark gray for secondary buttons */
+  border-color: #242424 !important;
+  color: var(--contrast-color) !important; /* White text */
+}
+
+.btn-secondary:hover,
+.btn-secondary:focus,
+.btn-secondary:active {
+  background-color: #1F4E3D !important; /* Dark green for hover */
+  border-color: #1F4E3D !important;
+}
+
+
+/* Custom btn-info (cool mint green for modern tech feel) */
+.btn-info {
+  background-color: #66FF99 !important;  /* Fresh mint green */
+  border-color: #66FF99 !important;
+}
+
+.btn-info:hover {
+  background-color: #33CC66 !important;  /* Darker mint for hover effect */
+  border-color: #33CC66 !important;
+}
+
+/* Custom btn-warning (modern soft yellow) */
+.btn-warning {
+  background-color: #F4D03F !important;  /* Muted yellow */
+  border-color: #F4D03F !important;
+}
+
+.btn-warning:hover {
+  background-color: #F39C12 !important;  /* Brighter yellow for hover effect */
+  border-color: #F39C12 !important;
+}
+
+
+
+.badge-primary {
+  background-color: #49A760; /* New green for badges */
+  color: var(--contrast-color);
+}
+
+/* Forms */
+.form-control {
+  border: 1px solid #1F4E3D; /* Dark green for form borders */
+  background-color: var(--surface-color);
+  color: var(--default-color);
+}
+
+.form-control:focus {
+  border-color: #49A760; /* New green for focus state */
+  box-shadow: 0 0 5px rgba(73, 167, 96, 0.5); /* Soft green shadow */
+}
+
 
 /*--------------------------------------------------------------
 # Dashboard

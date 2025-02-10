@@ -27,13 +27,47 @@ a {
     color: var(--default-color);
 }
 
+.table th a {
+  color: #212529; /* Set the color to black */
+  text-decoration: none; /* Remove underline */
+}
 
+/* Optional: Add hover effect */
+.table th a:hover {
+  color: #333; /* Slightly darker on hover */
+}
+
+.input-group-text {
+  background-color: #e9ecef;
+  border: 1px solid #ced4da;
+}
+
+.btn-outline-secondary {
+  border-color: #6c757d;
+  color: #6c757d;
+}
+
+.btn-outline-secondary:hover {
+  background-color: #6c757d;
+  color: white;
+}
+
+.input-group:not(.has-validation)>.dropdown-toggle:nth-last-child(n+3), .input-group:not(.has-validation)>.form-floating:not(:last-child)>.form-control, .input-group:not(.has-validation)>.form-floating:not(:last-child)>.form-select, .input-group:not(.has-validation)>:not(:last-child):not(.dropdown-toggle):not(.dropdown-menu):not(.form-floating)
+{
+  border-color: #1F4E3D;
+}
+
+.input-group>:not(:first-child):not(.dropdown-menu):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(.invalid-feedback)
+{
+  border-color: #1F4E3D;
+}
 
 
 /* Styling for the icon and text */
 .sidebar-link i {
   margin-right: 10px;
 }
+
 
 /* Submenu styling */
 .sidebar-dropdown {
@@ -293,9 +327,7 @@ a {
   }
   }
   
-  .card-margin {
-    margin-bottom: 1.875rem;
-  }
+
   .card {
     border: 0;
     box-shadow: 0px 0px 10px 0px rgba(82, 63, 105, 0.1);
@@ -473,7 +505,7 @@ a.sidebar-link:hover {
 .btn-primary:hover,
 .btn-primary:focus,
 .btn-primary:active {
-  background-color: #1F4E3D; /* Darker green for hover */
+  background-color: #1F4E3D !important; /* Darker green for hover */
   border-color: #1F4E3D;
 }
 
@@ -497,6 +529,11 @@ a.sidebar-link:hover {
   border-color: #66FF99;
 }
 
+.btn-light
+{
+  border-color: #49A760;
+}
+
 .btn-info:hover {
   background-color: #33CC66;  /* Darker mint for hover effect */
   border-color: #33CC66;
@@ -513,7 +550,40 @@ a.sidebar-link:hover {
   border-color: #F39C12;
 }
 
-
+.glass-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(15px);
+  border-radius: 12px;
+  padding: 20px;
+}
+.info-card {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(20px);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+  margin-top: 20px;
+}
+.info-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+.icon-box {
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, #1a9738, #1F4E3D);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 10px;
+  font-size: 20px;
+  transition: transform 0.3s ease;
+}
+.info-card:hover .icon-box {
+  transform: scale(1.1);
+}
 
 .badge-primary {
   background-color: #49A760; /* New green for badges */

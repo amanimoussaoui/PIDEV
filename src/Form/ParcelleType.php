@@ -16,15 +16,9 @@ class ParcelleType extends AbstractType
             ->add('superficie')
             ->add('localisation')
             ->add('typeSol', ChoiceType::class, [
-                'choices' => [
-                    'Argileux' => 'argileux',
-                    'Sableux' => 'sableux',
-                    'Limoneux' => 'limoneux',
-                    'Humifère' => 'humifère',
-                ],
+                'choices' => Parcelle::getTypeSolChoices(),
                 'placeholder' => 'Select a type',
             ])
-            ->add('utilisateurId')
         ;
     }
 

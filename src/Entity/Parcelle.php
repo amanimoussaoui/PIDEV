@@ -105,4 +105,15 @@ class Parcelle
         $this->utilisateurId = $utilisateurId;
         return $this;
     }
+
+    public static function getTypeSolChoices(): array
+{
+    return [
+        'Argileux' => 'argileux',
+        'Sableux' => 'sableux',
+        'Limoneux' => 'limoneux',
+        'Humifère' => 'humifère',
+    ];
+}
+
 }

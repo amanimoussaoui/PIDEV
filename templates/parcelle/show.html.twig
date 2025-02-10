@@ -3,54 +3,52 @@
 {% block title %}Parcelle{% endblock %}
 
 {% block content %}
-    <div class="container my-4">
-        <h1 class="mb-4">Parcelle Details</h1>
-
-        <div class="card">
-            <div class="card-header">
-                <h5 class="card-title mb-0">Parcelle Information</h5>
+    <div class="container mt-4">
+        <div class="glass-card shadow-sm border-0">
+            <div class="card-header py-3 px-4" style="background: linear-gradient(90deg, #1a9738, #1F4E3D); border-radius: 12px 12px 0 0;">
+                <h5 class="mb-0 text-white"></i> Détails de la Parcelle</h5>
             </div>
             <div class="card-body">
-                <table class="table table-bordered">
-                    <tbody>
-                        <tr>
-                            <th scope="row">Id</th>
-                            <td>{{ parcelle.id }}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Nom</th>
-                            <td>{{ parcelle.nom }}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Superficie</th>
-                            <td>{{ parcelle.superficie }}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Localisation</th>
-                            <td>{{ parcelle.localisation }}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">TypeSol</th>
-                            <td>{{ parcelle.typeSol }}</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">UtilisateurId</th>
-                            <td>{{ parcelle.utilisateurId }}</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="row g-3 justify-content-center">
+                    {% set info = [
+                        {'icon': 'tag-fill', 'label': 'Nom', 'value': parcelle.nom},
+                        {'icon': 'rulers', 'label': 'Superficie', 'value': parcelle.superficie | number_format(2, ',', ' ') ~ ' ha'},
+                        {'icon': 'geo-alt-fill', 'label': 'Localisation', 'value': parcelle.localisation},
+                        {'icon': 'cloud-sun-fill', 'label': 'Type de Sol', 'value': parcelle.typeSol | capitalize}
+                    ] %}
 
-                <div class="d-flex justify-content-between">
-                    <a href="{{ path('app_parcelle_index') }}" class="btn btn-secondary">Back to List</a>
-                    <div class="d-flex">
-                        <a href="{{ path('app_parcelle_edit', {'id': parcelle.id}) }}" class="btn btn-primary me-2">Edit</a>
-                        <div>
-                            {{ include('parcelle/_delete_form.html.twig') }}
+                    {% for item in info %}
+                        <div class="col-md-3 col-6">
+                            <div class="info-card p-3 text-center">
+                                <div class="icon-box">
+                                    <i class="bi bi-{{ item.icon }}"></i>
+                                </div>
+                                <h6 class="text-muted">{{ item.label }}</h6>
+                                <p class="fw-bold mb-0">{{ item.value }}</p>
+                            </div>
                         </div>
+                    {% endfor %}
+                </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{{ path('app_parcelle_index') }}" class="btn btn-light">
+                        <i class="bi bi-arrow-left"></i> Retour à la Liste
+                    </a>
+                    <div class="d-flex">
+                        <a href="{{ path('app_parcelle_edit', {'id': parcelle.id}) }}" class="btn btn-primary me-2">
+                            <i class="bi bi-pencil"></i> Modifier
+                        </a>
+                        {{ include('parcelle/_delete_form.html.twig') }}
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+        }
+       
+    </style>
 {% endblock %}

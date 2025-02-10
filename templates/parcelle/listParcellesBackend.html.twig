@@ -4,19 +4,65 @@
 
 {% block content %}
     <div class="container mt-4">
-        <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="card-title mb-0">Liste des Parcelles</h5>
+        <div class="card shadow-sm">
+            <div class="card-header d-flex justify-content-between align-items-center" style="background: linear-gradient(90deg, #1a9738, #1F4E3D);">
+                <h5 class="card-title mb-0 text-white">Liste des Parcelles</h5>
             </div>
             <div class="card-body">
-                <table class="table table-bordered table-striped table-hover ">                    <thead>
+                {{ form_start(form, {'attr': {'class': 'mb-4'},'action': path('app_parcelle_back')}) }}
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-md-8">
+                            <div class="input-group mb-3">
+                                {# Filtre par type de sol #}
+                                {{ form_widget(form.typeSol, {
+                                    'attr': {
+                                        'class': 'form-select',
+                                        'style': 'max-width: 150px;'
+                                    }
+                                }) }}
+            
+                                {# Champ de recherche par nom #}
+                                {{ form_widget(form.nom, {
+                                    'attr': {
+                                        'class': 'form-control',
+                                        'placeholder': 'Rechercher par nom...'
+                                    }
+                                }) }}
+            
+                                {# Bouton Rechercher #}
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-search"></i>
+                                </button>
+            
+                                {# Bouton Réinitialiser #}
+                                <a href="{{ path('app_parcelle_back') }}" class="btn btn-outline-secondary">
+                                    <i class="bi bi-arrow-counterclockwise"></i> 
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+          
+                
+                {# Tableau des parcelles #}
+                <table class="table table-bordered table-striped table-hover">
+                    <thead>
                         <tr>
                             <th>#</th>
                             <th>Nom</th>
-                            <th>Superficie</th>
+                            <th>
+                                <a href="{{ path('app_parcelle_back', {
+                                    'sort': 'superficie',
+                                    'direction': (sort == 'superficie' and direction == 'ASC') ? 'DESC' : 'ASC'
+                                }) }}">
+                                    Superficie <i class="bi bi-sort-numeric-{{ sort == 'superficie' and direction == 'ASC' ? 'down' : 'up' }}"></i>
+                                </a>
+                            </th>
                             <th>Localisation</th>
                             <th>Type Sol</th>
-                            <th>Utilisateur Id</th>
+                            <th>Utilisateur</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -24,18 +70,36 @@
                             <tr>
                                 <td>{{ parcelle.id }}</td>
                                 <td>{{ parcelle.nom }}</td>
-                                <td>{{ parcelle.superficie }}</td>
+                                <td>{{ parcelle.superficie | number_format(2, ',', ' ') }} ha</td>
                                 <td>{{ parcelle.localisation }}</td>
-                                <td>{{ parcelle.typeSol | capitalize }}</td> 
+                                <td>
+                                    <span class="badge bg-{{ parcelle.typeSol == 'argileux' ? 'warning' : (parcelle.typeSol == 'sableux' ? 'info' : (parcelle.typeSol == 'limoneux' ? 'success' : 'secondary')) }}">
+                                        {{ parcelle.typeSol | capitalize }}
+                                    </span>
+                                </td>
                                 <td>{{ parcelle.utilisateurId }}</td>
+                                <td>
+                                    <form action="{{ path('app_parcelle_delete_back', {'id': parcelle.id}) }}" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette parcelle ?');" style="display: inline;">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ parcelle.id) }}">
+                                        <button type="submit" class="btn btn-danger btn-sm" title="Supprimer">
+                                            <i class="bi bi-trash"> Supprimer</i>
+                                        </button>
+                                    </form>
+                                </td>
                             </tr>
                         {% else %}
                             <tr>
-                                <td colspan="7" class="text-center">Aucun enregistrement trouvé</td>
+                                <td colspan="7" class="text-center">
+                                    <div class="alert alert-info mt-3">
+                                        <i class="bi bi-info-circle"></i> Aucune parcelle trouvée. Essayez de modifier vos critères de recherche ou <a href="{{ path('app_parcelle_new') }}">créez une nouvelle parcelle</a>.
+                                    </div>
+                                </td>
                             </tr>
                         {% endfor %}
                     </tbody>
                 </table>
+
+          
             </div>
         </div>
     </div>

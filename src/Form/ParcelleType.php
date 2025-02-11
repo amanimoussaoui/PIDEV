@@ -17,7 +17,7 @@ class ParcelleType extends AbstractType
             ->add('localisation')
             ->add('typeSol', ChoiceType::class, [
                 'choices' => Parcelle::getTypeSolChoices(),
-                'placeholder' => 'Select a type',
+                'placeholder' => 'Sélectionnez un type',
             ])
         ;
     }

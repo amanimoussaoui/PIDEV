@@ -3,23 +3,21 @@
 {% block title %}Edit Culture{% endblock %}
 
 {% block content %}
-    <div class="container my-4">
-        <h1 class="mb-4">Edit Culture</h1>
-
-        <div class="card">
-            <div class="card-header">
-                <h5 class="card-title mb-0">Edit Culture Information</h5>
+    <div class="container mt-4">
+        <div class="glass-card shadow-sm border-0" style="max-width: 800px; margin: 0 auto;">
+            <div class="card-header py-3 px-4" style="background: linear-gradient(90deg, #1a9738, #1F4E3D); border-radius: 12px 12px 0 0;">
+                <h5 class="mb-0 text-white">Modifier la Culture</h5>
             </div>
             <div class="card-body">
-                {{ include('culture/_form.html.twig', {'button_label': 'Update'}) }}
-                
-                <div class="d-flex justify-content-between mt-4">
-                    <a href="{{ path('app_culture_index') }}" class="btn btn-secondary">Back to List</a>
-                    <div class="d-flex">
-                        <div>
-                            {{ include('culture/_delete_form.html.twig') }}
-                        </div>
-                    </div>
+                {{ include('culture/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
+            </div>
+            <br>
+            <div class="card-footer d-flex justify-content-between">
+                <a href="{{ path('app_culture_index') }}" class="btn btn-light">
+                    <i class="bi bi-arrow-left"></i> Retour à la Liste
+                </a>
+                <div>
+                    {{ include('culture/_delete_form.html.twig') }}
                 </div>
             </div>
         </div>

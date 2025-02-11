@@ -40,4 +40,29 @@ class CultureRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+    public function findBySearchAndFilter(?string $searchTerm, ?string $statutFilter, string $sort, string $direction): array
+    {
+        $allowedSortFields = ['id', 'nomCulture', 'statut', 'createdAt'];
+        if (!in_array($sort, $allowedSortFields, true)) {
+            $sort = 'id';
+        }
+    
+        $qb = $this->createQueryBuilder('c');
+    
+        if ($searchTerm) {
+            $qb->leftJoin('c.parcelle', 'p')
+               ->andWhere('c.nomCulture LIKE :searchTerm OR p.nom LIKE :searchTerm')
+               ->setParameter('searchTerm', '%' . $searchTerm . '%');
+        }
+    
+        if ($statutFilter) {
+            $qb->andWhere('c.statut = :statutFilter')
+               ->setParameter('statutFilter', $statutFilter);
+        }
+    
+        $qb->orderBy('c.' . $sort, $direction);
+    
+        return $qb->getQuery()->getResult();
+    }
+    
 }

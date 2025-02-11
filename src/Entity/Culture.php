@@ -40,7 +40,7 @@ class Culture
         choices: ['en_culture', 'recolte', 'termine'],
         message: "Le statut doit être l'un des suivants : en_culture, recolte, termine."
     )]
-    private ?string $statut = 'en_culture';  // Default status
+    private ?string $statut;
 
 
     public function getId(): ?int
@@ -106,6 +106,15 @@ class Culture
         $this->statut = $statut;
 
         return $this;
+    }
+
+    public static function getStatutlChoices(): array
+    {
+        return [
+            'En culture' => 'en_culture',
+            'Récolte' => 'recolte',
+            'Terminé' => 'termine',
+        ];
     }
 }
 

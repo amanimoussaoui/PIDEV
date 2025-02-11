@@ -1,6 +1,6 @@
 {% form_theme form 'bootstrap_5_layout.html.twig' %}
 
-{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+{{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'needs-validation'}}) }}
 
 <div class="container">
     {% for error in form.vars.errors %}
@@ -10,26 +10,51 @@
     <div class="row">
         <div class="col-md-6 mb-3">
             {{ form_label(form.nom) }}
-            {{ form_widget(form.nom, { 'attr': {'class': 'form-control', 'required': false} }) }}
+            {{ form_widget(form.nom, { 
+                'attr': {
+                    'class': 'form-control',
+                    'required': false,
+                    'placeholder': 'ex: Parcelle Nord'
+                }
+            }) }}
             {{ form_errors(form.nom) }}
+            <small class="form-text text-muted">Donnez un nom unique à votre parcelle</small>
         </div>
 
         <div class="col-md-6 mb-3">
             {{ form_label(form.superficie) }}
-            {{ form_widget(form.superficie, { 'attr': {'class': 'form-control'} }) }}
+            {{ form_widget(form.superficie, { 
+                'attr': {
+                    'class': 'form-control superficie-mask',
+                    'placeholder': 'ex: 5000',
+                    'data-inputmask': "'alias': 'numeric', 'groupSeparator': ' ', 'digits': 2, 'digitsOptional': false"
+                }
+            }) }}
             {{ form_errors(form.superficie) }}
+            <small class="form-text text-muted">Superficie en mètres carrés (m²). Utilisez un point pour les décimales.</small>
         </div>
 
         <div class="col-md-6 mb-3">
             {{ form_label(form.localisation) }}
-            {{ form_widget(form.localisation, { 'attr': {'class': 'form-control'} }) }}
+            {{ form_widget(form.localisation, { 
+                'attr': {
+                    'class': 'form-control',
+                    'placeholder': 'ex: 43.123456, 2.123456'
+                }
+            }) }}
             {{ form_errors(form.localisation) }}
+            <small class="form-text text-muted">Entrez les coordonnées GPS ou l'adresse de la parcelle</small>
         </div>
 
         <div class="col-md-6 mb-3">
             {{ form_label(form.typeSol) }}
-            {{ form_widget(form.typeSol, { 'attr': {'class': 'form-control'} }) }}
+            {{ form_widget(form.typeSol, { 
+                'attr': {
+                    'class': 'form-control'
+                }
+            }) }}
             {{ form_errors(form.typeSol) }}
+            <small class="form-text text-muted">Sélectionnez le type de sol prédominant</small>
         </div>
     </div>
 
@@ -41,3 +66,30 @@
 </div>
 
 {{ form_end(form) }}
+
+{% block javascripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/inputmask/5.0.8/jquery.inputmask.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize input mask for superficie field
+    Inputmask({
+        alias: 'numeric',
+        groupSeparator: ' ',
+        digits: 2,
+        digitsOptional: false,
+        prefix: '',
+        placeholder: '0'
+    }).mask(document.querySelector('.superficie-mask'));
+
+    // Form validation
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(event) {
+        if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+    });
+});
+</script>
+{% endblock %}

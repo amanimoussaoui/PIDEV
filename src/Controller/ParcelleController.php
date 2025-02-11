@@ -108,6 +108,14 @@ final class ParcelleController extends AbstractController
         ]);
     }
 
+    #[Route('listparcelles/{id}', name: 'app_parcelle_show_back', methods: ['GET'])]
+    public function showBack(Parcelle $parcelle): Response
+    {
+        return $this->render('parcelle/showBack.html.twig', [
+            'parcelle' => $parcelle,
+        ]);
+    }
+
     #[Route('/{id}/edit', name: 'app_parcelle_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Parcelle $parcelle, EntityManagerInterface $entityManager): Response
     {

@@ -25,17 +25,13 @@ class CultureType extends AbstractType
             ])
             ->add('duree')
             ->add('statut', ChoiceType::class, [
-                'choices' => [
-                    'En culture' => 'en_culture',
-                    'Récolte' => 'recolte',
-                    'Terminé' => 'termine',
-                ],
-                'expanded' => false,  
-                'multiple' => false, 
+                'choices' => Culture::getStatutlChoices(),
+                'placeholder' => 'Sélectionnez un statut',
             ])
             ->add('parcelle', EntityType::class, [
                 'class' => Parcelle::class,
                 'choice_label' => 'nom',
+                'placeholder' => 'Sélectionnez une parcelle',
             ])
         ;
     }

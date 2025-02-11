@@ -1,4 +1,4 @@
-{% extends 'FrontEnd/front.html.twig' %}
+{% extends 'BackEnd/back.html.twig' %}
 
 {% block title %}Culture{% endblock %}
 
@@ -117,17 +117,33 @@
 
                 {# Action Buttons #}
                 <div class="d-flex justify-content-between mt-4">
-                    <a href="{{ path('app_culture_index') }}" class="btn btn-light">
+                    <a href="{{ path('app_culture_back') }}" class="btn btn-light">
                         <i class="bi bi-arrow-left"></i> Retour à la Liste
                     </a>
                     <div class="d-flex">
-                        <a href="{{ path('app_culture_edit', {'id': culture.id}) }}" class="btn btn-primary me-2">
-                            <i class="bi bi-pencil"></i> Modifier
-                        </a>
-                        {{ include('culture/_delete_form.html.twig') }}
-                    </div>
+                     
+ <form action="{{ path('app_culture_delete_back', {'id': culture.id}) }}" 
+                                                  method="post" 
+                                                  class="d-inline"
+                                                  onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette culture ?');">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ culture.id) }}">
+                                                <button type="submit" 
+                                                        class="btn btn-danger btn-sm"
+                                                        data-bs-toggle="tooltip"
+                                                        title="Supprimer">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+        <style>
+        body {
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9) !important;
+        }
+       
+    </style>
+
 {% endblock %}

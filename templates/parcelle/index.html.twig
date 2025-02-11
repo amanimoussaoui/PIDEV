@@ -4,103 +4,132 @@
 
 {% block content %}
     <div class="container mt-4">
-        <div class="card shadow-sm">
-            <div class="card-header d-flex justify-content-between align-items-center" style="background: linear-gradient(90deg, #1a9738, #1F4E3D);">
-                <h5 class="card-title mb-0 text-white">Vos Parcelles</h5>
-                <a href="{{ path('app_parcelle_new') }}" class="btn btn-light btn-sm">
-                    <i class="bi bi-plus-circle"></i> Créer une Parcelle
+        <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+            <div class="card-header d-flex justify-content-between align-items-center py-4" 
+                 style="background: linear-gradient(90deg, #1a9738, #1F4E3D);">
+                <h5 class="card-title mb-0 text-white fw-semibold">Vos Parcelles</h5>
+                <a href="{{ path('app_parcelle_new') }}" class="btn btn-light btn-sm rounded-pill px-3 shadow-sm">
+                    <i class="bi bi-plus-circle me-1"></i> Créer une Parcelle
                 </a>
             </div>
-            <div class="card-body">
-                {{ form_start(form, {'attr': {'class': 'mb-4'}, 'action': path('app_parcelle_index')}) }}
-                <div class="container">
-                    <div class="row justify-content-center">
-                        <div class="col-md-8">
-                            <div class="input-group mb-3">
-                                {# Filtre par type de sol #}
-                                {{ form_widget(form.typeSol, {
-                                    'attr': {
-                                        'class': 'form-select',
-                                        'style': 'max-width: 150px;'
-                                    }
-                                }) }}
             
-                                {# Champ de recherche par nom #}
-                                {{ form_widget(form.nom, {
-                                    'attr': {
-                                        'class': 'form-control',
-                                        'placeholder': 'Rechercher par nom...'
-                                    }
-                                }) }}
-            
-                                {# Bouton Rechercher #}
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="bi bi-search"></i>
-                                </button>
-            
-                                {# Bouton Réinitialiser #}
-                                <a href="{{ path('app_parcelle_index') }}" class="btn btn-outline-secondary">
-                                    <i class="bi bi-arrow-counterclockwise"></i> 
-                                </a>
+            <div class="card-body p-4">
+                {# Search Form #}
+                {{ form_start(form, {'attr': {'class': 'mb-5'}, 'action': path('app_parcelle_index')}) }}
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            <div class="col-md-8">
+                                <div class="input-group input-group shadow-sm ">
+                                    {{ form_widget(form.typeSol, {
+                                        'attr': {
+                                            'class': 'form-select custom-select ',
+                                            'style': 'max-width: 150px;'
+                                        }
+                                    }) }}
+                                    {{ form_widget(form.nom, {
+                                        'attr': {
+                                            'class': 'form-control ',
+                                            'placeholder': 'Rechercher par nom...'
+                                        }
+                                    }) }}
+                                    <button type="submit" class="btn btn-primary px-4">
+                                        <i class="bi bi-search"></i>
+                                    </button>
+                                    <a href="{{ path('app_parcelle_index') }}" class="btn btn-light">
+                                        <i class="bi bi-arrow-counterclockwise"></i> 
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            {{ form_end(form) }}
-
-                {# Tableau des parcelles #}
-                <table class="table table-bordered table-striped table-hover">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Nom</th>
-                            <th>
-                                <a href="{{ path('app_parcelle_index', {
-                                    'sort': 'superficie',
-                                    'direction': (sort == 'superficie' and direction == 'ASC') ? 'DESC' : 'ASC'
-                                }) }}">
-                                    Superficie <i class="bi bi-sort-numeric-{{ sort == 'superficie' and direction == 'ASC' ? 'down' : 'up' }}"></i>
-                                </a>
-                            </th>
-                            <th>Localisation</th>
-                            <th>Type Sol</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for parcelle in parcelles %}
+                {{ form_end(form) }}
+        
+                {# Table Section #}
+                <div class="table-responsive">
+                    <table class="table modern-table align-middle">
+                        <thead class="border-bottom">
                             <tr>
-                                <td>{{ parcelle.id }}</td>
-                                <td>{{ parcelle.nom }}</td>
-                                <td>{{ parcelle.superficie | number_format(2, ',', ' ') }} m²</td>
-                                <td>{{ parcelle.localisation }}</td>
-                                <td>
-                                    <span class="badge bg-{{ parcelle.typeSol == 'argileux' ? 'warning' : (parcelle.typeSol == 'sableux' ? 'info' : (parcelle.typeSol == 'limoneux' ? 'success' : 'secondary')) }}">
-                                        {{ parcelle.typeSol | capitalize }}
-                                    </span>
-                                </td>
-                                <td>
-                                    <a href="{{ path('app_parcelle_show', {'id': parcelle.id}) }}" class="btn btn-info btn-sm" role="button" title="Voir les détails">
-                                        <i class="bi bi-eye"></i>
+                                <th class="text-muted fw-semibold">#</th>
+                                <th class="text-muted fw-semibold">Nom</th>
+                                <th class="text-muted fw-semibold">
+                                    <a href="{{ path('app_parcelle_index', {
+                                        'sort': 'superficie',
+                                        'direction': (sort == 'superficie' and direction == 'ASC') ? 'DESC' : 'ASC'
+                                    })}}" class="text-decoration-none text-muted d-flex align-items-center gap-2">
+                                        Superficie 
+                                        <i class="bi bi-sort-numeric-{{ sort == 'superficie' and direction == 'ASC' ? 'down' : 'up' }}"></i>
                                     </a>
-                                    <a href="{{ path('app_parcelle_edit', {'id': parcelle.id}) }}" class="btn btn-warning btn-sm" role="button" title="Modifier">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <form action="{{ path('app_parcelle_delete', {'id': parcelle.id}) }}" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette parcelle ?');" style="display: inline;">
-                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ parcelle.id) }}">
-                                        <button type="submit" class="btn btn-danger btn-sm" title="Supprimer">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </form>
-                                </td>
+                                </th>
+                                <th class="text-muted fw-semibold">Localisation</th>
+                                <th class="text-muted fw-semibold">Type Sol</th>
+                                <th class="text-muted fw-semibold text-end">Actions</th>
                             </tr>
-                        {% else %}
-                        <div class="alert alert-info mt-3">
-                            <i class="bi bi-info-circle"></i> Aucune parcelle trouvée. Essayez de modifier vos critères de recherche ou <a href="{{ path('app_parcelle_new') }}">créez une nouvelle parcelle</a>.
-                        </div>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {% for parcelle in parcelles %}
+                                <tr class="row-hover">
+                                    <td>{{ parcelle.id }}</td>
+                                    <td class="fw-medium">{{ parcelle.nom }}</td>
+                                    <td>{{ parcelle.superficie | number_format(2, ',', ' ') }} m²</td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <i class="bi bi-geo-alt-fill text-primary me-2"></i>
+                                            {{ parcelle.localisation }}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        {% set badgeColors = {
+                                            'argileux': 'warning',
+                                            'sableux': 'info',
+                                            'limoneux': 'success'
+                                        } %}
+                                        <span class="badge rounded-pill bg-{{ badgeColors[parcelle.typeSol] ?? 'secondary' }}">
+                                            {{ parcelle.typeSol | capitalize }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex gap-2 justify-content-end">
+                                            <a href="{{ path('app_parcelle_show', {'id': parcelle.id}) }}" 
+                                               class="btn btn-info btn-sm"
+                                               data-bs-toggle="tooltip"
+                                               title="Voir les détails">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <a href="{{ path('app_parcelle_edit', {'id': parcelle.id}) }}" 
+                                               class="btn btn-warning btn-sm"
+                                               data-bs-toggle="tooltip"
+                                               title="Modifier">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <form action="{{ path('app_parcelle_delete', {'id': parcelle.id}) }}" 
+                                                  method="post" 
+                                                  class="d-inline"
+                                                  onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette parcelle ?');">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ parcelle.id) }}">
+                                                <button type="submit" 
+                                                        class="btn btn-danger btn-sm"
+                                                        data-bs-toggle="tooltip"
+                                                        title="Supprimer">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="6">
+                                        <div class="alert alert-info border-0 shadow-sm rounded-4 mt-3">
+                                            <i class="bi bi-info-circle me-2"></i>
+                                            Aucune parcelle trouvée. Essayez de modifier vos critères de recherche ou 
+                                            <a href="{{ path('app_parcelle_new') }}" class="alert-link">créez une nouvelle parcelle</a>.
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

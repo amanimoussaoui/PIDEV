@@ -4,16 +4,16 @@
 
 {% block content %}
     <div class="container mt-4">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="card-title mb-3">Create New Culture</h5>
+        <div class="glass-card shadow-sm border-0" style="max-width: 800px; margin: 0 auto;">
+            <div class="card-header py-3 px-4" style="background: linear-gradient(90deg, #1a9738, #1F4E3D); border-radius: 12px 12px 0 0;">
+                <h5 class="mb-0 text-white">Créer une Nouvelle Culture</h5>
             </div>
             <div class="card-body">
                 {{ include('culture/_form.html.twig') }}
             </div>
-            <div class="card-footer text-end">
-                <a href="{{ path('app_culture_index') }}" class="btn btn-secondary">
-                    <i class="bi bi-arrow-left"></i> Back to List
+            <div class="card-footer">
+                <a href="{{ path('app_culture_index') }}" class="btn btn-light">
+                    <i class="bi bi-arrow-left"></i> Retour à la Liste
                 </a>
             </div>
         </div>

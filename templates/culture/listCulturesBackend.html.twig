@@ -1,41 +1,132 @@
 {% extends 'BackEnd/back.html.twig' %}
 
-{% block title %}Culture Index{% endblock %}
+{% block title %}Cultures{% endblock %}
 
 {% block content %}
     <div class="container mt-4">
-        <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="card-title mb-0">Liste des Cultures</h5>
+        <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+            <div class="card-header d-flex justify-content-between align-items-center py-4" 
+                 style="background: linear-gradient(90deg, #1a9738, #1F4E3D);">
+                <h5 class="card-title mb-0 text-white fw-semibold">Liste des Cultures</h5>
             </div>
-            <div class="card-body">
-                <table class="table table-bordered table-striped table-hover ">                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Nom Culture</th>
-                            <th>Date Semis</th>
-                            <th>Durée</th>
-                            <th>Statut</th>
-                            <th>Parcelle</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for culture in cultures %}
-                        <tr>
-                            <td>{{ culture.id }}</td>
-                            <td>{{ culture.nomCulture }}</td>
-                            <td>{{ culture.dateSemis ? culture.dateSemis|date('Y-m-d') : '' }}</td>
-                            <td>{{ culture.duree }}</td>
-                            <td>{{ culture.statut | capitalize }}</td>
-                            <td>{{ culture.parcelle.nom }}</td> 
-                        </tr>                        
-                        {% else %}
+            
+            <div class="card-body p-4">
+                {# Search and Filter Form #}
+                {{ form_start(form, {'attr': {'class': 'mb-5'}, 'action': path('app_culture_back')}) }}
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-md-8">
+                            <div class="input-group input-group shadow-sm">
+                                {{ form_widget(form.statut, {
+                                    'attr': {
+                                        'class': 'form-select custom-select',
+                                        'style': 'max-width: 150px;'
+                                    }
+                                }) }}
+                                {{ form_widget(form.search, {
+                                    'attr': {
+                                        'class': 'form-control',
+                                        'placeholder': 'Rechercher par nom culture ou parcelle...'
+                                    }
+                                }) }}
+                                <button type="submit" class="btn btn-primary px-4">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                                <a href="{{ path('app_culture_back') }}" class="btn btn-light">
+                                    <i class="bi bi-arrow-counterclockwise"></i> 
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {{ form_end(form) }}
+
+                {# Table Section #}
+                <div class="table-responsive">
+                    <table class="table modern-table align-middle">
+                        <thead class="border-bottom">
                             <tr>
-                                <td colspan="6" class="text-center">Aucun enregistrement trouvé</td>
+                                <th class="text-muted fw-semibold">#</th>
+                                <th class="text-muted fw-semibold">Nom Culture</th>
+                                <th class="text-muted fw-semibold">
+                                    <a href="{{ path('app_culture_back', {
+                                        'sort': 'dateSemis',
+                                        'direction': (sort == 'dateSemis' and direction == 'ASC') ? 'DESC' : 'ASC'
+                                    })}}" class="text-decoration-none text-muted d-flex align-items-center gap-2">
+                                        Date Semis 
+                                        <i class="bi bi-sort-{{ sort == 'dateSemis' and direction == 'ASC' ? 'down' : 'up' }}"></i>
+                                    </a>
+                                </th>
+                                <th class="text-muted fw-semibold">
+                                    <a href="{{ path('app_culture_back', {
+                                        'sort': 'duree',
+                                        'direction': (sort == 'duree' and direction == 'ASC') ? 'DESC' : 'ASC'
+                                    })}}" class="text-decoration-none text-muted d-flex align-items-center gap-2">
+                                        Durée 
+                                        <i class="bi bi-sort-numeric-{{ sort == 'duree' and direction == 'ASC' ? 'down' : 'up' }}"></i>
+                                    </a>
+                                </th>
+                                <th class="text-muted fw-semibold">Statut</th>
+                                <th class="text-muted fw-semibold">Parcelle</th>
+                                <th class="text-muted fw-semibold">UtilisateurId</th>
+                                <th class="text-muted fw-semibold text-end">Actions</th>
                             </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {% for culture in cultures %}
+                                <tr class="row-hover">
+                                    <td>{{ culture.id }}</td>
+                                    <td class="fw-medium">{{ culture.nomCulture }}</td>
+                                    <td>{{ culture.dateSemis ? culture.dateSemis|date('Y-m-d') : '' }}</td>
+                                    <td>{{ culture.duree }} Jours</td>
+                                    <td>
+                                        {% set badgeColors = {
+                                            'en_culture': 'primary',
+                                            'recolte': 'info',
+                                            'termine': 'success'
+                                        } %}
+                                        <span class="badge rounded-pill bg-{{ badgeColors[culture.statut] ?? 'secondary' }}">
+                                            {{ culture.statut | capitalize }}
+                                        </span>
+                                    </td>
+                                    <td>{{ culture.parcelle.nom }}</td>
+                                    <td>{{ culture.parcelle.utilisateurId }}</td>
+                                    <td>
+                                        <div class="d-flex gap-2 justify-content-end">    
+                                            <a href="{{ path('app_culture_show_back', {'id': culture.id}) }}" 
+                                            class="btn btn-info btn-sm"
+                                            data-bs-toggle="tooltip"
+                                            title="Voir les détails">
+                                             <i class="bi bi-eye"></i>
+                                         </a>       
+                                            <form action="{{ path('app_culture_delete_back', {'id': culture.id}) }}" 
+                                                  method="post" 
+                                                  class="d-inline"
+                                                  onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette culture ?');">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ culture.id) }}">
+                                                <button type="submit" 
+                                                        class="btn btn-danger btn-sm"
+                                                        data-bs-toggle="tooltip"
+                                                        title="Supprimer">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="7">
+                                        <div class="alert alert-info border-0 shadow-sm rounded-4 mt-3">
+                                            <i class="bi bi-info-circle me-2"></i>
+                                            Aucune culture trouvée. Essayez de modifier vos critères de recherche.
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

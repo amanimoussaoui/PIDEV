@@ -1,35 +1,91 @@
 {% form_theme form 'bootstrap_5_layout.html.twig' %}
 
-{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+{{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'needs-validation'}}) }}
 
 <div class="container">
+    {# Display global form errors #}
+    {% if form.vars.errors|length > 0 %}
+        <div class="alert alert-danger">
+            {{ form_errors(form) }}
+        </div>
+    {% endif %}
+
     <div class="row">
+        {# Date de Récolte Field #}
         <div class="col-md-6 mb-3">
-            {{ form_label(form.dateRecolte) }}
-            {{ form_widget(form.dateRecolte, { 'attr': {'class': 'form-control'} }) }}
+            {{ form_label(form.dateRecolte, 'Date de Récolte', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.dateRecolte, { 
+                'attr': {
+                    'class': 'form-control',
+                    'type': 'date',
+                    'required': true,
+                }
+            }) }}
             {{ form_errors(form.dateRecolte) }}
+            <small class="form-text text-muted">Sélectionnez la date de récolte.</small>
         </div>
+
+        {# Quantité Field #}
         <div class="col-md-6 mb-3">
-            {{ form_label(form.quantite) }}
-            {{ form_widget(form.quantite, { 'attr': {'class': 'form-control'} }) }}
+            {{ form_label(form.quantite, 'Quantité (kg)', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.quantite, { 
+                'attr': {
+                    'class': 'form-control',
+                    'placeholder': 'ex: 100',
+                    'type': 'number',
+                    'min': '0',
+                    'required': true,
+                }
+            }) }}
             {{ form_errors(form.quantite) }}
+            <small class="form-text text-muted">Indiquez la quantité récoltée en kilogrammes.</small>
         </div>
+
+        {# Qualité Field #}
         <div class="col-md-6 mb-3">
-            {{ form_label(form.qualite) }}
-            {{ form_widget(form.qualite, { 'attr': {'class': 'form-control'} }) }}
+            {{ form_label(form.qualite, 'Qualité', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.qualite, { 
+                'attr': {
+                    'class': 'form-control',
+                    'required': true,
+                }
+            }) }}
             {{ form_errors(form.qualite) }}
+            <small class="form-text text-muted">Sélectionnez la qualité de la récolte.</small>
         </div>
+
+        {# Prix Unitaire Field #}
         <div class="col-md-6 mb-3">
-            {{ form_label(form.prixUnitaire) }}
-            {{ form_widget(form.prixUnitaire, { 'attr': {'class': 'form-control'} }) }}
+            {{ form_label(form.prixUnitaire, 'Prix Unitaire (TND)', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.prixUnitaire, { 
+                'attr': {
+                    'class': 'form-control',
+                    'placeholder': 'ex: 5.50',
+                    'type': 'number',
+                    'step': '0.01',
+                    'min': '0',
+                    'required': true,
+                }
+            }) }}
             {{ form_errors(form.prixUnitaire) }}
+            <small class="form-text text-muted">Indiquez le prix unitaire en TND.</small>
         </div>
+
+        {# Culture Field #}
         <div class="col-md-6 mb-3">
-            {{ form_label(form.culture) }}
-            {{ form_widget(form.culture, { 'attr': {'class': 'form-control'} }) }}
+            {{ form_label(form.culture, 'Culture', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.culture, { 
+                'attr': {
+                    'class': 'form-control',
+                    'required': true,
+                }
+            }) }}
             {{ form_errors(form.culture) }}
+            <small class="form-text text-muted">Sélectionnez la culture associée.</small>
         </div>
     </div>
+
+    {# Submit Button #}
     <div class="d-flex justify-content-end">
         <button type="submit" class="btn btn-primary">
             <i class="bi bi-save"></i> {{ button_label|default('Enregistrer') }}
@@ -38,3 +94,19 @@
 </div>
 
 {{ form_end(form) }}
+
+{% block javascripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Form validation
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(event) {
+        if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+    });
+});
+</script>
+{% endblock %}

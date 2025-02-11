@@ -1,4 +1,4 @@
-{% extends 'FrontEnd/front.html.twig' %}
+{% extends 'BackEnd/back.html.twig' %}
 
 {% block title %}Détails de la Récolte{% endblock %}
 
@@ -77,7 +77,7 @@
                                     {# First Half: Culture Title and Name (Vertically Centered) #}
                                     <div class="col-md-6 d-flex flex-column justify-content-center">
                                         <h6 class="text-muted">Culture</h6>
-                                        <a href="{{ path('app_culture_show', {'id': recolte.culture.id}) }}" class="fw-bold mb-0">{{ recolte.culture.nomCulture }}</a>
+                                        <a href="{{ path('app_culture_show_back', {'id': recolte.culture.id}) }}" class="fw-bold mb-0">{{ recolte.culture.nomCulture }}</a>
                                     </div>
 
                                     {# Second Half: Culture Details #}
@@ -102,7 +102,7 @@
                                     {# First Half: Parcelle Title and Name (Vertically Centered) #}
                                     <div class="col-md-6 d-flex flex-column justify-content-center">
                                         <h6 class="text-muted">Parcelle</h6>
-                                        <a href="{{ path('app_parcelle_show', {'id': recolte.culture.parcelle.id}) }}" class="fw-bold mb-0">{{ recolte.culture.parcelle.nom }}</a>
+                                        <a href="{{ path('app_parcelle_show_back', {'id': recolte.culture.parcelle.id}) }}" class="fw-bold mb-0">{{ recolte.culture.parcelle.nom }}</a>
                                     </div>
 
                                     {# Second Half: Parcelle Details #}
@@ -119,15 +119,23 @@
 
                 {# Action Buttons #}
                 <div class="d-flex justify-content-between mt-4">
-                    <a href="{{ path('app_recolte_index') }}" class="btn btn-light">
+                    <a href="{{ path('app_recolte_back') }}" class="btn btn-light">
                         <i class="bi bi-arrow-left"></i> Retour à la Liste
                     </a>
                     <div class="d-flex">
-                        <a href="{{ path('app_recolte_edit', {'id': recolte.id}) }}" class="btn btn-primary me-2">
-                            <i class="bi bi-pencil"></i> Modifier
-                        </a>
-                        {{ include('recolte/_delete_form.html.twig') }}
-                    </div>
+                        <form action="{{ path('app_recolte_delete_back', {'id': recolte.id}) }}" 
+                        method="post" 
+                        class="d-inline"
+                        onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette récolte ?');">
+                      <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ recolte.id) }}">
+                      <button type="submit" 
+                              class="btn btn-danger btn-sm"
+                              data-bs-toggle="tooltip"
+                              title="Supprimer">
+                          <i class="bi bi-trash"></i>Supprimer
+                      </button>
+                  </form>
+                                    </div>
                 </div>
             </div>
         </div>

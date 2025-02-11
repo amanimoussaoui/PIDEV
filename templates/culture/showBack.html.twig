@@ -15,7 +15,7 @@
                     <div class="col-md-6">
                         <div class="info-card mb-4">
                             <div class="detail-item">
-                                <i class="bi bi-tag-fill detail-icon"></i>
+                                <i class="bi bi-tag detail-icon"></i>
                                 <div class="detail-content">
                                     <h6 class="text-muted">Nom de la Culture</h6>
                                     <p class="fw-bold mb-0">{{ culture.nomCulture }}</p>
@@ -24,7 +24,7 @@
                         </div>
                         <div class="info-card mb-4">
                             <div class="detail-item">
-                                <i class="bi bi-calendar-date-fill detail-icon"></i>
+                                <i class="lni lni-mapbi bi-calendar-date detail-icon"></i>
                                 <div class="detail-content">
                                     <h6 class="text-muted">Date de Semis</h6>
                                     <p class="fw-bold mb-0">{{ culture.dateSemis ? culture.dateSemis|date('Y-m-d') : '' }}</p>
@@ -37,7 +37,7 @@
                     <div class="col-md-6">
                         <div class="info-card mb-4">
                             <div class="detail-item">
-                                <i class="bi bi-clock-fill detail-icon"></i>
+                                <i class="bi bi-clock-history detail-icon"></i>
                                 <div class="detail-content">
                                     <h6 class="text-muted">Durée</h6>
                                     <p class="fw-bold mb-0">{{ culture.duree }} Jours</p>
@@ -46,7 +46,7 @@
                         </div>
                         <div class="info-card mb-4">
                             <div class="detail-item">
-                                <i class="bi bi-clipboard2-check-fill detail-icon"></i>
+                                <i class="bi bi-clipboard2-check detail-icon"></i>
                                 <div class="detail-content">
                                     <h6 class="text-muted">Statut</h6>
                                     <p class="fw-bold mb-0">{{ culture.statut | capitalize }}</p>
@@ -95,7 +95,7 @@
                     <div class="col-md-12">
                         <div class="info-card mb-4">
                             <div class="detail-item">
-                                <i class="bi bi-geo-alt-fill detail-icon"></i>
+                                <i class="lni lni-map detail-icon"></i>
                                 <div class="detail-content row align-items-center">
                                     {# First Half: Parcelle Title and Name (Vertically Centered) #}
                                     <div class="col-md-6 d-flex flex-column justify-content-center">
@@ -106,8 +106,8 @@
                                     {# Second Half: Parcelle Details #}
                                     <div class="col-md-6 parcelle-details">
                                         <p class="text-muted mb-1"><i class="bi bi-rulers"></i> Superficie: {{ culture.parcelle.superficie | number_format(2, ',', ' ') }} m²</p>
-                                        <p class="text-muted mb-1"><i class="bi bi-geo"></i> Localisation: {{ culture.parcelle.localisation }}</p>
-                                        <p class="text-muted mb-0"><i class="bi bi-cloud-sun"></i> Type de Sol: {{ culture.parcelle.typeSol | capitalize }}</p>
+                                        <p class="text-muted mb-1"><i class="bi bi-pin-map"></i> Localisation: {{ culture.parcelle.localisation }}</p>
+                                        <p class="text-muted mb-0"><i class="bi bi-sunrise"></i> Type de Sol: {{ culture.parcelle.typeSol | capitalize }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -131,7 +131,7 @@
                                                         class="btn btn-danger btn-sm"
                                                         data-bs-toggle="tooltip"
                                                         title="Supprimer">
-                                                    <i class="bi bi-trash"></i>
+                                                    <i class="bi bi-trash"></i>Supprimer
                                                 </button>
                                             </form>                    </div>
                 </div>

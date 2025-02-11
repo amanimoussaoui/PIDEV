@@ -15,29 +15,29 @@ class RecolteRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Recolte::class);
     }
-
-    //    /**
-    //     * @return Recolte[] Returns an array of Recolte objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('r')
-    //            ->andWhere('r.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('r.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?Recolte
-    //    {
-    //        return $this->createQueryBuilder('r')
-    //            ->andWhere('r.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function findBySearchAndFilter(?string $searchTerm, ?string $qualiteFilter, string $sort, string $direction): array
+    {
+        $allowedSortFields = ['id', 'dateRecolte', 'quantite', 'qualite', 'culture.nomCulture', 'prixUnitaire']; // Added prixUnitaire
+        if (!in_array($sort, $allowedSortFields, true)) {
+            $sort = 'dateRecolte'; // Default sort
+        }
+    
+        $qb = $this->createQueryBuilder('r')
+            ->leftJoin('r.culture', 'c')
+            ->addSelect('c');
+    
+        if ($searchTerm) {
+            $qb->andWhere('c.nomCulture LIKE :searchTerm')
+               ->setParameter('searchTerm', '%' . $searchTerm . '%');
+        }
+    
+        if ($qualiteFilter) {
+            $qb->andWhere('r.qualite = :qualiteFilter')
+               ->setParameter('qualiteFilter', $qualiteFilter);
+        }
+    
+        $qb->orderBy('r.' . $sort, $direction);
+    
+        return $qb->getQuery()->getResult();
+    }
 }

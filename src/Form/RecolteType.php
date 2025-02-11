@@ -38,6 +38,7 @@ class RecolteType extends AbstractType
                     'Médiocre' => 'Médiocre',
                     'Mauvaise' => 'Mauvaise'
                 ],
+                'placeholder' => 'Sélectionnez la qualité',
                 'expanded' => false,
                 'multiple' => false,
                 'attr' => ['class' => 'form-control'],
@@ -53,6 +54,7 @@ class RecolteType extends AbstractType
                 'choice_label' => 'nomCulture',
                 'attr' => ['class' => 'form-control'],
                 'required' => true,
+                'placeholder' => 'Sélectionnez une culture',
             ])
         ;
     }

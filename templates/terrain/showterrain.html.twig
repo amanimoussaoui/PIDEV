@@ -1,0 +1,177 @@
+{% extends 'BackEnd/back.html.twig' %}
+
+{% block title %}AgriWise | Dashboard{% endblock %}
+{% block content %}
+
+<!-- Ajout de FontAwesome pour les icônes -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+<style>
+    body {
+        background-color: #f4f7fc;
+    }
+
+    .container {
+        max-width: 1200px;
+    }
+
+    h1 {
+        color: #B1D182;
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+        animation: fadeIn 1s ease-out;
+    }
+
+    table {
+        border-radius: 8px;
+        overflow: hidden;
+        animation: fadeIn 1.5s ease-out;
+    }
+
+    table th {
+        background-color: #B1D182;
+        color: white;
+        font-size: 1.1rem;
+    }
+
+    table td {
+        font-size: 1rem;
+    }
+
+    .btn {
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        padding: 8px 12px;
+        border-radius: 4px;
+        text-decoration: none;
+    }
+
+    .btn-primary {
+        background-color: #B1D182;
+        border-color: #B1D182;
+    }
+
+    .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
+
+    .btn:hover {
+        opacity: 0.9;
+        transform: scale(1.05);
+    }
+
+    .image-cell img {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+    }
+
+    .table-responsive {
+        margin-top: 20px;
+    }
+
+    /* Animation pour faire apparaître les éléments avec un effet de fondu */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    /* Animation de survol des lignes du tableau */
+    tr:hover {
+        background-color: #f1f1f1;
+        transform: translateY(-2px);
+        transition: transform 0.2s ease, background-color 0.3s ease;
+    }
+
+    /* Style pour les icônes d'actions */
+    .action-icons a {
+        color: #fff;
+        font-size: 1rem;
+        margin-right: 10px;
+        transition: transform 0.3s ease;
+        padding: 8px 12px;
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .action-icons a:hover {
+        transform: scale(1.2);
+    }
+
+    .edit-icon {
+        background-color: #28a745; /* Vert pour modifier */
+        border-color: #28a745;
+    }
+
+    .delete-icon {
+        background-color: #dc3545; /* Rouge pour supprimer */
+        border-color: #dc3545;
+    }
+
+    .edit-icon i, .delete-icon i {
+        margin-right: 2px;
+    }
+</style>
+
+<div class="container my-5">
+    <h1>Liste des Terrains</h1>
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>id</th>
+                    <th>Localisation</th>
+                    <th>Superficie</th>
+                    <th>Prix</th>
+                    <th>Description</th>
+                    <th>Image</th>
+                    <th>UserName</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for a in tab_terrain %}
+                <tr>
+                    <td>{{ a.id }}</td>
+                    <td>{{ a.localisation }}</td>
+                    <td>{{ a.superficie }} m²</td>
+                    <td>{{ a.prix }} TND</td>
+                    <td>{{ a.description }}</td>
+                    <td class="image-cell">
+                        {% if a.image %}
+                            <img src="{{ a.image }}" alt="Image du terrain">
+                        {% else %}
+                            Pas d'image disponible
+                        {% endif %}
+                    </td>
+                    <td>{{ a.username }}</td>
+                    <td class="action-icons">
+                        <a href="{{ path('app_updateformterrain', {'id': a.id}) }}" class="edit-icon" title="Modifier">
+                            <i class="fa-solid fa-pen-to-square"></i> <!-- Icône Modifier -->
+                            Modifier
+                        </a>
+                        <a href="{{ path('app_deleteformterrain', {'id': a.id}) }}" class="delete-icon" title="Supprimer"
+                           onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce terrain ?')">
+                            <i class="fa-solid fa-trash"></i> <!-- Icône Supprimer -->
+                            Supprimer
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+
+{% endblock %}

@@ -1,0 +1,114 @@
+{% extends 'FrontEnd/front.html.twig' %}
+
+{% block title %}Détails du Terrain{% endblock %}
+
+{% block content %}
+    <div class="container my-5">
+        <div class="card terrain-card">
+            <div class="row g-0">
+                <div class="col-md-6">
+                    {% if terrain.image %}
+                        <img src="{{ terrain.image }}" alt="Image du terrain" class="img-fluid terrain-image">
+                    {% else %}
+                        <p class="no-image">Pas d'image disponible</p>
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    <div class="card-body">
+                        <h2 class="card-title">{{ terrain.localisation }}</h2>
+                        <p class="card-text"><strong>Superficie :</strong> {{ terrain.superficie }} m²</p>
+                        <p class="card-text"><strong>Prix :</strong> <span class="prix">{{ terrain.prix }} TND</span></p>
+                        <p class="card-text"><strong>Description :</strong> {{ terrain.description }}</p>
+
+                        {# Affichage du message de confirmation (Flash Message) #}
+                        {% for label, messages in app.flashes %}
+                            {% for message in messages %}
+                                <div class="alert alert-{{ label }} mt-2">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        {% endfor %}
+
+                        <a href="{{ path('app_add_candidature', {'idTerrain': terrain.id, 'idUser': 1}) }}" class="btn btn-primary">
+                            Faire candidature
+                        </a>
+
+                        <a href="{{ path('list_terrains') }}" class="btn btn-secondary">Retour à la liste</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .terrain-card {
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .terrain-card:hover {
+            transform: scale(1.02);
+        }
+
+        .terrain-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 15px 0 0 15px;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .card-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #28a745;
+        }
+
+        .card-text {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .prix {
+            color: #28a745;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .btn-secondary {
+            margin-top: 5px; /* Ajout de marge au-dessus du bouton "Retour" */
+            background-color: #6c757d;
+            border: none;
+            transition: background 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+
+        .no-image {
+            font-size: 16px;
+            color: #dc3545;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .alert {
+            border-radius: 25px;
+            padding: 10px;
+            text-align: center;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+    </style>
+{% endblock %}

@@ -1,0 +1,142 @@
+{% extends 'FrontEnd/front.html.twig' %}
+
+{% block title %}AgriWise | Acceuil{% endblock %}
+
+
+
+
+{% block content %}
+
+
+    <section id="hero" class="hero section dark-background">
+
+      <div id="hero-carousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="5000">
+
+        <div class="carousel-item active">
+          <img src="https://smartfarm.com.tn/wp-content/uploads/2024/10/SMART-FARM-.jpg" alt="">
+          <div class="carousel-container">
+            <h2>Cultivez votre avenir, gérez votre terre.</h2>
+            <p>Une agriculture durable et intelligente pour un futur prospère.</p>
+          </div>
+        </div><!-- End Carousel Item -->
+
+        <div class="carousel-item">
+          <img src="assets/assetsFront/img/hero_5.jpg" alt="">
+          <div class="carousel-container">
+            <h2>Good Food For All</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+          </div>
+        </div><!-- End Carousel Item -->
+
+        <a class="carousel-control-prev" href="#hero-carousel" role="button" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon bi bi-chevron-left" aria-hidden="true"></span>
+        </a>
+
+        <a class="carousel-control-next" href="#hero-carousel" role="button" data-bs-slide="next">
+          <span class="carousel-control-next-icon bi bi-chevron-right" aria-hidden="true"></span>
+        </a>
+
+        <ol class="carousel-indicators"></ol>
+
+      </div>
+
+    </section><!-- /Hero Section -->
+
+    <!-- Mission, Vision, Engagement Section -->
+    <section id="mission-vision" class="mission-vision section">
+      <div class="container">
+        <div class="row text-center">
+
+          <div class="" data-aos="fade-up" data-aos-delay="100">
+            <h2 class="content-title mb-4">Cultivez votre avenir, gérez votre terre.</h2>
+            <p class="mb-4">
+              AgriWise est une plateforme innovante dédiée à la gestion agricole intelligente. Nous aidons les agriculteurs, qu'ils soient professionnels ou amateurs, à prendre le contrôle total de leurs terres, cultures et activités agricoles, tout en facilitant l'accès à des ressources et des outils qui optimisent leur rendement. 
+            </p>  <p class="mb-4">
+              Que vous soyez un agriculteur cherchant à gérer vos récoltes ou un client désireux d'apprendre ou participer à des enchères de terrains, AgriWise est conçu pour rendre l'agriculture plus accessible, plus durable et plus rentable.
+            </p>
+          </div>
+
+          <!-- Mission Card -->
+          <div class="col-lg-4 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="100">
+            <div class="card shadow p-4">
+              <div class="card-body">
+                <i class="fas fa-bullseye fa-3x text-primary mb-3"></i>
+                <h4 class="card-title">Notre Mission</h4>
+                <p class="card-text">Optimiser la gestion agricole grâce à des outils intelligents et durables.</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Vision Card -->
+          <div class="col-lg-4 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="200">
+            <div class="card shadow p-4">
+              <div class="card-body">
+                <i class="fas fa-eye fa-3x text-primary mb-3"></i>
+                <h4 class="card-title">Notre Vision</h4>
+                <p class="card-text">Révolutionner l’agriculture en alliant technologie et écologie.</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Engagement Card -->
+          <div class="col-lg-4 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="300">
+            <div class="card shadow p-4">
+              <div class="card-body">
+                <i class="fas fa-handshake fa-3x text-primary mb-3"></i>
+                <h4 class="card-title">Notre Engagement</h4>
+                <p class="card-text">Accompagner les agriculteurs vers une production plus efficiente et respectueuse de l’environnement.</p>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </section>
+    <!-- /Mission, Vision, Engagement Section -->
+
+    <!-- About Section -->
+    <section id="about" class="about section">
+
+      <div class="content">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+              <img src="assets/assetsFront/img/img_long_5.jpg" alt="Image " class="img-fluid img-overlap" data-aos="zoom-out">
+            </div>
+            <div class="col-lg-5 ml-auto" data-aos="fade-up" data-aos-delay="100">
+              <h3 class="content-subtitle text-white opacity-50">Pourquoi choisir AgriWise ?</h3>
+              <h2 class="content-title mb-4">
+                Les raisons de choisir AgriWise pour une gestion agricole innovante et durable
+              </h2>
+            
+
+              <div class="row my-5">
+                <div class="col-lg-12 d-flex align-items-start mb-4">
+                  <i class="fas fa-tasks"></i>                  <div>
+                    <h4 class="m-0 h5 text-white">Gestion Simplifiée et Efficace</h4>
+                    <p class="text-white opacity-50">Optimisez vos processus agricoles et gagnez du temps précieux.</p>
+                  </div>
+                </div>
+                <div class="col-lg-12 d-flex align-items-start mb-4">
+                  <i class="fas fa-seedling"></i>
+                  <div>
+                    <h4 class="m-0 h5 text-white">Solutions Durables pour un Avenir Responsable</h4>
+                    <p class="text-white opacity-50">Nous croyons en une agriculture respectueuse de l’environnement.</p>
+                  </div>
+                </div>
+                <div class="col-lg-12 d-flex align-items-start">
+                  <i class="fas fa-desktop"></i>                <div>
+                    <h4 class="m-0 h5 text-white">Plateforme Accessible et Intuitive</h4>
+                    <p class="text-white opacity-50">Que vous soyez un agriculteur expérimenté ou un simple client, notre interface est conçue pour être simple et intuitive, offrant une expérience fluide à tous les utilisateurs, peu importe leur niveau.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section><!-- /About Section -->
+
+
+
+{% endblock %}

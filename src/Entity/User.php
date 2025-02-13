@@ -25,9 +25,16 @@ class User
     #[ORM\OneToMany(targetEntity: Product::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $products;
 
+    /**
+     * @var Collection<int, Commande>
+     */
+    #[ORM\OneToMany(targetEntity: Commande::class, mappedBy: 'user_id',orphanRemoval: true)]
+    private Collection $commandes;
+
     public function __construct()
     {
         $this->products = new ArrayCollection();
+        $this->commandes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -72,4 +79,35 @@ class User
         }
         return $this;
     }
+
+    /**
+     * @return Collection<int, Commande>
+     */
+    public function getCommandes(): Collection
+    {
+        return $this->commandes;
+    }
+
+    public function addCommande(Commande $commande): static
+{
+    if (!$this->commandes->contains($commande)) {
+        $this->commandes->add($commande);
+        $commande->setUser($this);  // Modification ici : 'setUser' au lieu de 'setUserId'
+    }
+
+    return $this;
+}
+
+public function removeCommande(Commande $commande): static
+{
+    if ($this->commandes->removeElement($commande)) {
+        // set the owning side to null (unless already changed)
+        if ($commande->getUser() === $this) {  // Modification ici : 'getUser' au lieu de 'getUserId'
+            $commande->setUser(null);  // Modification ici : 'setUser' au lieu de 'setUserId'
+        }
+    }
+
+    return $this;
+}
+
 }

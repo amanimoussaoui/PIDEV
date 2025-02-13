@@ -98,6 +98,21 @@ public function showProductsFront(EntityManagerInterface $entityManager): Respon
         'products' => $products,  // On passe les produits à la vue
     ]);
 }
+#[Route('/search', name: 'product_search', methods: ['GET'])]
+public function search(Request $request, ProductRepository $productRepository): Response
+{
+    $category = $request->query->get('category'); // Récupérer la catégorie depuis l'URL
+
+    if ($category) {
+        $products = $productRepository->findBy(['category' => $category]); // Recherche des produits
+    } else {
+        $products = $productRepository->findAll(); // Si aucune catégorie spécifiée, afficher tous les produits
+    }
+
+   return $this->render('product/showProductsFront.html.twig', [
+    'products' => $products,
+]);
+}
 
 
 

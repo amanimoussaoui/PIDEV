@@ -1,0 +1,297 @@
+{% extends 'FrontEnd/front.html.twig' %}
+
+{% block title %} Mon Panier {% endblock %}
+
+{% block content %}
+<style>
+/* 🌟 Style général */
+body {
+    background-color: #2d3e2f; /* Changement pour un vert plus foncé */
+    color: white;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* 🔹 Conteneur principal */
+.container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+}
+
+/* 🔹 Flèche pour ajouter d'autres produits */
+.add-more {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.add-more a {
+    font-size: 18px;
+    color: white;
+    text-decoration: none;
+    background: #4Cae4c; /* Couleur verte */
+    padding: 12px 20px;
+    border-radius: 12px;
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+.add-more a:hover {
+    transform: scale(1.05);
+}
+
+/* 🔹 Titre principal */
+.title {
+    text-align: center;
+    font-size: 40px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    background: #4Cae4c; /* Couleur verte */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 30px;
+}
+
+/* 🔹 Conteneur du panier */
+.panier-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+    margin-top: 20px;
+}
+
+/* 🔹 Partie gauche - Commandes */
+.panier-left {
+    flex: 2;
+    background: #ffffff; /* Blanc pour la section de gauche */
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.panier-left:hover {
+    transform: scale(1.02);
+}
+
+/* 🔹 Produits */
+.panier-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    border-bottom: 2px solid #e1e1e1;
+    background-color: #fafafa;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.panier-item:hover {
+    background-color: #f1f1f1;
+}
+
+.product-image {
+    width: 80px;
+    height: 80px;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+.product-info {
+    flex: 1;
+}
+
+.price {
+    font-weight: bold;
+    color: #333333; /* Gris foncé pour le prix */
+    font-size: 20px;
+}
+
+.quantity-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-minus, .btn-plus, .btn-update {
+    cursor: pointer;
+    padding: 8px 12px;
+    border: none;
+    background: #f4f4f4;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: background-color 0.2s;
+}
+
+.btn-minus:hover, .btn-plus:hover, .btn-update:hover {
+    background: #e07b00;
+}
+
+.btn-delete {
+    background: transparent;
+    border: none;
+    color: #e74c3c;
+    cursor: pointer;
+    font-size: 22px;
+    transition: transform 0.3s ease;
+}
+
+.btn-delete:hover {
+    transform: scale(1.1);
+}
+
+/* 🔹 Bloc MON PANIER à côté des commandes */
+.panier-right {
+    flex: 1;
+    text-align: center;
+    background: #f4f4f4; /* Blanc foncé pour le fond */
+    color: #333333; /* Gris foncé pour le texte */
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+}
+
+.panier-right:hover {
+    transform: scale(1.02);
+}
+
+.panier-right h3 {
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #4Cae4c; /* Couleur verte pour le titre */
+}
+
+.panier-right p {
+    font-size: 20px;
+    margin-bottom: 15px;
+}
+
+#total-general {
+    font-size: 26px;
+    font-weight: bold;
+    color: #ff9900;
+}
+
+.btn-command, .btn-clear {
+    width: 100%;
+    background: #4Cae4c; /* Couleur verte */
+    color: white;
+    border: none;
+    padding: 14px 20px;
+    font-size: 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.3s, background 0.3s;
+    margin-top: 20px;
+}
+
+.btn-command:hover, .btn-clear:hover {
+    background: #3c9c40; /* Couleur plus foncée de vert */
+    transform: scale(1.05);
+}
+
+/* 🔹 Footer Links */
+.footer-links {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 40px;
+}
+</style>
+
+<h2 class="title">Votre Panier</h2>
+
+<div class="panier-container">
+    <!-- 🔹 Section des produits -->
+    <div class="panier-left">
+        {% if paniers is not empty %}
+            {% for panier in paniers %}
+                <div class="panier-item">
+                    <img src="{{ panier.product.image }}" alt="{{ panier.product.nom }}" class="product-image">
+                    <div class="product-info">
+                        <h3>{{ panier.product.nom }}</h3>
+                        <p class="description" style="color: #333333;">{{ panier.product.description }}</p> <!-- Changement pour gris foncé -->
+                        <p class="price">{{ panier.product.prix }} TND</p> <!-- Changement pour gris foncé -->
+                        <div class="quantity-controls">
+                            <form action="{{ path('panier_modifier', {'id': panier.id}) }}" method="post" class="quantity-form">
+                                <button type="button" class="btn-minus">➖</button>
+                                <input type="number" name="quantite" value="{{ panier.quantite }}" min="1" class="quantity-input">
+                                <button type="button" class="btn-plus">➕</button>
+                                <button type="submit" class="btn-update">✔️</button>
+                            </form>
+                        </div>
+                        <p class="total" style="color: #333333;">Total : <span class="total-price">{{ panier.totale }} TND</span></p> <!-- Changement pour gris foncé -->
+                    </div>
+                    <form action="{{ path('panier_supprimer', {'id': panier.id}) }}" method="post">
+                        <button type="submit" class="btn-delete">🗑️</button>
+                    </form>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="empty-message">Votre panier est vide.</p>
+        {% endif %}
+    </div>
+
+    <!-- 🔹 MON PANIER placé à côté -->
+    <div class="panier-right">
+        <h3>MON PANIER</h3>
+        <p>{{ paniers|length }} article(s)</p>
+        <p>Total : <span id="total-general">0 TND</span></p>
+        <button class="btn-command">COMMANDER</button>
+        <form action="{{ path('panier_vider') }}" method="post">
+            <button type="submit" class="btn-clear">🗑 Vider le panier</button>
+        </form>
+    </div>
+</div>
+
+<div class="container">
+    <!-- 🔹 Flèche pour revenir aux achats -->
+    <div class="add-more">
+        <a href="{{ path('product_front_list') }}">⬅ Ajouter un autre produit</a>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    let totalGeneral = 0;
+
+    document.querySelectorAll('.quantity-form').forEach(form => {
+        let input = form.querySelector('.quantity-input');
+        let minusBtn = form.querySelector('.btn-minus');
+        let plusBtn = form.querySelector('.btn-plus');
+        let totalCell = form.closest('.panier-item').querySelector('.total-price');
+        let unitPrice = parseFloat(form.closest('.panier-item').querySelector('.price').textContent.replace(' TND', ''));
+
+        function updateTotal() {
+            let total = parseInt(input.value) * unitPrice;
+            totalCell.textContent = total.toFixed(3) + ' TND';
+            updateTotalGeneral();
+        }
+
+        function updateTotalGeneral() {
+            totalGeneral = 0;
+            document.querySelectorAll('.total-price').forEach(priceCell => {
+                totalGeneral += parseFloat(priceCell.textContent.replace(' TND', ''));
+            });
+            document.getElementById('total-general').textContent = totalGeneral.toFixed(3) + ' TND';
+        }
+
+        minusBtn.addEventListener('click', () => {
+            if (input.value > 1) {
+                input.value = parseInt(input.value) - 1;
+                updateTotal();
+            }
+        });
+
+        plusBtn.addEventListener('click', () => {
+            input.value = parseInt(input.value) + 1;
+            updateTotal();
+        });
+
+        updateTotalGeneral();
+    });
+});
+</script>
+
+{% endblock %}

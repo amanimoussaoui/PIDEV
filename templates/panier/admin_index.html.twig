@@ -1,0 +1,205 @@
+{% extends 'BackEnd/back.html.twig' %}
+
+{% block title %}Gestion des Paniers{% endblock %}
+
+{% block content %}
+<style>
+/* 🌟 Conteneur principal */
+.container {
+    max-width: 1000px;
+    margin: 30px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* 🎨 Titres */
+h1, h2 {
+    text-align: center;
+    color: #4Cae4c;
+    font-weight: 700;
+    font-size: 30px;
+    margin-bottom: 20px;
+}
+
+/* 🏆 Tableaux */
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+    background: white;
+}
+
+.table th, .table td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+.table thead {
+    background: #4Cae4c;
+    color: white;
+    font-weight: bold;
+}
+
+.table tbody tr:hover {
+    background: #f8f9fa;
+    transition: 0.3s;
+}
+
+/* 📸 Images des produits */
+.table img {
+    width: 70px;
+    height: 70px;
+    object-fit: cover;
+    border-radius: 8px;
+    transition: transform 0.3s;
+}
+
+.table img:hover {
+    transform: scale(1.1);
+}
+
+/* 🎯 Boutons d'action */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: 0.3s;
+    font-size: 14px;
+    text-decoration: none;
+}
+
+/* ❌ Bouton Delete */
+.btn-danger {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: 0.3s;
+    font-size: 16px;
+}
+
+.btn-danger:hover {
+    background: #c82333;
+}
+
+.btn-danger i {
+    font-size: 18px;
+}
+
+/* 🏷️ Icône corbeille */
+.fa-trash {
+    margin-right: 5px;
+}
+
+/* 🖥️ Responsive */
+@media (max-width: 768px) {
+    .table thead {
+        display: none;
+    }
+
+    .table, .table tbody, .table tr, .table td {
+        display: block;
+        width: 100%;
+    }
+
+    .table tr {
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        padding: 10px;
+        background: white;
+    }
+
+    .table td {
+        text-align: left;
+        padding-left: 50%;
+        position: relative;
+    }
+
+    .table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        font-weight: bold;
+        text-transform: uppercase;
+        color: #4Cae4c;
+    }
+}
+</style>
+
+<div class="container">
+    <h1>Liste des Paniers</h1>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">{{ message }}</div>
+    {% endfor %}
+
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger">{{ message }}</div>
+    {% endfor %}
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>Produit</th>
+                <th>Quantité</th>
+                <th>Prix Total</th>
+                <th>Commande</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for panier in paniers %}
+            <tr>
+                <td>
+                    {% if panier.product is not null and panier.product.image is not null %}
+                    <img src="{{ panier.product.image }}" alt="Image du produit" class="card-img-top">
+                    {% else %}
+                        <span>Aucune image</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if panier.product is not null %}
+                        {{ panier.product.nom }}
+                    {% else %}
+                        Produit non trouvé
+                    {% endif %}
+                </td>
+                <td>{{ panier.quantite }}</td>
+                <td>{{ panier.totale }} DT</td>
+              <td>
+    {% if panier.commande is not null %}
+        {{ panier.commande.getId() }}
+    {% else %}
+        Commande non trouvée
+    {% endif %}
+</td>
+
+
+                <td>
+                    <form method="post" action="{{ path('panier_admin_supprimer', {'id': panier.id}) }}">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

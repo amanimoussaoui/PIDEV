@@ -4,6 +4,7 @@
 
 {% block content %}
     <style>
+        /* 🎨 Style des cartes */
         .cards-container {
             display: flex;
             flex-wrap: wrap;
@@ -72,39 +73,117 @@
             background-color: #218838;
         }
 
-       /* 🎨 Amélioration du titre */
-/* 🎨 Style du titre */
-h1 {
-    text-align: center;
-    margin-top: 50px;
-    margin-bottom: 30px; /* Ajout d'un espace en bas du titre */
-    font-size: 3rem; /* Augmentation de la taille du texte */
-    font-weight: bold;
-    color: #218838; /* Couleur verte */
-    text-transform: uppercase; /* Met le texte en majuscules */
-    letter-spacing: 2px; /* Espacement des lettres */
-    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1); /* Ombre légère */
-    padding: 15px 30px; /* Ajout d'un espacement intérieur */
-    border-radius: 12px; /* Bords arrondis pour un effet doux */
-    background-color: #eaf4e4; /* Fond léger pour le titre */
-}
+        /* 🎨 Amélioration du titre */
+        h1 {
+            text-align: center;
+            margin-top: 50px;
+            margin-bottom: 30px;
+            font-size: 3rem;
+            font-weight: bold;
+            color: #218838;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 15px 30px;
+            border-radius: 12px;
+            background-color: #eaf4e4;
+        }
 
-/* 🎨 Ajout d'un effet de survol pour le titre */
-h1:hover {
-    color: #1a682c; /* Changement de couleur au survol */
-    transform: scale(1.05); /* Légère augmentation de la taille */
-    transition: 0.3s ease; /* Effet de transition fluide */
-    border: 3px solid #218838; /* Bordure verte au survol */
-    padding: 12px 28px; /* Réduction de l'espacement intérieur pour un effet plus dynamique */
-    background-color: #ffffff; /* Changement du fond lors du survol */
-    text-shadow: 3px 3px 12px rgba(0, 0, 0, 0.2); /* Ombre plus marquée */
-}
+        h1:hover {
+            color: #1a682c;
+            transform: scale(1.05);
+            transition: 0.3s ease;
+            border: 3px solid #218838;
+            padding: 12px 28px;
+            background-color: #ffffff;
+            text-shadow: 3px 3px 12px rgba(0, 0, 0, 0.2);
+        }
 
+        /* 🎨 Nouveau design du formulaire de recherche */
+        .search-form {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 30px;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #eaf4e4;
+            padding: 8px 20px;
+            border-radius: 50px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
 
+        .search-form input {
+            flex-grow: 1;
+            padding: 12px 20px;
+            border: 2px solid #ddd;
+            border-radius: 50px;
+            font-size: 16px;
+            outline: none;
+            background-color: #f8f8f8;
+            transition: border-color 0.3s ease, background-color 0.3s ease;
+        }
+
+        .search-form input:focus {
+            border-color: #218838;
+            background-color: #ffffff;
+        }
+
+        .search-form select {
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 50px;
+            background-color: #f8f8f8;
+            font-size: 16px;
+            margin-right: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .search-form select:focus {
+            border-color: #218838;
+            background-color: #ffffff;
+        }
+
+        .search-form button {
+            background-color: #218838;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .search-form button:hover {
+            background-color: #1a682c;
+            transform: scale(1.1);
+        }
+
+        .search-form button i {
+            font-size: 20px;
+        }
     </style>
 
-   
-			 <h1>Nos Produits</h1>
+    <h1>Nos Produits</h1>
+
+    <!-- Formulaire de recherche -->
+    <form method="GET" action="{{ path('product_search') }}" class="search-form">
+        <select name="category">
+            <option value="">Toutes les catégories</option>
+            <option value="fruits">Fruits</option>
+            <option value="Légumes">Légumes</option>
+            <option value="Graines">Graines</option>
+            <option value="Épices">Épices</option>
+        </select>
+        
+<button type="submit" class="btn-primary">
+            <i class="fas fa-search"></i> <!-- Icône de loupe -->
+        </button>
+    </form>
 
     <div class="cards-container">
         {% if products is not empty %}
@@ -117,7 +196,7 @@ h1:hover {
                         <p class="card-description"><strong>Description:</strong> {{ product.description }}</p>
                         <p class="card-category"><strong>Catégorie:</strong> {{ product.category }}</p>
                         <p class="card-stock"><strong>Stock:</strong> {{ product.stock }}</p>
-                        <a href="#" class="btn btn-primary">Commander </a>
+                        <a href="{{ path('panier_ajouter', {'id': product.id}) }}" class="btn btn-success">🛒Commander</a>
                     </div>
                 </div>
             {% endfor %}
@@ -125,6 +204,4 @@ h1:hover {
             <p>Aucun produit trouvé.</p>
         {% endif %}
     </div>
-			{% endblock %}
-				
-
+{% endblock %}

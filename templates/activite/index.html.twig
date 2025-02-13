@@ -1,54 +1,312 @@
 {% extends 'FrontEnd/front.html.twig' %}
 
-{% block title %}Activite Index{% endblock %}
+{% block title %}
+	Activité Index
+{% endblock %}
 
 {% block content %}
-    <div class="container mt-4">
-        <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="card-title mb-0">Liste des Activités</h5>
-                <a href="{{ path('app_activite_new') }}" class="btn btn-primary btn-sm">
-                    <i class="bi bi-plus-circle"></i> Create New Activite
-                </a>
-            </div>
-            <div class="card-body">
-                <table class="table table-bordered table-striped table-hover ">                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Description</th>
-                            <th>Type</th>
-                            <th>Date</th>
-                            <th>Culture</th>
-                            <th>Parcelle</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for activite in activites %}
-                        <tr>
-                            <td>{{ activite.id }}</td>
-                            <td>{{ activite.description }}</td>
-                            <td>{{ activite.type }}</td>
-                            <td>{{ activite.date ? activite.date|date('Y-m-d') : '' }}</td>
-                            <td>{{ activite.culture.nomCulture }}</td> <!-- Display culture name -->
-                            <td>{{ activite.parcelle.nom }}</td> <!-- Display parcelle name -->
-                            <td>
-                                <a href="{{ path('app_activite_show', {'id': activite.id}) }}" class="btn btn-info btn-sm" role="button">
-                                    <i class="bi bi-eye"></i> Show
-                                </a>
-                                <a href="{{ path('app_activite_edit', {'id': activite.id}) }}" class="btn btn-warning btn-sm" role="button">
-                                    <i class="bi bi-pencil"></i> Edit
-                                </a>
-                            </td>
-                        </tr>
-                        {% else %}
-                            <tr>
-                                <td colspan="7" class="text-center">Aucun enregistrement trouvé</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+	<div class="container mt-4">
+		<div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+			<div class="card-header d-flex justify-content-between align-items-center py-4" style="background: linear-gradient(90deg, #1a9738, #1F4E3D);">
+				<h5 class="card-title mb-0 text-white fw-semibold">Liste des activitées</h5>
+				<a href="{{ path('app_activite_new') }}" class="btn btn-light btn-sm rounded-pill px-3 shadow-sm">
+					<i class="bi bi-plus-circle me-1"></i>
+					Ajouter une activité</a>
+			</div>
+
+			<div
+				class="card-body p-4">
+				<!-- Toggle buttons -->
+				<button id="showTable" class="btn btn-primary mb-3">Vue du tableau</button>
+				<button id="showCalendar" class="btn btn-primary mb-3">Vue du calendrier</button>
+				<!-- Calendar View -->
+				<div id="calendar" class="calendar-container"></div>
+
+
+				{{ form_start(form, {'attr': {'class': 'mb-5'}, 'action': path('app_activite_index')}) }}
+				<div class="container">
+					<div class="row justify-content-center">
+						<div class="col-md-8">
+							<div class="input-group input-group shadow-sm">
+								{{ form_widget(form.type, {
+                        'attr': {
+                            'class': 'form-select custom-select',
+                            'style': 'max-width: 150px;'
+                        }
+                    }) }}
+								{{ form_widget(form.search, {
+                        'attr': {
+                            'class': 'form-control',
+                            'placeholder': 'Rechercher par nom de culture...'
+                        }
+                    }) }}
+								<button type="submit" class="btn btn-primary px-4">
+									<i class="bi bi-search"></i>
+								</button>
+								<a href="{{ path('app_activite_index') }}" class="btn btn-light">
+									<i class="bi bi-arrow-counterclockwise"></i>
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+				{{ form_end(form) }}
+
+
+				<!-- Table View -->
+				<div class="table-responsive">
+					<table
+						id="activitiesTable" class="table modern-table align-middle w-100">
+						<!-- Added w-100 class -->
+						<thead class="border-bottom">
+							<tr>
+								<th class="text-muted fw-semibold">
+									<a href="{{ path('app_activite_index', { 'sort': 'date', 'direction': (sort == 'date' and direction == 'ASC') ? 'DESC' : 'ASC' })}}" class="text-decoration-none text-muted d-flex align-items-center gap-2">
+										Date
+										<i class="bi bi-sort-{{ sort == 'date' and direction == 'ASC' ? 'down' : 'up' }}"></i>
+									</a>
+
+								</th>
+								<th class="text-muted fw-semibold">Type d'activité</th>
+								<th class="text-muted fw-semibold">Description</th>
+								<th class="text-muted fw-semibold">Culture</th>
+								<th class="text-muted fw-semibold">Parcelle</th>
+								<th class="text-muted fw-semibold text-end">Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for activite in activites %}
+								<tr class="row-hover">
+									<td>{{ activite.date|date('d/m/Y') }}</td>
+									<td>
+										{% set activityColors = { 
+                                            'Semis': 'success', 
+                                            'Plantation': 'primary', 
+                                            'Arrosage': 'info', 
+                                            'Fertilisation': 'warning', 
+                                            'Traitement phytosanitaire': 'secondary',
+                                            'Récolte': 'danger',
+                                            'Élagage / Taille': 'dark',
+                                            'Greffage': 'light text-dark'
+                                        } %}
+										<span class="badge rounded-pill bg-{{ activityColors[activite.type] ?? 'secondary' }}">{{ activite.type }}</span>
+									</td>
+									<td>{{ activite.description }}</td>
+									<td>
+										{{ activite.culture.nomCulture }}
+									</td>
+									<td>
+										{{ activite.culture.parcelle.nom }}
+									</td>
+									<td class="text-end">
+										<div class="d-flex gap-2 justify-content-end">
+											<a href="{{ path('app_activite_show', {'id': activite.id}) }}" class="btn btn-info btn-sm" data-bs-toggle="tooltip" title="Voir les détails">
+												<i class="bi bi-eye"></i>
+											</a>
+
+											<a href="{{ path('app_activite_edit', { id: activite.id }) }}" class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Modifier">
+												<i class="bi bi-pencil"></i>
+											</a>
+											<form action="{{ path('app_activite_delete', { id: activite.id }) }}" method="post" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette culture ?');">
+												<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ activite.id) }}"/>
+												<button type="submit" class="btn btn-danger btn-sm" data-bs-toggle="tooltip" title="Supprimer">
+													<i class="bi bi-trash"></i>
+												</button>
+                                            </form>
+											</div>
+										</td>
+									</td>
+								</tr>
+						      {% else %}
+                                <tr>
+                                    <td colspan="7">
+                                        <div class="alert alert-info border-0 shadow-sm rounded-4 mt-3">
+                                            <i class="bi bi-info-circle me-2"></i>
+                                            Aucune activité trouvée. Essayez de modifier vos critères de recherche ou 
+                                            <a href="{{ path('app_activite_new') }}" class="alert-link">créez une nouvelle activité</a>.
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+						</tbody>
+					</table>
+				</div>
+
+				<script>
+					document.addEventListener("DOMContentLoaded", function () {
+document.getElementById('activitiesTable').style.display = 'table'; // Show table initially
+document.getElementById('calendar').style.display = 'none'; // Hide calendar initially
+document.querySelector('.table-responsive').classList.remove('d-none'); // Ensure table wrapper is visible
+});
+
+document.getElementById('showTable').addEventListener('click', function () {
+document.getElementById('activitiesTable').style.display = 'table'; // Show table
+document.getElementById('calendar').style.display = 'none'; // Hide calendar
+document.querySelector('.table-responsive').classList.remove('d-none'); // Show table wrapper
+});
+
+document.getElementById('showCalendar').addEventListener('click', function () {
+document.getElementById('activitiesTable').style.display = 'none'; // Hide table
+document.getElementById('calendar').style.display = 'block'; // Show calendar
+document.querySelector('.table-responsive').classList.add('d-none'); // Hide table wrapper
+});
+				</script>
+			</div>
+		</div>
+	</div>
+
+	{% block stylesheets %}
+		{{ parent() }}
+		<link href="https://cdn.jsdelivr.net/npm/fullcalendar@3.2.0/dist/fullcalendar.min.css" rel="stylesheet"/>
+	{% endblock %}
+
+	{% block javascripts %}
+		{{ parent() }}
+
+		<!-- Load jQuery first -->
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+		<!-- Load Moment.js -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+
+		<!-- Load FullCalendar (version 3.10.2 is the latest of v3) -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+		<script>
+			$(document).ready(function () { // Initialize FullCalendar
+var calendar = $('#calendar').fullCalendar({
+themeSystem: 'bootstrap4',
+header: {
+left: 'prev,next today',
+center: 'title',
+right: '' // Remove default buttons
+},
+defaultView: 'month', // Only show the month view
+buttonText: {
+today: 'Aujourd\'hui',
+prev: '<', // Custom arrow for previous
+next: '>' // Custom arrow for next
+},
+monthNames: [
+'Janvier',
+'Février',
+'Mars',
+'Avril',
+'Mai',
+'Juin',
+'Juillet',
+'Août',
+'Septembre',
+'Octobre',
+'Novembre',
+'Décembre'
+],
+monthNamesShort: [
+'Jan',
+'Fév',
+'Mar',
+'Avr',
+'Mai',
+'Juin',
+'Juil',
+'Aoû',
+'Sep',
+'Oct',
+'Nov',
+'Déc'
+],
+dayNames: [
+'Dimanche',
+'Lundi',
+'Mardi',
+'Mercredi',
+'Jeudi',
+'Vendredi',
+'Samedi'
+],
+dayNamesShort: [
+'Dim',
+'Lun',
+'Mar',
+'Mer',
+'Jeu',
+'Ven',
+'Sam'
+],
+events: [{% for activite in activites %}{
+title: "{{ activite.type }}",
+start: "{{ activite.date|date('Y-m-d') }}",
+description: "{{ activite.description }}",
+extendedProps: {
+parcelle: "{{ activite.culture ? activite.culture.parcelle.nom : '' }}",
+culture: "{{ activite.culture ? activite.culture.nomCulture : '' }}"
+},
+className: "{{ activite.type }}"
+}
+{% if not loop.last %},{% endif %}{% endfor %}],
+eventClick: function (event) {
+Swal.fire({
+title: event.title,
+html: "<b>Date:</b> " + moment(event.start).format('DD/MM/YYYY') + // Format the date
+"<br><b>Type d'activité:</b> " + event.title + // Use the event title as the activity type
+"<br><b>Description:</b> " + event.description + "<br><b>Parcelle:</b> " + (
+event.extendedProps.parcelle || "Non spécifiée"
+) + "<br><b>Culture:</b> " + (
+event.extendedProps.culture || "Non spécifiée"
+),
+icon: 'success',
+confirmButtonText: 'Fermer'
+});
+},
+dayRender: function (date, cell) {
+cell.css("cursor", "pointer");
+cell.hover(function () {
+$(this).css("background-color", "#f0f0f0");
+}, function () {
+$(this).css("background-color", "");
+});
+},
+viewRender: function (view) { // Add year selection dropdown to the header
+if (!$('#yearDropdown').length) {
+var yearDropdown = `
+                    <div class="year-dropdown">
+                        <select id="yearDropdown" class="form-select">
+                            {% for year in range("now"|date("Y") - 5, "now"|date("Y") + 5) %}
+                                <option value="{{ year }}" {% if year == "now"|date("Y") %}selected{% endif %}>{{ year }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                `;
+$('.fc-right').append(yearDropdown); // Add dropdown to the right corner
+}
+
+// Update the dropdown value to match the current view
+var currentYear = view.intervalStart.year();
+$('#yearDropdown').val(currentYear);
+}
+});
+
+// Handle year selection change
+$(document).on('change', '#yearDropdown', function () {
+var selectedYear = $(this).val();
+var currentDate = calendar.fullCalendar('getDate');
+var newDate = moment(currentDate).year(selectedYear); // Set the selected year
+calendar.fullCalendar('gotoDate', newDate); // Navigate to the new date
+});
+
+// Show/hide year dropdown based on active tab
+document.getElementById('showTable').addEventListener('click', function () {
+document.getElementById('calendar').style.display = 'none';
+$('.year-dropdown').hide(); // Hide year dropdown
+});
+
+document.getElementById('showCalendar').addEventListener('click', function () {
+document.getElementById('calendar').style.display = 'block';
+$('.year-dropdown').show(); // Show year dropdown
+});
+});
+		</script>
+	{% endblock %}
 {% endblock %}

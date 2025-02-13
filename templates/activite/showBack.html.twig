@@ -1,4 +1,4 @@
-{% extends 'FrontEnd/front.html.twig' %}
+{% extends 'BackEnd/back.html.twig' %}
 
 {% block title %}Activité{% endblock %}
 
@@ -65,7 +65,7 @@
                                     {# First Half: Culture Title and Name (Vertically Centered) #}
                                     <div class="col-md-6 d-flex flex-column justify-content-center">
                                         <h6 class="text-muted">Culture</h6>
-                                        <a href="{{ path('app_culture_show', {'id': activite.culture.id}) }}" class="fw-bold mb-0">{{ activite.culture.nomCulture }}</a>
+                                        <a href="{{ path('app_culture_show_back', {'id': activite.culture.id}) }}" class="fw-bold mb-0">{{ activite.culture.nomCulture }}</a>
                                     </div>
 
                                     {# Second Half: Culture Details #}
@@ -90,7 +90,7 @@
                                     {# First Half: Parcelle Title and Name (Vertically Centered) #}
                                     <div class="col-md-6 d-flex flex-column justify-content-center">
                                         <h6 class="text-muted">Parcelle</h6>
-                                        <a href="{{ path('app_parcelle_show', {'id': activite.culture.parcelle.id}) }}" class="fw-bold mb-0">{{ activite.culture.parcelle.nom }}</a>
+                                        <a href="{{ path('app_parcelle_show_back', {'id': activite.culture.parcelle.id}) }}" class="fw-bold mb-0">{{ activite.culture.parcelle.nom }}</a>
                                     </div>
 
                                     {# Second Half: Parcelle Details #}
@@ -106,15 +106,18 @@
                 </div>
 
                 <div class="d-flex justify-content-between mt-4">
-                    <a href="{{ path('app_activite_index') }}" class="btn btn-light">
+                    <a href="{{ path('app_activite_back') }}" class="btn btn-light">
                         <i class="bi bi-arrow-left"></i> Retour à la Liste
                     </a>
                     <div class="d-flex">
-                        <a href="{{ path('app_activite_edit', {'id': activite.id}) }}" class="btn btn-primary me-2">
-                            <i class="bi bi-pencil"></i> Modifier
-                        </a>
-                        {{ include('activite/_delete_form.html.twig') }}
-                    </div>
+                       
+                        <form action="{{ path('app_activite_delete', { id: activite.id }) }}" method="post" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette culture ?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ activite.id) }}"/>
+                            <button type="submit" class="btn btn-danger btn-sm" data-bs-toggle="tooltip" title="Supprimer">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </form>
+                                        </div>
                 </div>
             </div>
         </div>

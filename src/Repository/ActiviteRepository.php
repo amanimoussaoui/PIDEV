@@ -40,4 +40,30 @@ class ActiviteRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+
+    public function findBySearchAndFilter(?string $searchTerm, ?string $typeFilter, string $sort, string $direction)
+    {
+        $qb = $this->createQueryBuilder('a')
+            ->leftJoin('a.culture', 'c') // Assuming a relation between Activite and Culture
+            ->addSelect('c');
+
+        if (!empty($searchTerm)) {
+            $qb->andWhere('c.nomCulture LIKE :searchTerm')
+               ->setParameter('searchTerm', '%' . $searchTerm . '%');
+        }
+
+        if (!empty($typeFilter)) {
+            $qb->andWhere('a.type = :typeFilter')
+               ->setParameter('typeFilter', $typeFilter);
+        }
+
+        if (in_array($sort, ['date', 'type'], true) && in_array(strtoupper($direction), ['ASC', 'DESC'], true)) {
+            $qb->orderBy('a.' . $sort, $direction);
+        } else {
+            $qb->orderBy('a.date', 'ASC');
+        }
+
+        return $qb->getQuery()->getResult();
+    }
 }

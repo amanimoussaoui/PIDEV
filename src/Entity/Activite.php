@@ -19,23 +19,31 @@ class Activite
     private ?string $description = null;
 
     #[ORM\Column(type: 'string', length: 50)]
+    #[Assert\NotBlank(message: "Le type de l'activité est requis.")]
     #[Assert\Choice(
-        choices: ['Semis', 'Arrosage', 'Fertilisation', 'Récolte', 'Traitement', 'Désherbage'],
-        message: "Le type d'activité doit être l'un des suivants : Semis, Arrosage, Fertilisation, Récolte, Traitement, Désherbage."
+        choices: [
+            'Semis', 
+            'Plantation', 
+            'Arrosage', 
+            'Fertilisation', 
+            'Traitement phytosanitaire', 
+            'Récolte', 
+            'Élagage / Taille', 
+            'Greffage'
+        ],
+        message: "Le type d'activité doit être l'un des suivants : Semis, Plantation, Arrosage, Fertilisation, Traitement phytosanitaire, Récolte, Élagage / Taille, Greffage."
     )]
     private ?string $type = null;
+    
 
     #[ORM\Column(type: 'date')]
     #[Assert\NotBlank(message: "La date de l'activité est requise.")]
     #[Assert\Type(type: "\DateTimeInterface", message: "La date de l'activité doit être valide.")]
     private ?\DateTimeInterface $date = null;
 
-    #[ORM\ManyToOne(targetEntity: Parcelle::class,cascade: ["persist"])]
-    #[ORM\JoinColumn(nullable: true)]
-    private ?Parcelle $parcelle = null;
-
     #[ORM\ManyToOne(targetEntity: Culture::class,cascade: ["persist"])]
     #[ORM\JoinColumn(nullable: true)]
+    #[Assert\NotBlank(message: "La culture de l'activité est requise.")]
     private ?Culture $culture = null;
 
     public function getId(): ?int
@@ -75,18 +83,6 @@ class Activite
     public function setDate(\DateTimeInterface $date): self
     {
         $this->date = $date;
-
-        return $this;
-    }
-
-    public function getParcelle(): ?Parcelle
-    {
-        return $this->parcelle;
-    }
-
-    public function setParcelle(Parcelle $parcelle): self
-    {
-        $this->parcelle = $parcelle;
 
         return $this;
     }

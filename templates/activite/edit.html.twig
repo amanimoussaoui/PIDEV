@@ -1,25 +1,23 @@
 {% extends 'FrontEnd/front.html.twig' %}
 
-{% block title %}Edit Activite{% endblock %}
+{% block title %}Modifier l'Activité{% endblock %}
 
 {% block content %}
-    <div class="container my-4">
-        <h1 class="mb-4">Edit Activite</h1>
-
-        <div class="card">
-            <div class="card-header">
-                <h5 class="card-title mb-0">Edit Activite Information</h5>
+    <div class="container mt-4">
+        <div class="glass-card shadow-sm border-0" style="max-width: 800px; margin: 0 auto;">
+            <div class="card-header py-3 px-4" style="background: linear-gradient(90deg, #1a9738, #1F4E3D); border-radius: 12px 12px 0 0;">
+                <h5 class="mb-0 text-white">Modifier l'Activité</h5>
             </div>
             <div class="card-body">
-                {{ include('activite/_form.html.twig', {'button_label': 'Update'}) }}
-
-                <div class="d-flex justify-content-between mt-4">
-                    <a href="{{ path('app_activite_index') }}" class="btn btn-secondary">Back to List</a>
-                    <div class="d-flex">
-                        <div>
-                            {{ include('activite/_delete_form.html.twig') }}
-                        </div>
-                    </div>
+                {{ include('activite/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
+            </div>
+            <br>
+            <div class="card-footer d-flex justify-content-between">
+                <a href="{{ path('app_activite_index') }}" class="btn btn-light">
+                    <i class="bi bi-arrow-left"></i> Retour à la Liste
+                </a>
+                <div>
+                    {{ include('activite/_delete_form.html.twig') }}
                 </div>
             </div>
         </div>

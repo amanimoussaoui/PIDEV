@@ -1,0 +1,30 @@
+{% extends 'FrontEnd/front.html.twig' %}
+
+{% block title %}Gestion du Matériel{% endblock %}
+
+{% block content %}
+<div class="container d-flex flex-column align-items-center justify-content-center min-vh-100">
+    <h1 class="mb-4 text-center">Bienvenue dans la Gestion du Matériel</h1>
+    
+    <div class="d-flex gap-4">
+        <!-- Bouton Ajouter un Matériel -->
+        <a href="{{ path('gestion_machine_addformfront') }}" class="btn btn-primary btn-lg shadow rounded-pill px-4 py-2">
+            <i class="fas fa-plus-circle me-2"></i> Ajouter un Matériel
+        </a>
+
+        <a href="{{ path('gestion_machine_show_front2') }}" class="btn btn-success btn-lg shadow rounded-pill px-4 py-2">
+            <i class="fas fa-cart-arrow-down me-2"></i> Louer un Matériel
+        </a>
+
+        <!-- Afficher liste des machines -->
+        <a href="{{ path('gestion_machine_show_front') }}" class="btn btn-success btn-lg shadow rounded-pill px-4 py-2">
+            <i class="fas fa-list me-2"></i> Afficher Liste des Machines
+        </a>
+
+        <!-- Afficher liste des réservations -->
+        <a href="{{ path('reservation_index') }}" class="btn btn-success btn-lg shadow rounded-pill px-4 py-2">
+            <i class="fas fa-calendar-check me-2"></i> Afficher Liste des Réservations
+        </a>
+    </div>
+</div>
+{% endblock %}

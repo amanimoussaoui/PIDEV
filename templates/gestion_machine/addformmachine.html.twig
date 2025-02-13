@@ -1,0 +1,63 @@
+{% extends 'BackEnd/back.html.twig' %}
+
+{% block title %}Ajouter ou Mettre à jour une Machine{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4">{{ formadd.vars.value.id ? 'Mettre à jour' : 'Ajouter' }} une Machine</h1>
+    
+    <!-- Centrer le bouton "Afficher les machines" -->
+    <div class="text-center mb-4">
+        <a href="{{ path('gestion_machine_show') }}" class="btn btn-success">Afficher les machines</a>
+    </div>
+
+    <!-- Formulaire -->
+    {{ form_start(formadd, {'attr': {'novalidate': 'novalidate'}}) }}
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <div class="mb-3">
+                    {{ form_label(formadd.nom, 'Nom de la Machine') }}
+                    {{ form_widget(formadd.nom, { 'attr': {'class': 'form-control', 'placeholder': 'Entrez le nom de la machine'} }) }}
+                    {{ form_errors(formadd.nom) }}
+                </div>
+                
+                <div class="mb-3">
+                    {{ form_label(formadd.description, 'Description') }}
+                    {{ form_widget(formadd.description, { 'attr': {'class': 'form-control', 'placeholder': 'Entrez une description de la machine'} }) }}
+                    {{ form_errors(formadd.description) }}
+                </div>
+                
+                <div class="mb-3">
+                    {{ form_label(formadd.prix, 'Prix') }}
+                    {{ form_widget(formadd.prix, { 'attr': {'class': 'form-control', 'placeholder': 'Entrez le prix de la machine'} }) }}
+                    {{ form_errors(formadd.prix) }}
+                </div>
+                
+                <div class="mb-3">
+                    {{ form_label(formadd.etat, 'État de la machine') }}
+                    {{ form_widget(formadd.etat, { 'attr': {'class': 'form-control', 'placeholder': 'Sélectionnez l\'état de la machine'} }) }}
+                    {{ form_errors(formadd.etat) }}
+                </div>
+                
+                <div class="mb-3">
+                    {{ form_label(formadd.disponibilite, 'Disponibilité') }}
+                    {{ form_widget(formadd.disponibilite, { 'attr': {'class': 'form-control', 'placeholder': 'Sélectionnez la disponibilité de la machine'} }) }}
+                    {{ form_errors(formadd.disponibilite) }}
+                </div>
+
+                <!-- Ajout du champ date_maintenance -->
+                <div class="mb-3">
+                    {{ form_label(formadd.date_maintenance, 'Date de maintenance') }}
+                    {{ form_widget(formadd.date_maintenance, { 'attr': {'class': 'form-control'} }) }}
+                    {{ form_errors(formadd.date_maintenance) }}
+                </div>
+
+                <!-- Bouton Enregistrer centré -->
+                <div class="text-center mt-4">
+                    {{ form_widget(formadd.save, { 'attr': {'class': 'btn btn-success'} }) }}
+                </div>
+            </div>
+        </div>
+    {{ form_end(formadd) }}
+</div>
+{% endblock %}

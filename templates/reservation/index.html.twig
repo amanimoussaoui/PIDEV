@@ -1,0 +1,34 @@
+{% extends 'FrontEnd/front.html.twig' %}
+
+{% block title %}Liste des Réservations{% endblock %}
+
+{% block content %}
+    <h1 class="text-center mb-4" style="color: #5D6D7E;">Liste des Réservations</h1>
+    
+    <div class="container d-flex flex-wrap gap-4 justify-content-center">
+        {% for reservation in tabreservations %}
+            <div class="card" style="width: 18rem; background-color: #f1f1f1; color: #333;">
+                <div class="card-body">
+                    <h5 class="card-title" style="color: #2C3E50;">Réservation #{{ reservation.id }}</h5>
+                    
+                    <!-- Affichage du nom de la machine louée -->
+                    <p class="card-text" style="color: #5D6D7E;">
+                        <strong>Machine :</strong> {{ reservation.idMachine ? reservation.idMachine.nom : 'Non spécifiée' }}
+                    </p>
+
+                    <p class="card-text" style="color: #5D6D7E;"><strong>Date de début :</strong> {{ reservation.dateDebut ? reservation.dateDebut|date('Y-m-d') : 'Non spécifiée' }}</p>
+                    <p class="card-text" style="color: #5D6D7E;"><strong>Date de fin :</strong> {{ reservation.dateFin ? reservation.dateFin|date('Y-m-d') : 'Non spécifiée' }}</p>
+
+                    <div class="d-flex justify-content-between mt-3">
+                        <a href="{{ path('reservation_delete', {'id': reservation.id}) }}" class="btn btn-danger btn-sm">Supprimer</a>
+                        <a href="{{ path('reservation_edit', {'id': reservation.id}) }}" class="btn btn-primary btn-sm">Modifier</a>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="col-12 text-center">
+                <p>Aucune réservation trouvée 🚫</p>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

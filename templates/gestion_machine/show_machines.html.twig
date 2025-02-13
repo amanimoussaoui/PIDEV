@@ -1,0 +1,53 @@
+{% extends 'BackEnd/back.html.twig' %}
+
+{% block title %}Gestion des Machines{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h2>Gestion des Machines</h2>
+
+       
+            <div class="mb-4">
+                <a href="{{ path('gestion_machine_addform') }}" class="btn btn-success">Ajouter une machine</a>
+                <a href="{{ path('reservation_index2') }}" class="btn btn-success">consulter liste reservation</a>
+            </div>
+
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Nom</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Prix</th>
+                        <th scope="col">Etat</th>
+                        <th scope="col">Disponibilité</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for machine in tabmachines %}
+                    <tr>
+                        <td>{{ machine.nom }}</td>
+                        <td>{{ machine.description }}</td>
+                        <td>{{ machine.prix }}</td>
+                        <td>{{ machine.etat }}</td>
+                        <td>{{ machine.disponibilite }}</td>
+                        
+                        <td>
+                            <a href="{{ path('gestion_machine_update', {'id': machine.id}) }}" class="btn btn-warning">Modifier</a>
+                            <a href="{{ path('gestion_machine_delete', {'id': machine.id}) }}" class="btn btn-danger" 
+                               onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette machine ?');">Supprimer</a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6">Aucune machine disponible</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

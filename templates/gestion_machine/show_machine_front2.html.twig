@@ -1,0 +1,32 @@
+{% extends 'FrontEnd/front.html.twig' %}
+
+{% block title %}Gestion des Machines{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4" style="color: #5D6D7E;">Gestion des Machines</h2>
+    <div class="row justify-content-center">
+        {% for machine in tabmachines %}
+        <div class="col-md-3 mb-4">
+            <div class="card shadow-lg border-0" style="background-color: #f1f1f1; color: #333; height: 350px;">
+                <div class="card-body p-3">
+                    <h5 class="card-title" style="color: #2C3E50;">{{ machine.nom }} 🚜</h5>
+                    <p class="card-text" style="color: #5D6D7E;"><strong>Prix :</strong> {{ machine.prix }} TND 💰</p>
+                    <p class="card-text" style="color: #5D6D7E;"><strong>État :</strong> {{ machine.etat }} 🛠️</p>
+                    <p class="card-text" style="color: #5D6D7E;"><strong>Disponibilité :</strong> {{ machine.disponibilite }} 📅</p>
+                    
+                    <div class="d-flex justify-content-between mt-auto">
+                        <a href="{{ path('reservation_new', {'id_machine': machine.id}) }}" class="btn btn-primary btn-sm text-white"> reserver ✏️</a>
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-12 text-center">
+            <p>Aucune machine disponible 🚫</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

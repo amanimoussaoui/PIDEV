@@ -1,0 +1,34 @@
+{% extends 'BackEnd/back.html.twig' %}
+
+{% block title %}Historique des Maintenances{% endblock %}
+
+{% block content %}
+    <h1 class="text-center mb-4" style="color: #5D6D7E;">Historique des Maintenances</h1>
+
+    <div class="container">
+        {% if historiqueMaintenances is not empty %}
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col" style="color: #2C3E50;">#</th>
+                        <th scope="col" style="color: #2C3E50;">Nom de la Machine</th>
+                        <th scope="col" style="color: #2C3E50;">Date de Maintenance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for historique in historiqueMaintenances %}
+                        <tr>
+                            <td style="color: #5D6D7E;">{{ historique.id }}</td>
+                            <td style="color: #5D6D7E;">{{ historique.machine.nom }}</td>
+                            <td style="color: #5D6D7E;">{{ historique.dateMaintenance ? historique.dateMaintenance|date('Y-m-d') : 'Non spécifiée' }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="col-12 text-center">
+                <p>Aucune maintenance enregistrée 🚫</p>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

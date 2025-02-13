@@ -1,0 +1,42 @@
+{% extends 'BackEnd/back.html.twig' %}
+
+{% block title %}Liste des Réservations{% endblock %}
+
+{% block content %}
+    <h1 class="text-center mb-4" style="color: #5D6D7E;">Liste des Réservations</h1>
+    
+    <div class="container">
+        {% if tabreservations is not empty %}
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col" style="color: #2C3E50;">#</th>
+                        <th scope="col" style="color: #2C3E50;">Machine</th>
+                        <th scope="col" style="color: #2C3E50;">Date de début</th>
+                        <th scope="col" style="color: #2C3E50;">Date de fin</th>
+                        <th scope="col" style="color: #2C3E50;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for reservation in tabreservations %}
+                        <tr>
+                            <td style="color: #5D6D7E;">{{ reservation.id }}</td>
+                            <td style="color: #5D6D7E;">
+                                {{ reservation.idMachine ? reservation.idMachine.nom : 'Non spécifiée' }}
+                            </td>
+                            <td style="color: #5D6D7E;">{{ reservation.dateDebut ? reservation.dateDebut|date('Y-m-d') : 'Non spécifiée' }}</td>
+                            <td style="color: #5D6D7E;">{{ reservation.dateFin ? reservation.dateFin|date('Y-m-d') : 'Non spécifiée' }}</td>
+                            <td>
+                                <a href="{{ path('reservation_delete', {'id': reservation.id}) }}" class="btn btn-danger btn-sm">Supprimer</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="col-12 text-center">
+                <p>Aucune réservation trouvée 🚫</p>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

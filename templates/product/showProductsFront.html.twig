@@ -4,6 +4,119 @@
 
 {% block content %}
     <style>
+        /* 🎨 Style global du formulaire */
+        .search-form {
+            display: flex;
+            justify-content: flex-end; /* Aligne le formulaire à droite */
+            margin: 30px auto;
+            width: 100%;
+            max-width: 600px;
+            border-radius: 30px; /* Arrondi les coins du formulaire */
+            padding: 15px;
+            background-color: #f9f9f9; /* Couleur de fond claire */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-box {
+            display: flex;
+            width: 100%;
+            background: white;
+            padding: 5px;
+            border-radius: 30px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border: 2px solid #ddd;
+            transition: all 0.3s ease;
+        }
+
+        .search-box:focus-within {
+            border-color: #218838;
+            box-shadow: 0 4px 12px rgba(33, 136, 56, 0.3);
+        }
+
+        /* 🎨 Style de la sélection des catégories */
+        .search-select {
+            border: none;
+            background: transparent;
+            padding: 12px 15px;
+            border-radius: 30px;
+            font-size: 16px;
+            outline: none;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .search-select:hover {
+            background-color: #f2f2f2;
+        }
+
+        /* 🎨 Style du champ de recherche */
+        .search-input {
+            border: none;
+            padding: 12px;
+            font-size: 16px;
+            outline: none;
+            flex: 2;
+            background: transparent;
+            width: 100%;
+        }
+
+        /* 🎨 Style du bouton de recherche */
+        .search-button {
+            background-color: transparent; /* Supprime le fond */
+            border: none; /* Supprime la bordure */
+            width: 50px;
+            height: 50px;
+            border-radius: 50%; /* Bouton rond */
+            color: #218838; /* Couleur de l'icône */
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 8px;
+            transition: all 0.3s ease;
+            box-shadow: none; /* Enlève l'ombre */
+        }
+
+        .search-button:hover {
+            color: #1a682c; /* Change la couleur de l'icône au survol */
+            transform: scale(1.1); /* Agrandir légèrement au survol */
+        }
+
+        .search-button i {
+            font-size: 20px;
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+
+        .search-button:hover i {
+            transform: rotate(10deg); /* Rotation de l'icône */
+        }
+
+        /* 🎨 Amélioration du titre */
+        h1 {
+            text-align: center;
+            margin-top: 50px;
+            margin-bottom: 30px;
+            font-size: 3rem;
+            font-weight: bold;
+            color: #218838;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 15px 30px;
+            border-radius: 12px;
+            background-color: #eaf4e4;
+        }
+
+        h1:hover {
+            color: #1a682c;
+            transform: scale(1.05);
+            transition: 0.3s ease;
+            border: 3px solid #218838;
+            padding: 12px 28px;
+            background-color: #ffffff;
+            text-shadow: 3px 3px 12px rgba(0, 0, 0, 0.2);
+        }
+
         /* 🎨 Style des cartes */
         .cards-container {
             display: flex;
@@ -70,101 +183,7 @@
         }
 
         .btn-primary:hover {
-            background-color: #218838;
-        }
-
-        /* 🎨 Amélioration du titre */
-        h1 {
-            text-align: center;
-            margin-top: 50px;
-            margin-bottom: 30px;
-            font-size: 3rem;
-            font-weight: bold;
-            color: #218838;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-            padding: 15px 30px;
-            border-radius: 12px;
-            background-color: #eaf4e4;
-        }
-
-        h1:hover {
-            color: #1a682c;
-            transform: scale(1.05);
-            transition: 0.3s ease;
-            border: 3px solid #218838;
-            padding: 12px 28px;
-            background-color: #ffffff;
-            text-shadow: 3px 3px 12px rgba(0, 0, 0, 0.2);
-        }
-
-        /* 🎨 Nouveau design du formulaire de recherche */
-        .search-form {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 30px;
-            width: 100%;
-            max-width: 600px;
-            margin: 0 auto;
-            background-color: #eaf4e4;
-            padding: 8px 20px;
-            border-radius: 50px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .search-form input {
-            flex-grow: 1;
-            padding: 12px 20px;
-            border: 2px solid #ddd;
-            border-radius: 50px;
-            font-size: 16px;
-            outline: none;
-            background-color: #f8f8f8;
-            transition: border-color 0.3s ease, background-color 0.3s ease;
-        }
-
-        .search-form input:focus {
-            border-color: #218838;
-            background-color: #ffffff;
-        }
-
-        .search-form select {
-            padding: 12px 15px;
-            border: 2px solid #ddd;
-            border-radius: 50px;
-            background-color: #f8f8f8;
-            font-size: 16px;
-            margin-right: 10px;
-            transition: all 0.3s ease;
-        }
-
-        .search-form select:focus {
-            border-color: #218838;
-            background-color: #ffffff;
-        }
-
-        .search-form button {
-            background-color: #218838;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 50%;
-            color: white;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: background-color 0.3s ease, transform 0.3s ease;
-        }
-
-        .search-form button:hover {
             background-color: #1a682c;
-            transform: scale(1.1);
-        }
-
-        .search-form button i {
-            font-size: 20px;
         }
     </style>
 
@@ -172,17 +191,19 @@
 
     <!-- Formulaire de recherche -->
     <form method="GET" action="{{ path('product_search') }}" class="search-form">
-        <select name="category">
-            <option value="">Toutes les catégories</option>
-            <option value="fruits">Fruits</option>
-            <option value="Légumes">Légumes</option>
-            <option value="Graines">Graines</option>
-            <option value="Épices">Épices</option>
-        </select>
-        
-<button type="submit" class="btn-primary">
-            <i class="fas fa-search"></i> <!-- Icône de loupe -->
-        </button>
+        <div class="search-box">
+            <select name="category" class="search-select">
+                <option value="">Toutes les catégories</option>
+                <option value="fruits">Fruits</option>
+                <option value="Légumes">Légumes</option>
+                <option value="Graines">Graines</option>
+                <option value="Épices">Épices</option>
+            </select>
+            <input type="text" name="query" class="search-input" placeholder="Rechercher un produit...">
+            <button type="submit" class="search-button">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
     </form>
 
     <div class="cards-container">
@@ -196,12 +217,12 @@
                         <p class="card-description"><strong>Description:</strong> {{ product.description }}</p>
                         <p class="card-category"><strong>Catégorie:</strong> {{ product.category }}</p>
                         <p class="card-stock"><strong>Stock:</strong> {{ product.stock }}</p>
-                        <a href="{{ path('panier_ajouter', {'id': product.id}) }}" class="btn btn-success">🛒Commander</a>
+                        <a href="{{ path('panier_ajouter', {'id': product.id}) }}" class="btn btn-success">🛒 Commander</a>
                     </div>
                 </div>
             {% endfor %}
         {% else %}
-            <p>Aucun produit trouvé.</p>
+            <p style="text-align: center; font-size: 1.2rem; color: #777;">Aucun produit trouvé.</p>
         {% endif %}
     </div>
 {% endblock %}

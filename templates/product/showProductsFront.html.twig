@@ -217,7 +217,7 @@
                         <p class="card-description"><strong>Description:</strong> {{ product.description }}</p>
                         <p class="card-category"><strong>Catégorie:</strong> {{ product.category }}</p>
                         <p class="card-stock"><strong>Stock:</strong> {{ product.stock }}</p>
-                        <a href="{{ path('panier_ajouter', {'id': product.id}) }}" class="btn btn-success">🛒 Commander</a>
+                        <a href="{{ path('commande_create', {'productId': product.id}) }}" class="btn-primary">🛒Commander</a>
                     </div>
                 </div>
             {% endfor %}

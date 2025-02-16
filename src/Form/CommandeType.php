@@ -18,15 +18,7 @@ class CommandeType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('statut', ChoiceType::class, [
-                'choices' => [
-                    'En attente' => StatutCommande::EN_ATTENTE,
-                    'Expédiée' => StatutCommande::EXPEDIEE,
-                    'Livrée' => StatutCommande::LIVREE,
-                    'Annulée' => StatutCommande::ANNULEE,
-                ],
-                'label' => 'Statut de la commande',
-            ])
+         
             ->add('date', DateType::class, [
                 'widget' => 'single_text',
                 'label' => 'Date de la commande',
@@ -34,12 +26,15 @@ class CommandeType extends AbstractType
             ->add('adresse', TextType::class, [
                 'label' => 'Adresse de livraison',
             ])
-            ->add('user_id', EntityType::class, [
-                'class' => User::class,
-                'choice_label' => 'nom',  // Affiche le nom de l'utilisateur
-                'label' => 'Utilisateur',
-            ]);
+          ;
           
             
+    }
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            'data_class' => Commande::class,
+            'attr' => ['novalidate' => 'novalidate'],
+        ]);
     }
 }

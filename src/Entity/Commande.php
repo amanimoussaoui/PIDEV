@@ -9,6 +9,10 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Enum\StatutCommande;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Entity\Product; 
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
+
+
 
 #[ORM\Entity(repositoryClass: CommandeRepository::class)]
 class Commande
@@ -18,14 +22,15 @@ class Commande
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: 'string', enumType: StatutCommande::class)]
-    #[Assert\Choice(callback: [StatutCommande::class, 'cases'])]
-    private StatutCommande $statut;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $date = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+#[Assert\NotBlank(message: "La date ne peut pas être vide.")]
+#[Assert\GreaterThan("today", message: "La date doit être dans le futur.")]
+private ?\DateTimeInterface $date = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "L'adresse ne peut pas être vide.")]
     private ?string $adresse = null;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'commandes')]
@@ -38,26 +43,24 @@ class Commande
     #[ORM\OneToMany(targetEntity: Panier::class, mappedBy: 'commande')]
     private Collection $paniers;
 
+    // Ajout de la relation ManyToOne avec l'entité Product
+    #[ORM\ManyToOne(targetEntity: Product::class)]
+    #[ORM\JoinColumn(name: "product_id", referencedColumnName: "id", nullable: true)]
+    private ?Product $product = null;
+
     public function __construct()
     {
         $this->paniers = new ArrayCollection();
+        $this->date = (new \DateTime())->modify('+1 day'); // Définit la date à demain par défaut
+
     }
+
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getStatut(): StatutCommande
-    {
-        return $this->statut;
-    }
-
-    public function setStatut(StatutCommande $statut): self
-    {
-        $this->statut = $statut;
-        return $this;
-    }
-
+   
     public function getDate(): ?\DateTimeInterface
     {
         return $this->date;
@@ -66,7 +69,6 @@ class Commande
     public function setDate(\DateTimeInterface $date): static
     {
         $this->date = $date;
-
         return $this;
     }
 
@@ -78,7 +80,6 @@ class Commande
     public function setAdresse(string $adresse): static
     {
         $this->adresse = $adresse;
-
         return $this;
     }
 
@@ -107,7 +108,6 @@ class Commande
             $this->paniers->add($panier);
             $panier->setCommande($this);
         }
-
         return $this;
     }
 
@@ -119,7 +119,37 @@ class Commande
                 $panier->setCommande(null);
             }
         }
-
         return $this;
     }
-}
+
+    // Getter and setter pour le produit
+    public function getProduct(): ?Product
+    {
+        return $this->product;
+    }
+
+    public function setProduct(?Product $product): self
+    {
+        $this->product = $product;
+        return $this;
+    }
+    public function validate(ExecutionContextInterface $context, $payload): void
+    {
+        // Si l'adresse et la date sont toutes les deux vides
+        if (empty($this->adresse) && empty($this->date)) {
+            $context->buildViolation('Veuillez entrer soit une adresse, soit une date.')
+                ->atPath('adresse')
+                ->addViolation();
+            $context->buildViolation('Veuillez entrer soit une adresse, soit une date.')
+                ->atPath('date')
+                ->addViolation();
+        }
+    
+        // Si la date est définie et dans le passé
+        if ($this->date !== null && $this->date <= new \DateTime()) {
+            $context->buildViolation('La date doit être dans le futur.')
+                ->atPath('date')
+                ->addViolation();
+        }
+    }
+} 

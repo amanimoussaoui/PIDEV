@@ -218,7 +218,6 @@ body {
                                 <button type="button" class="btn-minus">➖</button>
                                 <input type="number" name="quantite" value="{{ panier.quantite }}" min="1" class="quantity-input">
                                 <button type="button" class="btn-plus">➕</button>
-                                <button type="submit" class="btn-update">✔️</button>
                             </form>
                         </div>
                         <p class="total" style="color: #333333;">Total : <span class="total-price">{{ panier.totale }} TND</span></p> <!-- Changement pour gris foncé -->
@@ -251,6 +250,7 @@ body {
         <a href="{{ path('product_front_list') }}">⬅ Ajouter un autre produit</a>
     </div>
 </div>
+
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {

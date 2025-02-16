@@ -74,10 +74,9 @@
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Statut</th>
                     <th>Date</th>
                     <th>Adresse</th>
-                    <th>Utilisateur</th>
+                    
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -85,10 +84,9 @@
                 {% for commande in commandes %}
                     <tr>
                         <td>{{ commande.id }}</td>
-                        <td>{{ commande.statut.value }}</td>
                         <td>{{ commande.date|date('d/m/Y') }}</td>
                         <td>{{ commande.adresse }}</td>
-                        <td>{{ commande.user.nom }}</td>
+                      
                         <td>
 <a href="{{ path('commande_delete', {'id': commande.id}) }}" class="btn-delete">
     <i class="fas fa-trash-alt"></i>

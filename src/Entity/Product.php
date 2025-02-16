@@ -27,15 +27,15 @@ class Product
     #[Assert\Type(type: "string", message: "La description doit être une chaîne de caractères.")]
     private ?string $description = null;
 
-    #[ORM\Column]
-#[Assert\NotBlank(message: "Le prix ne peut pas être vide.")]
-#[Assert\Type(type: "numeric", message: "Le prix doit être un nombre.")]
-#[Assert\PositiveOrZero(message: "Le prix doit être un nombre positif ou zéro.")]
-#[Assert\Regex(
-    pattern: "/^\d+(\.\d{1,2})?$/",
-    message: "Le prix doit être un nombre valide sans lettres."
-)]
-private ?float $prix = null;
+    #[ORM\Column(type: 'float')]
+    #[Assert\NotBlank(message: "Le prix ne peut pas être vide.")]
+    #[Assert\Type(type: "numeric", message: "Le prix doit être un nombre.")]
+    #[Assert\Positive(message: "Le prix doit être un nombre positif.")]
+    #[Assert\Regex(
+        pattern: "/^\d+(\.\d{1,2})?$/",
+        message: "Le prix doit être un nombre valide sans lettres et avec au maximum deux décimales."
+    )]
+    private ?float $prix = null;
 
 
     #[ORM\Column]

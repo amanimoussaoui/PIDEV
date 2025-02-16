@@ -47,13 +47,11 @@ class RegistrationFormType extends AbstractType
             ])
             ->add('roles', ChoiceType::class, [
                 'choices'  => [
-                    'Client' => 'ROLE_CLIENT',
-                    'Admin' => 'ROLE_ADMIN',
                     'Agriculteur' => 'ROLE_AGRICULTEUR'
                 ],
                 'expanded' => true,
                 'multiple' => true,
-                'label' => 'Roles'
+                'label' => 'devenir agriculteur ??'
             ])
             ->add('plainPassword', PasswordType::class, [
                 // instead of being set onto the object directly,

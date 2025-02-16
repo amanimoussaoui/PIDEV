@@ -98,7 +98,7 @@ class Utilisateurs implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $roles = $this->roles;
         // guarantee every user at least has Client role
-        //$roles[] = 'ROLE_CLIENT';
+        $roles[] = 'ROLE_CLIENT';
 
         return array_unique($roles);
     }

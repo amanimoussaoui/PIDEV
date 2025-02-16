@@ -46,7 +46,28 @@ final class ProfileController extends AbstractController
             'profile' => $profile,
         ]);
     }
+/////////////////////////////////////////////////////////////////////////////////////////
+#[Route('/profileback', name: 'app_profileback')]
+#[IsGranted('IS_AUTHENTICATED_FULLY')] // Assure que l'utilisateur est connecté
+public function showprofileback(ProfileRepository $profileRepository): Response
+{
+    // Récupérer l'utilisateur connecté
+    $user = $this->getUser();
 
+    // Récupérer le profil lié à l'utilisateur
+    $profile = $profileRepository->findOneBy(['id_user' => $user]);
+
+    // Vérifier si le profil existe
+    if (!$profile) {
+        $this->addFlash('error', 'Aucun profil trouvé pour cet utilisateur.');
+        return $this->redirectToRoute('app_home'); // Rediriger si aucun profil
+    }
+
+    return $this->render('profile/profileback.html.twig', [
+        'profile' => $profile,
+    ]);
+}
+/////////////////////////////////////////////////////////////////////////////////////////
     #[Route('/updateprofile/{id}', name: 'app_updateprofile')]
     public function updateauthor(ManagerRegistry $m , Request $req , $id ,ProfileRepository $rep,#[Autowire('%photo_dir%')]string $photoDir): Response
     {

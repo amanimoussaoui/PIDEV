@@ -57,4 +57,21 @@ class UtilisateursRepository extends ServiceEntityRepository implements Password
     //            ->getOneOrNullResult()
     //        ;
     //    }
+    ///////////////////////////////////////////////////////////////
+    public function listutilisateursbyid(string $searchValue):array
+    {
+        $qb = $this->createQueryBuilder('u');
+    
+        if (is_numeric($searchValue)) {
+            $qb->where('u.id = :searchValue');
+        } else {
+            $qb->where('u.nom LIKE :searchValue');
+            $searchValue = "%$searchValue%"; // Recherche partielle pour le nom
+        }
+    
+        return $qb
+            ->setParameter('searchValue', $searchValue)
+            ->getQuery()
+            ->getResult();
+    }
 }

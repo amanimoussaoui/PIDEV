@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Utilisateurs;
 use App\Form\UpdateutilisateursType;
+use App\Form\RechercheUtilisateurType;
 use App\Repository\UtilisateursRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,10 +26,25 @@ final class UtilisateursController extends AbstractController
     #[Route('/showutilisateurs', name: 'app_showutilisateurs')]
     public function showutilisateurs(UtilisateursRepository $a , Request $req): Response
     {
-        $users = $a->findAll();
+        $form = $this->createForm(RechercheUtilisateurType::class);
+        $form->handleRequest($req);
+
+        $users = $a->findAll(); // Par défaut, afficher tous les utilisateurs
+        $isSearch = false;
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $searchValue = $form->get('search')->getData();
+            
+            if ($searchValue) {
+                $users = $a->listutilisateursbyid($searchValue);
+                $isSearch = true;
+            }
+        }
 
         return $this->render('utilisateurs/ListUtilisateurs.html.twig', [
             'tabusers' => $users,
+            'form' => $form->createView(),
+            'isSearch' => $isSearch,
         ]);
     }
     ///////////////////////////////////////////////////////////////////////
@@ -61,4 +77,5 @@ final class UtilisateursController extends AbstractController
             'formupdate' => $form,
         ]);
     }
+    ////////////////////////////////////////////////////////////////////////
 }

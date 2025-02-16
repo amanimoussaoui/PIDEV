@@ -47,6 +47,13 @@
 			<!-- Navigation -->
 <nav id="navmenu" class="navmenu">
     <ul>
+		<li>
+			{% if app.user %}
+				<a href="{{ path('app_logout') }}" class="btn btn-logout">Log Out</a>
+			{% else %}
+				<a href="{{ path('app_login') }}" class="btn btn-login">Log In</a>
+			{% endif %}
+		</li>
         <li>
             <a href="{{ path('app_acceuil') }}" class="{% if app.request.attributes.get('_route') == 'app_acceuil' %}active{% endif %}">
                 Acceuil
@@ -62,26 +69,94 @@
                 Services
             </a>
         </li>
-        <li>
-			{% if app.user %}
-				<a href="{{ path('app_logout') }}" class="btn btn-primary px-4">Log Out</a>
-			{% else %}
-				<a href="{{ path('app_login') }}" class="btn btn-primary px-4">Log In</a>
-			{% endif %}
-		</li>
-
 		<li>
-		Connected as : 
-		{% if app.user %}
-			{{ app.user.prenom }}
-			{{ app.user.nom}}
-		{% else %}
-			Guest
-		{% endif %}
+    		{% if app.user %}
+        		<div class="welcome-message">
+           			 Bienvenue
+        		</div>
+        	<div class="user-info">
+            	{# Check if the user has a profile and if the profile has an image #}
+            	{% if app.user.profile and app.user.profile.image %}
+                	<img src="{{ asset('uploads/images/' ~ app.user.profile.image) }}" alt="Profile Image" style="width: 50px; height: 50px; border-radius: 50%; margin-right: 10px;">
+            	{% endif %}
+            	<span>{{ app.user.prenom }} {{ app.user.nom }}</span>
+        	</div>
+    		{% endif %}
 		</li>
 		
     </ul>
 </nav>
+<style>
+
+ .welcome-message {
+        font-size: 16px;
+        font-weight: bold;
+        margin-bottom: 5px;
+        color: #4CAF50; /* Green color for "Bienvenue" */
+        text-align: center; /* Center the text horizontally */
+        width: 100%; /* Ensure it takes up full width to center it */
+    }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+        justify-content: center; /* Center user info horizontally */
+    }
+
+    .user-info img {
+        margin-right: 10px;
+    }
+
+    .user-info span {
+        font-size: 14px;
+        font-weight: normal;
+        color: #333;
+    }
+    .btn {
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 5px;
+        text-decoration: none;
+        cursor: pointer;
+        display: inline-block;
+        font-weight: bold;
+        transition: all 0.3s ease;
+    }
+
+    /* Style pour le bouton Log In */
+    .btn-login {
+        background-color: #28a745; /* Vert */
+        color: white;
+        border: 2px solid transparent; /* Bordure transparente par défaut */
+    }
+
+    .btn-login:hover {
+        background-color: #218838; /* Vert plus foncé au survol */
+        border-color: #1e7e34; /* Bordure verte plus foncée au survol */
+    }
+
+    .btn-login:focus {
+        border-color: #1e7e34; /* Bordure verte plus foncée au focus */
+        outline: none;
+    }
+
+    /* Style pour le bouton Log Out */
+    .btn-logout {
+        background-color: #28a745; /* Vert */
+        color: white;
+        border: 2px solid #28a745; /* Bordure verte claire */
+    }
+
+    .btn-logout:hover {
+        background-color: #218838; /* Vert plus foncé au survol */
+        border-color: #1e7e34; /* Bordure verte plus foncée au survol */
+    }
+
+    .btn-logout:focus {
+        border-color: #1e7e34; /* Bordure verte plus foncée au focus */
+        outline: none;
+    }
+</style>
 
 				<i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
 			</div>

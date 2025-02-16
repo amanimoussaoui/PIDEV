@@ -28,10 +28,6 @@ class ProfileType extends AbstractType
                 'widget' => 'single_text',
             ])
             ->add('prenomf')
-            ->add('id_user', EntityType::class, [
-                'class' => Utilisateurs::class,
-                'choice_label' => 'id',
-            ])
         ;
     }
 

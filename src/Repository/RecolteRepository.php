@@ -17,9 +17,9 @@ class RecolteRepository extends ServiceEntityRepository
     }
     public function findBySearchAndFilter(?string $searchTerm, ?string $qualiteFilter, string $sort, string $direction): array
     {
-        $allowedSortFields = ['id', 'dateRecolte', 'quantite', 'qualite', 'culture.nomCulture', 'prixUnitaire']; // Added prixUnitaire
+        $allowedSortFields = ['id', 'dateRecolte', 'quantite', 'qualite', 'culture.nomCulture', 'prixUnitaire']; 
         if (!in_array($sort, $allowedSortFields, true)) {
-            $sort = 'dateRecolte'; // Default sort
+            $sort = 'dateRecolte'; 
         }
     
         $qb = $this->createQueryBuilder('r')

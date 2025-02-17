@@ -25,9 +25,9 @@ class ActiviteType extends AbstractType
             ->add('description')
             ->add('date', DateType::class, [
                 'widget' => 'single_text',
-                'required' => true,
-                'data' => new \DateTime(),
+                'html5' => true,
                 'attr' => ['class' => 'form-control'],
+                'required' => true,
             ])
             ->add('type', ChoiceType::class, [
                 'choices' => [
@@ -48,7 +48,7 @@ class ActiviteType extends AbstractType
             ->add('culture', EntityType::class, [
                 'class' => Culture::class,
                 'choice_label' => 'nomCulture',
-                'required' => false, // Initially optional
+                'required' => false,
                 'attr' => ['class' => 'form-control'],
                 'placeholder' => 'Sélectionnez une culture',
             ]);

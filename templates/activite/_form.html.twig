@@ -3,7 +3,6 @@
 {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'needs-validation', 'method': 'POST'}}) }}
 
 <div class="container">
-    {# Display global form errors #}
     {% if form.vars.errors|length > 0 %}
         <div class="alert alert-danger">
             {{ form_errors(form) }}
@@ -13,7 +12,6 @@
     <div class="row">
      
 
-        {# Description Field #}
         <div class="col-md-6 mb-3">
             {{ form_label(form.description, 'Description', {'label_attr': {'class': 'form-label'}}) }}
             {{ form_widget(form.description, { 
@@ -27,7 +25,6 @@
             <small class="form-text text-muted">Décrivez l'activité.</small>
         </div>
 
-        {# Date Field #}
         <div class="col-md-6 mb-3">
             {{ form_label(form.date, 'Date', {'label_attr': {'class': 'form-label'}}) }}
             {{ form_widget(form.date, { 
@@ -41,7 +38,6 @@
             <small class="form-text text-muted">Sélectionnez la date de l'activité.</small>
         </div>
 
-        {# Type Field #}
         <div class="col-md-6 mb-3">
             {{ form_label(form.type, 'Type d\'activité', {'label_attr': {'class': 'form-label'}}) }}
             {{ form_widget(form.type, { 
@@ -54,7 +50,6 @@
             <small class="form-text text-muted">Sélectionnez le type d'activité.</small>
         </div>
 
-  {# Culture Field #}
   <div class="col-md-6 mb-3">
     {{ form_label(form.culture, 'Culture', {'label_attr': {'class': 'form-label'}}) }}
     {{ form_widget(form.culture, { 
@@ -70,8 +65,6 @@
 
     
     </div>
-
-    {# Submit Button #}
     <div class="d-flex justify-content-end">
         <button type="submit" class="btn btn-primary">
             <i class="bi bi-save"></i> {{ button_label|default('Enregistrer') }}
@@ -80,23 +73,3 @@
 </div>
 
 {{ form_end(form) }}
-
-
-{% block javascripts %}
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.querySelector('form');
-    if (form) {
-        form.addEventListener('submit', function(event) {
-            // Allow the form to submit; Symfony will handle validation
-            form.classList.add('was-validated');
-        });
-    }
-});
-
-</script>
-
-
-
-{% endblock %}

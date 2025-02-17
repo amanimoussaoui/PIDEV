@@ -18,11 +18,9 @@ final class ActiviteController extends AbstractController
     #[Route(name: 'app_activite_index', methods: ['GET', 'POST'])]
     public function index(Request $request, ActiviteRepository $activiteRepository): Response
     {
-        // Create the search and filter form
         $form = $this->createForm(SearchActiviteType::class);
         $form->handleRequest($request);
     
-        // Initialize search and filter parameters
         $searchTerm = '';
         $typeFilter = '';
     
@@ -32,11 +30,9 @@ final class ActiviteController extends AbstractController
             $typeFilter = $formData['type'] ?? '';
         }
     
-        // Get sorting parameters
         $sort = $request->query->get('sort', 'date');
         $direction = $request->query->get('direction', 'ASC');
     
-        // Fetch filtered and sorted activities
         $activites = $activiteRepository->findBySearchAndFilter($searchTerm, $typeFilter, $sort, $direction);
     
         return $this->render('activite/index.html.twig', [
@@ -54,7 +50,6 @@ final class ActiviteController extends AbstractController
         $form = $this->createForm(SearchActiviteType::class);
         $form->handleRequest($request);
     
-        // Initialize search and filter parameters
         $searchTerm = '';
         $typeFilter = '';
     
@@ -64,11 +59,9 @@ final class ActiviteController extends AbstractController
             $typeFilter = $formData['type'] ?? '';
         }
     
-        // Get sorting parameters
         $sort = $request->query->get('sort', 'date');
         $direction = $request->query->get('direction', 'ASC');
     
-        // Fetch filtered and sorted activities
         $activites = $activiteRepository->findBySearchAndFilter($searchTerm, $typeFilter, $sort, $direction);
     
         return $this->render('activite/listActivitesBackend.html.twig', [
@@ -80,29 +73,35 @@ final class ActiviteController extends AbstractController
     }
 
     
-
     #[Route('/new', name: 'app_activite_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
-{
-    $activite = new Activite();
-    $form = $this->createForm(ActiviteType::class, $activite);
-    $form->handleRequest($request);
-
-    if ($form->isSubmitted()) {
-        if ($form->isValid()) {
+    {
+        $activite = new Activite();
+    
+        $date = $request->query->get('date');
+        if ($date) {
+            try {
+                $activite->setDate(new \DateTime($date));
+            } catch (\Exception $e) {
+                $activite->setDate(new \DateTime());
+            }
+        }
+    
+        $form = $this->createForm(ActiviteType::class, $activite);
+        $form->handleRequest($request);
+    
+        if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($activite);
             $entityManager->flush();
-
+    
             return $this->redirectToRoute('app_activite_index', [], Response::HTTP_SEE_OTHER);
         }
-    }
-
-    return $this->render('activite/new.html.twig', [
-        'activite' => $activite,
-        'form' => $form,
-    ]);
-}
     
+        return $this->render('activite/new.html.twig', [
+            'activite' => $activite,
+            'form' => $form->createView(),
+        ]);
+    }
 
     #[Route('/{id}', name: 'app_activite_show', methods: ['GET'])]
     public function show(Activite $activite): Response

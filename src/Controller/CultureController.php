@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Culture;
+use App\Entity\Activite;
+use App\Entity\Recolte;
 use App\Form\CultureType;
 use App\Form\SearchCultureType;
 use App\Repository\CultureRepository;
@@ -15,31 +17,28 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/culture')]
 final class CultureController extends AbstractController
 {
-    #[Route( name: 'app_culture_index', methods: ['GET', 'POST'])]
+    #[Route(name: 'app_culture_index', methods: ['GET', 'POST'])]
     public function index(Request $request, CultureRepository $cultureRepository): Response
     {
-        // Create the form
         $form = $this->createForm(SearchCultureType::class);
         $form->handleRequest($request);
-    
-        // Initialize search and filter parameters
+
         $searchTerm = '';
         $statutFilter = '';
-    
-        // Check if the form is submitted and valid
+
         if ($form->isSubmitted() && $form->isValid()) {
             $formData = $form->getData();
             $searchTerm = $formData['search'] ?? '';
             $statutFilter = $formData['statut'] ?? '';
         }
-    
-        // Get sorting parameters
+
+
         $sort = $request->query->get('sort', 'id');
         $direction = $request->query->get('direction', 'ASC');
-    
-        // Fetch filtered and sorted cultures
+
+
         $cultures = $cultureRepository->findBySearchAndFilter($searchTerm, $statutFilter, $sort, $direction);
-    
+
         return $this->render('culture/index.html.twig', [
             'cultures' => $cultures,
             'form' => $form->createView(),
@@ -51,21 +50,21 @@ final class CultureController extends AbstractController
     #[Route('/listcultures', name: 'app_culture_back', methods: ['GET', 'POST'])]
     public function listCulturesBackend(Request $request, CultureRepository $cultureRepository): Response
     {
-        // Create and handle the form
+
         $form = $this->createForm(SearchCultureType::class);
         $form->handleRequest($request);
-    
-        // Extract search/filter criteria
+
+
         $searchTerm = $form->get('search')->getData() ?? '';
         $statutFilter = $form->get('statut')->getData() ?? '';
-    
-        // Get sorting parameters
+
+
         $sort = $request->query->get('sort', 'id');
         $direction = $request->query->get('direction', 'ASC');
-    
-        // Fetch filtered & sorted cultures
+
+
         $cultures = $cultureRepository->findBySearchAndFilter($searchTerm, $statutFilter, $sort, $direction);
-    
+
         return $this->render('culture/listCulturesBackend.html.twig', [
             'cultures' => $cultures,
             'form' => $form->createView(),
@@ -73,7 +72,7 @@ final class CultureController extends AbstractController
             'direction' => $direction,
         ]);
     }
-    
+
 
     #[Route('/new', name: 'app_culture_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
@@ -95,13 +94,17 @@ final class CultureController extends AbstractController
         ]);
     }
 
-  
-
     #[Route('/{id}', name: 'app_culture_show', methods: ['GET'])]
-    public function show(Culture $culture): Response
+    public function show(Culture $culture, EntityManagerInterface $entityManager): Response
     {
+        $activities = $entityManager->getRepository(Activite::class)->findBy(['culture' => $culture]);
+
+        $recolte = $entityManager->getRepository(Recolte::class)->findOneBy(['culture' => $culture]);
+
         return $this->render('culture/show.html.twig', [
             'culture' => $culture,
+            'activities' => $activities,
+            'recolte' => $recolte,
         ]);
     }
 
@@ -134,7 +137,7 @@ final class CultureController extends AbstractController
     #[Route('/{id}', name: 'app_culture_delete', methods: ['POST'])]
     public function delete(Request $request, Culture $culture, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$culture->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $culture->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($culture);
             $entityManager->flush();
         }
@@ -145,11 +148,22 @@ final class CultureController extends AbstractController
     #[Route('listparcelles/{id}', name: 'app_culture_delete_back', methods: ['POST'])]
     public function deleteBack(Request $request, Culture $culture, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$culture->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $culture->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($culture);
             $entityManager->flush();
         }
 
         return $this->redirectToRoute('app_culture_back', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/{id}/update-status', name: 'app_culture_update_status', methods: ['POST'])]
+    public function updateStatus(Request $request, Culture $culture, EntityManagerInterface $entityManager): Response
+    {
+        $culture->setStatut('terminé');
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_recolte_new', [
+            'culture_id' => $culture->getId(),
+        ], Response::HTTP_SEE_OTHER);
     }
 }

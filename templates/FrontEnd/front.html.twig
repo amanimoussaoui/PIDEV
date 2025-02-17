@@ -104,20 +104,17 @@
 						</a>
 					</li>
 
-					<li class="sidebar-item {% if app.request.attributes.get('_route') in ['app_parcelle_index', 'app_culture_index', 'app_recolte_index', 'app_activite_index'] %}active{% endif %}">
+					<li class="sidebar-item {% if app.request.attributes.get('_route') in ['app_parcelle_index', 'app_culture_index', 'app_activite_index'] %}active{% endif %}">
 						<a href="#" class="sidebar-link collapsed" data-bs-toggle="collapse" data-bs-target="#multi-two" aria-expanded="false" aria-controls="multi-two">
 							<i class="lni lni-leaf"></i>
 							<span>Gestion Agricole</span>
 						</a>
-						<ul id="multi-two" class="sidebar-dropdown collapse {% if app.request.attributes.get('_route') in ['app_parcelle_index', 'app_culture_index', 'app_recolte_index', 'app_activite_index'] %}show{% endif %}">
+						<ul id="multi-two" class="sidebar-dropdown collapse {% if app.request.attributes.get('_route') in ['app_parcelle_index', 'app_culture_index','app_activite_index'] %}show{% endif %}">
 							<li class="sidebar-item">
 								<a href="{{ path('app_parcelle_index') }}" class="{% if app.request.attributes.get('_route') == 'app_parcelle_index' %}active{% endif %}">Parcelles</a>
 							</li>
 							<li class="sidebar-item">
 								<a href="{{ path('app_culture_index') }}" class="{% if app.request.attributes.get('_route') == 'app_culture_index' %}active{% endif %}">Cultures</a>
-							</li>
-							<li class="sidebar-item">
-								<a href="{{ path('app_recolte_index') }}" class="{% if app.request.attributes.get('_route') == 'app_recolte_index' %}active{% endif %}">Récoltes</a>
 							</li>
 							<li class="sidebar-item">
 								<a href="{{ path('app_activite_index') }}" class="{% if app.request.attributes.get('_route') == 'app_activite_index' %}active{% endif %}">Activités</a>

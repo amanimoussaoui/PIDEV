@@ -11,7 +11,6 @@
             </div>
             
             <div class="card-body p-4">
-                {# Search and Filter Form #}
                 {{ form_start(form, {'attr': {'class': 'mb-5'}, 'action': path('app_recolte_back')}) }}
                 <div class="container">
                     <div class="row justify-content-center">
@@ -41,7 +40,6 @@
                 </div>
                 {{ form_end(form) }}
 
-                {# Table Section #}
                 <div class="table-responsive">
                     <table class="table modern-table align-middle">
                         <thead class="border-bottom">

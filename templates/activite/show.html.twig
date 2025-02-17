@@ -43,7 +43,6 @@
                         </div>
                     </div>
                     <div class="col-md-6 d-flex flex-column">
-                        <!-- Description Card with Flex Grow -->
                         <div class="info-card mb-4 flex-grow-1">
                             <div class="detail-item">
                                 <i class="bi bi-card-text detail-icon"></i>
@@ -62,13 +61,11 @@
                             <div class="detail-item">
                                 <i class="lni lni-leaf detail-icon"></i>
                                 <div class="detail-content row align-items-center">
-                                    {# First Half: Culture Title and Name (Vertically Centered) #}
                                     <div class="col-md-6 d-flex flex-column justify-content-center">
                                         <h6 class="text-muted">Culture</h6>
                                         <a href="{{ path('app_culture_show', {'id': activite.culture.id}) }}" class="fw-bold mb-0">{{ activite.culture.nomCulture }}</a>
                                     </div>
 
-                                    {# Second Half: Culture Details #}
                                     <div class="col-md-6 parcelle-details">
                                         <p class="text-muted mb-1"><i class="bi bi-calendar-date"></i> Date de Semis: {{ activite.culture.dateSemis ? activite.culture.dateSemis|date('Y-m-d') : '' }}</p>
                                         <p class="text-muted mb-1"><i class="bi bi-clock-history"></i> Durée: {{ activite.culture.duree }} Jours</p>
@@ -87,13 +84,11 @@
                             <div class="detail-item">
                                 <i class="lni lni-map detail-icon"></i>
                                 <div class="detail-content row align-items-center">
-                                    {# First Half: Parcelle Title and Name (Vertically Centered) #}
                                     <div class="col-md-6 d-flex flex-column justify-content-center">
                                         <h6 class="text-muted">Parcelle</h6>
                                         <a href="{{ path('app_parcelle_show', {'id': activite.culture.parcelle.id}) }}" class="fw-bold mb-0">{{ activite.culture.parcelle.nom }}</a>
                                     </div>
 
-                                    {# Second Half: Parcelle Details #}
                                     <div class="col-md-6 parcelle-details">
                                         <p class="text-muted mb-1"><i class="bi bi-rulers"></i> Superficie: {{ activite.culture.parcelle.superficie | number_format(2, ',', ' ') }} m²</p>
                                         <p class="text-muted mb-1"><i class="bi bi-pin-map"></i> Localisation: {{ activite.culture.parcelle.localisation }}</p>
@@ -107,7 +102,7 @@
 
                 <div class="d-flex justify-content-between mt-4">
                     <a href="{{ path('app_activite_index') }}" class="btn btn-light">
-                        <i class="bi bi-arrow-left"></i> Retour à la Liste
+                        <i class="bi bi-arrow-left"></i> Retour
                     </a>
                     <div class="d-flex">
                         <a href="{{ path('app_activite_edit', {'id': activite.id}) }}" class="btn btn-primary me-2">

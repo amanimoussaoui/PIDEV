@@ -21,21 +21,21 @@ final class ParcelleController extends AbstractController
     #[Route('/', name: 'app_parcelle_index', methods: ['GET', 'POST'])]
     public function index(ParcelleRepository $parcelleRepository, Request $request): Response
     {
-        // Créer le formulaire de recherche et de filtrage
+        
         $form = $this->createForm(SearchParcelleType::class);
         $form->handleRequest($request);
 
-        // Récupérer les critères de recherche et de filtrage
+        
         $searchCriteria = [];
         if ($form->isSubmitted() && $form->isValid()) {
             $searchCriteria = $form->getData();
         }
 
-        // Récupérer les paramètres de tri
-        $sort = $request->query->get('sort', 'superficie'); // Par défaut : tri par superficie
-        $direction = $request->query->get('direction', 'ASC'); // Par défaut : ordre croissant
+        
+        $sort = $request->query->get('sort', 'superficie'); 
+        $direction = $request->query->get('direction', 'ASC'); 
 
-        // Récupérer les parcelles filtrées et triées
+        
         $parcelles = $parcelleRepository->findBySearchCriteria($searchCriteria, $sort, $direction);
 
         return $this->render('parcelle/index.html.twig', [
@@ -51,21 +51,21 @@ final class ParcelleController extends AbstractController
         Request $request,
         PaginatorInterface $paginator
     ): Response {
-        // Créer le formulaire de recherche et de filtrage
+        
         $form = $this->createForm(SearchParcelleType::class);
         $form->handleRequest($request);
 
-        // Récupérer les critères de recherche et de filtrage
+        
         $searchCriteria = [];
         if ($form->isSubmitted() && $form->isValid()) {
             $searchCriteria = $form->getData();
         }
 
-        // Récupérer les paramètres de tri
-        $sort = $request->query->get('sort', 'superficie'); // Par défaut : tri par superficie
-        $direction = $request->query->get('direction', 'ASC'); // Par défaut : ordre croissant
+        
+        $sort = $request->query->get('sort', 'superficie'); 
+        $direction = $request->query->get('direction', 'ASC'); 
 
-        // Récupérer les parcelles filtrées et triées
+        
         $parcelles = $parcelleRepository->findBySearchCriteria($searchCriteria, $sort, $direction);
 
         return $this->render('parcelle/listParcellesBackend.html.twig', [
@@ -155,4 +155,23 @@ final class ParcelleController extends AbstractController
     
         return $this->redirectToRoute('app_parcelle_back', [], Response::HTTP_SEE_OTHER);
     }
+
+
+    #[Route('/parcelle/{id}/save-coordinates', name: 'app_parcelle_save_coordinates', methods: ['POST'])]
+public function saveCoordinates(Request $request, Parcelle $parcelle, EntityManagerInterface $entityManager): Response
+{
+    $latitude = $request->request->get('latitude');
+    $longitude = $request->request->get('longitude');
+    $boundary = json_decode($request->request->get('boundary'), true);
+
+    $parcelle->setLatitude($latitude);
+    $parcelle->setLongitude($longitude);
+    $parcelle->setBoundary($boundary);
+
+    $entityManager->flush();
+
+    $this->addFlash('success', 'Les coordonnées de la parcelle ont été enregistrées avec succès.');
+    return $this->redirectToRoute('app_parcelle_show', ['id' => $parcelle->getId()]);
+}
+
 }

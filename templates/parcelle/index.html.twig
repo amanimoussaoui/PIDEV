@@ -4,8 +4,8 @@
 
 {% block content %}
     <div class="container mt-4">
-        <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
-            <div class="card-header d-flex justify-content-between align-items-center py-4" 
+        <div class="custom-card shadow-lg border-0 rounded-4 overflow-hidden">
+            <div class="custom-card-header p-4 d-flex justify-content-between align-items-center py-4" 
                  style="background: linear-gradient(90deg, #1a9738, #1F4E3D);">
                 <h5 class="card-title mb-0 text-white fw-semibold">Vos Parcelles</h5>
                 <a href="{{ path('app_parcelle_new') }}" class="btn btn-light btn-sm rounded-pill px-3 shadow-sm">
@@ -13,8 +13,7 @@
                 </a>
             </div>
             
-            <div class="card-body p-4">
-                {# Search Form #}
+            <div class="custom-card-body p-4">
                 {{ form_start(form, {'attr': {'class': 'mb-5'}, 'action': path('app_parcelle_index')}) }}
                     <div class="container">
                         <div class="row justify-content-center">
@@ -43,92 +42,79 @@
                         </div>
                     </div>
                 {{ form_end(form) }}
-        
-                {# Table Section #}
-                <div class="table-responsive">
-                    <table class="table modern-table align-middle">
-                        <thead class="border-bottom">
-                            <tr>
-                                <th class="text-muted fw-semibold">#</th>
-                                <th class="text-muted fw-semibold">Nom</th>
-                                <th class="text-muted fw-semibold">
-                                    <a href="{{ path('app_parcelle_index', {
-                                        'sort': 'superficie',
-                                        'direction': (sort == 'superficie' and direction == 'ASC') ? 'DESC' : 'ASC'
-                                    })}}" class="text-decoration-none text-muted d-flex align-items-center gap-2">
-                                        Superficie 
-                                        <i class="bi bi-sort-numeric-{{ sort == 'superficie' and direction == 'ASC' ? 'down' : 'up' }}"></i>
-                                    </a>
-                                </th>
-                                <th class="text-muted fw-semibold">Localisation</th>
-                                <th class="text-muted fw-semibold">Type Sol</th>
-                                <th class="text-muted fw-semibold text-end">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for parcelle in parcelles %}
-                                <tr class="row-hover">
-                                    <td>{{ parcelle.id }}</td>
-                                    <td class="fw-medium">{{ parcelle.nom }}</td>
-                                    <td>{{ parcelle.superficie | number_format(2, ',', ' ') }} m²</td>
-                                    <td>
+
+                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                    {% for parcelle in parcelles %}
+                        <div class="col">
+                            <div class="parcelle-card h-100 shadow-lg border-2 rounded-4 overflow-hidden hover-scale">
+                                <div class="parcelle-card-header p-4 bg-light py-3">
+                                    <h6 class="card-title mb-0 fw-semibold">{{ parcelle.nom }}</h6>
+                                </div>
+                                <div class="parcelle-card-body p-4">
+                                    <div class="d-flex flex-column gap-2">
                                         <div class="d-flex align-items-center">
-                                            <i class="lni lni-map text-primary me-2"></i>
-                                            {{ parcelle.localisation }}
+                                            <i class="bi bi-rulers me-2 text-primary"></i>
+                                            <span class="text-muted">Superficie :</span>
+                                            <span class="ms-auto fw-medium">{{ parcelle.superficie | number_format(2, ',', ' ') }} m²</span>
                                         </div>
-                                    </td>
-                                    <td>
-                                        {% set badgeColors = {
-                                            'argileux': 'warning',
-                                            'sableux': 'info',
-                                            'limoneux': 'success'
-                                        } %}
-                                        <span class="badge rounded-pill bg-{{ badgeColors[parcelle.typeSol] ?? 'secondary' }}">
-                                            {{ parcelle.typeSol | capitalize }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <div class="d-flex gap-2 justify-content-end">
-                                            <a href="{{ path('app_parcelle_show', {'id': parcelle.id}) }}" 
-                                               class="btn btn-info btn-sm"
-                                               data-bs-toggle="tooltip"
-                                               title="Voir les détails">
-                                                <i class="bi bi-eye"></i>
-                                            </a>
-                                            <a href="{{ path('app_parcelle_edit', {'id': parcelle.id}) }}" 
-                                               class="btn btn-warning btn-sm"
-                                               data-bs-toggle="tooltip"
-                                               title="Modifier">
-                                                <i class="bi bi-pencil"></i>
-                                            </a>
-                                            <form action="{{ path('app_parcelle_delete', {'id': parcelle.id}) }}" 
-                                                  method="post" 
-                                                  class="d-inline"
-                                                  onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette parcelle ?');">
-                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ parcelle.id) }}">
-                                                <button type="submit" 
-                                                        class="btn btn-danger btn-sm"
-                                                        data-bs-toggle="tooltip"
-                                                        title="Supprimer">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                            </form>
+                                        <div class="d-flex align-items-center">
+                                            <i class="bi bi-geo-alt me-2 text-primary"></i>
+                                            <span class="text-muted">Localisation :</span>
+                                            <span class="ms-auto fw-medium">{{ parcelle.localisation }}</span>
                                         </div>
-                                    </td>
-                                </tr>
-                            {% else %}
-                                <tr>
-                                    <td colspan="6">
-                                        <div class="alert alert-info border-0 shadow-sm rounded-4 mt-3">
-                                            <i class="bi bi-info-circle me-2"></i>
-                                            Aucune parcelle trouvée. Essayez de modifier vos critères de recherche ou 
-                                            <a href="{{ path('app_parcelle_new') }}" class="alert-link">créez une nouvelle parcelle</a>.
+                                        <div class="d-flex align-items-center">
+                                            <i class="bi bi-droplet me-2 text-primary"></i>
+                                            <span class="text-muted">Type de sol :</span>
+                                            {% set badgeColors = {
+                                                'argileux': 'warning',
+                                                'sableux': 'info',
+                                                'limoneux': 'success'
+                                            } %}
+                                            <span class="ms-auto badge rounded-pill bg-{{ badgeColors[parcelle.typeSol] ?? 'secondary' }}">
+                                                {{ parcelle.typeSol | capitalize }}
+                                            </span>
                                         </div>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                                    </div>
+                                </div>
+                                <div class="parcelle-card-footer p-4 bg-light py-3">
+                                    <div class="d-flex gap-2 justify-content-end">
+                                        <a href="{{ path('app_parcelle_show', {'id': parcelle.id}) }}" 
+                                           class="btn btn-info btn-sm rounded-pill"
+                                           data-bs-toggle="tooltip"
+                                           title="Voir les détails">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a href="{{ path('app_parcelle_edit', {'id': parcelle.id}) }}" 
+                                           class="btn btn-warning btn-sm rounded-pill"
+                                           data-bs-toggle="tooltip"
+                                           title="Modifier">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <form action="{{ path('app_parcelle_delete', {'id': parcelle.id}) }}" 
+                                              method="post" 
+                                              class="d-inline"
+                                              onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette parcelle ?');">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ parcelle.id) }}">
+                                            <button type="submit" 
+                                                    class="btn btn-danger btn-sm rounded-pill"
+                                                    data-bs-toggle="tooltip"
+                                                    title="Supprimer">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="col">
+                            <div class="alert alert-info border-0 shadow-sm rounded-4 mt-3">
+                                <i class="bi bi-info-circle me-2"></i>
+                                Aucune parcelle trouvée. Essayez de modifier vos critères de recherche ou 
+                                <a href="{{ path('app_parcelle_new') }}" class="alert-link">créez une nouvelle parcelle</a>.
+                            </div>
+                        </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>

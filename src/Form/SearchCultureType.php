@@ -24,8 +24,7 @@ class SearchCultureType extends AbstractType
                 'label' => false,
                 'choices' => [
                     'En Culture' => 'en_culture',
-                    'Récolte' => 'recolte',
-                    'Terminé' => 'termine',
+                    'Terminé' => 'terminé',
                 ],
                 'placeholder' => 'Statut',
             ]);

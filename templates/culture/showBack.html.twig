@@ -1,149 +1,148 @@
 {% extends 'BackEnd/back.html.twig' %}
 
-{% block title %}Culture{% endblock %}
+{% block title %}Culture
+{% endblock %}
 
 {% block content %}
-   <div class="container mt-4">
-        <div class="glass-card shadow-sm border-0">
-            <div class="card-header py-3 px-4" style="background: linear-gradient(90deg, #1a9738, #1F4E3D); border-radius: 12px 12px 0 0;">
-                <h5 class="mb-0 text-white"></i> Détails de la Culture</h5>
-            </div>
-            <div class="card-body">
-                {# Two-Column Layout for Culture Details #}
-                <div class="row">
-                    {# Left Column #}
-                    <div class="col-md-6">
-                        <div class="info-card mb-4">
-                            <div class="detail-item">
-                                <i class="bi bi-tag detail-icon"></i>
-                                <div class="detail-content">
-                                    <h6 class="text-muted">Nom de la Culture</h6>
-                                    <p class="fw-bold mb-0">{{ culture.nomCulture }}</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="info-card mb-4">
-                            <div class="detail-item">
-                                <i class="lni lni-mapbi bi-calendar-date detail-icon"></i>
-                                <div class="detail-content">
-                                    <h6 class="text-muted">Date de Semis</h6>
-                                    <p class="fw-bold mb-0">{{ culture.dateSemis ? culture.dateSemis|date('Y-m-d') : '' }}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+	<div class="container mt-4">
+		<div class="glass-card shadow-sm border-0">
+			<div class="card-header py-3 px-4" style="background: linear-gradient(90deg, #1a9738, #1F4E3D); border-radius: 12px 12px 0 0;">
+				<h5 class="mb-0 text-white"></i>
+				Détails de la Culture</h5>
+		</div>
+		<div class="card-body">
+			<div class="row">
+				<div class="col-md-6">
+					<div class="info-card mb-4">
+						<div class="detail-item">
+							<i class="bi bi-tag detail-icon"></i>
+							<div class="detail-content">
+								<h6 class="text-muted">Nom de la Culture</h6>
+								<p class="fw-bold mb-0">{{ culture.nomCulture }}</p>
+							</div>
+						</div>
+					</div>
+					<div class="info-card mb-4">
+						<div class="detail-item">
+							<i class="lni lni-mapbi bi-calendar-date detail-icon"></i>
+							<div class="detail-content">
+								<h6 class="text-muted">Date de Semis</h6>
+								<p class="fw-bold mb-0">{{ culture.dateSemis ? culture.dateSemis|date('Y-m-d') : '' }}</p>
+							</div>
+						</div>
+					</div>
+				</div>
 
-                    {# Right Column #}
-                    <div class="col-md-6">
-                        <div class="info-card mb-4">
-                            <div class="detail-item">
-                                <i class="bi bi-clock-history detail-icon"></i>
-                                <div class="detail-content">
-                                    <h6 class="text-muted">Durée</h6>
-                                    <p class="fw-bold mb-0">{{ culture.duree }} Jours</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="info-card mb-4">
-                            <div class="detail-item">
-                                <i class="bi bi-clipboard2-check detail-icon"></i>
-                                <div class="detail-content">
-                                    <h6 class="text-muted">Statut</h6>
-                                    <p class="fw-bold mb-0">{{ culture.statut | capitalize }}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+				<div class="col-md-6">
+					<div class="info-card mb-4">
+						<div class="detail-item">
+							<i class="bi bi-clock-history detail-icon"></i>
+							<div class="detail-content">
+								<h6 class="text-muted">Durée</h6>
+								<p class="fw-bold mb-0">{{ culture.duree }}
+									Jours</p>
+							</div>
+						</div>
+					</div>
+					<div class="info-card mb-4">
+						<div class="detail-item">
+							<i class="bi bi-clipboard2-check detail-icon"></i>
+							<div class="detail-content">
+								<h6 class="text-muted">Statut</h6>
+								<p class="fw-bold mb-0">{{ culture.statut | capitalize }}</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 
-                {# Progress Bar Section #}
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="info-card mb-4">
-                            <div class="detail-item">
-                                <i class="bi bi-bar-chart-fill detail-icon"></i>
-                                <div class="detail-content">
-                                    <h6 class="text-muted">Progression de la Culture</h6>
-                                    {% set today = "now"|date('Y-m-d') %}
-                                    {% set dateSemis = culture.dateSemis ? culture.dateSemis|date('Y-m-d') : today %}
-                                    {% set duree = culture.duree %}
-                                    {% set daysElapsed = (today|date('U') - dateSemis|date('U')) / (60 * 60 * 24) %}
-                                    {% set progress = (daysElapsed / duree) * 100 %}
+			<div class="row">
+				<div class="col-md-12">
+					<div class="info-card mb-4">
+						<div class="detail-item">
+							<i class="bi bi-bar-chart-fill detail-icon"></i>
+							<div class="detail-content">
+								<h6 class="text-muted">Progression de la Culture</h6>
+								{% set today = "now"|date('Y-m-d') %}
+								{% set dateSemis = culture.dateSemis ? culture.dateSemis|date('Y-m-d') : today %}
+								{% set duree = culture.duree %}
+								{% set daysElapsed = (today|date('U') - dateSemis|date('U')) / (60 * 60 * 24) %}
+								{% set progress = (daysElapsed / duree) * 100 %}
 
-                                    {# Handle edge cases #}
-                                    {% if progress < 0 %}
-                                        {% set progress = 0 %}
-                                        <p class="text-muted mb-2">La culture n'a pas encore commencé.</p>
-                                    {% elseif progress >= 100 %}
-                                        {% set progress = 100 %}
-                                        <p class="text-muted mb-2">La culture est terminée.</p>
-                                    {% else %}
-                                        <p class="text-muted mb-2">Progression: {{ progress|round(2) }}%</p>
-                                    {% endif %}
+								{# Handle edge cases #}
+								{% if progress < 0 %}
+									{% set progress = 0 %}
+									<p class="text-muted mb-2">La culture n'a pas encore commencé.</p>
+								{% elseif progress >= 100 %}
+									{% set progress = 100 %}
+									<p class="text-muted mb-2">La culture est terminée.</p>
+								{% else %}
+									<p class="text-muted mb-2">Progression:
+										{{ progress|round(2) }}%</p>
+								{% endif %}
 
-                                    <div class="progress">
-                                        <div class="progress-bar" role="progressbar" style="width: {{ progress }}%;" aria-valuenow="{{ progress }}" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+								<div class="progress">
+									<div class="progress-bar" role="progressbar" style="width: {{ progress }}%;" aria-valuenow="{{ progress }}" aria-valuemin="0" aria-valuemax="100"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 
-                {# Full-Width Parcelle Section with Two Halves #}
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="info-card mb-4">
-                            <div class="detail-item">
-                                <i class="lni lni-map detail-icon"></i>
-                                <div class="detail-content row align-items-center">
-                                    {# First Half: Parcelle Title and Name (Vertically Centered) #}
-                                    <div class="col-md-6 d-flex flex-column justify-content-center">
-                                        <h6 class="text-muted">Parcelle</h6>
-                                        <a href="{{ path('app_parcelle_show', {'id': culture.parcelle.id}) }}" class="fw-bold mb-0">{{ culture.parcelle.nom }}</a>
-                                    </div>
+			<div class="row">
+				<div class="col-md-12">
+					<div class="info-card mb-4">
+						<div class="detail-item">
+							<i class="lni lni-map detail-icon"></i>
+							<div class="detail-content row align-items-center">
+								<div class="col-md-6 d-flex flex-column justify-content-center">
+									<h6 class="text-muted">Parcelle</h6>
+									<a href="{{ path('app_parcelle_show', {'id': culture.parcelle.id}) }}" class="fw-bold mb-0">{{ culture.parcelle.nom }}</a>
+								</div>
 
-                                    {# Second Half: Parcelle Details #}
-                                    <div class="col-md-6 parcelle-details">
-                                        <p class="text-muted mb-1"><i class="bi bi-rulers"></i> Superficie: {{ culture.parcelle.superficie | number_format(2, ',', ' ') }} m²</p>
-                                        <p class="text-muted mb-1"><i class="bi bi-pin-map"></i> Localisation: {{ culture.parcelle.localisation }}</p>
-                                        <p class="text-muted mb-0"><i class="bi bi-sunrise"></i> Type de Sol: {{ culture.parcelle.typeSol | capitalize }}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+								<div class="col-md-6 parcelle-details">
+									<p class="text-muted mb-1">
+										<i class="bi bi-rulers"></i>
+										Superficie:
+										{{ culture.parcelle.superficie | number_format(2, ',', ' ') }}
+										m²</p>
+									<p class="text-muted mb-1">
+										<i class="bi bi-pin-map"></i>
+										Localisation:
+										{{ culture.parcelle.localisation }}</p>
+									<p class="text-muted mb-0">
+										<i class="bi bi-sunrise"></i>
+										Type de Sol:
+										{{ culture.parcelle.typeSol | capitalize }}</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 
-                {# Action Buttons #}
-                <div class="d-flex justify-content-between mt-4">
-                    <a href="{{ path('app_culture_back') }}" class="btn btn-light">
-                        <i class="bi bi-arrow-left"></i> Retour à la Liste
-                    </a>
-                    <div class="d-flex">
-                     
- <form action="{{ path('app_culture_delete_back', {'id': culture.id}) }}" 
-                                                  method="post" 
-                                                  class="d-inline"
-                                                  onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette culture ?');">
-                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ culture.id) }}">
-                                                <button type="submit" 
-                                                        class="btn btn-danger btn-sm"
-                                                        data-bs-toggle="tooltip"
-                                                        title="Supprimer">
-                                                    <i class="bi bi-trash"></i>Supprimer
-                                                </button>
-                                            </form>                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+			<div class="d-flex justify-content-between mt-4">
+				<a href="{{ app.request.headers.get('referer') }}" class="btn btn-light">
+					<i class="bi bi-arrow-left"></i>
+					Retour à la Liste
+				</a>
+				<div class="d-flex">
 
-        <style>
-        body {
-            background: linear-gradient(135deg, #e8f5e9, #c8e6c9) !important;
-        }
-       
-    </style>
+					<form action="{{ path('app_culture_delete_back', {'id': culture.id}) }}" method="post" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette culture ?');">
+						<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ culture.id) }}">
+						<button type="submit" class="btn btn-danger btn-sm" data-bs-toggle="tooltip" title="Supprimer">
+							<i class="bi bi-trash"></i>Supprimer
+						</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 
-{% endblock %}
+<style>
+	body {
+		background: linear-gradient(135deg, #e8f5e9, #c8e6c9) !important;
+	}
+</style>{% endblock %}

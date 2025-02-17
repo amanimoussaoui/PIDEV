@@ -44,10 +44,10 @@ class CommandeController extends AbstractController
         $em->persist($commande);
         $em->flush();
         return $this->redirectToRoute('panier_ajouter', ['id' => $product->getId()]);
-    } else {
+    } /*else {
         // Si le formulaire n'est pas valide, afficher les erreurs
         $this->addFlash('error', 'Veuillez corriger les erreurs du formulaire.');
-    }
+    }*/
 
     
 
@@ -118,7 +118,7 @@ class CommandeController extends AbstractController
             return $this->redirectToRoute('commande_list_client');
         }
 
-        return $this->render('commande/new.html.twig', [
+        return $this->render('commande/edit.html.twig', [
             'form' => $form->createView(),
         ]);
     }

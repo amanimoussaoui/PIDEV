@@ -158,7 +158,6 @@ h1, h2 {
                 <th>Produit</th>
                 <th>Quantité</th>
                 <th>Prix Total</th>
-                <th>Commande</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -181,13 +180,6 @@ h1, h2 {
                 </td>
                 <td>{{ panier.quantite }}</td>
                 <td>{{ panier.totale }} DT</td>
-              <td>
-    {% if panier.commande is not null %}
-        {{ panier.commande.getId() }}
-    {% else %}
-        Commande non trouvée
-    {% endif %}
-</td>
 
 
                 <td>

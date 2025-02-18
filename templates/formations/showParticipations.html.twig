@@ -1,0 +1,138 @@
+{% extends 'BackEnd/back.html.twig' %}
+
+{% block title %}Liste des participations{% endblock %}
+
+{% block content %}
+<style>
+    /* Amélioration de la table */
+table {
+width: 100%;
+border-collapse: separate;
+border-spacing: 0 10px;
+background: white; /* Fond blanc pour le tableau */
+border-radius: 10px;
+overflow: hidden;
+box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+border: 1px solid #ddd; /* Encadrement */
+}
+
+/* En-tête de la table */
+th {
+background: #4CAF50 !important; /* Vert */
+color: white !important;
+font-weight: bold;
+text-align: center;
+padding: 15px;
+width: auto;
+white-space: nowrap;
+}
+
+/* Contenu de la table */
+td {
+padding: 12px 15px;
+text-align: center;
+vertical-align: middle;
+}
+
+/* Lignes du tableau */
+tr {
+background: white; /* Fond blanc pour les lignes */
+}
+
+tr:hover {
+background: #f1f1f1; /* Gris clair au survol */
+}
+
+/* Boutons Update et Delete */
+td a {
+display: inline-block;
+padding: 8px 12px;
+margin: 5px;
+text-decoration: none;
+border-radius: 5px;
+font-weight: bold;
+text-align: center;
+}
+
+td a[href*="updateFormation"] {
+background: #007bff;
+color: white;
+}
+
+td a[href*="deleteFormation"] {
+background: #dc3545;
+color: white;
+}
+
+td a:hover {
+opacity: 0.8;
+}
+
+/* Image des formations */
+td img {
+border-radius: 5px;
+box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Titre "Liste des formations" */
+h1 {
+text-align: center;
+margin-bottom: 20px;
+background: #4CAF50; /* Fond vert */
+color: white;
+padding: 15px;
+border-radius: 5px;
+}
+
+/* Bouton "Ajouter une nouvelle formation" */
+.btn-primary {
+background-color: #4CAF50 !important; /* Vert */
+border-color: #4CAF50 !important;
+color: white !important;
+padding: 10px 20px;
+font-size: 16px;
+font-weight: bold;
+text-align: center;
+display: block;
+margin: 20px auto;
+border-radius: 5px;
+text-decoration: none;
+}
+
+.btn-primary:hover {
+background-color: #45a049 !important; /* Vert légèrement plus foncé au survol */
+border-color: #45a049 !important;
+}
+
+    </style>
+   <h1 class="text-center my-4">Liste des participations</h1>
+
+   {% if participations is not empty %}
+       <table class="table">
+           <thead>
+               <tr>
+                   <th>ID Utilisateur</th>
+                   <th>Nom Utilisateur</th>
+                   <th>Formation</th>
+                   <th>Date d'inscription</th>
+                   <th>Action</th>
+               </tr>
+           </thead>
+           <tbody>
+               {% for participation in participations %}
+                   <tr>
+                       <td>{{ participation.user.id }}</td>
+                       <td>{{ participation.user.name }}</td>
+                       <td>{{ participation.formation.titre }}</td>
+                       <td>{{ participation.dateCreation|date('d/m/Y') }}</td>
+                       <td>
+                           <a href="{{ path('deleteParticipation', {'id': participation.id}) }}" class="btn btn-danger">Delete</a>
+                       </td>
+                   </tr>
+               {% endfor %}
+           </tbody>
+       </table>
+   {% else %}
+       <p>Aucune participation trouvée.</p>
+   {% endif %}
+   {% endblock %}

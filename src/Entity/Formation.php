@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\FormationRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -37,6 +39,12 @@ class Formation
     #[Assert\Url(message: "L'image doit être une URL valide.")]
     private ?string $image = null;
 
+    /**
+     * @var Collection<int, Participation>
+     */
+    #[ORM\OneToMany(targetEntity: Participation::class, mappedBy: 'formation', orphanRemoval: true)]
+    private Collection $participations;
+
     // Ajouter un constructeur pour initialiser la date si elle est null
     public function __construct()
     {
@@ -44,6 +52,7 @@ class Formation
         if ($this->date === null) {
             $this->date = new \DateTime(); // initialise à la date actuelle
         }
+        $this->participations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -107,6 +116,36 @@ class Formation
     public function setImage(?string $image): static
     {
         $this->image = $image;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Participation>
+     */
+    public function getParticipations(): Collection
+    {
+        return $this->participations;
+    }
+
+    public function addParticipation(Participation $participation): static
+    {
+        if (!$this->participations->contains($participation)) {
+            $this->participations->add($participation);
+            $participation->setFormation($this);
+        }
+
+        return $this;
+    }
+
+    public function removeParticipation(Participation $participation): static
+    {
+        if ($this->participations->removeElement($participation)) {
+            // set the owning side to null (unless already changed)
+            if ($participation->getFormation() === $this) {
+                $participation->setFormation(null);
+            }
+        }
 
         return $this;
     }

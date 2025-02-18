@@ -113,6 +113,22 @@ public function showFormationsFront(EntityManagerInterface $entityManager): Resp
     ]);
 }
 
+#[Route('/formation/{id}', name: 'formation_detail', methods: ['GET'])]
+public function showFormationDetails($id, FormationRepository $formationRepository): Response
+{
+    // Fetch the formation by its ID
+    $formation = $formationRepository->find($id);
+
+    // If the formation is not found, throw an exception
+    if (!$formation) {
+        throw $this->createNotFoundException('Formation non trouvée');
+    }
+
+    // Render the formation details page
+    return $this->render('formations/formationDetails.html.twig', [
+        'formation' => $formation,
+    ]);
+}
 
     
 }

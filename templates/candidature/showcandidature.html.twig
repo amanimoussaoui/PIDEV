@@ -1,6 +1,6 @@
-{% extends 'BackEnd/back.html.twig' %}
+{% extends 'FrontEnd/front.html.twig' %}
 
-{% block title %}AgriWise | Dashboard{% endblock %}
+{% block title %}AgriWise | Acceuil{% endblock %}
 {% block content %}
 
 <!-- Ajout de FontAwesome pour les icônes -->
@@ -119,6 +119,29 @@
     .edit-icon i, .delete-icon i {
         margin-right: 2px;
     }
+
+    .update-icon {
+    background-color: #28a745; /* Vert pour modifier */
+    border: 1px solid #28a745;
+    color: white;
+    font-size: 1rem;
+    padding: 8px 12px;
+    border-radius: 4px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.update-icon:hover {
+    opacity: 0.9;
+    transform: scale(1.05);
+}
+
+.update-icon i {
+    margin-right: 5px;
+}
+
 </style>
 
 <div class="container my-5">
@@ -128,9 +151,11 @@
             <thead>
                 <tr>
                     <th>id</th>
-                    <th>Date</th>
-                    <th>Montant</th>
-                    <th>Etat</th>
+                   <th>idTerrain</th>
+                    <th>dateDebut</th>
+                    <th>dateFin</th>
+                    <th>but</th>
+                    <th>montant</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -138,17 +163,28 @@
                 {% for a in tab_candidature %}
                 <tr>
                     <td>{{ a.id }}</td>
-                    <td>{{ a.date|date('Y-m-d H:i:s') }}</td>  {# Formater la date #}
-                    <td>{{ a.montant }} m²</td>
-                    <td>{{ a.etat }} TND</td>
+                    <td>{{ a.idTerrain.id }}</td>
+                    <td>{{ a.dateDebut|date('Y-m-d') }}</td>
+                    <td>{{ a.dateFin|date('Y-m-d') }}</td>
+                     <td>{{ a.but}} </td>
+                    <td>{{ a.montant }} </td>
+                    
     
                     <td class="action-icons">
-                        <a href="{{ path('app_deletecandidature', {'id': a.id}) }}" class="delete-icon" title="Supprimer"
-                           onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette candidature ?')">
-                            <i class="fa-solid fa-trash"></i> <!-- Icône Supprimer -->
-                            Supprimer
-                        </a>
-                    </td>
+            <!-- Bouton Modifier -->
+            <a href="{{ path('app_updateformcandidature', {'id': a.id}) }}" class="update-icon" title="Modifier"
+               onclick="return confirm('Êtes-vous sûr de vouloir modifier cette candidature ?')">
+                <i class="fa-solid fa-pencil-alt"></i> <!-- Icône Modifier -->
+                Modifier
+            </a>
+
+            <!-- Bouton Supprimer -->
+            <a href="{{ path('app_deletecandidature', {'id': a.id}) }}" class="delete-icon" title="Supprimer"
+               onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette candidature ?')">
+                <i class="fa-solid fa-trash"></i> <!-- Icône Supprimer -->
+                Supprimer
+            </a>
+        </td>
                 </tr>
                 {% endfor %}
             </tbody>

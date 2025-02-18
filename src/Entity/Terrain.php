@@ -10,7 +10,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-
 #[ORM\Entity(repositoryClass: TerrainRepository::class)]
 class Terrain
 {
@@ -18,18 +17,21 @@ class Terrain
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
-    private ?Utilisateur $idUser = null;
     
     
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "La localisation est obligatoire.")]
-    #[Assert\Length(
-        min: 3,
-        max: 255,
-        minMessage: "La localisation doit comporter au moins {{ limit }} caractères.",
-        maxMessage: "La localisation ne peut pas dépasser {{ limit }} caractères."
-    )]
-    private ?string $localisation = null;
+#[Assert\NotBlank(message: "La localisation est obligatoire.")]
+#[Assert\Length(
+    min: 3,
+    max: 255,
+    minMessage: "La localisation doit comporter au moins {{ limit }} caractères.",
+    maxMessage: "La localisation ne peut pas dépasser {{ limit }} caractères."
+)]
+#[Assert\Regex(
+    pattern: "/^[a-zA-ZÀ-ÿ\s]+$/",
+    message: "La localisation ne doit contenir que des lettres et des espaces."
+)]
+private ?string $localisation = null;
 
     #[ORM\Column]
     #[Assert\NotBlank(message: "La superficie est obligatoire.")]
@@ -56,149 +58,65 @@ class Terrain
     private ?string $description = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "L'image est obligatoire.")]
-    #[Assert\Url(message: "L'URL de l'image n'est pas valide.")]
+    #[Assert\Image(
+        mimeTypes: ["image/jpeg", "image/png"],
+        mimeTypesMessage: "L'image doit être de type JPEG ou PNG."
+    )]
     private ?string $image = null;
+    
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le username est obligatoire.")]
+    #[Assert\Length(
+        min: 3,
+        minMessage: "Le username doit comporter au moins {{ limit }} caractères."
+    )]
     private ?string $username = null;
 
-    /**
-     * @var Collection<int, Candidature>
-     */
-    #[ORM\OneToMany(targetEntity: Candidature::class, mappedBy: 'idTerrain')]
-    private Collection $candidatures;
+    #[ORM\OneToMany(mappedBy: 'idTerrain', targetEntity: Candidature::class, cascade: ['remove'])]
+private Collection $candidatures;
 
     public function __construct()
     {
         $this->candidatures = new ArrayCollection();
     }
 
-    #[ORM\ManyToOne(inversedBy: 'terrains')]
-    #[ORM\JoinColumn(nullable: false)]
-   
-
-    #[ORM\Column]
-
-
-    public function getId(): ?int
+    public function validateFields(): array
     {
-        return $this->id;
+        $errors = [];
+        if (empty($this->localisation)) $errors[] = 'La localisation est obligatoire.';
+        if (empty($this->superficie)) $errors[] = 'La superficie est obligatoire.';
+        if (empty($this->prix)) $errors[] = 'Le prix est obligatoire.';
+        if (empty($this->description)) $errors[] = 'La description est obligatoire.';
+        if (empty($this->image)) $errors[] = 'L\'image est obligatoire.';
+        return $errors;
     }
 
-    public function getLocalisation(): ?string
-    {
-        return $this->localisation;
-    }
-
-    public function setLocalisation(string $localisation): static
-    {
-        $this->localisation = $localisation;
-
-        return $this;
-    }
-
-    public function getSuperficie(): ?float
-    {
-        return $this->superficie;
-    }
-
-    public function setSuperficie(float $superficie): static
-    {
-        $this->superficie = $superficie;
-
-        return $this;
-    }
-
-    public function getPrix(): ?float
-    {
-        return $this->prix;
-    }
-
-    public function setPrix(float $prix): static
-    {
-        $this->prix = $prix;
-
-        return $this;
-    }
-
-    public function getDescription(): ?string
-    {
-        return $this->description;
-    }
-
-    public function setDescription(string $description): static
-    {
-        $this->description = $description;
-
-        return $this;
-    }
-
+    public function getId(): ?int { return $this->id; }
+    public function getLocalisation(): ?string { return $this->localisation; }
+    public function setLocalisation(string $localisation): static { $this->localisation = $localisation; return $this; }
+    public function getSuperficie(): ?float { return $this->superficie; }
+    public function setSuperficie(float $superficie): static { $this->superficie = $superficie; return $this; }
+    public function getPrix(): ?float { return $this->prix; }
+    public function setPrix(float $prix): static { $this->prix = $prix; return $this; }
+    public function getDescription(): ?string { return $this->description; }
+    public function setDescription(string $description): static { $this->description = $description; return $this; }
     public function getImage(): ?string
-    {
-        return $this->image;
-    }
-
-    public function setImage(string $image): static
+{
+    return $this->image;
+}
+    public function setImage(?string $image): self
     {
         $this->image = $image;
-
         return $this;
     }
-
-    public function getIdUser(): ?Utilisateur
-    {
-        return $this->idUser;
-    }
-
-    public function setIdUser(?Utilisateur $idUser): static
-    {
-        $this->idUser = $idUser;
-
-        return $this;
-    }
-
-    public function getUsername(): ?string
-    {
-        return $this->username;
-    }
-
-    public function setUsername(string $username): static
-    {
-        $this->username = $username;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Candidature>
-     */
-    public function getCandidatures(): Collection
-    {
-        return $this->candidatures;
-    }
-
-    public function addCandidature(Candidature $candidature): static
-    {
-        if (!$this->candidatures->contains($candidature)) {
-            $this->candidatures->add($candidature);
-            $candidature->setIdTerrain($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCandidature(Candidature $candidature): static
-    {
-        if ($this->candidatures->removeElement($candidature)) {
-            // set the owning side to null (unless already changed)
-            if ($candidature->getIdTerrain() === $this) {
-                $candidature->setIdTerrain(null);
-            }
-        }
-
-        return $this;
-    }
+    public function getImagePath(): string { return 'uploads/' . $this->image; }
+    public function getUsername(): ?string { return $this->username; }
+    public function setUsername(string $username): static { $this->username = $username; return $this; }
+    public function getCandidatures(): Collection { return $this->candidatures; }
+    public function addCandidature(Candidature $candidature): static { if (!$this->candidatures->contains($candidature)) { $this->candidatures->add($candidature); $candidature->setIdTerrain($this); } return $this; }
+    public function removeCandidature(Candidature $candidature): static { if ($this->candidatures->removeElement($candidature)) { if ($candidature->getIdTerrain() === $this) { $candidature->setIdTerrain(null); } } return $this; }
 
     
 }
+

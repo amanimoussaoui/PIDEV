@@ -29,9 +29,11 @@
                             {% endfor %}
                         {% endfor %}
 
-                        <a href="{{ path('app_add_candidature', {'idTerrain': terrain.id, 'idUser': 1}) }}" class="btn btn-primary">
+                        <a href="{{ path('app_addformcandidature', {'idTerrain': terrain.id}) }}" class="btn btn-primary">
                             Faire candidature
                         </a>
+                        
+                        
 
                         <a href="{{ path('list_terrains') }}" class="btn btn-secondary">Retour à la liste</a>
                     </div>

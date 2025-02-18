@@ -10,42 +10,52 @@ use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\File;
 
 class TerrainType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('localisation', TextType::class, [
-                'label' => 'Localisation',
-                'required' => true,
-                'attr' => ['placeholder' => 'Indiquez la localisation du terrain'],
-            ])
+        ->add('localisation', TextType::class, [
+            'label' => 'Localisation',
+            'constraints' => [
+              
+            ]
+        ])
+       
             ->add('superficie', NumberType::class, [
                 'label' => 'Superficie (m²)',
-                'required' => true,
-                'attr' => ['placeholder' => 'Indiquez la superficie du terrain'],
-            ])
+               'constraints' => [
+                
+                ]
+                ])
             ->add('prix', NumberType::class, [
                 'label' => 'Prix',
-                'required' => true,
-                'attr' => ['placeholder' => 'Indiquez le prix du terrain'],
-            ])
-            ->add('description', TextareaType::class, [
-                'label' => 'Description',
-                'required' => true,
-                'attr' => ['placeholder' => 'Ajoutez une description du terrain', 'rows' => 4],
-            ])
-            ->add('image', UrlType::class, [
-                'label' => 'Image URL',
-                'required' => false,
-                'attr' => ['placeholder' => 'https://exemple.com/image.jpg'],
-            ])
-            ->add('username', TextType::class, [
-                'label' => 'UserName',
-                'required' => true,
-                'attr' => ['placeholder' => 'Indiquez le nom'],
-            ]);
+                'constraints' => [
+                
+                ]
+                ])
+           
+    ->add('description', TextType::class, [
+        'label' => 'Description du terrain',
+        'constraints' => [
+            
+        ]
+    ])
+    ->add('image', FileType::class, [
+        'required' => false,
+        'mapped' => true, // lié à l'entité
+        'data_class' => null, // désactive la validation automatique
+    ])
+    ->add('username', TextType::class, [
+        'label' => 'UserName',
+        'constraints' => [
+          
+        ]
+    ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

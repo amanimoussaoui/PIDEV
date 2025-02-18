@@ -9,14 +9,18 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Repository\TerrainRepository;
 use App\Entity\Terrain;//nom de l'entité
-use App\Entity\Utilisateur;
+
 use App\Form\TerrainType;//nom du form
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use App\Repository\UtilisateurRepository;
+
 use Symfony\Component\Security\Core\Security;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+
+
 
 
 
@@ -46,54 +50,98 @@ public function showterrain(TerrainRepository  $a): Response
         'tab_terrain' => $terrain,
     ]);
 }
+
+
 //AJOUT  VIA  FORMULAIRE
 
 #[Route('/addformterrain', name: 'app_addformterrain')]
 public function addformterrain(ManagerRegistry $m, Request $req): Response
+    {
+        $em = $m->getManager();
+        $terrain = new Terrain();
+        $form = $this->createForm(TerrainType::class, $terrain);
+        $form->handleRequest($req);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var UploadedFile $imageFile */
+            $imageFile = $form->get('image')->getData();
+            if ($imageFile) {
+                $destination = $this->getParameter('kernel.project_dir').'/public/uploads';
+                $newFilename = uniqid().'.'.$imageFile->guessExtension();
+                $imageFile->move($destination, $newFilename);
+                $terrain->setImage('/uploads/'.$newFilename);
+            }
+
+            $em->persist($terrain);
+            $em->flush();
+
+            $this->addFlash('success', 'Terrain ajouté avec succès !');
+            return $this->redirectToRoute('app_showterrain');
+        }
+
+        return $this->render('terrain/addformterrain.html.twig', [
+            'formadd' => $form->createView(),
+        ]);
+    }
+
+//UPDATE FROM FORMULAIRE
+
+
+#[Route('/updateformterrain/{id}', name: 'app_updateformterrain')]
+public function updateformterrain(ManagerRegistry $m, Request $req, $id, TerrainRepository $rep, #[Autowire('%uploads_dir%')] string $uploadsDir): Response
 {
     $em = $m->getManager();
-    $terrain = new Terrain();
+    $terrain = $rep->find($id);
+
+    if (!$terrain) {
+        throw $this->createNotFoundException('Terrain non trouvé');
+    }
+
+    // Conservez l'image actuelle avant de tenter de la modifier
+    $currentImage = $terrain->getImage();
+
     $form = $this->createForm(TerrainType::class, $terrain);
     $form->handleRequest($req);
 
     if ($form->isSubmitted() && $form->isValid()) {
-        // Vérifier que l'URL de l'image est valide
-        if (!filter_var($terrain->getImage(), FILTER_VALIDATE_URL)) {
-            $this->addFlash('error', 'Veuillez entrer une URL d\'image valide.');
-            return $this->redirectToRoute('app_addformterrain'); // Redirection en cas d'erreur
-        }
-        
+        /** @var UploadedFile $imageFile */
+        $imageFile = $form->get('image')->getData();
 
+        if ($imageFile) {
+            // Si une nouvelle image est téléchargée
+            $newFilename = uniqid().'.'.$imageFile->guessExtension();
+            
+            // Déplacer le fichier dans le répertoire 'uploads'
+            $imageFile->move($uploadsDir, $newFilename);
+            
+            // Mettre à jour l'image du terrain avec le chemin relatif
+            $terrain->setImage('/uploads/'.$newFilename);
+        } else {
+            // Si aucune nouvelle image n'est téléchargée, garder l'ancienne image
+            $terrain->setImage($currentImage);
+        }
+
+        // Sauvegarder les modifications
         $em->persist($terrain);
         $em->flush();
 
-        $this->addFlash('success', 'Terrain ajouté avec succès !');
-        return $this->redirectToRoute('app_showterrain'); // Redirection après ajout
+        // Message de succès et redirection
+        $this->addFlash('success', 'Terrain modifié avec succès !');
+        return $this->redirectToRoute('app_showterrain');
     }
 
+    // Passer la variable 'terrain' à la vue Twig
     return $this->render('terrain/addformterrain.html.twig', [
-        'formadd' => $form,
+        'formadd' => $form->createView(),
+        'current_image' => $currentImage, // Passer l'image actuelle au template
+        'terrain' => $terrain, // Passer l'objet 'terrain' à la vue
     ]);
 }
 
-//UPDATE FROM FORMULAIRE
 
-#[Route('/updateformterrain/{id}', name: 'app_updateformterrain')]
-    public function updateformterrain(ManagerRegistry $m,Request $req,$id,TerrainRepository $rep): Response
-    {
-        $em = $m->getManager();
-        $terrain = $rep->find($id);
-        $form = $this->createForm(TerrainType::class, $terrain);
-        $form->handleRequest($req);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em->persist($terrain);
-            $em->flush();
-            return $this->redirectToRoute('app_showterrain');
-        }
-        return $this->render('terrain/addformterrain.html.twig', [
-            'formadd' =>$form ,
-        ]);
-    }
+
+
+
     //DELETE FROM FORMULAIRE
 
  #[Route('/terrain/delete/{id}', name: 'app_deleteformterrain')]

@@ -27,6 +27,7 @@ a {
     color: var(--default-color);
 }
 
+<<<<<<< HEAD
 .table th a {
   color: #212529; /* Set the color to black */
   text-decoration: none; /* Remove underline */
@@ -205,6 +206,8 @@ transition: all .2s ease-out;
 transform: rotate(45deg);
 transition: all .2s ease-out;
 }
+=======
+>>>>>>> GestionUtilisateurs
 
 
 
@@ -440,6 +443,7 @@ transition: all .2s ease-out;
   }
   }
   
+<<<<<<< HEAD
 
   .modern-table {
     --bs-table-border-color: transparent;
@@ -485,6 +489,11 @@ transition: all .2s ease-out;
     border-bottom-right-radius: 10px;
 }
 
+=======
+  .card-margin {
+    margin-bottom: 1.875rem;
+  }
+>>>>>>> GestionUtilisateurs
   .card {
     border: 0;
     box-shadow: 0px 0px 10px 0px rgba(82, 63, 105, 0.1);
@@ -498,7 +507,11 @@ transition: all .2s ease-out;
     flex-direction: column;
     min-width: 0;
     word-wrap: break-word;
+<<<<<<< HEAD
     background-color: #ffffff !important;
+=======
+    background-color: #ffffff;
+>>>>>>> GestionUtilisateurs
     background-clip: border-box;
     border: 1px solid #e6e4e9;
     border-radius: 8px;
@@ -521,6 +534,10 @@ h1 {
 
 body {
     font-family: 'Poppins', sans-serif;
+<<<<<<< HEAD
+=======
+    background-color: var(--background-color);
+>>>>>>> GestionUtilisateurs
     color: var(--default-color);
 }
 
@@ -537,6 +554,123 @@ body {
     background-color: var(--surface-color);
 }
 
+<<<<<<< HEAD
+=======
+/* Sidebar */
+#sidebar {
+    width: 70px;
+    min-width: 70px;
+    z-index: 1000;
+    transition: all .25s ease-in-out;
+    background-color: #fff; /* Light green */
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0px 2px 20px rgba(1, 41, 112, 0.1);
+}
+
+#sidebar.expand {
+    width: 260px;
+    min-width: 260px;
+}
+
+.toggle-btn {
+    background-color: transparent;
+    cursor: pointer;
+    border: 0;
+    padding: 1rem 1.5rem;
+}
+
+.toggle-btn i {
+    font-size: 1.5rem;
+    color: var(--heading-color);
+}
+
+.sidebar-logo {
+    margin: auto 0;
+}
+
+.sidebar-logo a {
+    color: var(--heading-color);
+    font-size: 1.15rem;
+    font-weight: 600;
+}
+
+.sidebar-logo a:hover{
+  color:  var(--accent-color) !important; 
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+#sidebar:not(.expand) .sidebar-logo,
+#sidebar:not(.expand) a.sidebar-link span {
+    display: none;
+}
+
+.sidebar-nav {
+    padding: 2rem 0;
+    flex: 1 1 auto;
+}
+
+a.sidebar-link {
+    padding: .625rem 1.625rem;
+    color: var(--heading-color);
+    display: block;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    border-left: 3px solid transparent;
+}
+
+.sidebar-link i {
+    font-size: 1.1rem;
+    margin-right: .75rem;
+}
+
+a.sidebar-link:hover {
+  background-color: #1a9738; /* Slightly lighter background */
+  border-left: 3px solid #105b22; /* Left border in the new green */
+  color: var(--contrast-color); /* Text color remains the same */
+}
+
+.sidebar-item {
+  position: relative;
+}
+
+#sidebar:not(.expand) .sidebar-item .sidebar-dropdown {
+  position: absolute;
+  top: 0;
+  left: 70px;
+  background-color: #1F4E3D; /* Dark green for dropdown background */
+  padding: 0;
+  min-width: 15rem;
+  display: none;
+}
+
+#sidebar:not(.expand) .sidebar-item:hover .has-dropdown+.sidebar-dropdown {
+  display: block;
+  max-height: 15em;
+  width: 100%;
+  opacity: 1;
+}
+
+#sidebar.expand .sidebar-link[data-bs-toggle="collapse"]::after {
+  border: solid;
+  border-width: 0 .075rem .075rem 0;
+  content: "";
+  display: inline-block;
+  padding: 2px;
+  position: absolute;
+  right: 1.5rem;
+  top: 1.4rem;
+  transform: rotate(-135deg);
+  transition: all .2s ease-out;
+}
+
+#sidebar.expand .sidebar-link[data-bs-toggle="collapse"].collapsed::after {
+  transform: rotate(45deg);
+  transition: all .2s ease-out;
+}
+
+>>>>>>> GestionUtilisateurs
 /* Buttons */
 .btn-primary {
   background-color: var(--accent-color); /* New green for primary buttons */
@@ -544,10 +678,19 @@ body {
   color: var(--contrast-color); /* White text */
 }
 
+<<<<<<< HEAD
 .btn-primary:hover,
 .btn-primary:focus,
 .btn-primary:active {
   background-color: #1F4E3D !important; /* Darker green for hover */
+=======
+
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+  background-color: #1F4E3D; /* Darker green for hover */
+>>>>>>> GestionUtilisateurs
   border-color: #1F4E3D;
 }
 
@@ -564,6 +707,7 @@ body {
   border-color: #1F4E3D;
 }
 
+<<<<<<< HEAD
 
 /* Custom btn-info (cool mint green for modern tech feel) */
 .btn-info {
@@ -678,11 +822,14 @@ body {
   transform: scale(1.1);
 }
 
+=======
+>>>>>>> GestionUtilisateurs
 .badge-primary {
   background-color: #49A760; /* New green for badges */
   color: var(--contrast-color);
 }
 
+<<<<<<< HEAD
 /* Calendar Container */
 /* Calendar Container */
 
@@ -1074,6 +1221,8 @@ body {
   color: #ffffff; /* Keep text color white on hover */
 }
 
+=======
+>>>>>>> GestionUtilisateurs
 /* Forms */
 .form-control {
   border: 1px solid #1F4E3D; /* Dark green for form borders */

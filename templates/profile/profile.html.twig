@@ -1,0 +1,77 @@
+{% extends 'FrontEnd/front.html.twig' %}
+
+{% block title %}Hello ProfileController!{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+        <div class="profile-box">
+            <h1>Profil de {{ profile.Prenomf }}</h1>
+
+            <!-- Image de profil -->
+            {% if profile.image %}
+                <img src="{{ asset('uploads/images/' ~ profile.image) }}" class="profile-image">
+            {% else %}
+                <img src="{{ asset('uploads/images/' ~ 'default-avatar.png') }}" alt="Photo de profil par défaut" class="profile-image">
+            {% endif %}
+
+            <p><strong>Adresse :</strong> {{ profile.Adresse ?: 'Non renseigné' }}</p>
+            <p><strong>Téléphone :</strong> {{ profile.NumTel ?: 'Non renseigné' }}</p>
+            <p><strong>Date de naissance :</strong> {{ profile.DateDeNaissance ? profile.getDateDeNaissance|date('d/m/Y') : 'Non renseigné' }}</p>
+            <p><strong>Bio :</strong> {{ profile.Bio ?: 'Non renseigné' }}</p>
+
+            <a href="{{ path('app_updateprofile', {'id':profile.id}) }}" class="edit-button">Modifier le profil</a>
+        </div>
+    </div>
+
+    <style>
+        .profile-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, rgb(27, 223, 60),rgb(26, 131, 78));
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .profile-box {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .profile-box h1 {
+            font-size: 28px;
+            color: rgb(12, 188, 26);
+            margin-bottom: 20px;
+        }
+
+        .profile-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 15px;
+        }
+
+        .edit-button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #2563EB;
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .edit-button:hover {
+            background: #1E40AF;
+        }
+    </style>
+
+{% endblock %}

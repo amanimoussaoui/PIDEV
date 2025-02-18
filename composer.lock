@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "36ee504294d44538641e1c0554e37b02",
+    "content-hash": "1b66033e7a4cb0c9840d904af694af80",
     "packages": [
         {
             "name": "composer/semver",
@@ -1530,6 +1530,7 @@
             "time": "2024-10-07T16:11:50+00:00"
         },
         {
+
             "name": "monolog/monolog",
             "version": "3.8.1",
             "source": {

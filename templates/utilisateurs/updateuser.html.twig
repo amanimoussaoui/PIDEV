@@ -1,0 +1,129 @@
+{% extends 'BackEnd/back.html.twig' %}
+
+{% block title %}Mettre à jour l'utilisateur{% endblock %}
+{% block content %}
+    <div class="update-user-form-container">
+        <h2>Modifier l'utilisateur</h2>
+
+        {{ form_start(formupdate, { 'attr': {'novalidate': 'novalidate'} }) }}
+
+        <div class="form-group">
+            {{ form_label(formupdate.email, 'Email', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(formupdate.email, {'attr': {'class': 'form-input'}}) }}
+            {{ form_errors(formupdate.email) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(formupdate.nom, 'Nom', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(formupdate.nom, {'attr': {'class': 'form-input'}}) }}
+            {{ form_errors(formupdate.nom) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(formupdate.prenom, 'Prénom', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(formupdate.prenom, {'attr': {'class': 'form-input'}}) }}
+            {{ form_errors(formupdate.prenom) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(formupdate.roles, 'Rôles', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(formupdate.roles, {'attr': {'class': 'form-input'}}) }}
+            {{ form_errors(formupdate.roles) }}
+        </div>
+
+        <button type="submit" class="form-button">
+            Mettre à jour
+        </button>
+
+        {{ form_end(formupdate) }}
+    </div>
+
+
+    <style>
+        /* Isolated Form Container */
+.update-user-form-container {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Form Title */
+.update-user-form-container h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #4CAF50;
+    margin-bottom: 20px;
+}
+
+/* Form Groups */
+.update-user-form-container .form-group {
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+/* Label Style */
+.update-user-form-container .form-label {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 6px;
+}
+
+/* Input Fields */
+.update-user-form-container .form-input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #4CAF50;
+    border-radius: 8px;
+    background-color: #f9fff9;
+    font-size: 16px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Input Focus Effect */
+.update-user-form-container .form-input:focus {
+    border-color: #388E3C;
+    box-shadow: 0 0 8px rgba(76, 175, 80, 0.3);
+    outline: none;
+}
+
+/* Dropdown Styling */
+.update-user-form-container select.form-input {
+    appearance: none;
+    background-color: #f9fff9;
+}
+
+/* Submit Button */
+.update-user-form-container .form-button {
+    width: 100%;
+    padding: 12px;
+    font-size: 18px;
+    font-weight: bold;
+    background: linear-gradient(135deg, #4CAF50, #388E3C);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+/* Button Hover Effect */
+.update-user-form-container .form-button:hover {
+    background: linear-gradient(135deg, #388E3C, #2E7D32);
+    transform: scale(1.05);
+}
+
+/* Error Message Styling */
+.update-user-form-container .form-errors {
+    color: red;
+    font-size: 14px;
+    margin-top: 4px;
+}
+
+    </style>
+{% endblock %}

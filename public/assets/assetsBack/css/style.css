@@ -13,6 +13,7 @@
   scroll-behavior: smooth;
 }
 
+<<<<<<< HEAD
 
 /* Global Colors - Updated with the new palette */
 :root {
@@ -51,6 +52,11 @@
 body {
   font-family: "Open Sans", sans-serif;
   background: #fbfdff;
+=======
+body {
+  font-family: "Open Sans", sans-serif;
+  background: #f9fbff;
+>>>>>>> GestionUtilisateurs
   color: #444444;
 }
 
@@ -253,6 +259,7 @@ h6 {
 
 /* Card */
 .card {
+<<<<<<< HEAD
   border: 0;
   box-shadow: 0px 0px 10px 0px rgba(82, 63, 105, 0.1);
   -webkit-box-shadow: 0px 0px 10px 0px rgba(82, 63, 105, 0.1);
@@ -279,6 +286,12 @@ h6 {
 
 .card-margin {
   margin-bottom: 1.875rem;
+=======
+  margin-bottom: 30px;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0px 0 30px rgba(1, 41, 112, 0.1);
+>>>>>>> GestionUtilisateurs
 }
 
 .card-header,
@@ -286,10 +299,18 @@ h6 {
   border-color: #ebeef4;
   background-color: #fff;
   color: #798eb3;
+<<<<<<< HEAD
 }
 
 .card-title {
   padding: 10px 0 10px 0;
+=======
+  padding: 15px;
+}
+
+.card-title {
+  padding: 20px 0 15px 0;
+>>>>>>> GestionUtilisateurs
   font-size: 18px;
   font-weight: 500;
   color: #1F4E3D;
@@ -803,7 +824,11 @@ h6 {
 }
 
 .sidebar-nav .nav-content a i {
+<<<<<<< HEAD
   font-size: 12px;
+=======
+  font-size: 6px;
+>>>>>>> GestionUtilisateurs
   margin-right: 8px;
   line-height: 0;
   border-radius: 50%;
@@ -818,6 +843,7 @@ h6 {
   background-color: #1a9738;
 }
 
+<<<<<<< HEAD
 
 .table th a {
   color: #212529; /* Set the color to black */
@@ -1090,6 +1116,8 @@ letter-spacing: 0.5px;
 }
 
 
+=======
+>>>>>>> GestionUtilisateurs
 /*--------------------------------------------------------------
 # Dashboard
 --------------------------------------------------------------*/

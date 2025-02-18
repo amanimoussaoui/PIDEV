@@ -7,10 +7,10 @@
         /* 🎨 Style global du formulaire */
         .search-form {
             display: flex;
-            justify-content: flex-end; /* Aligne le formulaire à droite */
+            justify-content: space-between; /* Aligner le formulaire et l'icône de tri */
             margin: 30px auto;
             width: 100%;
-            max-width: 600px;
+            max-width: 800px;
             border-radius: 30px; /* Arrondi les coins du formulaire */
             padding: 15px;
             background-color: #f9f9f9; /* Couleur de fond claire */
@@ -89,6 +89,25 @@
 
         .search-button:hover i {
             transform: rotate(10deg); /* Rotation de l'icône */
+        }
+
+        /* 🎨 Style pour le bouton de tri */
+        .sort-icon {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            background-color: transparent;
+            border: none;
+            padding: 5px;
+            font-size: 10px;
+            color: #218838;
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+
+        .sort-icon:hover {
+            color: #1a682c;
+            transform: scale(1.1); /* Effet d'agrandissement au survol */
         }
 
         /* 🎨 Amélioration du titre */
@@ -204,6 +223,11 @@
                 <i class="fas fa-search"></i>
             </button>
         </div>
+
+        <!-- Icône de tri -->
+        <button type="submit" class="sort-icon" name="sort" value="price_asc">
+            <i class="fas fa-sort-amount-up"></i> <!-- Icône de tri par prix croissant -->
+        </button>
     </form>
 
     <div class="cards-container">

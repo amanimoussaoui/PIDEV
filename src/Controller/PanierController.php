@@ -5,11 +5,14 @@ namespace App\Controller;
 use App\Entity\Panier;
 use App\Entity\Product;
 use App\Repository\PanierRepository;
+use App\Repository\CommandeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 
 #[Route('/panier')]
 class PanierController extends AbstractController
@@ -131,6 +134,73 @@ $totalGeneral = array_reduce($paniers, function ($total, $panier) {
 
         return $this->redirectToRoute('panier_admin_index');
     }
+    /**
+ * Afficher les détails de la commande
+ */
+/*#[Route('/commande/details/{id}', name: 'panier_commande_details', methods: ['GET'])]
+public function details(int $id, CommandeRepository $commandeRepository): Response
+{
+    // Récupérer la commande à partir de son ID
+    $commande = $commandeRepository->find($id);
+
+    if (!$commande) {
+        throw $this->createNotFoundException('Commande non trouvée.');
+    }
+
+    // Calculer le total général des produits dans la commande
+    $totalGeneral = 0;
+    foreach ($commande->getPaniers() as $panier) {
+        $totalGeneral += $panier->getTotale(); // Assurez-vous que la méthode getTotale() existe dans Panier
+    }
+
+    // Rendre la vue avec les détails de la commande
+    return $this->render('panier/commande_details.html.twig', [
+        'commande' => $commande,
+        'totalGeneral' => $totalGeneral,
+    ]);
+}*/
+#[Route('/panier/pdf', name: 'panier_pdf', methods: ['GET'])]
+    public function generatePdf(PanierRepository $panierRepository): Response
+    {
+        // Récupérer les produits du panier
+        $paniers = $panierRepository->findAll();
+        $totalGeneral = array_reduce($paniers, function ($total, $panier) {
+            return $total + $panier->getTotale();
+        }, 0);
+
+        // Créer le contenu HTML pour le PDF
+        $html = $this->renderView('panier/pdf.html.twig', [
+            'paniers' => $paniers,
+            'totalGeneral' => $totalGeneral
+        ]);
+
+        // Configurer DomPDF
+        $options = new Options();
+        $options->set('isHtml5ParserEnabled', true);
+        $options->set('isPhpEnabled', true);
+        $dompdf = new Dompdf($options);
+
+        // Charger le contenu HTML dans DomPDF
+        $dompdf->loadHtml($html);
+
+        // (Facultatif) Configurer la taille du papier
+        $dompdf->setPaper('A4', 'portrait');
+
+        // Rendre le PDF
+        $dompdf->render();
+
+        // Retourner le PDF en réponse
+        return new Response(
+            $dompdf->output(),
+            200,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="panier.pdf"',
+            ]
+        );
+    }
+
+
     
 
    

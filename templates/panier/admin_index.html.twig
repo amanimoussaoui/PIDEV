@@ -142,6 +142,9 @@ h1, h2 {
 
 <div class="container">
     <h1>Liste des Paniers</h1>
+ <a href="{{ path('panier_pdf') }}" title="Télécharger en PDF">
+    <i class="fas fa-file-pdf"></i> Télécharger en PDF
+</a>
 
     {% for message in app.flashes('success') %}
         <div class="alert alert-success">{{ message }}</div>

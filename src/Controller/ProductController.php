@@ -102,16 +102,26 @@ public function showProductsFront(EntityManagerInterface $entityManager): Respon
 public function search(Request $request, ProductRepository $productRepository): Response
 {
     $category = $request->query->get('category'); // Récupérer la catégorie depuis l'URL
+    $sort = $request->query->get('sort'); // Récupérer le paramètre de tri
 
+    // Récupérer les produits en fonction de la catégorie et du tri
     if ($category) {
-        $products = $productRepository->findBy(['category' => $category]); // Recherche des produits
+        if ($sort === 'price_asc') {
+            $products = $productRepository->findBy(['category' => $category], ['prix' => 'ASC']);
+        } else {
+            $products = $productRepository->findBy(['category' => $category]);
+        }
     } else {
-        $products = $productRepository->findAll(); // Si aucune catégorie spécifiée, afficher tous les produits
+        if ($sort === 'price_asc') {
+            $products = $productRepository->findBy([], ['prix' => 'ASC']);
+        } else {
+            $products = $productRepository->findAll();
+        }
     }
 
-   return $this->render('product/showProductsFront.html.twig', [
-    'products' => $products,
-]);
+    return $this->render('product/showProductsFront.html.twig', [
+        'products' => $products,
+    ]);
 }
 
 

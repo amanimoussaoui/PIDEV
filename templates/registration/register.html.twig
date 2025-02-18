@@ -1,5 +1,9 @@
 {% block styles %}
     <style>
+        .body
+        {
+            margin: 0px !important;
+        }
         /* Center the register form */
         .register-container {
             width: 100%;
@@ -7,7 +11,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, rgb(27, 223, 60),rgb(26, 131, 78));
+            background: linear-gradient(135deg,#1a9738,#1F4E3D);
             font-family: 'Poppins', sans-serif;
         }
 
@@ -26,7 +30,7 @@
         .register-box h1 {
             font-size: 32px;
             font-weight: bold;
-            color:rgb(12, 188, 26);
+            color:#1a9738;
             margin-bottom: 20px;
         }
 
@@ -35,7 +39,7 @@
             width: 100%;
             padding: 12px;
             margin: 10px 0;
-            border: 2px solid #1E3A8A;
+            border: 2px solid #1F4E3D;
             border-radius: 8px;
             font-size: 16px;
             outline: none;
@@ -45,7 +49,7 @@
 
         /* Focus effect on input */
         .register-box input:focus {
-            border-color: #2563EB;
+            border-color: #1a9738;
             background: #ffffff;
             box-shadow: 0px 0px 10px rgba(37, 99, 235, 0.2);
         }
@@ -53,7 +57,7 @@
         /* Register button */
         .register-box button {
             width: 100%;
-            background: linear-gradient(135deg,rgb(27, 223, 60),rgb(26, 131, 78));
+            background: linear-gradient(135deg,#1a9738,#1F4E3D);
             color: white;
             font-size: 18px;
             font-weight: bold;
@@ -67,7 +71,7 @@
         /* Button hover effect */
         .register-box button:hover {
             transform: scale(1.05);
-            background: linear-gradient(135deg,rgb(26, 131, 78),rgb(27, 223, 60));
+            background: linear-gradient(135deg,#1a9738,#1F4E3D);
         }
 
         /* Sign-in link */
@@ -77,7 +81,7 @@
         }
 
         .login-link a {
-            color: #2563EB;
+            color: #1a9738;
             font-weight: bold;
             text-decoration: none;
         }
@@ -96,7 +100,7 @@
     display: block;
     margin: 8px 0;
     font-size: 16px;
-    color: #1E3A8A;
+    color: #1F4E3D;
     cursor: pointer;
 }
 
@@ -116,7 +120,7 @@
 
 /* Focus effect for checkboxes */
 .roles-checkbox-container input[type="checkbox"]:focus {
-    outline: 2px solid #2563EB;
+    outline: 2px solid #1a9738;
     outline-offset: 2px;
 }
     .form-error {

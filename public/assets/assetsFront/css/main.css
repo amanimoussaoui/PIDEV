@@ -27,7 +27,79 @@ a {
     color: var(--default-color);
 }
 
-<<<<<<< HEAD
+
+
+
+ .welcome-message {
+        font-size: 16px;
+        font-weight: bold;
+        margin-bottom: 5px;
+        color: #4CAF50; /* Green color for "Bienvenue" */
+        text-align: center; /* Center the text horizontally */
+        width: 100%; /* Ensure it takes up full width to center it */
+    }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+        justify-content: center; /* Center user info horizontally */
+    }
+
+    .user-info img {
+        margin-right: 10px;
+    }
+
+    .user-info span {
+        font-size: 14px;
+        font-weight: normal;
+        color: #333;
+    }
+    .btn {
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 5px;
+        text-decoration: none;
+        cursor: pointer;
+        display: inline-block;
+        font-weight: bold;
+        transition: all 0.3s ease;
+    }
+
+    /* Style pour le bouton Log In */
+    .btn-login {
+        background-color: #28a745; /* Vert */
+        color: white;
+        border: 2px solid transparent; /* Bordure transparente par défaut */
+    }
+
+    .btn-login:hover {
+        background-color: #218838; /* Vert plus foncé au survol */
+        border-color: #1e7e34; /* Bordure verte plus foncée au survol */
+    }
+
+    .btn-login:focus {
+        border-color: #1e7e34; /* Bordure verte plus foncée au focus */
+        outline: none;
+    }
+
+    /* Style pour le bouton Log Out */
+    .btn-logout {
+        background-color: #28a745; /* Vert */
+        color: white;
+        border: 2px solid #28a745; /* Bordure verte claire */
+    }
+
+    .btn-logout:hover {
+        background-color: #218838; /* Vert plus foncé au survol */
+        border-color: #1e7e34; /* Bordure verte plus foncée au survol */
+    }
+
+    .btn-logout:focus {
+        border-color: #1e7e34; /* Bordure verte plus foncée au focus */
+        outline: none;
+    }
+
+
 .table th a {
   color: #212529; /* Set the color to black */
   text-decoration: none; /* Remove underline */
@@ -206,8 +278,6 @@ transition: all .2s ease-out;
 transform: rotate(45deg);
 transition: all .2s ease-out;
 }
-=======
->>>>>>> GestionUtilisateurs
 
 
 
@@ -443,7 +513,6 @@ transition: all .2s ease-out;
   }
   }
   
-<<<<<<< HEAD
 
   .modern-table {
     --bs-table-border-color: transparent;
@@ -489,11 +558,9 @@ transition: all .2s ease-out;
     border-bottom-right-radius: 10px;
 }
 
-=======
   .card-margin {
     margin-bottom: 1.875rem;
   }
->>>>>>> GestionUtilisateurs
   .card {
     border: 0;
     box-shadow: 0px 0px 10px 0px rgba(82, 63, 105, 0.1);
@@ -507,11 +574,7 @@ transition: all .2s ease-out;
     flex-direction: column;
     min-width: 0;
     word-wrap: break-word;
-<<<<<<< HEAD
     background-color: #ffffff !important;
-=======
-    background-color: #ffffff;
->>>>>>> GestionUtilisateurs
     background-clip: border-box;
     border: 1px solid #e6e4e9;
     border-radius: 8px;
@@ -534,10 +597,7 @@ h1 {
 
 body {
     font-family: 'Poppins', sans-serif;
-<<<<<<< HEAD
-=======
     background-color: var(--background-color);
->>>>>>> GestionUtilisateurs
     color: var(--default-color);
 }
 
@@ -554,8 +614,6 @@ body {
     background-color: var(--surface-color);
 }
 
-<<<<<<< HEAD
-=======
 /* Sidebar */
 #sidebar {
     width: 70px;
@@ -670,7 +728,6 @@ a.sidebar-link:hover {
   transition: all .2s ease-out;
 }
 
->>>>>>> GestionUtilisateurs
 /* Buttons */
 .btn-primary {
   background-color: var(--accent-color); /* New green for primary buttons */
@@ -678,19 +735,10 @@ a.sidebar-link:hover {
   color: var(--contrast-color); /* White text */
 }
 
-<<<<<<< HEAD
 .btn-primary:hover,
 .btn-primary:focus,
 .btn-primary:active {
   background-color: #1F4E3D !important; /* Darker green for hover */
-=======
-
-
-.btn-primary:hover,
-.btn-primary:focus,
-.btn-primary:active {
-  background-color: #1F4E3D; /* Darker green for hover */
->>>>>>> GestionUtilisateurs
   border-color: #1F4E3D;
 }
 
@@ -707,7 +755,6 @@ a.sidebar-link:hover {
   border-color: #1F4E3D;
 }
 
-<<<<<<< HEAD
 
 /* Custom btn-info (cool mint green for modern tech feel) */
 .btn-info {
@@ -822,14 +869,11 @@ a.sidebar-link:hover {
   transform: scale(1.1);
 }
 
-=======
->>>>>>> GestionUtilisateurs
 .badge-primary {
   background-color: #49A760; /* New green for badges */
   color: var(--contrast-color);
 }
 
-<<<<<<< HEAD
 /* Calendar Container */
 /* Calendar Container */
 
@@ -1221,8 +1265,6 @@ a.sidebar-link:hover {
   color: #ffffff; /* Keep text color white on hover */
 }
 
-=======
->>>>>>> GestionUtilisateurs
 /* Forms */
 .form-control {
   border: 1px solid #1F4E3D; /* Dark green for form borders */

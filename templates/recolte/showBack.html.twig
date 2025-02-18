@@ -1,143 +1,149 @@
 {% extends 'BackEnd/back.html.twig' %}
 
-{% block title %}Détails de la Récolte{% endblock %}
+{% block title %}Détails de la Récolte
+{% endblock %}
 
 {% block content %}
-    <div class="container my-4">
-        <div class="card shadow-sm border-0">
-            <div class="card-header py-3 px-4" style="background: linear-gradient(90deg, #1a9738, #1F4E3D); border-radius: 12px 12px 0 0;">
-                <h5 class="mb-0 text-white">Détails de la Récolte</h5>
-            </div>
-            <div class="card-body">
-                {# Two-Column Layout for Recolte Details #}
-                <div class="row">
-                    {# Left Column #}
-                    <div class="col-md-6">
-                        <div class="info-card mb-4">
-                            <div class="detail-item">
-                                <i class="bi bi-calendar detail-icon"></i>
-                                <div class="detail-content">
-                                    <h6 class="text-muted">Date de Récolte</h6>
-                                    <p class="fw-bold mb-0">{{ recolte.dateRecolte ? recolte.dateRecolte|date('Y-m-d') : '' }}</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="info-card mb-4">
-                            <div class="detail-item">
-                                <i class="bi bi-clipboard2 detail-icon"></i>
-                                <div class="detail-content">
-                                    <h6 class="text-muted">Quantité</h6>
-                                    <p class="fw-bold mb-0">{{ recolte.quantite }} kg</p>
-                                </div>
-                            </div>
-                        </div>
-                 
-                 
-                    </div>
+	<div class="container my-4">
+		<div class="card shadow-sm border-0">
+			<div class="card-header py-3 px-4" style="background: linear-gradient(90deg, #1a9738, #1F4E3D); border-radius: 12px 12px 0 0;">
+				<h5 class="mb-0 text-white">Détails de la Récolte</h5>
+			</div>
+			<div class="card-body">
+				<div class="row">
+					<div class="col-md-6">
+						<div class="info-card mb-4">
+							<div class="detail-item">
+								<i class="bi bi-calendar detail-icon"></i>
+								<div class="detail-content">
+									<h6 class="text-muted">Date de Récolte</h6>
+									<p class="fw-bold mb-0">{{ recolte.dateRecolte ? recolte.dateRecolte|date('Y-m-d') : '' }}</p>
+								</div>
+							</div>
+						</div>
+						<div class="info-card mb-4">
+							<div class="detail-item">
+								<i class="bi bi-clipboard2 detail-icon"></i>
+								<div class="detail-content">
+									<h6 class="text-muted">Quantité</h6>
+									<p class="fw-bold mb-0">{{ recolte.quantite }}
+										kg</p>
+								</div>
+							</div>
+						</div>
+					</div>
 
-                    {# Right Column - Culture Details #}
-                    <div class="col-md-6">
-                        <div class="info-card mb-4">
-                            <div class="detail-item">
-                                <i class="bi bi-star detail-icon"></i>
-                                <div class="detail-content">
-                                    <h6 class="text-muted">Qualité</h6>
-                                    {% set badgeColors = {
+					<div class="col-md-6">
+						<div class="info-card mb-4">
+							<div class="detail-item">
+								<i class="bi bi-star detail-icon"></i>
+								<div class="detail-content">
+									<h6 class="text-muted">Qualité</h6>
+									{% set badgeColors = {
                                         'Excellente': 'success',
                                         'Bonne': 'info',
                                         'Moyenne': 'warning',
                                         'Médiocre': 'danger',
                                         'Mauvaise': 'secondary'
                                     } %}
-                                    <span class="badge rounded-pill bg-{{ badgeColors[recolte.qualite] ?? 'secondary' }}">
-                                        {{ recolte.qualite | capitalize }}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="info-card mb-4">
-                            <div class="detail-item">
-                                <i class="bi bi-currency-dollar detail-icon"></i>
-                                <div class="detail-content">
-                                    <h6 class="text-muted">Prix Unitaire</h6>
-                                    <p class="fw-bold mb-0">{{ recolte.prixUnitaire }} TND</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+									<span class="badge rounded-pill bg-{{ badgeColors[recolte.qualite] ?? 'secondary' }}">
+										{{ recolte.qualite | capitalize }}
+									</span>
+								</div>
+							</div>
+						</div>
+						<div class="info-card mb-4">
+							<div class="detail-item">
+								<i class="bi bi-currency-dollar detail-icon"></i>
+								<div class="detail-content">
+									<h6 class="text-muted">Prix Unitaire</h6>
+									<p class="fw-bold mb-0">{{ recolte.prixUnitaire }}
+										TND</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
 
-                {# Full-Width Culture Section with Details #}
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="info-card mb-4">
-                            <div class="detail-item">
-                                <i class="lni lni-leaf detail-icon"></i>
-                                <div class="detail-content row align-items-center">
-                                    {# First Half: Culture Title and Name (Vertically Centered) #}
-                                    <div class="col-md-6 d-flex flex-column justify-content-center">
-                                        <h6 class="text-muted">Culture</h6>
-                                        <a href="{{ path('app_culture_show_back', {'id': recolte.culture.id}) }}" class="fw-bold mb-0">{{ recolte.culture.nomCulture }}</a>
-                                    </div>
+				<div class="row">
+					<div class="col-md-12">
+						<div class="info-card mb-4">
+							<div class="detail-item">
+								<i class="lni lni-leaf detail-icon"></i>
+								<div class="detail-content row align-items-center">
+									<div class="col-md-6 d-flex flex-column justify-content-center">
+										<h6 class="text-muted">Culture</h6>
+										<a href="{{ path('app_culture_show_back', {'id': recolte.culture.id}) }}" class="fw-bold mb-0">{{ recolte.culture.nomCulture }}</a>
+									</div>
 
-                                    {# Second Half: Culture Details #}
-                                    <div class="col-md-6 parcelle-details">
-                                        <p class="text-muted mb-1"><i class="bi bi-calendar-date"></i> Date de Semis: {{ recolte.culture.dateSemis ? recolte.culture.dateSemis|date('Y-m-d') : '' }}</p>
-                                        <p class="text-muted mb-1"><i class="bi bi-clock-history"></i> Durée: {{ recolte.culture.duree }} Jours</p>
-                                        <p class="text-muted mb-0"><i class="bi bi-clipboard2-check"></i> Statut: {{ recolte.culture.statut | capitalize }}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+									<div class="col-md-6 parcelle-details">
+										<p class="text-muted mb-1">
+											<i class="bi bi-calendar-date"></i>
+											Date de Semis:
+											{{ recolte.culture.dateSemis ? recolte.culture.dateSemis|date('Y-m-d') : '' }}</p>
+										<p class="text-muted mb-1">
+											<i class="bi bi-clock-history"></i>
+											Durée:
+											{{ recolte.culture.duree }}
+											Jours</p>
+										<p class="text-muted mb-0">
+											<i class="bi bi-clipboard2-check"></i>
+											Statut:
+											{{ recolte.culture.statut | capitalize }}</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
 
-                {# Full-Width Parcelle Section with Details #}
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="info-card mb-4">
-                            <div class="detail-item">
-                                <i class="lni lni-map detail-icon"></i>
-                                <div class="detail-content row align-items-center">
-                                    {# First Half: Parcelle Title and Name (Vertically Centered) #}
-                                    <div class="col-md-6 d-flex flex-column justify-content-center">
-                                        <h6 class="text-muted">Parcelle</h6>
-                                        <a href="{{ path('app_parcelle_show_back', {'id': recolte.culture.parcelle.id}) }}" class="fw-bold mb-0">{{ recolte.culture.parcelle.nom }}</a>
-                                    </div>
+				<div class="row">
+					<div class="col-md-12">
+						<div class="info-card mb-4">
+							<div class="detail-item">
+								<i class="lni lni-map detail-icon"></i>
+								<div class="detail-content row align-items-center">
+									<div class="col-md-6 d-flex flex-column justify-content-center">
+										<h6 class="text-muted">Parcelle</h6>
+										<a href="{{ path('app_parcelle_show_back', {'id': recolte.culture.parcelle.id}) }}" class="fw-bold mb-0">{{ recolte.culture.parcelle.nom }}</a>
+									</div>
 
-                                    {# Second Half: Parcelle Details #}
-                                    <div class="col-md-6 parcelle-details">
-                                        <p class="text-muted mb-1"><i class="bi bi-rulers"></i> Superficie: {{ recolte.culture.parcelle.superficie | number_format(2, ',', ' ') }} m²</p>
-                                        <p class="text-muted mb-1"><i class="bi bi-pin-map"></i> Localisation: {{ recolte.culture.parcelle.localisation }}</p>
-                                        <p class="text-muted mb-0"><i class="bi bi-sunrise"></i> Type de Sol: {{ recolte.culture.parcelle.typeSol | capitalize }}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+									<div class="col-md-6 parcelle-details">
+										<p class="text-muted mb-1">
+											<i class="bi bi-rulers"></i>
+											Superficie:
+											{{ recolte.culture.parcelle.superficie | number_format(2, ',', ' ') }}
+											m²</p>
+										<p class="text-muted mb-1">
+											<i class="bi bi-pin-map"></i>
+											Localisation:
+											{{ recolte.culture.parcelle.localisation }}</p>
+										<p class="text-muted mb-0">
+											<i class="bi bi-sunrise"></i>
+											Type de Sol:
+											{{ recolte.culture.parcelle.typeSol | capitalize }}</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
 
-                {# Action Buttons #}
-                <div class="d-flex justify-content-between mt-4">
-                    <a href="{{ path('app_recolte_back') }}" class="btn btn-light">
-                        <i class="bi bi-arrow-left"></i> Retour à la Liste
-                    </a>
-                    <div class="d-flex">
-                        <form action="{{ path('app_recolte_delete_back', {'id': recolte.id}) }}" 
-                        method="post" 
-                        class="d-inline"
-                        onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette récolte ?');">
-                      <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ recolte.id) }}">
-                      <button type="submit" 
-                              class="btn btn-danger btn-sm"
-                              data-bs-toggle="tooltip"
-                              title="Supprimer">
-                          <i class="bi bi-trash"></i>Supprimer
-                      </button>
-                  </form>
-                                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+				<div class="d-flex justify-content-between mt-4">
+					<a href="{{ app.request.headers.get('referer') }}" class="btn btn-light">
+						<i class="bi bi-arrow-left"></i>
+						Retour à la Liste
+					</a>
+					<div class="d-flex">
+						<form action="{{ path('app_recolte_delete_back', {'id': recolte.id}) }}" method="post" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette récolte ?');">
+							<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ recolte.id) }}">
+							<button type="submit" class="btn btn-danger btn-sm" data-bs-toggle="tooltip" title="Supprimer">
+								<i class="bi bi-trash"></i>Supprimer
+							</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 {% endblock %}

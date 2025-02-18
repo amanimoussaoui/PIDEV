@@ -1,23 +1,24 @@
 {% extends 'BackEnd/back.html.twig' %}
 
-{% block title %}Activité{% endblock %}
+{% block title %}Activité
+{% endblock %}
 
 {% block content %}
-   <div class="container mt-4">
-        <div class="glass-card shadow-sm border-0">
-            <div class="card-header py-3 px-4" style="background: linear-gradient(90deg, #1a9738, #1F4E3D); border-radius: 12px 12px 0 0;">
-                <h5 class="mb-0 text-white">Détails de l'Activité</h5>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6 d-flex flex-column">
-                        <div class="info-card mb-4 flex-grow-1">
-                            <div class="detail-item">
-                                <i class="bi bi-list-check detail-icon"></i>
-                                <div class="detail-content">
-                                    <h6 class="text-muted">Type</h6>
-  
-                                    {% set activityColors = { 
+	<div class="container mt-4">
+		<div class="glass-card shadow-sm border-0">
+			<div class="card-header py-3 px-4" style="background: linear-gradient(90deg, #1a9738, #1F4E3D); border-radius: 12px 12px 0 0;">
+				<h5 class="mb-0 text-white">Détails de l'Activité</h5>
+			</div>
+			<div class="card-body">
+				<div class="row">
+					<div class="col-md-6 d-flex flex-column">
+						<div class="info-card mb-4 flex-grow-1">
+							<div class="detail-item">
+								<i class="bi bi-list-check detail-icon"></i>
+								<div class="detail-content">
+									<h6 class="text-muted">Type</h6>
+
+									{% set activityColors = { 
                                         'Semis': 'success', 
                                         'Plantation': 'primary', 
                                         'Arrosage': 'info', 
@@ -27,99 +28,116 @@
                                         'Élagage / Taille': 'dark',
                                         'Greffage': 'light text-dark'
                                     } %}
-                                    <span class="badge rounded-pill bg-{{ activityColors[activite.type] ?? 'secondary' }}">
-                                        {{ activite.type }}
-                                    </span>                                </div>
-                            </div>
-                        </div>
-                        <div class="info-card mb-4 flex-grow-1">
-                            <div class="detail-item">
-                                <i class="bi bi-calendar-date detail-icon"></i>
-                                <div class="detail-content">
-                                    <h6 class="text-muted">Date</h6>
-                                    <p class="fw-bold mb-0">{{ activite.date ? activite.date|date('Y-m-d') : '' }}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 d-flex flex-column">
-                        <!-- Description Card with Flex Grow -->
-                        <div class="info-card mb-4 flex-grow-1">
-                            <div class="detail-item">
-                                <i class="bi bi-card-text detail-icon"></i>
-                                <div class="detail-content">
-                                    <h6 class="text-muted">Description</h6>
-                                    <p class="fw-bold mb-0">{{ activite.description }}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+									<span class="badge rounded-pill bg-{{ activityColors[activite.type] ?? 'secondary' }}">
+										{{ activite.type }}
+									</span>
+								</div>
+							</div>
+						</div>
+						<div class="info-card mb-4 flex-grow-1">
+							<div class="detail-item">
+								<i class="bi bi-calendar-date detail-icon"></i>
+								<div class="detail-content">
+									<h6 class="text-muted">Date</h6>
+									<p class="fw-bold mb-0">{{ activite.date ? activite.date|date('Y-m-d') : '' }}</p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6 d-flex flex-column">
+						<div class="info-card mb-4 flex-grow-1">
+							<div class="detail-item">
+								<i class="bi bi-card-text detail-icon"></i>
+								<div class="detail-content">
+									<h6 class="text-muted">Description</h6>
+									<p class="fw-bold mb-0">{{ activite.description }}</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
 
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="info-card mb-4">
-                            <div class="detail-item">
-                                <i class="lni lni-leaf detail-icon"></i>
-                                <div class="detail-content row align-items-center">
-                                    {# First Half: Culture Title and Name (Vertically Centered) #}
-                                    <div class="col-md-6 d-flex flex-column justify-content-center">
-                                        <h6 class="text-muted">Culture</h6>
-                                        <a href="{{ path('app_culture_show_back', {'id': activite.culture.id}) }}" class="fw-bold mb-0">{{ activite.culture.nomCulture }}</a>
-                                    </div>
+				<div class="row">
+					<div class="col-md-12">
+						<div class="info-card mb-4">
+							<div class="detail-item">
+								<i class="lni lni-leaf detail-icon"></i>
+								<div class="detail-content row align-items-center">
+									<div class="col-md-6 d-flex flex-column justify-content-center">
+										<h6 class="text-muted">Culture</h6>
+										<a href="{{ path('app_culture_show_back', {'id': activite.culture.id}) }}" class="fw-bold mb-0">{{ activite.culture.nomCulture }}</a>
+									</div>
 
-                                    {# Second Half: Culture Details #}
-                                    <div class="col-md-6 parcelle-details">
-                                        <p class="text-muted mb-1"><i class="bi bi-calendar-date"></i> Date de Semis: {{ activite.culture.dateSemis ? activite.culture.dateSemis|date('Y-m-d') : '' }}</p>
-                                        <p class="text-muted mb-1"><i class="bi bi-clock-history"></i> Durée: {{ activite.culture.duree }} Jours</p>
-                                        <p class="text-muted mb-0"><i class="bi bi-clipboard2-check"></i> Statut: {{ activite.culture.statut | capitalize }}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+									<div class="col-md-6 parcelle-details">
+										<p class="text-muted mb-1">
+											<i class="bi bi-calendar-date"></i>
+											Date de Semis:
+											{{ activite.culture.dateSemis ? activite.culture.dateSemis|date('Y-m-d') : '' }}</p>
+										<p class="text-muted mb-1">
+											<i class="bi bi-clock-history"></i>
+											Durée:
+											{{ activite.culture.duree }}
+											Jours</p>
+										<p class="text-muted mb-0">
+											<i class="bi bi-clipboard2-check"></i>
+											Statut:
+											{{ activite.culture.statut | capitalize }}</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
 
 
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="info-card mb-4">
-                            <div class="detail-item">
-                                <i class="lni lni-map detail-icon"></i>
-                                <div class="detail-content row align-items-center">
-                                    {# First Half: Parcelle Title and Name (Vertically Centered) #}
-                                    <div class="col-md-6 d-flex flex-column justify-content-center">
-                                        <h6 class="text-muted">Parcelle</h6>
-                                        <a href="{{ path('app_parcelle_show_back', {'id': activite.culture.parcelle.id}) }}" class="fw-bold mb-0">{{ activite.culture.parcelle.nom }}</a>
-                                    </div>
+				<div class="row">
+					<div class="col-md-12">
+						<div class="info-card mb-4">
+							<div class="detail-item">
+								<i class="lni lni-map detail-icon"></i>
+								<div class="detail-content row align-items-center">
+									<div class="col-md-6 d-flex flex-column justify-content-center">
+										<h6 class="text-muted">Parcelle</h6>
+										<a href="{{ path('app_parcelle_show_back', {'id': activite.culture.parcelle.id}) }}" class="fw-bold mb-0">{{ activite.culture.parcelle.nom }}</a>
+									</div>
 
-                                    {# Second Half: Parcelle Details #}
-                                    <div class="col-md-6 parcelle-details">
-                                        <p class="text-muted mb-1"><i class="bi bi-rulers"></i> Superficie: {{ activite.culture.parcelle.superficie | number_format(2, ',', ' ') }} m²</p>
-                                        <p class="text-muted mb-1"><i class="bi bi-pin-map"></i> Localisation: {{ activite.culture.parcelle.localisation }}</p>
-                                        <p class="text-muted mb-0"><i class="bi bi-sunrise"></i> Type de Sol: {{ activite.culture.parcelle.typeSol | capitalize }}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+									<div class="col-md-6 parcelle-details">
+										<p class="text-muted mb-1">
+											<i class="bi bi-rulers"></i>
+											Superficie:
+											{{ activite.culture.parcelle.superficie | number_format(2, ',', ' ') }}
+											m²</p>
+										<p class="text-muted mb-1">
+											<i class="bi bi-pin-map"></i>
+											Localisation:
+											{{ activite.culture.parcelle.localisation }}</p>
+										<p class="text-muted mb-0">
+											<i class="bi bi-sunrise"></i>
+											Type de Sol:
+											{{ activite.culture.parcelle.typeSol | capitalize }}</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
 
-                <div class="d-flex justify-content-between mt-4">
-                    <a href="{{ path('app_activite_back') }}" class="btn btn-light">
-                        <i class="bi bi-arrow-left"></i> Retour à la Liste
-                    </a>
-                    <div class="d-flex">
-                       
-                        <form action="{{ path('app_activite_delete', { id: activite.id }) }}" method="post" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette culture ?');">
-                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ activite.id) }}"/>
-                            <button type="submit" class="btn btn-danger btn-sm" data-bs-toggle="tooltip" title="Supprimer">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </form>
-                                        </div>
-                </div>
-            </div>
-        </div>
-    </div>
+				<div class="d-flex justify-content-between mt-4">
+					<a href="{{ app.request.headers.get('referer') }}" class="btn btn-light">
+						<i class="bi bi-arrow-left"></i>
+						Retour à la Liste
+					</a>
+					<div class="d-flex">
+
+						<form action="{{ path('app_activite_delete', { id: activite.id }) }}" method="post" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette culture ?');">
+							<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ activite.id) }}"/>
+							<button type="submit" class="btn btn-danger btn-sm" data-bs-toggle="tooltip" title="Supprimer">
+								<i class="bi bi-trash"></i>
+							</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 {% endblock %}

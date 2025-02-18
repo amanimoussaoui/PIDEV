@@ -37,8 +37,8 @@ class Culture
     #[ORM\Column(type: 'string', length: 50)]
     #[Assert\NotBlank(message: "Le statut de la culture est requis.")]
     #[Assert\Choice(
-        choices: ['en_culture', 'recolte', 'termine'],
-        message: "Le statut doit être l'un des suivants : en_culture, recolte, termine."
+        choices: ['en_culture','terminé'],
+        message: "Le statut doit être l'un des suivants : en_culture, terminé."
     )]
     private ?string $statut;
 
@@ -112,9 +112,13 @@ class Culture
     {
         return [
             'En culture' => 'en_culture',
-            'Récolte' => 'recolte',
-            'Terminé' => 'termine',
+            'Terminé' => 'terminé',
         ];
+    }
+
+    public function __construct()
+    {
+        $this->dateSemis = new \DateTime();
     }
 }
 

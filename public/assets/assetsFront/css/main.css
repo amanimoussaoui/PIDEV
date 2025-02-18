@@ -581,7 +581,30 @@ transition: all .2s ease-out;
   }
   
   
-
+  .parcelle-card {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+.parcelle-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+.parcelle-card-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+.parcelle-card-footer {
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+.custom-card {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.custom-card-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+.custom-card-body {
+    background-color: #f8f9fa;
+}
 
 
 
@@ -931,15 +954,17 @@ a.sidebar-link:hover {
   background-color: #f8f9fa;
   color: #2c3e50;
   width: 100px;
+  height: 33.59px;
 }
 
 .year-dropdown select:hover {
   border-color: #1a9738;
 }
 
-/* Hide year dropdown initially */
-.year-dropdown {
-  display: none;
+
+.fc-right {
+  display: flex;
+  align-items: center;
 }
 
 
@@ -1207,26 +1232,6 @@ a.sidebar-link:hover {
   border-color: #1a9738 !important; /* Green border */
 }
 
-/* Confirm Button */
-.swal2-confirm {
-  background-color: #1a9738 !important; /* Green background */
-  border: none !important; /* Remove border */
-  border-radius: 8px !important; /* Rounded corners */
-  color: #ffffff !important; /* White text */
-  font-weight: 500 !important; /* Medium font weight */
-  padding: 10px 24px !important; /* Add padding */
-  transition: all 0.3s ease !important; /* Smooth transition */
-}
-
-.swal2-confirm:hover {
-  background-color: #16832f !important; /* Darker green on hover */
-  transform: translateY(-1px) !important; /* Slight lift effect */
-}
-
-.swal2-confirm:active {
-  background-color: #16832f !important; /* Darker green on click */
-  transform: translateY(0) !important; /* Reset lift effect */
-}
 
 /* Close Button */
 .swal2-close {
@@ -1245,6 +1250,152 @@ a.sidebar-link:hover {
   font-size: 14px !important; /* Smaller font size */
   margin-top: 16px !important; /* Add spacing */
 }
+
+
+
+.main-timeline {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.main-timeline::after {
+  content: '';
+  position: absolute;
+  width: 4px;
+  background: linear-gradient(to bottom, #1a9738, #1F4E3D);
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  margin-left: -2px;
+  border-radius: 2px;
+}
+
+.timeline {
+  position: relative;
+  width: 50%;
+  padding: 20px 40px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.timeline:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.timeline::after {
+  content: '';
+  position: absolute;
+  width: 25px;
+  height: 25px;
+  right: -13px;
+  background-color: #4fd770;
+  border: 4px solid #fff;
+  top: 20px;
+  border-radius: 50%;
+  z-index: 1;
+  box-shadow: 0 0 0 4px #1a9738;
+}
+
+.left {
+  left: 0;
+}
+
+.right {
+  left: 50%;
+}
+
+.right::after {
+  left: -12px;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 20px;
+  position: relative;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.timeline:hover::after {
+  background-color: #1a9738;
+}
+
+
+.card h3 {
+  margin-top: 0;
+  color: #ff7e5f;
+  font-size: 1.5rem;
+}
+
+.card p {
+  margin: 5px 0;
+  color: #555;
+}
+
+.left::before {
+  content: " ";
+  position: absolute;
+  top: 22px;
+  z-index: 1;
+  right: 30px;
+  border: medium solid white;
+  border-width: 10px 0 10px 10px;
+  border-color: transparent transparent transparent white;
+}
+
+.right::before {
+  content: " ";
+  position: absolute;
+  top: 22px;
+  z-index: 1;
+  left: 30px;
+  border: medium solid white;
+  border-width: 10px 10px 10px 0;
+  border-color: transparent white transparent transparent;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+  .main-timeline::after {
+    left: 31px;
+  }
+
+  .timeline {
+    width: 100%;
+    padding-left: 70px;
+    padding-right: 25px;
+  }
+
+  .timeline::before {
+    left: 60px;
+    border: medium solid white;
+    border-width: 10px 10px 10px 0;
+    border-color: transparent white transparent transparent;
+  }
+
+  .left::after,
+  .right::after {
+    left: 18px;
+  }
+
+  .left::before {
+    right: auto;
+  }
+
+  .right {
+    left: 0%;
+  }
+}
+
+
+
 
 
 /* Style for the active sidebar item */

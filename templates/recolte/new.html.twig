@@ -12,8 +12,8 @@
                 {{ include('recolte/_form.html.twig') }}
             </div>
             <div class="card-footer">
-                <a href="{{ path('app_recolte_index') }}" class="btn btn-light">
-                    <i class="bi bi-arrow-left"></i> Retour à la Liste
+                <a href="{{ app.request.headers.get('referer') }}" class="btn btn-light">
+                    <i class="bi bi-arrow-left"></i> Retour
                 </a>
             </div>
         </div>

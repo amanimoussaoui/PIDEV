@@ -20,7 +20,6 @@ class CultureType extends AbstractType
             ->add('dateSemis', DateType::class, [
                 'widget' => 'single_text',
                 'required' => true,
-                'data' => new \DateTime(), 
                 'attr' => ['class' => 'form-control'],
             ])
             ->add('duree')

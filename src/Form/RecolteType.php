@@ -55,6 +55,7 @@ class RecolteType extends AbstractType
                 'attr' => ['class' => 'form-control'],
                 'required' => true,
                 'placeholder' => 'Sélectionnez une culture',
+                'disabled' => true,
             ])
         ;
     }

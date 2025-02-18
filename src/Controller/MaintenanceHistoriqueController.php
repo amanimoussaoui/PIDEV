@@ -2,56 +2,69 @@
 
 namespace App\Controller;
 
-use App\Entity\MaintenanceHistorique;
 use App\Entity\Machine;
-use App\Repository\MaintenanceHistoriqueRepository;
-use App\Repository\MachineRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Entity\Maintenance;
+
+
+
+
+use App\Repository\MachineRepository;
+use App\Repository\MaintenanceHistoriqueRepository;
+use App\Entity\MaintenanceHistorique;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-
-#[Route('/historique-maintenance')]
+use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class MaintenanceHistoriqueController extends AbstractController
 {
-    #[Route('/', name: 'app_maintenance_historique_index', methods: ['GET'])]
-    public function index(MaintenanceHistoriqueRepository $maintenanceHistoriqueRepository): Response
-    {
-        $historiqueMaintenances = $maintenanceHistoriqueRepository->findAll();
+    #[Route('/verifier-maintenance', name: 'verifier_maintenance')]
+public function verifierMaintenance(EntityManagerInterface $entityManager): Response
+{
+    $dateActuelle = new \DateTimeImmutable();  // Créez une instance de DateTimeImmutable
 
-        return $this->render('maintenance_historique/historique_maintenance.html.twig', [
-            'historiqueMaintenances' => $historiqueMaintenances,
+    // Récupérer les machines dont la date de maintenance est dans le passé
+    $machines = $entityManager->getRepository(Machine::class)->createQueryBuilder('m')
+        ->where('m.date_maintenance <= :dateActuelle')
+        ->setParameter('dateActuelle', $dateActuelle)  // Utilisez DateTimeImmutable ici
+        ->getQuery()
+        ->getResult();
+
+    foreach ($machines as $machine) {
+        // Vérifier si la machine a une maintenance associée dans l'historique
+        $historiqueExistant = $entityManager->getRepository(MaintenanceHistorique::class)->findOneBy([
+            'machine' => $machine,
+            'dateMaintenance' => $machine->getDateMaintenance()  // Comparer avec la date de maintenance de la machine
         ]);
+
+        if (!$historiqueExistant) {
+            // Ajouter la maintenance à l'historique
+            $historique = new MaintenanceHistorique();
+            $historique->setMachine($machine);
+            $historique->setDateMaintenance($machine->getDateMaintenance());  // Assurez-vous que dateMaintenance est de type DateTimeImmutable
+
+            $entityManager->persist($historique);
+        }
     }
 
-    #[Route('/check', name: 'app_maintenance_historique_check', methods: ['GET'])]
-    public function checkAndAddMaintenance(
-        MachineRepository $machineRepository, 
-        MaintenanceHistoriqueRepository $maintenanceHistoriqueRepository, 
-        EntityManagerInterface $entityManager
-    ): Response {
-        $today = new \DateTime(); // Date actuelle
-        $machines = $machineRepository->findAll(); // Récupérer toutes les machines
+    // Exécuter la sauvegarde après la boucle pour optimiser la performance
+    $entityManager->flush();
 
-        foreach ($machines as $machine) {
-            if ($machine->getDateMaintenance() && $machine->getDateMaintenance()->format('Y-m-d') === $today->format('Y-m-d')) {
-                // Vérifier si la maintenance existe déjà dans l'historique
-                $existingMaintenance = $maintenanceHistoriqueRepository->findOneBy([
-                    'machine' => $machine,
-                    'dateMaintenance' => $today
-                ]);
+    return $this->redirectToRoute('maintenance_historique_index');
+}
 
-                if (!$existingMaintenance) {
-                    $historique = new MaintenanceHistorique();
-                    $historique->setMachine($machine);
-                    $historique->setDateMaintenance($today);
+    
 
-                    $entityManager->persist($historique);
-                    $entityManager->flush();
-                }
-            }
-        }
 
-        return new Response('Historique de maintenance mis à jour.');
+    #[Route('/maintenance-historique', name: 'maintenance_historique_index')]
+    public function index(MaintenanceHistoriqueRepository $maintenanceHistoriqueRepo): Response
+    {
+        // Récupérer toutes les maintenances historiques depuis la base de données
+        $maintenances = $maintenanceHistoriqueRepo->findAll();
+
+        // Afficher dans le template
+        return $this->render('maintenance_historique/index.html.twig', [
+            'maintenances' => $maintenances,
+        ]);
     }
 }

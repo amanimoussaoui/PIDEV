@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Entity\Machine;
 
 #[ORM\Entity]
 class MaintenanceHistorique
@@ -16,10 +17,10 @@ class MaintenanceHistorique
     #[ORM\ManyToOne(targetEntity: Machine::class)]
     #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
     private ?Machine $machine = null;
-
-    #[ORM\Column(type: "datetime")]
+    
+    #[ORM\Column(type: "datetime")] // Changement ici
     #[Assert\NotNull(message: "La date de maintenance est requise.")]
-    private ?\DateTimeInterface $dateMaintenance = null;
+    private ?\DateTime $dateMaintenance = null; // Changement ici
 
     public function getId(): ?int
     {
@@ -37,12 +38,12 @@ class MaintenanceHistorique
         return $this;
     }
 
-    public function getDateMaintenance(): ?\DateTimeInterface
+    public function getDateMaintenance(): ?\DateTime // Changement ici
     {
         return $this->dateMaintenance;
     }
 
-    public function setDateMaintenance(\DateTimeInterface $dateMaintenance): static
+    public function setDateMaintenance(\DateTime $dateMaintenance): static // Changement ici
     {
         $this->dateMaintenance = $dateMaintenance;
         return $this;

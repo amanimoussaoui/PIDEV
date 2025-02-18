@@ -35,9 +35,14 @@ class Machine
     #[Assert\NotBlank(message: "La disponibilité est requise")]
     private ?string $disponibilite = null;
 
-    #[ORM\Column(type: "datetime", nullable: true)]
-    #[Assert\Type("\DateTimeInterface")]
-    private ?\DateTimeInterface $date_maintenance = null;
+#[ORM\Column(type: "datetime", nullable: true)]
+#[Assert\Type("\DateTimeInterface")]
+#[Assert\GreaterThanOrEqual(
+    value: "today", 
+    message: "La date de maintenance doit être supérieure ou égale à la date actuelle."
+)]
+private ?\DateTimeInterface $date_maintenance = null;
+
 
     public function getId(): ?int
     {

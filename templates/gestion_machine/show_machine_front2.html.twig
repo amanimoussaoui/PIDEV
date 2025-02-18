@@ -9,15 +9,17 @@
         {% for machine in tabmachines %}
         <div class="col-md-3 mb-4">
             <div class="card shadow-lg border-0" style="background-color: #f1f1f1; color: #333; height: 350px;">
-                <div class="card-body p-3">
+                <div class="card-body p-3 d-flex flex-column">
                     <h5 class="card-title" style="color: #2C3E50;">{{ machine.nom }} 🚜</h5>
                     <p class="card-text" style="color: #5D6D7E;"><strong>Prix :</strong> {{ machine.prix }} TND 💰</p>
                     <p class="card-text" style="color: #5D6D7E;"><strong>État :</strong> {{ machine.etat }} 🛠️</p>
                     <p class="card-text" style="color: #5D6D7E;"><strong>Disponibilité :</strong> {{ machine.disponibilite }} 📅</p>
                     
-                    <div class="d-flex justify-content-between mt-auto">
-                        <a href="{{ path('reservation_new', {'id_machine': machine.id}) }}" class="btn btn-primary btn-sm text-white"> reserver ✏️</a>
-                       
+                    <!-- QR Code -->
+                    <div id="qrcode-{{ machine.id }}" class="text-center mt-3"></div>
+
+                    <div class="mt-auto">
+                        <a href="{{ path('reservation_new', {'id_machine': machine.id}) }}" class="btn btn-primary btn-sm text-white w-100">Réserver ✏️</a>
                     </div>
                 </div>
             </div>
@@ -29,4 +31,46 @@
         {% endfor %}
     </div>
 </div>
+
+{% block javascripts %}
+    {{ parent() }}
+    <!-- QRCode.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+    
+    <script>
+        window.onload = function() {
+            {% for machine in tabmachines %}
+                var qrcodeElement = document.getElementById('qrcode-{{ machine.id }}');
+                
+                // Construire une URL avec tous les détails de la machine
+                var machineDetails = {
+                    nom: '{{ machine.nom }}',
+                    description: '{{ machine.description }}',
+                    prix: '{{ machine.prix }}',
+                    etat: '{{ machine.etat }}',
+                    disponibilite: '{{ machine.disponibilite }}',
+                    date_maintenance: '{{ machine.dateMaintenance ? machine.dateMaintenance|date("Y-m-d") : "Aucune" }}'
+                };
+                
+                // Sérialiser les détails de la machine en JSON pour l'affichage dans l'URL du QR Code
+                var machineUrl = 'Machine Details: ' + JSON.stringify(machineDetails);
+                
+                if (qrcodeElement) {
+                    QRCode.toDataURL(machineUrl, function (err, url) {
+                        if (err) {
+                            console.error('Erreur de génération QR Code:', err);
+                        } else {
+                            var img = document.createElement('img');
+                            img.src = url;
+                            img.style.width = "100px";
+                            img.style.height = "100px";
+                            qrcodeElement.appendChild(img);
+                        }
+                    });
+                }
+            {% endfor %}
+        };
+    </script>
+{% endblock %}
+
 {% endblock %}

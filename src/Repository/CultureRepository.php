@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Culture;
+use App\Entity\Utilisateurs;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,7 +17,35 @@ class CultureRepository extends ServiceEntityRepository
         parent::__construct($registry, Culture::class);
     }
 
-    public function findBySearchAndFilter(?string $searchTerm, ?string $statutFilter, string $sort, string $direction): array
+    public function findBySearchAndFilter(string $searchTerm = '', string $statutFilter = '', string $sort = 'id', string $direction = 'ASC', ?Utilisateurs $user = null): array
+    {
+        $qb = $this->createQueryBuilder('c');
+    
+        if (!empty($searchTerm)) {
+            $qb->andWhere('c.nom LIKE :searchTerm')
+               ->setParameter('searchTerm', '%' . $searchTerm . '%');
+        }
+    
+        if (!empty($statutFilter)) {
+            $qb->andWhere('c.statut = :statutFilter')
+               ->setParameter('statutFilter', $statutFilter);
+        }
+    
+        if ($user) {
+            $qb->join('c.parcelle', 'p')
+               ->andWhere('p.utilisateur = :user')
+               ->setParameter('user', $user);
+        }
+    
+        // Add sorting
+        $qb->orderBy('c.' . $sort, $direction);
+    
+        return $qb->getQuery()->getResult();
+    }
+ 
+    
+
+    public function findBySearchAndFilterBack(?string $searchTerm, ?string $statutFilter, string $sort, string $direction): array
     {
         $allowedSortFields = ['id', 'nomCulture', 'statut', 'createdAt'];
         if (!in_array($sort, $allowedSortFields, true)) {

@@ -52,8 +52,9 @@ private ?float $longitude = null;
 private ?array $boundary = null;
 
 
-    #[ORM\Column(nullable: true)]
-    private ?int $utilisateurId = null;
+#[ORM\ManyToOne(targetEntity: Utilisateurs::class, inversedBy: 'parcelles')]
+#[ORM\JoinColumn(name: 'utilisateur_id', referencedColumnName: 'id', nullable: true)]
+private ?Utilisateurs $utilisateur = null;
 
     public function getId(): ?int
     {
@@ -137,16 +138,16 @@ public function setBoundary(?array $boundary): self
     return $this;
 }
 
-    public function getUtilisateurId(): ?int
-    {
-        return $this->utilisateurId;
-    }
+public function getUtilisateur(): ?Utilisateurs
+{
+    return $this->utilisateur;
+}
 
-    public function setUtilisateurId(?int $utilisateurId): static
-    {
-        $this->utilisateurId = $utilisateurId;
-        return $this;
-    }
+public function setUtilisateur(?Utilisateurs $utilisateur): static
+{
+    $this->utilisateur = $utilisateur;
+    return $this;
+}
 
     public static function getTypeSolChoices(): array
 {

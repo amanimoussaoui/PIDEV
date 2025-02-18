@@ -88,7 +88,7 @@
                                         </span>
                                     </td>
                                     <td>{{ culture.parcelle.nom }}</td>
-                                    <td>{{ culture.parcelle.utilisateurId }}</td>
+                                    <td>{{ culture.parcelle.utilisateur.nom }}{{ culture.parcelle.utilisateur.prenom }}</td>
                                     <td>
                                         <div class="d-flex gap-2 justify-content-end">    
                                             <a href="{{ path('app_culture_show_back', {'id': culture.id}) }}" 

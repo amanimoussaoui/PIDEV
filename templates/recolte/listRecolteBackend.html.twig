@@ -100,7 +100,7 @@
                                     <td>{{ recolte.prixUnitaire }}</td>
                                     <td>{{ recolte.culture.nomCulture }}</td>
                                     <td>{{ recolte.culture.parcelle.nom }}</td>
-                                    <td>{{ recolte.culture.parcelle.utilisateurId }}</td>
+                                    <td>{{ recolte.culture.parcelle.utilisateur.nom }} {{ recolte.culture.parcelle.utilisateur.prenom }}</td>
                                     <td>
                                         <div class="d-flex gap-2 justify-content-end">
                                             <a href="{{ path('app_recolte_show_back', {'id': recolte.id}) }}" 

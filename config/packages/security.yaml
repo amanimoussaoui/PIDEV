@@ -34,6 +34,17 @@ security:
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
+        # Restrict backend routes to ROLE_ADMIN only
+        - { path: ^/parcelle/listparcelles, roles: ROLE_ADMIN }
+        - { path: ^/culture/listcultures, roles: ROLE_ADMIN }
+        - { path: ^/recolte/listrecoltes, roles: ROLE_ADMIN }
+        - { path: ^/activite/listactivite, roles: ROLE_ADMIN }
+
+        # General access rules for parcelle, culture, recolte, and activite
+        - { path: ^/parcelle, roles: [ROLE_AGRICULTEUR, ROLE_CLIENT, ROLE_ADMIN] }
+        - { path: ^/culture, roles: [ROLE_AGRICULTEUR, ROLE_CLIENT, ROLE_ADMIN] }
+        - { path: ^/recolte, roles: [ROLE_AGRICULTEUR, ROLE_CLIENT, ROLE_ADMIN] }
+        - { path: ^/activite, roles: [ROLE_AGRICULTEUR, ROLE_CLIENT, ROLE_ADMIN] }
 
 when@test:
     security:

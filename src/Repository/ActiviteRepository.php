@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Activite;
+use App\Entity\Utilisateurs;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,7 +17,19 @@ class ActiviteRepository extends ServiceEntityRepository
         parent::__construct($registry, Activite::class);
     }
 
-    public function findBySearchAndFilter(?string $searchTerm, ?string $typeFilter, string $sort, string $direction)
+    public function findByUser(Utilisateurs $user): array
+{
+    return $this->createQueryBuilder('a')
+        ->join('a.culture', 'c')
+        ->join('c.parcelle', 'p')
+        ->where('p.utilisateur = :user')
+        ->setParameter('user', $user)
+        ->getQuery()
+        ->getResult();
+}
+
+
+    public function findBySearchAndFilterBack(?string $searchTerm, ?string $typeFilter, string $sort, string $direction)
     {
         $qb = $this->createQueryBuilder('a')
             ->leftJoin('a.culture', 'c') 

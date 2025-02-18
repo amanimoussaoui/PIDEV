@@ -71,20 +71,29 @@
 				<a href="{{ path('app_login') }}" class="btn btn-primary px-4">Log In</a>
 			{% endif %}
 		</li>
-		<li>
-    		{% if app.user %}
-        		<div class="welcome-message">
-           			 Bienvenue
-        		</div>
-        	<div class="user-info">
-            	{# Check if the user has a profile and if the profile has an image #}
-            	{% if app.user.profile and app.user.profile.image %}
-                	<img src="{{ asset('uploads/images/' ~ app.user.profile.image) }}" alt="Profile Image" style="width: 50px; height: 50px; border-radius: 50%; margin-right: 10px;">
-            	{% endif %}
-            	<span>{{ app.user.prenom }} {{ app.user.nom }}</span>
-        	</div>
-    		{% endif %}
+		<li class="p-2">
+			{% if app.user %}
+				<div class="d-flex align-items-center bg-light rounded p-2 shadow-sm">
+					{% if app.user.profile and app.user.profile.image %}
+						<img src="{{ asset('uploads/images/' ~ app.user.profile.image) }}" 
+							 alt="Profile Image" 
+							 class="rounded-circle border border-secondary" 
+							 style="width: 45px; height: 45px; object-fit: cover; margin-right: 10px;">
+					{% else %}
+						<img src="{{ asset('uploads/images/default-avatar.png') }}" 
+							 alt="Default Profile" 
+							 class="rounded-circle border border-secondary" 
+							 style="width: 45px; height: 45px; object-fit: cover; margin-right: 10px;">
+					{% endif %}
+					
+					<div class="d-flex flex-column">
+						<span class="fw-bold text-primary">Bienvenue</span>
+						<span class="text-dark fw-semibold">{{ app.user.prenom }} {{ app.user.nom }}</span>
+					</div>
+				</div>
+			{% endif %}
 		</li>
+		
 		
     </ul>
 </nav>
@@ -108,7 +117,7 @@
 
 				<ul class="sidebar-nav">
 				
-					<li class="sidebar-item">
+					<li class="sidebar-item {% if app.request.attributes.get('_route') in ['app_profile'] %}active{% endif %}">
 						<a href="{{ path('app_profile') }}" class="sidebar-link">
 							<i class="lni lni-user"></i>
 							<span>Profile</span>
@@ -145,14 +154,6 @@
 						</ul>
 					</li>
 				
-					
-					
-					<li class="sidebar-item">
-						<a href="#" class="sidebar-link">
-							<i class="lni lni-leaf"></i>
-							<span>Gestion Agricole</span>
-						</a>
-					</li>
 					<li class="sidebar-item">
 						<a href="#" class="sidebar-link">
 							<i class="lni lni-book"></i>
@@ -178,7 +179,7 @@
 				</ul>
 				
 				<div class="sidebar-footer">
-					<a href="#" class="sidebar-link">
+					<a href="{{ path('app_login') }}" class="sidebar-link">
 						<i class="lni lni-exit"></i>
 						<span>Logout</span>
 					</a>
@@ -275,11 +276,16 @@
 			<a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center">
 				<i class="bi bi-arrow-up-short"></i>
 			</a>
+
+			{% block javascripts %}
+
 			<script src="{{ asset('assets/assetsFront/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 			<script src="{{ asset('assets/assetsFront/vendor/php-email-form/validate.js') }}"></script>
 			<script src="{{ asset('assets/assetsFront/vendor/aos/aos.js') }}"></script>
 			<script src="{{ asset('assets/assetsFront/vendor/swiper/swiper-bundle.min.js') }}"></script>
 			<script src="{{ asset('assets/assetsFront/vendor/glightbox/js/glightbox.min.js') }}"></script>
 			<script src="{{ asset('assets/assetsFront/js/main.js') }}"></script>
+			{% endblock %}
+
 		</body>
 	</html>

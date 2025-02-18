@@ -83,7 +83,7 @@
                                             {{ parcelle.typeSol | capitalize }}
                                         </span>
                                     </td>
-                                    <td>{{ parcelle.utilisateurId }}</td>
+                                    <td>{{ parcelle.utilisateur.nom }} {{ parcelle.utilisateur.prenom }}</td>
                                     <td>
                                         <div class="d-flex gap-2 justify-content-end">
                                             <a href="{{ path('app_parcelle_show_back', {'id': parcelle.id}) }}" 

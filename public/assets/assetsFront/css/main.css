@@ -55,13 +55,11 @@ a {
         color: #333;
     }
     .btn {
-        padding: 10px 20px;
         font-size: 16px;
         border-radius: 5px;
         text-decoration: none;
         cursor: pointer;
         display: inline-block;
-        font-weight: bold;
         transition: all 0.3s ease;
     }
 
@@ -622,6 +620,7 @@ body {
     font-family: 'Poppins', sans-serif;
     background-color: var(--background-color);
     color: var(--default-color);
+    margin: 0px !important;
 }
 
 /* Main Layout */
@@ -1725,10 +1724,22 @@ h6 {
     position: relative;
   }
 
+  .navmenu .btn {
+color: #fff; 
+margin-right: 10px;
+}
+
+.navmenu .btn:hover {
+  color: #fff; 
+  margin-right: 10px;
+  }
+
+
+
   .navmenu a,
   .navmenu a:focus {
     color: var(--nav-color);
-    padding: 18px 15px;
+    padding: 10px 15px;
     font-size: 16px;
     font-family: var(--nav-font);
     font-weight: 400;

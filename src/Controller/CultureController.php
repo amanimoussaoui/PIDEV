@@ -20,25 +20,27 @@ final class CultureController extends AbstractController
     #[Route(name: 'app_culture_index', methods: ['GET', 'POST'])]
     public function index(Request $request, CultureRepository $cultureRepository): Response
     {
+        $user = $this->getUser();
+    
         $form = $this->createForm(SearchCultureType::class);
         $form->handleRequest($request);
-
+    
         $searchTerm = '';
         $statutFilter = '';
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
             $formData = $form->getData();
             $searchTerm = $formData['search'] ?? '';
             $statutFilter = $formData['statut'] ?? '';
         }
-
-
+    
+        // Get sorting parameters from the request
         $sort = $request->query->get('sort', 'id');
         $direction = $request->query->get('direction', 'ASC');
-
-
-        $cultures = $cultureRepository->findBySearchAndFilter($searchTerm, $statutFilter, $sort, $direction);
-
+    
+        // Fetch cultures for the logged-in user
+        $cultures = $cultureRepository->findBySearchAndFilter($searchTerm, $statutFilter, $sort, $direction, $user);
+    
         return $this->render('culture/index.html.twig', [
             'cultures' => $cultures,
             'form' => $form->createView(),
@@ -63,7 +65,7 @@ final class CultureController extends AbstractController
         $direction = $request->query->get('direction', 'ASC');
 
 
-        $cultures = $cultureRepository->findBySearchAndFilter($searchTerm, $statutFilter, $sort, $direction);
+        $cultures = $cultureRepository->findBySearchAndFilterBack($searchTerm, $statutFilter, $sort, $direction);
 
         return $this->render('culture/listCulturesBackend.html.twig', [
             'cultures' => $cultures,
@@ -75,24 +77,30 @@ final class CultureController extends AbstractController
 
 
     #[Route('/new', name: 'app_culture_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $culture = new Culture();
-        $form = $this->createForm(CultureType::class, $culture);
-        $form->handleRequest($request);
+public function new(Request $request, EntityManagerInterface $entityManager): Response
+{
+    $culture = new Culture();
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($culture);
-            $entityManager->flush();
+    $user = $this->getUser();
 
-            return $this->redirectToRoute('app_culture_index', [], Response::HTTP_SEE_OTHER);
-        }
+    $form = $this->createForm(CultureType::class, $culture, [
+        'user' => $user,
+    ]);
 
-        return $this->render('culture/new.html.twig', [
-            'culture' => $culture,
-            'form' => $form,
-        ]);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+        $entityManager->persist($culture);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_culture_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    return $this->render('culture/new.html.twig', [
+        'culture' => $culture,
+        'form' => $form,
+    ]);
+}
 
     #[Route('/{id}', name: 'app_culture_show', methods: ['GET'])]
     public function show(Culture $culture, EntityManagerInterface $entityManager): Response
@@ -108,7 +116,7 @@ final class CultureController extends AbstractController
         ]);
     }
 
-    #[Route('listparcelles/{id}', name: 'app_culture_show_back', methods: ['GET'])]
+    #[Route('/listcultures/{id}', name: 'app_culture_show_back', methods: ['GET'])]
     public function showBack(Culture $culture): Response
     {
         return $this->render('culture/showBack.html.twig', [
@@ -119,15 +127,20 @@ final class CultureController extends AbstractController
     #[Route('/{id}/edit', name: 'app_culture_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Culture $culture, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(CultureType::class, $culture);
+        $user = $this->getUser();
+    
+        $form = $this->createForm(CultureType::class, $culture, [
+            'user' => $user,
+        ]);
+    
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
-
+    
             return $this->redirectToRoute('app_culture_index', [], Response::HTTP_SEE_OTHER);
         }
-
+    
         return $this->render('culture/edit.html.twig', [
             'culture' => $culture,
             'form' => $form,
@@ -145,7 +158,7 @@ final class CultureController extends AbstractController
         return $this->redirectToRoute('app_culture_index', [], Response::HTTP_SEE_OTHER);
     }
 
-    #[Route('listparcelles/{id}', name: 'app_culture_delete_back', methods: ['POST'])]
+    #[Route('/listparcelles/{id}', name: 'app_culture_delete_back', methods: ['POST'])]
     public function deleteBack(Request $request, Culture $culture, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete' . $culture->getId(), $request->getPayload()->getString('_token'))) {

@@ -1,6 +1,6 @@
 {% extends 'FrontEnd/front.html.twig' %}
 
-{% block title %}Hello ProfileController!{% endblock %}
+{% block title %}Profile{% endblock %}
 
 {% block content %}
 <div class="profile-container">
@@ -19,7 +19,7 @@
             <p><strong>Date de naissance :</strong> {{ profile.DateDeNaissance ? profile.getDateDeNaissance|date('d/m/Y') : 'Non renseigné' }}</p>
             <p><strong>Bio :</strong> {{ profile.Bio ?: 'Non renseigné' }}</p>
 
-            <a href="{{ path('app_updateprofile', {'id':profile.id}) }}" class="edit-button">Modifier le profil</a>
+            <a href="{{ path('app_updateprofile', {'id':profile.id}) }}" class="btn btn-primary">Modifier le profil</a>
         </div>
     </div>
 
@@ -30,7 +30,6 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background: linear-gradient(135deg, rgb(27, 223, 60),rgb(26, 131, 78));
             font-family: 'Poppins', sans-serif;
         }
 
@@ -58,20 +57,6 @@
             margin-bottom: 15px;
         }
 
-        .edit-button {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 10px 20px;
-            background: #2563EB;
-            color: white;
-            border-radius: 8px;
-            text-decoration: none;
-            transition: 0.3s;
-        }
-
-        .edit-button:hover {
-            background: #1E40AF;
-        }
     </style>
 
 {% endblock %}

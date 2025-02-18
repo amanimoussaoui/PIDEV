@@ -82,7 +82,7 @@ final class RecolteController extends AbstractController
 
 
 
-    #[Route('listrecoltes/{id}', name: 'app_recolte_show_back', methods: ['GET'])]
+    #[Route('/listrecoltes/{id}', name: 'app_recolte_show_back', methods: ['GET'])]
     public function showBack(Recolte $recolte): Response
     {
         return $this->render('recolte/showBack.html.twig', [
@@ -136,7 +136,7 @@ final class RecolteController extends AbstractController
     }
 
 
-    #[Route('listparcelles/{id}', name: 'app_recolte_delete_back', methods: ['POST'])]
+    #[Route('/listrecoltes/{id}', name: 'app_recolte_delete_back', methods: ['POST'])]
     public function deleteBack(Request $request, Recolte $recolte, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete' . $recolte->getId(), $request->request->get('_token'))) {

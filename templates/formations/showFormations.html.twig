@@ -124,7 +124,7 @@
 									   <td>{{ formation.description }}</td>
 									   <td>{{ formation.prix }}</td>
 									   <td>{{ formation.date|date('Y-m-d') }}</td>
-									   <td><img src="{{ formation.image }}" alt="Image" width="100"></td>
+									   <td><img src="{{ asset('uploads/images/' ~ formation.image) }}" alt="Image de formation"></td>
 									   <td><a href="{{path('updateFormation', {'id': formation.id})}}">Update</a></td>
 									   <td><a href="{{path('deleteFormation', {'id': formation.id})}}">Delete</a></td>
 									  

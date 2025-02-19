@@ -104,35 +104,37 @@ background-color: #45a049 !important; /* Vert légèrement plus foncé au survol
 border-color: #45a049 !important;
 }
 
-    </style>
-   <h1 class="text-center my-4">Liste des participations</h1>
+</style>
+<h1 class="text-center my-4">Liste des participations</h1>
 
-   {% if participations is not empty %}
-       <table class="table">
-           <thead>
+{% if participations is not empty %}
+   <table class="table">
+       <thead>
+           <tr>
+               {# Commenté : ID Utilisateur et Nom Utilisateur #}
+               {# <th>ID Utilisateur</th>
+               <th>Nom Utilisateur</th> #}
+               <th>Formation</th>
+               <th>Date d'inscription</th>
+               <th>Action</th>
+           </tr>
+       </thead>
+       <tbody>
+           {% for participation in participations %}
                <tr>
-                   <th>ID Utilisateur</th>
-                   <th>Nom Utilisateur</th>
-                   <th>Formation</th>
-                   <th>Date d'inscription</th>
-                   <th>Action</th>
+                   {# Commenté : Utilisation de l'utilisateur #}
+                   {# <td>{{ participation.user.id }}</td>
+                   <td>{{ participation.user.name }}</td> #}
+                   <td>{{ participation.formation.titre }}</td>
+                   <td>{{ participation.dateCreation|date('d/m/Y') }}</td>
+                   <td>
+                       <a href="{{ path('deleteParticipation', {'id': participation.id}) }}" class="btn btn-danger">Delete</a>
+                   </td>
                </tr>
-           </thead>
-           <tbody>
-               {% for participation in participations %}
-                   <tr>
-                       <td>{{ participation.user.id }}</td>
-                       <td>{{ participation.user.name }}</td>
-                       <td>{{ participation.formation.titre }}</td>
-                       <td>{{ participation.dateCreation|date('d/m/Y') }}</td>
-                       <td>
-                           <a href="{{ path('deleteParticipation', {'id': participation.id}) }}" class="btn btn-danger">Delete</a>
-                       </td>
-                   </tr>
-               {% endfor %}
-           </tbody>
-       </table>
-   {% else %}
-       <p>Aucune participation trouvée.</p>
-   {% endif %}
-   {% endblock %}
+           {% endfor %}
+       </tbody>
+   </table>
+{% else %}
+   <p>Aucune participation trouvée.</p>
+{% endif %}
+{% endblock %}

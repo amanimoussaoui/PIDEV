@@ -86,7 +86,7 @@
 
 <div class="formation-container">
     <div class="formation-content">
-        <img src="{{ formation.image }}" alt="Image de la formation">
+        <img src="{{ asset('uploads/images/' ~ formation.image) }}" alt="Image de formation">
         <div class="formation-info">
             <h1>{{ formation.titre }}</h1>
             <p><strong>Description :</strong> {{ formation.description }}</p>

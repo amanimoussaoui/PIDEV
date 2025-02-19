@@ -122,7 +122,7 @@
 		{% if formations is not empty %}
 			{% for formation in formations %}
 				<div class="card">
-					<img src="{{ formation.image }}" alt="Image de la formation" class="card-img-top">
+					<img src="{{ asset('uploads/images/' ~ formation.image) }}" alt="Image de formation">
 					<div class="card-body">
 						<h5 class="card-title">{{ formation.titre }}</h5>
 						<p class="card-price"><strong> {{ formation.prix }} DT</strong></p>

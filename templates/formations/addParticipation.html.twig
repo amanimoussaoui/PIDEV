@@ -89,12 +89,6 @@ width: 90%;
         {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
 
             <div class="mb-3">
-                {{ form_label(form.user) }}
-                {{ form_widget(form.user, {'attr': {'class': 'form-control'}}) }}
-                {{ form_errors(form.user) }}
-            </div>
-
-            <div class="mb-3">
                 {{ form_label(form.formation) }}
                 {{ form_widget(form.formation, {'attr': {'class': 'form-control'}}) }}
                 {{ form_errors(form.formation) }}

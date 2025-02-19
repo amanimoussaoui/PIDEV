@@ -74,7 +74,8 @@
         }
     </style>
 
-<h1>Participations de {{ user }}</h1>
+{# <h1>Participations de {{ user }}</h1> #}
+<h1>Participations Actives</h1>
 
 {% if participations is not empty %}
     <table>
@@ -98,8 +99,7 @@
         </tbody>
     </table>
 {% else %}
-    <p>{{ user }} n'a aucune participation active.</p>
+    <p>Aucune participation active.</p>
 {% endif %}
 
 {% endblock %}
-

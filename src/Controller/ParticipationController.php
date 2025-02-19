@@ -7,7 +7,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Entity\Participation;
 use App\Entity\Formation;
-use App\Entity\User;
 use App\Form\ParticipationType;
 use App\Repository\ParticipationRepository;
 use Doctrine\Persistence\ManagerRegistry;

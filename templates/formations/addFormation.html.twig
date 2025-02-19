@@ -115,9 +115,12 @@ width: 90%;
                     </div>
         
                     <div class="mb-3">
-                        {{ form_label(form.image) }}
-                        {{ form_widget(form.image, {'attr': {'class': 'form-control'}}) }}
-                        {{ form_errors(form.image) }}
+                        <label class="form-label">{{ form_label(form.file, "Télécharger une image") }}</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-upload"></i></span>
+                            {{ form_widget(form.file, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        <div class="form-error">{{ form_errors(form.file) }}</div>
                     </div>
         
                 

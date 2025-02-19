@@ -8,8 +8,10 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 #[ORM\Entity(repositoryClass: FormationRepository::class)]
+#[Vich\Uploadable]
 class Formation
 {
     #[ORM\Id]
@@ -34,11 +36,21 @@ class Formation
     #[Assert\NotBlank(message: "La date ne peut pas être vide.")]
     #[Assert\GreaterThan("today", message: "La date doit être dans le futur.")]
     private ?\DateTimeInterface $date = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(nullable: true)]
+    private ?string $image = null; // Stocke le nom du fichier image
+    
+    #[Vich\UploadableField(mapping: "formation_images", fileNameProperty: "image")]
+    #[Assert\NotBlank(message: "Veuillez télécharger une image.")]
+    private ?File $file = null;
+        
+        
+    
+        #[ORM\Column(type: "datetime", nullable: true)]
+        private ?\DateTimeInterface $updatedAt = null;
+   /* #[ORM\Column(length: 255, nullable: true)]
     #[Assert\Url(message: "L'image doit être une URL valide.")]
     private ?string $image = null;
-
+*/
     /**
      * @var Collection<int, Participation>
      */
@@ -108,7 +120,7 @@ class Formation
         return $this;
     }
 
-    public function getImage(): ?string
+   /* public function getImage(): ?string
     {
         return $this->image;
     }
@@ -118,6 +130,27 @@ class Formation
         $this->image = $image;
 
         return $this;
+    }*/
+    public function setFile(?File $file = null): void
+    {
+        $this->file = $file;
+        if ($file) {
+            $this->updatedAt = new \DateTimeImmutable(); // Pour forcer la mise à jour en base de données
+        }
+    }
+
+    public function getFile(): ?File
+    {
+        return $this->file;
+    }
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(?string $image): void
+    {
+        $this->image = $image;
     }
 
     /**

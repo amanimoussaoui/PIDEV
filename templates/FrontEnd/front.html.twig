@@ -93,11 +93,39 @@
 						</a>
 					</li>
 					<li class="sidebar-item">
-						<a href="product/products" class="sidebar-link">
-							<i class="lni lni-cart"></i>
-							<span>MarketPlace</span>
-						</a>
-					</li>
+    <a class="sidebar-link collapsed" data-bs-target="#product-nav" data-bs-toggle="collapse" href="#">
+        <i class="lni lni-cart"></i> <!-- Icône pour Marketplace -->
+        <span>MarketPlace</span>
+        <i class="bi bi-chevron-down ms-auto"></i>
+    </a>
+    <ul id="product-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+        <li>
+            <a href="{{ path('product_front_list') }}">
+                <i class="bi bi-circle"></i>
+                <span>Voir les produits A vendre </span>
+            </a>
+        </li>
+		<li>
+            <a href="{{ path('product_list') }}">
+                <i class="bi bi-circle"></i>
+                <span>Liste des produits</span>
+            </a>
+        </li>
+        <li>
+            <a href="{{ path('product_new') }}">
+                <i class="bi bi-circle"></i>
+                <span>Ajouter un produit</span>
+            </a>
+        </li>
+        <li>
+            <a href="{{ path('commande_list_client') }}">
+                <i class="bi bi-circle"></i>
+                <span>Voir les commandes</span>
+            </a>
+        </li>
+    </ul>
+</li>
+
 					<li class="sidebar-item">
 						<a href="#" class="sidebar-link">
 							<i class="lni lni-hammer"></i>

@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Product;
+use App\Entity\Panier;
+
 use App\Form\ProductType;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -47,6 +49,15 @@ public function index(EntityManagerInterface $entityManager): Response
         'products' => $products,
     ]);
 }
+#[Route('/admin', name: 'product_list_admin', methods: ['GET'])]
+public function index2(EntityManagerInterface $entityManager): Response
+{
+    $products = $entityManager->getRepository(Product::class)->findAll();
+
+    return $this->render('product/index_admin.html.twig', [
+        'products' => $products,
+    ]);
+}
 #[Route('/update/{id}', name: 'product_update', methods: ['GET', 'POST'])]
 public function updateProduct(Request $request, EntityManagerInterface $entityManager, ProductRepository $productRepository, int $id): Response
 {
@@ -73,6 +84,22 @@ public function updateProduct(Request $request, EntityManagerInterface $entityMa
 }
 #[Route('/delete/{id}', name: 'product_delete', methods: ['GET', 'POST'])]
 public function deleteProduct($id, EntityManagerInterface $entityManager, ProductRepository $productRepository): Response
+{
+    $product = $productRepository->find($id);
+
+    if (!$product) {
+        throw $this->createNotFoundException('Produit non trouvé');
+    }
+
+    $entityManager->remove($product);
+    $entityManager->flush();
+
+    $this->addFlash('success', 'Produit supprimé avec succès !');
+
+    return $this->redirectToRoute('product_list_admin');
+}
+#[Route('/delete/{id}', name: 'product_delete_admin', methods: ['GET', 'POST'])]
+public function deleteProduct_admin($id, EntityManagerInterface $entityManager, ProductRepository $productRepository): Response
 {
     $product = $productRepository->find($id);
 
@@ -123,13 +150,4 @@ public function search(Request $request, ProductRepository $productRepository): 
         'products' => $products,
     ]);
 }
-
-
-
-
-
-
-
-
-
 }

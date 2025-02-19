@@ -1,4 +1,4 @@
-{% extends 'BackEnd/back.html.twig' %}
+{% extends 'FrontEnd/front.html.twig' %}
 
 {% block title %}Liste des produits{% endblock %}
 
@@ -174,7 +174,7 @@ h2.mb-4 {
                     <td>{{ product.id }}</td>
                     <td>{{ product.nom }}</td>
                     <td>{{ product.description }}</td>
-                    <td>{{ product.prix }} €</td>
+                    <td>{{ product.prix }} DT</td>
                     <td>{{ product.stock }}</td>
                     <td>{{ product.category }}</td>
                     <td>{{ product.user.nom }}</td>

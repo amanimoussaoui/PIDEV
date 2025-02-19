@@ -1,4 +1,4 @@
-{% extends 'BackEnd/back.html.twig' %}
+{% extends 'FrontEnd/front.html.twig' %}
 
 {% block title %}Ajouter un produit{% endblock %}
 
@@ -68,11 +68,29 @@
     text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2); /* Ombre du texte */
 }
 
- </style>
+/* 🎨 Arrondir les icônes dans les champs de saisie */
+.input-group-text {
+    border-radius: 50%; /* Donne une forme circulaire aux icônes */
+    background-color: #f1f1f1; /* Vous pouvez ajuster la couleur d'arrière-plan si nécessaire */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px; /* Taille des icônes */
+    height: 40px; /* Taille des icônes */
+    padding: 0; /* Supprime les espacements internes */
+    border: none; /* Retirer la bordure autour de l'icône */
+}
+
+/* 🎨 Assurez-vous que les icônes restent noires et centrées */
+.input-group-text i {
+    font-size: 18px; /* Ajuste la taille des icônes */
+    color: black; /* Icônes noires */
+}
+</style>
+
 <div class="container mt-4">
     <div class="form-container">
-        <h2 class="mb-4 text-center custom-title"> Ajouter  produit</h2>
-
+        <h2 class="mb-4 text-center custom-title"> Ajouter un produit</h2>
 
         {% for message in app.flashes('success') %}
             <div class="alert alert-success">

@@ -10,6 +10,7 @@
 
 
 		{% block stylesheets %}
+
 			<!-- Fonts -->
 			<link href="https://fonts.googleapis.com" rel="preconnect">
 			<link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
@@ -30,7 +31,29 @@
 		{% endblock %}
 
 	
+		
+
+
+		<!-- Fonts -->
+		<link href="https://fonts.googleapis.com" rel="preconnect">
+		<link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&family=Marcellus:wght@400&display=swap" rel="stylesheet">
 	
+		<link href="{{ asset('assets/assetsFront/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+		<link href="{{ asset('assets/assetsFront/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+		<link href="{{ asset('assets/assetsFront/vendor/aos/aos.css') }}" rel="stylesheet">
+		<link href="{{ asset('assets/assetsFront/vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
+		<link href="{{ asset('assets/assetsFront/vendor/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+		<link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet">
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+	
+		<!-- Main CSS File -->
+		<link href="{{ asset('assets/assetsFront/css/main.css') }}" rel="stylesheet">
+	
+	
+
+		
 
 
 
@@ -46,6 +69,11 @@
 					<img src="{{ asset('assets/assetsFront/img/logo.png') }}" alt="AgriWise">
 				</a>
 
+
+
+
+
+			<!-- Navigation -->
 <nav id="navmenu" class="navmenu">
     <ul>
 
@@ -64,6 +92,7 @@
                 Services
             </a>
         </li>
+
 		<li>
 			{% if app.user %}
 				<a href="{{ path('app_logout') }}" class="btn btn-primary px-4">Log Out</a>
@@ -99,6 +128,9 @@
 </nav>
 
 
+
+
+
 				<i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
 			</div>
 		</header>
@@ -115,10 +147,14 @@
 					</div>
 				</div>
 
+
 				<ul class="sidebar-nav">
 				
 					<li class="sidebar-item {% if app.request.attributes.get('_route') in ['app_profile'] %}active{% endif %}">
 						<a href="{{ path('app_profile') }}" class="sidebar-link">
+
+				
+
 							<i class="lni lni-user"></i>
 							<span>Profile</span>
 						</a>
@@ -135,6 +171,7 @@
 							<span>Matériels</span>
 						</a>
 					</li>
+
 
 					<li class="sidebar-item {% if app.request.attributes.get('_route') in ['app_parcelle_index', 'app_culture_index', 'app_activite_index'] %}active{% endif %}">
 						<a href="#" class="sidebar-link collapsed" data-bs-toggle="collapse" data-bs-target="#multi-two" aria-expanded="false" aria-controls="multi-two">
@@ -154,18 +191,53 @@
 						</ul>
 					</li>
 				
+
+					
+
 					<li class="sidebar-item">
 						<a href="#" class="sidebar-link">
 							<i class="lni lni-book"></i>
 							<span>Formations</span>
 						</a>
 					</li>
-					<li class="sidebar-item">
-						<a href="#" class="sidebar-link">
+
+                    <li class="sidebar-item {% if app.request.attributes.get('_route') in ['app_showterrain', 'app_addformterrain'] %}active{% endif %}">
+						<a href="#" class="sidebar-link collapsed" data-bs-toggle="collapse" data-bs-target="#offre-menu" aria-expanded="false" aria-controls="offre-menu">
 							<i class="lni lni-briefcase"></i>
-							<span>Candidature</span>
+							<span>Gestion Des Offres</span>
 						</a>
+						<ul id="offre-menu" class="sidebar-dropdown collapse {% if app.request.attributes.get('_route') in ['app_showterrain', 'app_addformterrain', 'app_showcandidature', 'app_addformcandidature'] %}show{% endif %}">
+							
+							<!-- Section Terrains -->
+							<li class="sidebar-item">
+								<a href="#" class="submenu-link collapsed" data-bs-toggle="collapse" data-bs-target="#terrain-menu" aria-expanded="false" aria-controls="terrain-menu">Terrains</a>
+								<ul id="terrain-menu" class="submenu collapse {% if app.request.attributes.get('_route') in ['app_showterrain', 'app_addformterrain'] %}show{% endif %}">
+									<li class="submenu-item">
+										<a href="{{ path('app_showterrain') }}" class="{% if app.request.attributes.get('_route') == 'app_showterrain' %}active{% endif %}">Afficher vos Terrains</a>
+									</li>
+									<li class="submenu-item">
+										<a href="{{ path('app_addformterrain') }}" class="{% if app.request.attributes.get('_route') == 'app_addformterrain' %}active{% endif %}">Ajouter nouveau Terrain</a>
+									</li>
+								</ul>
+							</li>
+							
+							<!-- Section Candidatures -->
+							<li class="sidebar-item">
+								<a href="#" class="submenu-link collapsed" data-bs-toggle="collapse" data-bs-target="#candidature-menu" aria-expanded="false" aria-controls="candidature-menu">Candidatures</a>
+								<ul id="candidature-menu" class="submenu collapse {% if app.request.attributes.get('_route') in ['app_showcandidature', 'app_addformcandidature'] %}show{% endif %}">
+									<li class="submenu-item">
+										<a href="{{ path('app_showcandidature') }}" class="{% if app.request.attributes.get('_route') == 'app_showcandidature' %}active{% endif %}">Afficher vos Candidatures</a>
+									</li>
+									<li class="submenu-item">
+										<a href="/terrains" class="submenu-link">Voir Les Offres</a>
+									</li>
+								</ul>
+							</li>
+					
+						</ul>
 					</li>
+					
+					
 				</ul>
 					{# Bouton visible uniquement pour les administrateurs #}
 					{% if app.user and 'ROLE_ADMIN' in app.user.roles %}
@@ -180,6 +252,15 @@
 				
 				<div class="sidebar-footer">
 					<a href="{{ path('app_login') }}" class="sidebar-link">
+
+					
+					
+					
+					
+				</ul>
+				<div class="sidebar-footer">
+					<a href="#" class="sidebar-link">
+
 						<i class="lni lni-exit"></i>
 						<span>Logout</span>
 					</a>
@@ -277,6 +358,7 @@
 				<i class="bi bi-arrow-up-short"></i>
 			</a>
 
+
 			{% block javascripts %}
 
 			<script src="{{ asset('assets/assetsFront/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
@@ -289,3 +371,13 @@
 
 		</body>
 	</html>
+
+ <script src="{{ asset('assets/assetsFront/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('assets/assetsFront/vendor/php-email-form/validate.js') }}"></script>
+    <script src="{{ asset('assets/assetsFront/vendor/aos/aos.js') }}"></script>
+    <script src="{{ asset('assets/assetsFront/vendor/swiper/swiper-bundle.min.js') }}"></script>
+    <script src="{{ asset('assets/assetsFront/vendor/glightbox/js/glightbox.min.js') }}"></script>
+    <script src="{{ asset('assets/assetsFront/js/main.js') }}"></script>
+		</body>
+	</html>
+

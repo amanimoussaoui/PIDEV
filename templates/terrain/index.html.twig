@@ -1,0 +1,48 @@
+{% extends 'FrontEnd/front.html.twig' %}
+
+{% block title %}Mes Terrains{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="mb-4">Mes Terrains</h1>
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Localisation</th>
+                    <th>Superficie</th>
+                    <th>Prix</th>
+                    <th>Description</th>
+                    <th>Image</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for terrain in mes_terrains %}
+                <tr>
+                    <td>{{ terrain.id }}</td>
+                    <td>{{ terrain.localisation }}</td>
+                    <td>{{ terrain.superficie }} m²</td>
+                    <td>{{ terrain.prix }} TND</td>
+                    <td>{{ terrain.description }}</td>
+                    <td class="image-cell">
+                        {% if terrain.image %}
+                            <img src="{{ terrain.image }}" alt="Image du terrain" class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover;">
+                        {% else %}
+                            Pas d'image disponible
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if app.user.roles is defined and 'ROLE_AGRICULTEUR' in app.user.roles %}
+                            <a href="{{ path('app_terrain_edit', {'id': terrain.id}) }}" class="btn btn-primary">Modifier</a>
+                            <a href="{{ path('app_terrain_delete', {'id': terrain.id}) }}" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce terrain ?');">Supprimer</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

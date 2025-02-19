@@ -1,4 +1,6 @@
 <?php
+use Knp\Component\Pager\PaginatorInterface;
+use Knp\Bundle\PaginatorBundle\KnpPaginatorBundle;
 
 return [
     Symfony\Bundle\FrameworkBundle\FrameworkBundle::class => ['all' => true],
@@ -14,4 +16,7 @@ return [
     Symfony\Bundle\MonologBundle\MonologBundle::class => ['all' => true],
     Symfony\Bundle\MakerBundle\MakerBundle::class => ['dev' => true],
     Knp\Bundle\PaginatorBundle\KnpPaginatorBundle::class => ['all' => true],
+    Vich\UploaderBundle\VichUploaderBundle::class => ['all' => true],
+    
+
 ];

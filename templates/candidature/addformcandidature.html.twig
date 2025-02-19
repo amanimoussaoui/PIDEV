@@ -1,0 +1,185 @@
+{% extends 'FrontEnd/front.html.twig' %}
+
+{% block title %}AgriWise | Ajouter une Candidature{% endblock %}
+
+{% block content %}
+<h1>Ajouter une candidature</h1>
+
+<style>
+    /* Général */
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f7fc;
+    }
+
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 30px;
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+        font-size: 2rem;
+        color: #4CAF50;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    /* Formulaire */
+    form {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    label {
+        font-size: 1.1rem;
+        margin-bottom: 8px;
+        color: #333;
+    }
+
+    input, select, textarea {
+        width: 100%;
+        padding: 10px;
+        font-size: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        margin-top: 5px;
+    }
+
+    /* Icones */
+    .input-icon {
+        position: relative;
+    }
+
+    .input-icon i {
+        position: absolute;
+        top: 12px;
+        left: 10px;
+        color: #7a7a7a;
+        font-size: 1.2rem;
+        pointer-events: none;
+    }
+
+    input, select, textarea {
+        padding-left: 35px; /* Ajouter de l'espace à gauche pour les icônes */
+    }
+
+    /* Bouton */
+    .btn-submit {
+        padding: 10px 20px;
+        font-size: 1.1rem;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-submit:hover {
+        background-color: #45a049;
+    }
+
+    /* Style pour le message de validation */
+    form .valid-message {
+        color: green;
+        font-size: 1rem;
+        margin-top: 15px;
+    }
+
+    form .error-message {
+        color: red;
+        font-size: 1rem;
+        margin-top: 15px;
+    }
+
+    /* Animation */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    form {
+        animation: fadeIn 1s ease-out;
+    }
+
+    /* Responsivité */
+    @media (max-width: 600px) {
+        .container {
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+        }
+    }
+</style>
+
+<div class="container">
+
+    {{ form_start(formadd, {'attr': {'novalidate': 'novalidate'}}) }}  {# Ouvrir le formulaire avec l'attribut novalidate #}
+
+
+    <div class="form-group">
+        {{ form_label(formadd.dateDebut) }}
+        <div class="input-icon">
+            {{ form_widget(formadd.dateDebut) }}
+            <i class="fas fa-calendar-alt"></i>  {# Icône à gauche du champ dateDebut #}
+        </div>
+        {{ form_errors(formadd.dateDebut) }} {# Affiche les erreurs ici #}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(formadd.dateFin) }}
+        <div class="input-icon">
+            {{ form_widget(formadd.dateFin) }}
+            <i class="fas fa-calendar-alt"></i>
+        </div>
+        {{ form_errors(formadd.dateFin) }} {# Affiche les erreurs ici #}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(formadd.montant) }}
+        <div class="input-icon">
+            {{ form_widget(formadd.montant) }}
+            <i class="fas fa-dollar-sign"></i>  {# Icône à gauche du champ montant #}
+            <p class="text-muted">Ce champ ne peut pas être modifié.</p>
+        </div>
+    </div>
+
+    <div class="form-group">
+        {{ form_label(formadd.but) }}
+        <div class="input-icon">
+            {{ form_widget(formadd.but) }}
+            <i class="fas fa-lightbulb"></i>  {# Icône à gauche du champ but #}
+        </div>
+        {{ form_errors(formadd.but) }} {# Affiche les erreurs ici #}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(formadd.idTerrain) }}
+        <div class="input-icon">
+            {{ form_widget(formadd.idTerrain) }}
+            <i class="fas fa-map-marker-alt"></i>  {# Icône pour le champ idTerrain #}
+            <p class="text-muted">Ce champ ne peut pas être modifié.</p>
+        </div>
+    </div>
+
+    <button type="submit" class="btn-submit">Ajouter</button>  {# Bouton de soumission #}
+
+    {{ form_end(formadd) }}  {# Fermer le formulaire #}
+</div>
+
+{% endblock %}

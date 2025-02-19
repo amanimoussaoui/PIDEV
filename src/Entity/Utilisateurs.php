@@ -67,10 +67,24 @@ class Utilisateurs implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Parcelle::class)]
     private Collection $parcelles;
 
+    /**
+     * @var Collection<int, Terrain>
+     */
+    #[ORM\OneToMany(targetEntity: Terrain::class, mappedBy: 'utilisateur', orphanRemoval: true)]
+    private Collection $terrains;
+
+    /**
+     * @var Collection<int, Candidature>
+     */
+    #[ORM\OneToMany(targetEntity: Candidature::class, mappedBy: 'utilisateur')]
+    private Collection $candidatures;
+
     public function __construct()
     {
         $this->parcelles = new ArrayCollection();
         $this->date_inscription = new \DateTime(); // Sets the current date
+        $this->terrains = new ArrayCollection();
+        $this->candidatures = new ArrayCollection();
     }
 
     /**
@@ -227,6 +241,66 @@ class Utilisateurs implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         $this->profile = $profile;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Terrain>
+     */
+    public function getTerrains(): Collection
+    {
+        return $this->terrains;
+    }
+
+    public function addTerrain(Terrain $terrain): static
+    {
+        if (!$this->terrains->contains($terrain)) {
+            $this->terrains->add($terrain);
+            $terrain->setUtilisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTerrain(Terrain $terrain): static
+    {
+        if ($this->terrains->removeElement($terrain)) {
+            // set the owning side to null (unless already changed)
+            if ($terrain->getUtilisateur() === $this) {
+                $terrain->setUtilisateur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Candidature>
+     */
+    public function getCandidatures(): Collection
+    {
+        return $this->candidatures;
+    }
+
+    public function addCandidature(Candidature $candidature): static
+    {
+        if (!$this->candidatures->contains($candidature)) {
+            $this->candidatures->add($candidature);
+            $candidature->setUtilisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCandidature(Candidature $candidature): static
+    {
+        if ($this->candidatures->removeElement($candidature)) {
+            // set the owning side to null (unless already changed)
+            if ($candidature->getUtilisateur() === $this) {
+                $candidature->setUtilisateur(null);
+            }
+        }
 
         return $this;
     }

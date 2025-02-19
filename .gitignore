@@ -20,4 +20,9 @@
 ###< symfony/phpunit-bridge ###
 
 ###> symfony/asset-mapper ###
+<<<<<<< HEAD
+=======
+/public/assets/
+/assets/vendor/
+>>>>>>> GestionCandidature
 ###< symfony/asset-mapper ###

@@ -7,9 +7,13 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
+#[Vich\Uploadable] // Ajout du support pour VichUploaderBundle
+
 class Product
 {
     #[ORM\Id]
@@ -47,12 +51,19 @@ class Product
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: "La catégorie ne peut pas être vide.")]
     private ?string $category = null;
+
+
+    #[ORM\Column(nullable: true)]
+private ?string $image = null; // Stocke le nom du fichier image
+
+#[Vich\UploadableField(mapping: "product_images", fileNameProperty: "image")]
+#[Assert\NotBlank(message: "Veuillez télécharger une image.")]
+private ?File $file = null;
+    
     
 
-    #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "L'image ne peut pas être vide.")]
-    #[Assert\Type(type: "string", message: "L'image doit être une URL sous forme de texte.")]
-    private ?string $image = null;
+    #[ORM\Column(type: "datetime", nullable: true)]
+    private ?\DateTimeInterface $updatedAt = null;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'products')]
     #[ORM\JoinColumn(nullable: false)]
@@ -87,8 +98,27 @@ class Product
     public function getCategory(): ?string { return $this->category; }
     public function setCategory(string $category): static { $this->category = $category; return $this; }
 
-    public function getImage(): ?string { return $this->image; }
-    public function setImage(string $image): static { $this->image = $image; return $this; }
+    public function setFile(?File $file = null): void
+    {
+        $this->file = $file;
+        if ($file) {
+            $this->updatedAt = new \DateTimeImmutable(); // Pour forcer la mise à jour en base de données
+        }
+    }
+
+    public function getFile(): ?File
+    {
+        return $this->file;
+    }
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(?string $image): void
+    {
+        $this->image = $image;
+    }
 
     public function getUser(): ?User { return $this->user; }
     public function setUser(?User $user): static { $this->user = $user; return $this; }

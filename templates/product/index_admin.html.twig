@@ -115,7 +115,8 @@
                     <td>{{ product.stock }}</td>
                     <td>{{ product.category }}</td>
                     <td>{{ product.user.nom }}</td>
-                    <td><img src="{{ product.image }}" alt="Image du produit" width="100"></td>
+                    <td><img src="{{ asset('uploads/images/' ~ product.image) }}" alt="Image du produit"
+ class="card-img-top" width="100"></td>
                     <td class="btn-container">
                         <a href="{{ path('product_delete_admin', {'id': product.id}) }}" class="btn-delete">
                             <i class="fas fa-trash-alt"></i> Supprimer

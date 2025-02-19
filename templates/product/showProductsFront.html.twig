@@ -234,7 +234,8 @@
         {% if products is not empty %}
             {% for product in products %}
                 <div class="card">
-                    <img src="{{ product.image }}" alt="Image du produit" class="card-img-top">
+                    <img src="{{ asset('uploads/images/' ~ product.image) }}" alt="Image du produit"
+ class="card-img-top">
                     <div class="card-body">
                         <h5 class="card-title">{{ product.nom }}</h5>
                         <p class="card-price"><strong>{{ product.prix }}DT</strong></p>

@@ -208,7 +208,7 @@ body {
         {% if paniers is not empty %}
             {% for panier in paniers %}
                 <div class="panier-item">
-                    <img src="{{ panier.product.image }}" alt="{{ panier.product.nom }}" class="product-image">
+                     <img src="{{ asset('uploads/images/' ~ panier.product.image) }}" alt="{{ panier.product.nom }}" class="product-image">
                     <div class="product-info">
                         <h3>{{ panier.product.nom }}</h3>
                         <p class="description" style="color: #333333;">{{ panier.product.description }}</p> <!-- Changement pour gris foncé -->

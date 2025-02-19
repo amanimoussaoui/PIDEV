@@ -132,7 +132,8 @@
             <tr>
                 <td>
                     {% if panier.product is not null and panier.product.image is not null %}
-                    <img src="{{ panier.product.image }}" alt="Image du produit">
+                     <img src="{{ asset('uploads/images/' ~ panier.product.image) }}" alt="Image du produit"
+ class="card-img-top">
                     {% else %}
                         <span>Aucune image</span>
                     {% endif %}

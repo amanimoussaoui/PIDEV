@@ -1,0 +1,83 @@
+{% extends 'FrontEnd/front.html.twig' %}
+
+{% block title %}AgriWise | Afficher Les Candidatures{% endblock %}
+
+{% block content %}
+    <h1>Mes Candidatures</h1>
+
+    {% if candidatures is empty %}
+        <p class="empty-msg">Aucune candidature pour vos terrains.</p>
+    {% else %}
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Date début</th>
+                    <th>Date fin</th>
+                    <th>Montant</th>
+                    <th>But</th>
+                    <th>État</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for candidature in candidatures %}
+                    <tr class="{% if candidature.etat == 'acceptée' %}accepted{% elseif candidature.etat == 'rejetée' %}rejected{% else %}pending{% endif %}">
+                        <td>{{ candidature.id }}</td>
+                        <td>{{ candidature.dateDebut|date('d/m/Y') }}</td>
+                        <td>{{ candidature.dateFin|date('d/m/Y') }}</td>
+                        <td>{{ candidature.montant }}</td>
+                        <td>{{ candidature.but }}</td>
+                        <td>{{ candidature.etat|capitalize }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+    <style>
+        h1 {
+            text-align: center;
+            color: #2C3E50;
+        }
+
+        .empty-msg {
+            text-align: center;
+            color: #E74C3C;
+            font-size: 18px;
+        }
+
+        .styled-table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            font-size: 18px;
+            text-align: left;
+        }
+
+        .styled-table th, .styled-table td {
+            padding: 12px;
+            border: 1px solid #ddd;
+        }
+
+        .styled-table th {
+            background-color: #2dc85e;
+            color: white;
+        }
+
+        .styled-table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .accepted {
+            background-color: #D4EDDA;
+        }
+
+        .rejected {
+            background-color: #F8D7DA;
+        }
+
+        .pending {
+            background-color: #FFF3CD;
+        }
+    </style>
+{% endblock %}

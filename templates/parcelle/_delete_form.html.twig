@@ -1,0 +1,6 @@
+<form action="{{ path('app_parcelle_delete', {'id': parcelle.id}) }}" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette parcelle ?');" style="display: inline;">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ parcelle.id) }}">
+    <button type="submit" class="btn btn-danger">
+        <i class="bi bi-trash"></i> Supprimer
+    </button>
+</form>

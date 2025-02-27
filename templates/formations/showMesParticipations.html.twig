@@ -1,0 +1,105 @@
+{% extends 'FrontEnd/front.html.twig' %}
+
+{% block title %}AgriWise | Mes participations actives{% endblock %}
+
+{% block content %}
+    <style>
+        /* Amélioration de la table */
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
+        }
+
+        /* En-tête de la table */
+        th {
+            background: #4CAF50 !important;
+            color: white !important;
+            font-weight: bold;
+            text-align: center;
+            padding: 15px;
+            width: auto;
+            white-space: nowrap;
+        }
+
+        /* Contenu de la table */
+        td {
+            padding: 12px 15px;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        /* Lignes du tableau */
+        tr {
+            background: white;
+        }
+
+        tr:hover {
+            background: #f1f1f1;
+        }
+
+        /* Bouton d'annulation */
+        td a {
+            display: inline-block;
+            padding: 8px 12px;
+            margin: 5px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        td a[href*="deleteParticipation"] {
+            background: #dc3545;
+            color: white;
+        }
+
+        td a:hover {
+            opacity: 0.8;
+        }
+
+        /* Titre de la page */
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            background: #4CAF50;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+        }
+    </style>
+
+<h1>Participations Actives de {{ user.nom }} {{ user.prenom }}</h1>
+
+{% if participations is not empty %}
+    <table>
+        <thead>
+            <tr>
+                <th>Titre de la formation</th>
+                <th>Description</th>
+                <th>Date de la formation</th>
+                <th>Date d'inscription</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for participation in participations %}
+                <tr>
+                    <td><strong>{{ participation.formation.titre }}</strong></td>
+                    <td>{{ participation.formation.description }}</td>
+                    <td>{{ participation.formation.date|date('Y-m-d') }}</td>
+                    <td>{{ participation.dateCreation|date('Y-m-d') }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>Aucune participation active.</p>
+{% endif %}
+
+
+{% endblock %}

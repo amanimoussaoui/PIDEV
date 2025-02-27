@@ -1,0 +1,147 @@
+{% extends 'FrontEnd/front.html.twig' %}
+
+{% block title %}
+	Activité 
+{% endblock %}
+
+{% block content %}
+	<div class="container mt-4">
+	<div class="custom-card shadow-lg border-0 rounded-4 overflow-hidden">
+            <div class="custom-card-header p-4 d-flex justify-content-between align-items-center py-4" 
+                 style="background: linear-gradient(90deg, #1a9738, #1F4E3D);">
+				<h5 class="card-title mb-0 text-white fw-semibold">Vos activités</h5>
+				<a href="{{ path('app_activite_new') }}" class="btn btn-light btn-sm rounded-pill px-3 shadow-sm">
+					<i class="bi bi-plus-circle me-1"></i>
+					Ajouter une activité
+				</a>
+			</div>
+
+			<div class="card-body p-4">
+				<div id="calendar" class="calendar-container"></div>
+			</div>
+		</div>
+	</div>
+
+
+{% block stylesheets %}
+	{{ parent() }}
+	<link href="https://cdn.jsdelivr.net/npm/fullcalendar@3.2.0/dist/fullcalendar.min.css" rel="stylesheet"/>
+
+{% endblock %}
+
+	{% block javascripts %}
+		{{ parent() }}
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+		<script>
+			$(document).ready(function () {
+    var calendar = $('#calendar').fullCalendar({
+        themeSystem: 'bootstrap4',
+        header: {
+            left: 'prev,next today',
+            center: 'title',
+            right: ''
+        },
+        defaultView: 'month',
+        buttonText: {
+            today: 'Aujourd\'hui',
+            prev: '<',
+            next: '>'
+        },
+        monthNames: [
+            'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
+            'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+        ],
+        monthNamesShort: [
+            'Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin',
+            'Juil', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'
+        ],
+        dayNames: [
+            'Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'
+        ],
+        dayNamesShort: [
+            'Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'
+        ],
+        events: [
+            {% for activite in activites %}
+                {
+					id: "{{ activite.id }}",
+                    title: "{{ activite.type }}",
+                    start: "{{ activite.date|date('Y-m-d') }}",
+                    description: "{{ activite.description }}",
+                    extendedProps: {
+                        parcelle: "{{ activite.culture ? activite.culture.parcelle.nom : '' }}",
+                        culture: "{{ activite.culture ? activite.culture.nomCulture : '' }}"
+                    },
+                    className: "{{ activite.type }}"
+                }
+                {% if not loop.last %},{% endif %}
+            {% endfor %}
+        ],
+		eventClick: function (event) {
+    Swal.fire({
+        title: event.title,
+        html: "<b>Date:</b> " + moment(event.start).format('DD/MM/YYYY') +
+            "<br><b>Type d'activité:</b> " + event.title +
+            "<br><b>Description:</b> " + event.description +
+            "<br><b>Parcelle:</b> " + (event.extendedProps.parcelle || "Non spécifiée") +
+            "<br><b>Culture:</b> " + (event.extendedProps.culture || "Non spécifiée"),
+        icon: 'success',
+        showCancelButton: true, 
+        confirmButtonText: 'Fermer',
+        cancelButtonText: 'Plus de Détails',
+        customClass: {
+            cancelButton: 'btn btn-primary',
+            confirmButton: 'btn btn-light mx-3', 
+        },
+        buttonsStyling: false, 
+    }).then((result) => {
+        if (result.dismiss === Swal.DismissReason.cancel) {
+            window.location.href = "{{ path('app_activite_show', {'id': 'ACTIVITY_ID'}) }}".replace("ACTIVITY_ID", event.id);
+        }
+    });
+},
+        dayRender: function (date, cell) {
+            cell.css("cursor", "pointer");
+            cell.hover(function () {
+                $(this).css("background-color", "#f0f0f0");
+            }, function () {
+                $(this).css("background-color", "");
+            });
+        },
+        viewRender: function (view) {
+            if (!$('#yearDropdown').length) {
+                var yearDropdown = `
+                    <div class="year-dropdown">
+                        <select id="yearDropdown" class="form-select">
+                            {% for year in range("now"|date("Y") - 5, "now"|date("Y") + 5) %}
+                                <option value="{{ year }}" {% if year == "now"|date("Y") %}selected{% endif %}>{{ year }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                `;
+                $('.fc-right').prepend(yearDropdown);
+            }
+
+            var currentYear = view.intervalStart.year();
+            $('#yearDropdown').val(currentYear);
+        },
+        dayClick: function (date, jsEvent, view) {
+            var selectedDate = date.format('YYYY-MM-DD');
+            window.location.href = "{{ path('app_activite_new') }}?date=" + selectedDate;
+        }
+    });
+
+    $(document).on('change', '#yearDropdown', function () {
+        var selectedYear = $(this).val();
+        var currentDate = calendar.fullCalendar('getDate');
+        var newDate = moment(currentDate).year(selectedYear);
+        calendar.fullCalendar('gotoDate', newDate);
+    });
+});
+		</script>
+	{% endblock %}
+{% endblock %}

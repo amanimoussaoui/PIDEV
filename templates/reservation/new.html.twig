@@ -1,0 +1,26 @@
+{% extends 'FrontEnd/front.html.twig' %}
+
+{% block title %}Nouvelle Réservation{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4" style="color: #5D6D7E;">Nouvelle Réservation</h2>
+    
+   {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+    <div class="mb-3">
+        {{ form_label(form.date_debut, 'Date de début', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.date_debut, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.date_debut) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.date_fin, 'Date de fin', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.date_fin, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.date_fin) }}
+    </div>
+
+    <button type="submit" class="btn btn-success">Réserver ✅</button>
+    
+    {{ form_end(form) }}
+</div>
+{% endblock %}

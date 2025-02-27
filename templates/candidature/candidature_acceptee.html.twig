@@ -1,0 +1,37 @@
+{% extends 'FrontEnd/front.html.twig' %}
+
+{% block title %}AgriWise |  Candidature{% endblock %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidature Acceptée</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        .message {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 20px;
+            border-radius: 5px;
+            display: inline-block;
+            font-size: 18px;
+            font-weight: bold;
+            border: 1px solid #c3e6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="message">
+        ✅ Félicitations ! Votre candidature a été acceptée.
+    </div>
+</body>
+</html>
+
+{% endblock %}

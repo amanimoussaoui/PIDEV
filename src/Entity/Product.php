@@ -1,0 +1,165 @@
+<?php
+
+namespace App\Entity;
+
+use App\Repository\ProductRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+
+
+#[ORM\Entity(repositoryClass: ProductRepository::class)]
+#[Vich\Uploadable] // Ajout du support pour VichUploaderBundle
+
+class Product
+{
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
+
+    #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le nom ne peut pas être vide.")]
+    #[Assert\Type(type: "string", message: "Le nom doit être une chaîne de caractères.")]
+    private ?string $nom = null;
+
+    #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "La description ne peut pas être vide.")]
+    #[Assert\Type(type: "string", message: "La description doit être une chaîne de caractères.")]
+    private ?string $description = null;
+
+    #[ORM\Column(type: 'float')]
+    #[Assert\NotBlank(message: "Le prix ne peut pas être vide.")]
+    #[Assert\Type(type: "numeric", message: "Le prix doit être un nombre.")]
+    #[Assert\Positive(message: "Le prix doit être un nombre positif.")]
+    #[Assert\Regex(
+        pattern: "/^\d+(\.\d{1,2})?$/",
+        message: "Le prix doit être un nombre valide sans lettres et avec au maximum deux décimales."
+    )]
+    private ?float $prix = null;
+
+
+    #[ORM\Column]
+    #[Assert\NotBlank(message: "Le stock ne peut pas être vide.")]
+    #[Assert\Type(type: "integer", message: "Le stock doit être un nombre entier.")]
+    #[Assert\PositiveOrZero(message: "Le stock doit être un nombre positif ou zéro.")]
+    private ?int $stock = null;
+
+    #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "La catégorie ne peut pas être vide.")]
+    private ?string $category = null;
+
+
+    #[ORM\Column(nullable: true)]
+private ?string $image = null; // Stocke le nom du fichier image
+
+#[Vich\UploadableField(mapping: "product_images", fileNameProperty: "image")]
+#[Assert\NotBlank(message: "Veuillez télécharger une image.")]
+private ?File $file = null;
+    
+    
+
+    #[ORM\Column(type: "datetime", nullable: true)]
+    private ?\DateTimeInterface $updatedAt = null;
+
+
+    /**
+     * @var Collection<int, Panier>
+     */
+    #[ORM\OneToMany(targetEntity: Panier::class, mappedBy: 'product')]
+    private Collection $paniers;
+
+    #[ORM\ManyToOne(inversedBy: 'products')]
+    private ?Utilisateurs $utilisateurs = null;
+
+    public function __construct()
+    {
+        $this->paniers = new ArrayCollection();
+    }
+
+    public function getId(): ?int { return $this->id; }
+
+    public function getNom(): ?string { return $this->nom; }
+    public function setNom(string $nom): static { $this->nom = $nom; return $this; }
+
+    public function getDescription(): ?string { return $this->description; }
+    public function setDescription(string $description): static { $this->description = $description; return $this; }
+
+    public function getPrix(): ?float { return $this->prix; }
+    public function setPrix(float $prix): static { $this->prix = $prix; return $this; }
+
+    public function getStock(): ?int { return $this->stock; }
+    public function setStock(int $stock): static { $this->stock = $stock; return $this; }
+
+    public function getCategory(): ?string { return $this->category; }
+    public function setCategory(string $category): static { $this->category = $category; return $this; }
+
+    public function setFile(?File $file = null): void
+    {
+        $this->file = $file;
+        if ($file) {
+            $this->updatedAt = new \DateTimeImmutable(); // Pour forcer la mise à jour en base de données
+        }
+    }
+
+    public function getFile(): ?File
+    {
+        return $this->file;
+    }
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(?string $image): void
+    {
+        $this->image = $image;
+    }
+
+   
+
+    /*
+     * @return Collection<int, Panier>
+     */
+    public function getPaniers(): Collection
+    {
+        return $this->paniers;
+    }
+
+    public function addPanier(Panier $panier): static
+    {
+        if (!$this->paniers->contains($panier)) {
+            $this->paniers->add($panier);
+            $panier->setProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removePanier(Panier $panier): static
+    {
+        if ($this->paniers->removeElement($panier)) {
+            // set the owning side to null (unless already changed)
+            if ($panier->getProduct() === $this) {
+                $panier->setProduct(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getUtilisateurs(): ?Utilisateurs
+    {
+        return $this->utilisateurs;
+    }
+
+    public function setUtilisateurs(?Utilisateurs $utilisateurs): static
+    {
+        $this->utilisateurs = $utilisateurs;
+
+        return $this;
+    }
+}

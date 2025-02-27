@@ -1,0 +1,50 @@
+{% extends 'BackEnd/back.html.twig' %}
+
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Role Pie Chart</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+     <style>
+        /* Center the title */
+        h1 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Graphe des utilisateurs selon le role</h1>
+
+    <canvas id="rolePieChart" width="400" height="400"></canvas>
+
+    <script>
+        var ctx = document.getElementById('rolePieChart').getContext('2d');
+        var roleCounts = {{ roleCounts|json_encode|raw }};
+        
+        var labels = Object.keys(roleCounts);
+        var data = Object.values(roleCounts);
+
+        var myPieChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: data,
+                    backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0'],
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true
+            }
+        });
+    </script>
+</body>
+</html>
+
+
+{% endblock %}

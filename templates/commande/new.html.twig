@@ -1,0 +1,142 @@
+{% extends 'FrontEnd/front.html.twig' %}
+
+{% block title %}Passer une commande{% endblock %}
+
+{% block content %}
+    <style>
+        /* 🗂️ Style principal du formulaire */
+        .form-container {
+            max-width: 700px;
+            margin: 50px auto;
+            background: #f9f9f9;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .form-container:hover {
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        /* 🌿 Style du titre */
+        h1 {
+            color: #4Cae4c; /* Couleur verte #4Cae4c */
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            font-family: 'Roboto', sans-serif;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2); /* Ombre légère */
+        }
+
+        /* 📝 Style des labels et icônes */
+        .input-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .input-container i {
+            font-size: 18px;
+            color: #27ae60;
+            margin-right: 10px;
+        }
+
+        .form-label {
+            color: #27ae60;
+            font-size: 16px;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .label-info {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-left: 10px;
+        }
+
+        /* 🖊️ Champs de saisie */
+        .form-control, .form-select {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            box-sizing: border-box;
+            transition: 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #27ae60;
+            box-shadow: 0 0 10px rgba(39, 174, 96, 0.5);
+        }
+
+        /* 🚀 Bouton de soumission */
+        .btn-submit {
+            background-color: #4Cae4c; /* Couleur verte #4Cae4c */
+            color: white;
+            font-size: 18px;
+            padding: 15px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-submit:hover {
+            background-color: #3d9f3d; /* Couleur plus foncée pour l'effet hover */
+        }
+
+        .btn-submit i {
+            margin-right: 10px;
+        }
+
+        /* ✅ Gestion des erreurs */
+        .form-error {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: -10px;
+        }
+    </style>
+
+    <h1>Passer une commande pour {{ product.nom }}</h1>
+
+    <div class="form-container">
+        {{ form_start(form) }}
+        
+            <div class="input-container">
+                <i class="fa-solid fa-calendar-alt"></i>
+                <label for="{{ form.date.vars.id }}" class="form-label">Date</label>
+                 <span class="label-info">Sélectionnez la date de la commande</span>
+            {{ form_widget(form.date) }}
+            </div>
+            <div class="form-error">{{ form_errors(form.date) }}</div>
+
+           
+
+            <div class="input-container">
+                <i class="fa-solid fa-map-marker-alt"></i>
+                <label for="{{ form.adresse.vars.id }}" class="form-label">Adresse</label>
+                <span class="label-info">Entrez l'adresse de livraison</span>
+                 {{ form_widget(form.adresse) }}
+            </div>
+             <div class="form-error">{{ form_errors(form.adresse) }}</div>
+
+            <!-- Bouton de soumission du formulaire -->
+        <button type="submit" class="btn-submit" id="submit-btn">
+                <i class="fa-solid fa-credit-card"></i> Valider la commande
+            </button>
+
+
+            
+        {{ form_end(form) }}
+    </div>
+
+{% endblock %}

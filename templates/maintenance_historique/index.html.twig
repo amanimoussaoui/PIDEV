@@ -1,0 +1,42 @@
+{% extends 'BackEnd/back.html.twig' %}
+
+{% block title %}Historique des Maintenances{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h2>Historique des Maintenances</h2>
+
+
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Machine</th>
+                        <th scope="col">Date de Maintenance</th>
+                       
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for historique in maintenances %}
+                        <tr>
+                            <td>{{ historique.machine.nom }}</td>
+                            <td>{{ historique.dateMaintenance ? historique.dateMaintenance|date('d/m/Y H:i') : 'Non définie' }}</td>
+                            
+                            <td>
+                            
+                                
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="4">Aucun historique de maintenance trouvé</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

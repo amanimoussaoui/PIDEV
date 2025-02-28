@@ -1,0 +1,107 @@
+{% extends 'FrontEnd/front.html.twig' %}
+
+{% block title %}Ajouter un Terrain{% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+<style>
+    body {
+        background-color: #f4f7fc;
+    }
+
+    .container {
+        max-width: 800px;
+        margin: auto;
+        padding: 20px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        animation: fadeIn 1s ease-out;
+    }
+
+    h1 {
+        color: #B1D182;
+        text-align: center;
+        font-size: 2rem;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    label {
+        font-weight: bold;
+    }
+
+    input, textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    button {
+        width: 100%;
+        background-color: #B1D182;
+        color: white;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1rem;
+    }
+
+    button:hover {
+        opacity: 0.9;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+</style>
+
+<div class="container">
+    <h1>Ajouter un Terrain</h1>
+
+    {{ form_start(form) }}
+
+        <div class="form-group">
+            {{ form_label(form.localisation) }}
+            {{ form_widget(form.localisation, {'attr': {'class': 'form-control'}}) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.superficie) }}
+            {{ form_widget(form.superficie, {'attr': {'class': 'form-control'}}) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.prix) }}
+            {{ form_widget(form.prix, {'attr': {'class': 'form-control'}}) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.description) }}
+            {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.image) }}
+            {{ form_widget(form.image, {'attr': {'class': 'form-control'}}) }}
+        </div>
+
+        <button type="submit">
+            <i class="fa-solid fa-plus"></i> Ajouter
+        </button>
+
+    {{ form_end(form) }}
+</div>
+
+{% endblock %}

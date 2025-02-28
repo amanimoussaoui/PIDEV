@@ -1,0 +1,126 @@
+{% extends 'BackEnd/back.html.twig' %}
+
+{% block title %}Liste des Commandes{% endblock %}
+
+{% block content %}
+
+<style>
+    /* CONTAINER PRINCIPAL */
+    .container {
+        max-width: 1000px;
+        margin: 30px auto;
+        padding: 20px;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    /* TITRE */
+    h2 {
+        text-align: center;
+        color: #2c7b2c;
+        margin-bottom: 20px;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    /* TABLEAU */
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    .table th, .table td {
+        padding: 15px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .table th {
+        background: #2c7b2c;
+        color: white;
+        text-transform: uppercase;
+        font-size: 14px;
+    }
+
+    .table tr:hover {
+        background: rgba(44, 123, 44, 0.1);
+        transition: background 0.3s ease;
+    }
+
+    /* BOUTONS */
+    .btn-container {
+        display: flex;
+        gap: 10px;
+    }
+
+    .btn-delete {
+        padding: 10px 16px; /* Taille améliorée */
+        border-radius: 20px; /* Boutons arrondis */
+        text-decoration: none;
+        font-size: 14px;
+        transition: all 0.3s ease-in-out;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        border: none;
+        background: #d9534f;
+        color: white;
+    }
+
+    .btn-delete:hover {
+        background: #c9302c;
+        transform: scale(1.05);
+    }
+
+    /* ICÔNES */
+    .btn-delete i {
+        margin-right: 5px;
+    }
+
+    /* CENTRER LE TEXTE LORSQU'IL N'Y A PAS DE COMMANDE */
+    .text-center {
+        text-align: center;
+        font-style: italic;
+        color: #888;
+        padding: 15px;
+    }
+</style>
+
+<!-- CONTENU PRINCIPAL -->
+<div class="container">
+    <h2>Liste des Commandes </h2>
+    
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Date</th>
+                <th>Adresse</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for commande in commandes %}
+                <tr>
+                    <td>{{ commande.id }}</td>
+                    <td>{{ commande.date|date('d/m/Y') }}</td>
+                    <td>{{ commande.adresse }}</td>
+                    <td class="btn-container">
+                        <a href="{{ path('commande_delete', {'id': commande.id}) }}" class="btn-delete">
+                            <i class="fas fa-trash-alt"></i> Supprimer
+                        </a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="4" class="text-center">Aucune commande trouvée.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

@@ -1,0 +1,149 @@
+{% extends 'FrontEnd/front.html.twig' %}
+
+{% block title %}Détails du produit - {{ product.nom }}{% endblock %}
+
+{% block content %}
+<style>
+.product-detail-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+    margin: 50px 0;
+}
+
+.product-image {
+    width: 45%;
+    text-align: center;
+}
+
+.product-image img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.product-info {
+    width: 50%;
+}
+
+.product-info h1 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.product-info p {
+    font-size: 1.2rem;
+    margin: 10px 0;
+}
+
+.product-info .price {
+    color: #2c3e50;
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.product-info .category {
+    font-style: italic;
+    color: #7f8c8d;
+}
+
+.product-info .description {
+    margin-top: 20px;
+    font-size: 1.1rem;
+    color: #34495e;
+}
+
+.actions {
+    margin-top: 30px;
+}
+
+.actions .btn {
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 5px;
+    text-decoration: none;
+    margin-right: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.actions .btn:hover {
+    opacity: 0.8;
+}
+
+.btn-edit, .btn-delete {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 60px; /* Taille réduite */
+    height: 60px; /* Taille réduite */
+    border-radius: 30%;
+    color: #fff;
+    font-size: 2.1rem; /* Taille de l'icône ajustée */
+}
+
+.btn-edit {
+    background-color:  #ffc107;; /* Vert pour le bouton modifier */
+}
+
+.btn-delete {
+    background-color: #dc3545; /* Rouge pour le bouton supprimer */
+}
+
+.actions i {
+    font-size: 1.2rem;
+}
+
+.btn-back {
+    background-color: #28a745; /* Vert pour le bouton retour */
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    text-decoration: none;
+    margin-top: 20px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-back:hover {
+    opacity: 0.8;
+}
+
+</style>
+
+<div class="product-detail-container">
+    <div class="product-image">
+        <img src="{{ asset('uploads/images/' ~ product.image) }}" alt="Image de {{ product.nom }}" class="card-img">
+    </div>
+
+    <div class="product-info">
+        <h1>{{ product.nom }}</h1>
+        <p class="category"><strong>Catégorie:</strong> {{ product.category }}</p>
+        <p class="price"><strong>Prix:</strong> {{ product.prix|number_format(2, '.', ',') }} DT</p>
+        <p class="stock"><strong>Stock disponible:</strong> {{ product.stock }} Kilo/gramme</p>
+        <p class="description">{{ product.description }}</p>
+    </div>
+
+    <div class="actions">
+        <a href="{{ path('product_update', {'id': product.id}) }}" class="btn btn-edit">
+            <i class="fas fa-edit"></i>
+        </a>
+        <a href="{{ path('product_delete', {'id': product.id}) }}" class="btn btn-delete" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce produit ?');">
+            <i class="fas fa-trash-alt"></i>
+        </a>
+    </div>
+</div>
+
+<div class="actions">
+    <!-- Bouton de retour avec icône uniquement -->
+    <a href="javascript:history.back()" class="btn-back">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+</div>
+
+{% endblock %}

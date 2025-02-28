@@ -1,0 +1,192 @@
+{% extends 'BackEnd/back.html.twig' %}
+
+{% block title %}Gestion des Machines{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <!-- FullCalendar CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.2.0/fullcalendar.min.css" rel="stylesheet" />
+    <style>
+        /* Grille pour organiser le contenu */
+        .row {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* La table occupe tout l'espace disponible */
+        .col-md-12 {
+            margin-bottom: 10px;
+        }
+
+        /* Ajustement du calendrier sous le tableau et centré */
+        #calendar {
+            width: 80%; /* Réduit la largeur à 80% pour un bon espacement */
+            margin: 20px auto; /* Centre le calendrier */
+            min-height: 500px; /* Taille plus grande pour bien afficher tous les jours */
+        }
+
+        /* Ajustement pour les événements de maintenance */
+        .maintenance-event {
+            background-color: red !important;
+            color: white !important;
+        }
+
+        /* Style pour le champ de recherche */
+        .search-container {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        .search-container input {
+            width: 300px;
+            padding: 5px;
+            font-size: 14px;
+        }
+
+        /* Style pour le bouton de tri */
+        .sort-button {
+            margin-bottom: 20px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Zone de recherche -->
+        <div class="col-md-12 search-container">
+            <input type="text" id="searchInput" class="form-control" placeholder="Rechercher une machine...">
+        </div>
+
+        <!-- Bouton de tri -->
+        <div class="col-md-12 sort-button">
+            <button class="btn btn-info" id="sortButton">Trier par nom (A-Z)</button>
+        </div>
+
+        <!-- Table des machines -->
+        <div class="col-md-12">
+            <h2>Gestion des Machines</h2>
+            <div class="mb-4">
+                <a href="{{ path('gestion_machine_addform') }}" class="btn btn-success">Ajouter une machine</a>
+                <a href="{{ path('reservation_index2') }}" class="btn btn-success">Consulter la liste des réservations</a>
+                <a href="{{ path('verifier_maintenance') }}" class="btn btn-primary">Ajouter maintenances passées à l'historique</a>
+            </div>
+
+            <table class="table table-striped" id="machineTable">
+                <thead>
+                    <tr>
+                        <th scope="col">Nom</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Prix</th>
+                        <th scope="col">Etat</th>
+                        <th scope="col">Disponibilité</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for machine in tabmachines %}
+                    <tr>
+                        <td>{{ machine.nom }}</td>
+                        <td>{{ machine.description }}</td>
+                        <td>{{ machine.prix }}</td>
+                        <td>{{ machine.etat }}</td>
+                        <td>{{ machine.disponibilite }}</td>
+                        
+                        <td>
+                            <a href="{{ path('gestion_machine_update', {'id': machine.id}) }}" class="btn btn-warning">Modifier</a>
+                            <a href="{{ path('gestion_machine_delete', {'id': machine.id}) }}" class="btn btn-danger" 
+                               onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette machine ?');">Supprimer</a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6">Aucune machine disponible</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Calendrier centré sous la table -->
+        <div class="col-md-12">
+            <div id="calendar"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <!-- jQuery (nécessaire pour FullCalendar) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- FullCalendar JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.2.0/fullcalendar.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            // Initialisation du calendrier
+            $('#calendar').fullCalendar({
+                events: [
+                    {% for machine in tabmachines %}
+                        {% if machine.dateMaintenance %}
+                            {
+                                title: 'Maintenance de {{ machine.nom }}',
+                                start: '{{ machine.dateMaintenance|date("Y-m-d") }}',
+                                color: 'red',  // Colorie les dates de maintenance en rouge
+                            },
+                        {% endif %}
+                    {% endfor %}
+                ],
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'month,agendaWeek,agendaDay'
+                },
+                locale: 'fr',  // Langue française
+                defaultView: 'month',  // Affiche par défaut la vue "mois"
+                minHeight: 50,  // Hauteur ajustée sans scroll
+                eventRender: function(event, element) {
+                    // Ajouter une classe CSS spécifique pour les événements de maintenance
+                    element.addClass('maintenance-event');
+                }
+            });
+
+            // Fonction pour filtrer le tableau des machines
+            $('#searchInput').on('input', function() {
+                var searchValue = $(this).val().toLowerCase();
+                $('#machineTable tbody tr').each(function() {
+                    var rowText = $(this).text().toLowerCase();
+                    if (rowText.indexOf(searchValue) !== -1) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            });
+
+            // Fonction pour trier le tableau par nom alphabétiquement
+            $('#sortButton').on('click', function() {
+                var rows = $('#machineTable tbody tr').get();
+                rows.sort(function(a, b) {
+                    var nameA = $(a).find('td').eq(0).text().toLowerCase();  // Récupère le nom de la machine
+                    var nameB = $(b).find('td').eq(0).text().toLowerCase();  // Récupère le nom de la machine
+
+                    if (nameA < nameB) {
+                        return -1;
+                    }
+                    if (nameA > nameB) {
+                        return 1;
+                    }
+                    return 0;
+                });
+
+                $.each(rows, function(index, row) {
+                    $('#machineTable tbody').append(row);
+                });
+            });
+        });
+    </script>
+{% endblock %}

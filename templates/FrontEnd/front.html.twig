@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>
+			{% block title %}Welcome!
+			{% endblock %}
+		</title>
+		<link href="{{ asset('assets/assetsFront/img/favicon.png') }}" rel="icon">
+
+
+		{% block stylesheets %}
+
+
+			<!-- Fonts -->
+			<link href="https://fonts.googleapis.com" rel="preconnect">
+			<link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+			<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&family=Marcellus:wght@400&display=swap" rel="stylesheet">
+
+			<link href="{{ asset('assets/assetsFront/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+			<link href="{{ asset('assets/assetsFront/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+			<link href="{{ asset('assets/assetsFront/vendor/aos/aos.css') }}" rel="stylesheet">
+			<link href="{{ asset('assets/assetsFront/vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
+			<link href="{{ asset('assets/assetsFront/vendor/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
+			<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+			<link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet">
+			<link
+			href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+			<!-- Main CSS File -->
+			<link href="{{ asset('assets/assetsFront/css/main.css') }}" rel="stylesheet">
+		{% endblock %}
+	</head>
+
+	<body>
+
+		<header id="header" class="header d-flex align-items-center position-relative">
+			<div
+				class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
+
+				<!-- Logo -->
+				<a href="" class="logo d-flex align-items-center">
+					<img src="{{ asset('assets/assetsFront/img/logo.png') }}" alt="AgriWise">
+				</a>
+
+
+				<!-- Navigation -->
+				<nav id="navmenu" class="navmenu">
+					<ul>
+
+						<li>
+							<a href="{{ path('app_acceuil') }}" class="{% if app.request.attributes.get('_route') == 'app_acceuil' %}active{% endif %}">
+								Acceuil
+							</a>
+						</li>
+						<li>
+							<a href="{{ path('app_about') }}" class="{% if app.request.attributes.get('_route') == 'app_about' %}active{% endif %}">
+								Qui sommes nous
+							</a>
+						</li>
+						<li>
+							<a href="{{ path('app_services') }}" class="{% if app.request.attributes.get('_route') == 'app_services' %}active{% endif %}">
+								Services
+							</a>
+						</li>
+
+
+						<li>
+							{% if app.user %}
+								<a href="{{ path('app_logout') }}" class="btn btn-primary px-4">Log Out</a>
+							{% else %}
+								<a href="{{ path('app_login') }}" class="btn btn-primary px-4">Log In</a>
+							{% endif %}
+						</li>
+						<li class="p-2">
+							{% if app.user %}
+								<div class="d-flex align-items-center bg-light rounded p-2 shadow-sm">
+									{% if app.user.profile and app.user.profile.image %}
+										<img src="{{ asset('uploads/images/' ~ app.user.profile.image) }}" alt="Profile Image" class="rounded-circle border border-secondary" style="width: 45px; height: 45px; object-fit: cover; margin-right: 10px;">
+									{% else %}
+										<img src="{{ asset('uploads/images/default-avatar.png') }}" alt="Default Profile" class="rounded-circle border border-secondary" style="width: 45px; height: 45px; object-fit: cover; margin-right: 10px;">
+									{% endif %}
+
+									<div class="d-flex flex-column">
+										<span class="fw-bold text-primary">Bienvenue</span>
+										<span class="text-dark fw-semibold">{{ app.user.prenom }}
+											{{ app.user.nom }}</span>
+									</div>
+								</div>
+							{% endif %}
+						</li>
+
+
+					</ul>
+				</nav>
+
+
+				<i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+			</div>
+		</header>
+
+
+		<div class="wrapper">
+			<aside id="sidebar">
+				<div class="d-flex">
+					<button class="toggle-btn" type="button">
+						<i class="lni lni-grid-alt"></i>
+					</button>
+					<div class="sidebar-logo">
+						<a href="#">AgriWise</a>
+					</div>
+				</div>
+
+
+				<ul class="sidebar-nav">
+
+					<li class="sidebar-item {% if app.request.attributes.get('_route') in ['app_profile'] %}active{% endif %}">
+						<a href="{{ path('app_profile') }}" class="sidebar-link">
+							<i class="lni lni-user"></i>
+							<span>Profile</span>
+						</a>
+					</li>
+
+					<li class="sidebar-item {% if app.request.attributes.get('_route') in ['product_front_list', 'product_list', 'product_new','commande_list_client'] %}active{% endif %}">
+    <a href="#" class="sidebar-link collapsed" data-bs-toggle="collapse" data-bs-target="#multi-two-MarketPlace" aria-expanded="false" aria-controls="multi-two">
+        <i class="lni lni-cart"></i>
+        <span>MarketPlace</span>
+    </a>
+    <ul id="multi-two-MarketPlace" class="sidebar-dropdown collapse {% if app.request.attributes.get('_route') in ['product_front_list', 'product_list','product_new','commande_list_client'] %}show{% endif %}">
+
+        {% if is_granted('ROLE_CLIENT') or is_granted('ROLE_AGRICULTEUR') %}
+            <li class="sidebar-item">
+                <a href="{{ path('product_front_list') }}" class="{% if app.request.attributes.get('_route') == 'product_front_list' %}active{% endif %}">Voir les produits à vendre</a>
+            </li>
+            <li class="sidebar-item">
+                <a href="{{ path('commande_list_client') }}" class="{% if app.request.attributes.get('_route') == 'commande_list_client' %}active{% endif %}">Voir les commandes</a>
+            </li>
+        {% endif %}
+
+        {% if is_granted('ROLE_AGRICULTEUR') %}
+            <li class="sidebar-item">
+                <a href="{{ path('product_list') }}" class="{% if app.request.attributes.get('_route') == 'product_list' %}active{% endif %}">Liste des produits</a>
+            </li>
+            <li class="sidebar-item">
+                <a href="{{ path('product_new') }}" class="{% if app.request.attributes.get('_route') == 'product_new' %}active{% endif %}">Ajouter un produit</a>
+            </li>
+        {% endif %}
+        
+    </ul>
+</li>
+
+
+
+
+					<li class="sidebar-item {% if app.request.attributes.get('_route') == 'gestion_materiel' %}active{% endif %}">
+						<a href="{{ path('gestion_materiel') }}" class="sidebar-link">
+
+							<i class="lni lni-hammer"></i>
+							<span>Matériels</span>
+						</a>
+					</li>
+
+
+					<li class="sidebar-item {% if app.request.attributes.get('_route') in ['app_parcelle_index', 'app_culture_index', 'app_activite_index'] %}active{% endif %}">
+						<a href="#" class="sidebar-link collapsed" data-bs-toggle="collapse" data-bs-target="#multi-two" aria-expanded="false" aria-controls="multi-two">
+							<i class="lni lni-leaf"></i>
+							<span>Gestion Agricole</span>
+						</a>
+						<ul id="multi-two" class="sidebar-dropdown collapse {% if app.request.attributes.get('_route') in ['app_parcelle_index', 'app_culture_index','app_activite_index'] %}show{% endif %}">
+							<li class="sidebar-item">
+								<a href="{{ path('app_parcelle_index') }}" class="{% if app.request.attributes.get('_route') == 'app_parcelle_index' %}active{% endif %}">Parcelles</a>
+							</li>
+							<li class="sidebar-item">
+								<a href="{{ path('app_culture_index') }}" class="{% if app.request.attributes.get('_route') == 'app_culture_index' %}active{% endif %}">Cultures</a>
+							</li>
+							<li class="sidebar-item">
+								<a href="{{ path('app_activite_index') }}" class="{% if app.request.attributes.get('_route') == 'app_activite_index' %}active{% endif %}">Activités</a>
+							</li>
+						</ul>
+					</li>
+
+
+					<li class="sidebar-item">
+						<a href="/formationsFront" class="sidebar-link">
+							<i class="lni lni-book"></i>
+							<span>Formations</span>
+						</a>
+					</li>
+
+
+					<li class="sidebar-item {% if app.request.attributes.get('_route') in ['app_showterrain', 'app_addformterrain'] %}active{% endif %}">
+						<a href="#" class="sidebar-link collapsed" data-bs-toggle="collapse" data-bs-target="#offre-menu" aria-expanded="false" aria-controls="offre-menu">
+							<i class="lni lni-briefcase"></i>
+							<span>Gestion Des Offres</span>
+						</a>
+						<ul
+							id="offre-menu" class="sidebar-dropdown collapse {% if app.request.attributes.get('_route') in ['app_showterrain', 'app_addformterrain', 'app_showcandidature', 'app_addformcandidature'] %}show{% endif %}">
+
+							<!-- Section Terrains -->
+							<li class="sidebar-item">
+								<a href="#" class="submenu-link collapsed" data-bs-toggle="collapse" data-bs-target="#terrain-menu" aria-expanded="false" aria-controls="terrain-menu">Terrains</a>
+								<ul id="terrain-menu" class="submenu collapse {% if app.request.attributes.get('_route') in ['app_showterrain', 'app_addformterrain'] %}show{% endif %}">
+									<li class="submenu-item">
+										<a href="{{ path('app_showterrain') }}" class="{% if app.request.attributes.get('_route') == 'app_showterrain' %}active{% endif %}">Afficher
+																					vos Terrains</a>
+									</li>
+									<li class="submenu-item">
+										<a href="{{ path('app_addformterrain') }}" class="{% if app.request.attributes.get('_route') == 'app_addformterrain' %}active{% endif %}">Ajouter
+																					nouveau Terrain</a>
+									</li>
+								</ul>
+							</li>
+
+							<!-- Section Candidatures -->
+							<li class="sidebar-item">
+								<a href="#" class="submenu-link collapsed" data-bs-toggle="collapse" data-bs-target="#candidature-menu" aria-expanded="false" aria-controls="candidature-menu">Candidatures</a>
+								<ul id="candidature-menu" class="submenu collapse {% if app.request.attributes.get('_route') in ['app_showcandidature', 'app_addformcandidature'] %}show{% endif %}">
+									<li class="submenu-item">
+										<a href="{{ path('app_showcandidature') }}" class="{% if app.request.attributes.get('_route') == 'app_showcandidature' %}active{% endif %}">Afficher
+																					vos Candidatures</a>
+									</li>
+									<li class="submenu-item">
+										<a href="/terrains" class="submenu-link">Voir Les Offres</a>
+									</li>
+								</ul>
+							</li>
+
+						</ul>
+						{# Bouton visible uniquement pour les administrateurs #}
+						{% if app.user and 'ROLE_ADMIN' in app.user.roles %}
+							<li class="sidebar-item">
+								<a href="{{ path('app_dashboard') }}" class="sidebar-link">
+									<i class="lni lni-dashboard"></i>
+									{# Icône de dashboard #}
+									<span>Admin Dashboard</span>
+								</a>
+							</li>
+						{% endif %}
+					</li>
+				</ul>
+				<div class="sidebar-footer">
+					<a href="{{ path('app_login') }}" class="sidebar-link">
+
+						<i class="lni lni-exit"></i>
+						<span>Logout</span>
+					</a>
+				</div>
+			</aside>
+
+
+			<!-- Main Content -->
+			<main class="main p-3"> {% block content %}{% endblock %}
+				</main>
+
+			</div>
+
+
+			<footer id="footer" class="footer dark-background">
+				<div class="footer-top">
+					<div class="container">
+						<div class="row gy-4">
+							<div class="col-lg-4 col-md-6 footer-about">
+								<a href="index.html" class="logo d-flex align-items-center">
+									<span class="sitename">AgriWise</span>
+								</a>
+								<div class="footer-contact pt-3">
+									<p>1, 2 rue André Ampère - 2083</p>
+									<p>Pôle Technologique - El Ghazala.</p>
+									<p class="mt-3">
+										<strong>Phone:</strong>
+										<span>+216 20 150 950</span>
+									</p>
+									<p>
+										<strong>Email:</strong>
+										<span>contact@AgriWise.tn</span>
+									</p>
+								</div>
+							</div>
+							<div class="col-lg-4 col-md-3 footer-links">
+								<h4>Useful Links</h4>
+								<ul>
+									<li><a href="#">Acceuil</a></li>
+									<li><a href="#">Qui sommes nous</a></li>
+									<li><a href="#">Services</a></li>
+									<li><a href="#">Contact</a></li>
+									<li><a href="#">Se connecter</a></li>
+								</ul>
+							</div>
+							<div class="col-lg-4 col-md-3 footer-links">
+								<h4>Our Services</h4>
+								<ul>
+									<li><a href="#">Gestion agricole</a></li>
+									<li><a href="#">MarketPlace</a></li>
+									<li><a href="#">Matériels</a></li>
+									<li><a href="#">Formations</a></li>
+									<li><a href="#">Candidature</a></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="copyright text-center">
+					<div class="container d-flex flex-column flex-lg-row justify-content-center justify-content-lg-between align-items-center">
+
+						<div class="d-flex flex-column align-items-center align-items-lg-start">
+							<div>
+								© Copyright
+								<strong>
+									<span>AgriWise</span>
+								</strong>. All Rights Reserved
+							</div>
+
+						</div>
+
+						<div class="social-links order-first order-lg-last mb-3 mb-lg-0">
+							<a href="">
+								<i class="bi bi-twitter-x"></i>
+							</a>
+							<a href="">
+								<i class="bi bi-facebook"></i>
+							</a>
+							<a href="">
+								<i class="bi bi-instagram"></i>
+							</a>
+							<a href="">
+								<i class="bi bi-linkedin"></i>
+							</a>
+						</div>
+
+					</div>
+				</div>
+
+			</footer>
+
+			<!-- Scroll Top -->
+			<a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center">
+				<i class="bi bi-arrow-up-short"></i>
+			</a>
+
+
+			{% block javascripts %}
+
+				<script src="{{ asset('assets/assetsFront/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+				<script src="{{ asset('assets/assetsFront/vendor/php-email-form/validate.js') }}"></script>
+				<script src="{{ asset('assets/assetsFront/vendor/aos/aos.js') }}"></script>
+				<script src="{{ asset('assets/assetsFront/vendor/swiper/swiper-bundle.min.js') }}"></script>
+				<script src="{{ asset('assets/assetsFront/vendor/glightbox/js/glightbox.min.js') }}"></script>
+				<script src="{{ asset('assets/assetsFront/js/main.js') }}"></script>
+				    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://js.stripe.com/v3/"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+			{% endblock %}
+
+		</body>
+
+	</html>

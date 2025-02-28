@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Erreur{% endblock %}
+
+{% block body %}
+    <h1>Accès Interdit</h1>
+    <p>{{ message }}</p>
+    <a href="{{ path('app_home') }}">Retour à la page d'accueil</a>
+{% endblock %}

@@ -1,0 +1,199 @@
+{% block styles %}
+    <style>
+        .body
+        {
+            margin: 0px !important;
+        }
+        /* Center the register form */
+        .register-container {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg,#1a9738,#1F4E3D);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Register card */
+        .register-box {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 90%;
+            max-width: 450px;
+        }
+
+        /* Title */
+        .register-box h1 {
+            font-size: 32px;
+            font-weight: bold;
+            color:#1a9738;
+            margin-bottom: 20px;
+        }
+
+        /* Form inputs */
+        .register-box input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #1F4E3D;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+            transition: 0.3s ease-in-out;
+            background: #F8FAFC;
+        }
+
+        /* Focus effect on input */
+        .register-box input:focus {
+            border-color: #1a9738;
+            background: #ffffff;
+            box-shadow: 0px 0px 10px rgba(37, 99, 235, 0.2);
+        }
+
+        /* Register button */
+        .register-box button {
+            width: 100%;
+            background: linear-gradient(135deg,#1a9738,#1F4E3D);
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+        }
+
+        /* Button hover effect */
+        .register-box button:hover {
+            transform: scale(1.05);
+            background: linear-gradient(135deg,#1a9738,#1F4E3D);
+        }
+
+        /* Sign-in link */
+        .login-link {
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .login-link a {
+            color: #1a9738;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+        /* Style for roles checkboxes container */
+.roles-checkbox-container {
+    margin: 10px 0;
+    text-align: left;
+}
+
+/* Style for individual checkbox labels */
+.roles-checkbox-container label {
+    display: block;
+    margin: 8px 0;
+    font-size: 16px;
+    color: #1F4E3D;
+    cursor: pointer;
+}
+
+/* Style for checkboxes */
+.roles-checkbox-container input[type="checkbox"] {
+    margin-right: 10px;
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
+    accent-color: rgb(27, 223, 60); /* Custom checkbox color */
+}
+
+/* Hover effect for checkboxes */
+.roles-checkbox-container input[type="checkbox"]:hover {
+    accent-color: rgb(26, 131, 78);
+}
+
+/* Focus effect for checkboxes */
+.roles-checkbox-container input[type="checkbox"]:focus {
+    outline: 2px solid #1a9738;
+    outline-offset: 2px;
+}
+    .form-error {
+        color: #dc3545; /* Couleur rouge pour les erreurs */
+        font-size: 14px;
+        margin-top: 5px;
+        list-style: none; /* Supprimer les puces */
+        padding-left: 0;
+    }
+
+    .form-error li {
+        margin-bottom: 5px;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+    <div class="register-container">
+        <div class="register-box">
+            <h1>Register</h1>
+
+            {# Ajouter novalidate dans form_start #}
+            {{ form_start(registrationForm, { 'attr': {'novalidate': 'novalidate'} }) }}
+
+                {# Afficher les erreurs globales du formulaire #}
+                {{ form_errors(registrationForm) }}
+
+                {# Champ Nom avec message d'erreur #}
+                <div class="form-group">
+                    {{ form_label(registrationForm.nom) }}
+                    {{ form_widget(registrationForm.nom) }}
+                    {{ form_errors(registrationForm.nom) }} {# Afficher les erreurs pour le champ nom #}
+                </div>
+
+                {# Champ Prénom avec message d'erreur #}
+                <div class="form-group">
+                    {{ form_label(registrationForm.prenom) }}
+                    {{ form_widget(registrationForm.prenom) }}
+                    {{ form_errors(registrationForm.prenom) }} {# Afficher les erreurs pour le champ prénom #}
+                </div>
+
+                {# Champ Email avec message d'erreur #}
+                <div class="form-group">
+                    {{ form_label(registrationForm.email) }}
+                    {{ form_widget(registrationForm.email) }}
+                    {{ form_errors(registrationForm.email) }} {# Afficher les erreurs pour le champ email #}
+                </div>
+
+                {# Champ Rôles avec message d'erreur #}
+                <div class="roles-checkbox-container">
+                    {{ form_label(registrationForm.roles) }}
+                    {{ form_widget(registrationForm.roles) }}
+                    {{ form_errors(registrationForm.roles) }} {# Afficher les erreurs pour le champ roles #}
+                </div>
+
+                {# Champ Mot de passe avec message d'erreur #}
+                <div class="form-group">
+                    {{ form_label(registrationForm.plainPassword) }}
+                    {{ form_widget(registrationForm.plainPassword) }}
+                    {{ form_errors(registrationForm.plainPassword) }} {# Afficher les erreurs pour le champ mot de passe #}
+                </div>
+
+                <!-- Hidden fields for Profile -->
+                <input type="hidden" name="registration_form[profileId]" value="">
+                <input type="hidden" name="registration_form[profilePrenom]" value="">
+            
+                <button type="submit">Register</button>
+            {{ form_end(registrationForm) }}
+
+            <!-- Login link -->
+            <p class="login-link">
+                Déjà un compte ? <a href="{{ path('app_login') }}">Connectez-vous ici</a>
+            </p>
+        </div>
+    </div>
+{% endblock %}

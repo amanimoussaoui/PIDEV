@@ -9,6 +9,8 @@ use App\Service\StripeService;
 use Stripe\Checkout\Session;
 use App\Repository\PanierRepository;
 use App\Repository\CommandeRepository;
+use App\Repository\ProductRepository;
+use App\Repository\UtilisateursRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -210,36 +212,39 @@ $totalGeneral = array_reduce($paniers, function ($total, $panier) {
         return $this->redirectToRoute('panier_admin_index');
     }
    
-#[Route('/panier/pdf', name: 'panier_pdf', methods: ['GET'])]
-    public function generatePdf(PanierRepository $panierRepository): Response
+    #[Route('/panier/pdf', name: 'panier_pdf', methods: ['GET'])]
+    public function generatePdf(PanierRepository $panierRepository, UtilisateursRepository $userRepository): Response
     {
-        // Récupérer les produits du panier
+        // Récupérer les produits du panier avec les utilisateurs
         $paniers = $panierRepository->findAll();
         $totalGeneral = array_reduce($paniers, function ($total, $panier) {
             return $total + $panier->getTotale();
         }, 0);
-
+    
+        
+    
         // Créer le contenu HTML pour le PDF
         $html = $this->renderView('panier/pdf.html.twig', [
             'paniers' => $paniers,
-            'totalGeneral' => $totalGeneral
+            'totalGeneral' => $totalGeneral,
+           
         ]);
-
+    
         // Configurer DomPDF
         $options = new Options();
         $options->set('isHtml5ParserEnabled', true);
         $options->set('isPhpEnabled', true);
         $dompdf = new Dompdf($options);
-
+    
         // Charger le contenu HTML dans DomPDF
         $dompdf->loadHtml($html);
-
-        // (Facultatif) Configurer la taille du papier
+    
+        // Configurer la taille du papier
         $dompdf->setPaper('A4', 'portrait');
-
+    
         // Rendre le PDF
         $dompdf->render();
-
+    
         // Retourner le PDF en réponse
         return new Response(
             $dompdf->output(),
@@ -250,92 +255,91 @@ $totalGeneral = array_reduce($paniers, function ($total, $panier) {
             ]
         );
     }
-    #[Route('/envoyer-sms', name: 'envoyer_sms')]
-    public function envoyerSms(SmsService $smsService): JsonResponse
+    #[Route('/dashboard', name: 'panier_dashboard', methods: ['GET'])]
+    public function dashboard(PanierRepository $panierRepository, ProductRepository $productRepository): Response
     {
-        $to = '+21695921917'; 
-        $message = "Votre commande a été validée ! Merci pour votre achat.";
+        // 1. Récupérer les paniers et commandes
+        $paniers = $panierRepository->findAll();
+        $commandes = $panierRepository->findBy([], ['commande' => 'ASC']); // Récupérer les commandes pour un tri
 
-        try {
-            $smsService->envoyerSms();
-            return $this->json(['status' => 'SMS envoyé avec succès']);
-        } catch (\Exception $e) {
-            return $this->json(['status' => 'Erreur', 'message' => $e->getMessage()], 500);
-        }
-    }
-    /*public function envoyerSms(SmsService $smsService): JsonResponse
-    {
-        $to = '+21695921917'; 
-        $message = "Votre commande a été validée ! Merci pour votre achat.";
+        // 2. Préparer les données pour les graphiques
+        $productSales = [];
+        $categorySales = [];
+        $dateSales = [];
 
-        try {
-            $smsService->envoyerSms();
-            return $this->json(['status' => 'SMS envoyé avec succès']);
-        } catch (\Exception $e) {
-            return $this->json(['status' => 'Erreur', 'message' => $e->getMessage()], 500);
+        // Récupérer les ventes par produit
+        foreach ($paniers as $panier) {
+            $product = $panier->getProduct();
+            $productName = $product->getNom();
+            $sales = $panier->getTotale();
+
+            if (!isset($productSales[$productName])) {
+                $productSales[$productName] = 0;
+            }
+
+            $productSales[$productName] += $sales;
         }
-        
-    }*/
- 
+
+        // Récupérer les ventes par date (jour)
+       // Vérifier que $commandes contient bien des objets Commande
+/*foreach ($commandes as $commande) {
     
-  /* #[Route('/panier/checkout', name: 'panier_checkout', methods: ['POST'])]
-public function checkout(StripeService $stripeService, EntityManagerInterface $em): JsonResponse
-{
-    // 🔹 Récupérer l'utilisateur connecté
-    $user = $this->getUser();
-
-    if (!$user) {
-        return new JsonResponse(['error' => 'Utilisateur non connecté'], 403);
+    if (!$commande instanceof Commande) {
+        throw new \Exception("L'objet dans \$commandes n'est pas une instance de Commande");
     }
 
-    // 🔹 Récupérer les produits associés à cet utilisateur
-    $panierData = [];
-    foreach ($user->getProducts() as $product) {
-        // Récupère la quantité à partir de l'entité Panier, ou de la logique que tu utilises pour le panier
-        $quantite =getQuantite(); // Récupère la quantité du produit dans le panier (assure-toi que tu as la relation avec Panier)
-        $panierData[] = [
-            'nom' => $product->getNom(),
-            'prix' => $product->getPrix(),
-            'quantite' => $quantite,
-        ];
+    $date = $commande->getDate();
+    if ($date instanceof \DateTimeInterface) {
+        $formattedDate = $date->format('Y-m-d');
+        
+        if (!isset($dateSales[$formattedDate])) {
+            $dateSales[$formattedDate] = 0;
+        }
+
+        // Ajouter les totaux des paniers de la commande
+        foreach ($commande->getPaniers() as $panier) {
+            $dateSales[$formattedDate] += $panier->getTotale();
+        }
+    } else {
+        throw new \Exception("La date de la commande est invalide.");
     }
-
-    if (empty($panierData)) {
-        return new JsonResponse(['error' => 'Votre panier est vide'], 400);
-    }
-
-    try {
-        // 🔹 Création de la session Stripe
-        $session = $stripeService->createCheckoutSession($panierData);
-
-        return new JsonResponse([
-            'sessionId' => $session->id,
-            'panier' => $panierData // Vérifie les articles envoyés à Stripe
-        ]);
-    } catch (\Exception $e) {
-        return new JsonResponse(['error' => $e->getMessage()], 500);
-    }
-}
-
-
-    #[Route('/panier/success', name: 'panier_success')]
-public function success(): Response
-{
-    return $this->render('panier/success.html.twig');
-}
-
-#[Route('/panier/cancel', name: 'panier_cancel')]
-public function cancel(): Response
-{
-    return $this->render('panier/cancel.html.twig');
 }*/
 
 
+        // Récupérer les ventes par catégorie
+       foreach ($paniers as $panier) {
+            $product = $panier->getProduct();
+            $category = $product->getCategory(); // Cela retourne directement la chaîne de caractères
+            $sales = $panier->getTotale();
 
+            if (!isset($categorySales[$category])) {
+                $categorySales[$category] = 0;
+            }
 
+            $categorySales[$category] += $sales;
+        }
+
+        // Passer les données aux graphiques
+        return $this->render('panier/dashboard.html.twig', [
+            'productSales' => $productSales,
+            'categorySales' => $categorySales,
+            'dateSales' => $dateSales,
+        ]);
+    }
+    
+    #[Route('/panier/trier/{ordre}', name:'panier_trier', methods:['GET'])]
+
+   public function trier(PanierRepository $panierRepository, $ordre = 'asc'): Response
+   {
+       // Trie des paniers par total montant (ascendant ou descendant)
+       $paniers = $panierRepository->findBy([], ['totale' => $ordre]);
+
+       return $this->render('panier/admin_index.html.twig', [
+           'paniers' => $paniers
+       ]);
+   }         
 
     
-
-   
-}
+    
+   }
 

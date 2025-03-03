@@ -6,109 +6,84 @@
     <style>
         /* 🎨 Style global du formulaire */
         .search-form {
-            display: flex;
-            justify-content: space-between; /* Aligner le formulaire et l'icône de tri */
-            margin: 30px auto;
-            width: 100%;
-            max-width: 800px;
-            border-radius: 30px; /* Arrondi les coins du formulaire */
-            padding: 15px;
-            background-color: #f9f9f9; /* Couleur de fond claire */
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
+    display: flex;
+    justify-content: space-between;
+    margin: 30px auto;
+    width: 100%;
+    max-width: 800px;
+    border-radius: 30px; /* Assure que le formulaire est arrondi */
+    padding: 15px;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
 
-        .search-box {
-            display: flex;
-            width: 100%;
-            background: white;
-            padding: 5px;
-            border-radius: 30px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            border: 2px solid #ddd;
-            transition: all 0.3s ease;
-        }
+.search-box {
+    display: flex;
+    width: 100%;
+    background: white;
+    padding: 5px;
+    border-radius: 30px; /* Bordure arrondie de la boîte de recherche */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border: 2px solid #ddd;
+    transition: all 0.3s ease;
+}
 
-        .search-box:focus-within {
-            border-color: #218838;
-            box-shadow: 0 4px 12px rgba(33, 136, 56, 0.3);
-        }
+.search-select, .search-input {
+    border: none;
+    outline: none;
+    font-size: 16px;
+    padding: 12px;
+    background: transparent;
+    flex: 1;
+    border-radius: 30px; /* Arrondi des champs de recherche */
+    transition: background 0.3s ease;
+}
 
-        /* 🎨 Style de la sélection des catégories */
-        .search-select {
-            border: none;
-            background: transparent;
-            padding: 12px 15px;
-            border-radius: 30px;
-            font-size: 16px;
-            outline: none;
-            cursor: pointer;
-            flex: 1;
-        }
+.search-button {
+    background-color: transparent;
+    border: none;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%; /* Arrondi circulaire pour le bouton de recherche */
+    color: #218838;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 8px;
+    transition: all 0.3s ease;
+}
 
-        .search-select:hover {
-            background-color: #f2f2f2;
-        }
+.search-button i {
+    font-size: 20px;
+    transition: transform 0.3s ease, color 0.3s ease;
+}
 
-        /* 🎨 Style du champ de recherche */
-        .search-input {
-            border: none;
-            padding: 12px;
-            font-size: 16px;
-            outline: none;
-            flex: 2;
-            background: transparent;
-            width: 100%;
-        }
-
-        /* 🎨 Style du bouton de recherche */
-        .search-button {
-            background-color: transparent; /* Supprime le fond */
-            border: none; /* Supprime la bordure */
-            width: 50px;
-            height: 50px;
-            border-radius: 50%; /* Bouton rond */
-            color: #218838; /* Couleur de l'icône */
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 8px;
-            transition: all 0.3s ease;
-            box-shadow: none; /* Enlève l'ombre */
-        }
-
-        .search-button:hover {
-            color: #1a682c; /* Change la couleur de l'icône au survol */
-          
-        }
-
-        .search-button i {
-            font-size: 20px;
-            transition: transform 0.3s ease, color 0.3s ease;
-        }
-
-      
-
-        /* 🎨 Style pour le bouton de tri */
+        /* 🎨 Style des icônes de tri */
         .sort-icon {
             display: flex;
-            justify-content: center;
             align-items: center;
             cursor: pointer;
             background-color: transparent;
-            border: none;
-            padding: 5px;
-            font-size: 10px;
+            border: 1px solid #ddd;
+            padding: 5px 10px;
+            font-size: 12px;
             color: #218838;
-            transition: transform 0.3s ease, color 0.3s ease;
+            border-radius: 25px;
+            transition: background-color 0.3s ease;
+            margin-right: 10px;
         }
 
         .sort-icon:hover {
-            color: #1a682c;
-          
+            background-color: #eaf4e4;
         }
 
-        /* 🎨 Amélioration du titre */
+        .sort-icon.active {
+            background-color: #218838;
+            color: white;
+        }
+
+        /* 🎨 Style du titre */
         h1 {
             text-align: center;
             margin-top: 50px;
@@ -134,12 +109,13 @@
             text-shadow: 3px 3px 12px rgba(0, 0, 0, 0.2);
         }
 
-        /* 🎨 Style des cartes */
+        /* 🎨 Style des cartes de produits */
         .cards-container {
             display: flex;
             flex-wrap: wrap;
             gap: 20px;
             justify-content: space-around;
+            margin-bottom: 30px;
         }
 
         .card {
@@ -152,7 +128,10 @@
             background: white;
         }
 
-        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
         .card-img-top {
             width: 100%;
             height: 200px;
@@ -199,6 +178,72 @@
         .btn-primary:hover {
             background-color: #1a682c;
         }
+
+        /* 🎨 Responsive */
+        @media (max-width: 768px) {
+            .search-form {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+
+            .card {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+                margin-top: 20px;
+            }}
+ /* 🎨 Style de la pagination */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
+}
+
+.pagination a {
+    display: inline-block;
+    padding: 10px 15px;
+    margin: 0 5px;
+    background-color: #218838;
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 16px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.pagination a:hover {
+    background-color: #1a682c;
+    transform: scale(1.1);
+}
+
+.pagination .active {
+    background-color: #1a682c;
+    color: white;
+    font-weight: bold;
+    pointer-events: none;
+}
+
+.pagination .disabled {
+    background-color: #ccc;
+    color: #666;
+    pointer-events: none;
+}
+
+
+
+
+
+
+
+
     </style>
 
     <h1>Nos Produits</h1>
@@ -219,35 +264,28 @@
             </button>
         </div>
 
-        <!-- Icône de tri -->
-        <button type="submit" class="sort-icon" name="sort" value="price_asc">
-            <i class="fas fa-sort-amount-up"></i> <!-- Icône de tri par prix croissant -->
-        </button>
+ 
+           
+       
     </form>
 
     <div class="cards-container">
         {% if products is not empty %}
             {% for product in products %}
                 <div class="card">
-                    <img src="{{ asset('uploads/images/' ~ product.image) }}" alt="Image du produit"
- class="card-img-top">
+                    <img src="{{ asset('uploads/images/' ~ product.image) }}" alt="Image du produit" class="card-img-top">
                     <div class="card-body">
-                    
                         <h5 class="card-title">{{ product.nom }}</h5>
                         <p class="card-price"><strong>{{ product.prix }}DT</strong></p>
                         <p class="card-description"><strong>Description:</strong> {{ product.description }}</p>
                         <p class="card-category"><strong>Catégorie:</strong> {{ product.category }}</p>
                         <p class="card-stock"><strong>Stock:</strong> {{ product.stock }}</p>
-                        <p class="card-agriculteur"><strong>Agriculteur</strong>{{ product.utilisateurs.nom  }}</p>
+                        <p class="card-agriculteur"><strong>Agriculteur:</strong> {{ product.utilisateurs.nom }}</p>
                         
-                      <a href="{{ path('commande_create', {'productId': product.id}) }}" class="btn-primary" style="width: 100%; text-align: center;">🛒 Commander</a>
-<a href="{{ path('product_details_client', {'id': product.id}) }}" class="btn-primary" style="width: 100%; text-align: center; border-radius: 5px; padding: 10px;">
-    <i class="fas fa-eye" style="font-size: 18px;"></i> Détails
-</a>
-
-
-
-                        
+                        <a href="{{ path('commande_create', {'productId': product.id}) }}" class="btn-primary" style="width: 100%; text-align: center;">🛒 Commander</a>
+                        <a href="{{ path('product_details_client', {'id': product.id}) }}" class="btn-primary" style="width: 100%; text-align: center; border-radius: 5px; padding: 10px;">
+                            <i class="fas fa-eye" style="font-size: 18px;"></i> Détails
+                        </a>
                     </div>
                 </div>
             {% endfor %}
@@ -255,5 +293,37 @@
             <p style="text-align: center; font-size: 1.2rem; color: #777;">Aucun produit trouvé.</p>
         {% endif %}
     </div>
-    
+  <!-- Pagination -->
+<div class="pagination">
+    {{ knp_pagination_render(products) }}
+</div>
+<script>
+function sortProducts(order) {
+    fetch(`/product/sort?order=${order}`) // Appel AJAX
+        .then(response => response.json())
+        .then(data => {
+            const productList = document.getElementById('product-list');
+            productList.innerHTML = ''; // Vider la liste des produits
+
+            data.products.forEach(product => {
+                // Créer une carte produit
+                const card = document.createElement('div');
+                card.classList.add('card');
+                card.innerHTML = `
+                    <img src="/uploads/images/${product.image}" alt="Image du produit" class="card-img-top">
+                    <div class="card-body">
+                        <h5 class="card-title">${product.nom}</h5>
+                        <p class="card-price"><strong>${product.prix} DT</strong></p>
+                        <p class="card-category"><strong>Catégorie:</strong> ${product.category}</p>
+                        <p class="card-description"><strong>Description:</strong> ${product.description}</p>
+                    </div>
+                `;
+                productList.appendChild(card); // Ajouter la carte au DOM
+            });
+        })
+        .catch(error => console.error('Erreur lors du tri:', error));
+}
+</script>
+
+
 {% endblock %}

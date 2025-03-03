@@ -65,4 +65,18 @@ class PanierRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
 
-}}
+}
+public function findBySearchTerm(string $searchTerm)
+{
+    $queryBuilder = $this->createQueryBuilder('p')
+        ->join('p.commande', 'c') // Jointure avec la table commande
+        ->join('c.utilisateurs', 'u') // Jointure avec la table utilisateurs (si nécessaire)
+        ->where('p.product LIKE :searchTerm')
+        ->orWhere('u.nom LIKE :searchTerm')
+        ->orWhere('c.date LIKE :searchTerm')
+        ->setParameter('searchTerm', '%' . $searchTerm . '%')
+        ->getQuery();
+
+    return $queryBuilder->getResult();
+}
+}

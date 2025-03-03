@@ -147,8 +147,36 @@ class CommandeController extends AbstractController
             'commande' => $commande
         ]);
     }
+    // src/Controller/CommandeController.php
+
+    #[Route('/commande/search', name: 'commande_search')]
+    public function search(Request $request, CommandeRepository $commandeRepository): Response
+    {
+        $searchTerm = $request->query->get('search', '');
     
-
-
+        // Vérification du terme de recherche
+        if (!$searchTerm) {
+            return $this->json([
+                'commandes' => [] // Aucune recherche, retourne une liste vide
+            ]);
+        }
+    
+        // Recherche dans les commandes, produits et utilisateurs
+        $commandes = $commandeRepository->createQueryBuilder('c')
+            ->leftJoin('c.paniers', 'p')
+            ->leftJoin('p.product', 'prod')
+            ->leftJoin('prod.utilisateurs', 'u') // Jointure avec les utilisateurs des produits
+            ->where('c.adresse LIKE :search')
+            ->orWhere('prod.nom LIKE :search')
+            ->orWhere('u.nom LIKE :search')
+            ->setParameter('search', '%' . $searchTerm . '%')
+            ->getQuery()
+            ->getResult();
+    
+        return $this->json([
+            'commandes' => $commandes
+        ]);
     }
+    
+}
     

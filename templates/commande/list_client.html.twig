@@ -135,9 +135,7 @@
                 <div class="card-body">
                     <p><strong>Date :</strong> {{ commande.date|date('d/m/Y') }}</p>
                     <p><strong>Adresse :</strong> {{ commande.adresse }}</p>
-                 
-
-                </div>
+                    </div>
                 <div class="card-footer">
                     <div class="btn-container">
                         <a href="{{ path('commande_edit', {'id': commande.id}) }}" class="btn-edit">

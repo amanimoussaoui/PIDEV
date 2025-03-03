@@ -124,6 +124,11 @@
             <a href="{{ path('product_stats') }}" class="stats-text">Voir les Statistiques</a>
         </div>
     </h2>
+<input type="text" id="searchInput" class="form-control mb-3" placeholder="Rechercher un produit...">
+<div id="noResultMessage" class="text-center text-danger mt-3" style="display: none;">
+    <p>Aucun produit trouvé.</p>
+</div>
+
 
     <!-- Tableau des produits -->
     <table class="table">
@@ -169,5 +174,30 @@
         </tbody>
     </table>
 </div>
+
+<script>
+    document.getElementById("searchInput").addEventListener("keyup", function() {
+        let filter = this.value.toLowerCase().trim();
+        let rows = document.querySelectorAll(".table tbody tr");
+        let hasResults = false;
+
+        rows.forEach(row => {
+            let name = row.cells[1].textContent.toLowerCase();
+            let price = row.cells[3].textContent.toLowerCase();
+            let stock = row.cells[4].textContent.toLowerCase();
+            let category = row.cells[5].textContent.toLowerCase();
+
+            if (name.includes(filter)  || price.includes(filter) || stock.includes(filter) || category.includes(filter)) {
+                row.style.display = "";
+                hasResults = true;
+            } else {
+                row.style.display = "none";
+            }
+        });
+
+        // Gérer l'affichage du message "Aucun produit trouvé"
+        document.getElementById("noResultMessage").style.display = hasResults ? "none" : "block";
+    });
+</script>
 
 {% endblock %}

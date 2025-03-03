@@ -5,17 +5,22 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Liste des Produits du Panier</title>
+    <title>Résumé du Panier</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 30px;
+            margin: 20px;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .logo {
+            width: 150px;
+            margin-bottom: 20px;
         }
 
-        h1 {
-            text-align: center;
-            color: #333;
+        h2 {
+            color: #2c7b2c;
         }
 
         table {
@@ -24,55 +29,56 @@
             margin-top: 20px;
         }
 
-        th, td {
-            padding: 8px;
-            text-align: left;
+        table, th, td {
             border: 1px solid #ddd;
+            padding: 10px;
         }
 
         th {
-            background-color: #f2f2f2;
-            color: #333;
-        }
-
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
+            background: #2c7b2c;
+            color: white;
         }
 
         .total {
-            margin-top: 20px;
             font-size: 18px;
             font-weight: bold;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
 
-    <h1>Produits du Panier</h1>
+
+    <h2>Résumé du Panier</h2>
 
     <table>
         <thead>
             <tr>
+                <th>Client</th>
                 <th>Produit</th>
                 <th>Quantité</th>
-                <th>Total</th>
+                <th>Prix Total</th>
             </tr>
         </thead>
         <tbody>
             {% for panier in paniers %}
-                <tr>
-                    <td>{{ panier.product.nom }}</td>
-                    <td>{{ panier.quantite }}</td>
-                    <td>{{ panier.totale|number_format(2, ',', ' ') }} DT</td>
-                </tr>
+            <tr>
+                <td>{{ panier.product.utilisateurs.nom }}</td>
+                <td>{{ panier.product.nom }}</td>
+                <td>{{ panier.quantite }}</td>
+                <td>{{ panier.totale }} DT</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="4">Aucun produit dans le panier.</td>
+            </tr>
             {% endfor %}
         </tbody>
     </table>
 
-    <div class="total">
-        <h3>Total Général: {{ totalGeneral|number_format(2, ',', ' ') }} DT</h3>
-    </div>
+    <p class="total">Total Général : {{ totalGeneral }} DT</p>
 
 </body>
 </html>
+
 {% endblock %}

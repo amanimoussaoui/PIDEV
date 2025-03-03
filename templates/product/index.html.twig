@@ -159,9 +159,9 @@
         }
     }
 </style>
-
 <div class="container mt-4">
     <h2 class="mb-4">Bienvenue Voici vos Produits</h2>
+<input type="text" id="searchInput" placeholder="Rechercher un produit..." class="form-control mb-3">
 
     <div class="card-container">
         {% for product in products %}
@@ -198,5 +198,51 @@
     <i class="fas fa-plus"></i> <!-- Icône d'ajout -->
 </a>
 </div>
+<!-- 📜 Script de recherche dynamique -->
+
+<script>
+    document.getElementById("searchInput").addEventListener("keyup", function() {
+        let filter = this.value.toLowerCase().trim();
+        let cards = document.querySelectorAll(".card");
+        let cardContainer = document.querySelector(".card-container");
+        let noResultMessage = document.getElementById("noResultMessage");
+
+        let hasResults = false;
+
+        cards.forEach(card => {
+            let name = card.querySelector(".card-header").textContent.toLowerCase();
+            let price = card.querySelector(".card-body p:nth-child(2)").textContent.toLowerCase();
+            let stock = card.querySelector(".card-body p:nth-child(3)").textContent.toLowerCase();
+            let category = card.querySelector(".card-body p:nth-child(4)").textContent.toLowerCase();
+
+            if (name.includes(filter) || price.includes(filter) || stock.includes(filter) || category.includes(filter)) {
+                card.style.display = "";
+                hasResults = true;
+            } else {
+                card.style.display = "none";
+            }
+        });
+
+        // Gérer le message "Aucun produit trouvé"
+        if (!hasResults && filter !== "") {
+            if (!noResultMessage) {
+                noResultMessage = document.createElement("div");
+                noResultMessage.id = "noResultMessage";
+                noResultMessage.className = "text-center text-danger mt-3";
+                noResultMessage.innerHTML = "<p>Aucun produit trouvé.</p>";
+                cardContainer.appendChild(noResultMessage);
+            }
+        } else if (noResultMessage) {
+            noResultMessage.remove(); // Supprimer le message si des résultats existent ou si l'input est vide
+        }
+
+        // Si le champ de recherche est vide, afficher toutes les cartes
+        if (filter === "") {
+            cards.forEach(card => card.style.display = "");
+        }
+    });
+</script>
+
+
 
 {% endblock %}

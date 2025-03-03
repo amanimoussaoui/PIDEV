@@ -100,6 +100,43 @@
     .table img:hover {
         transform: scale(1.1);
     }
+
+    /* ICÔNES DE TRI */
+    .sorting-buttons {
+        display: flex;
+        justify-content: flex-end; /* Aligne les boutons à droite */
+        gap: 20px;
+        margin-top: 20px;
+    }
+
+    .sort-icon {
+        padding: 10px 20px;
+        border-radius: 20px;
+        background: #f8f9fa;
+        color: #2c7b2c;
+        text-decoration: none;
+        font-weight: bold;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .sort-icon:hover {
+        background: #2c7b2c;
+        color: white;
+        transform: scale(1.05);
+    }
+
+    .sort-icon.active {
+        background: #2c7b2c;
+        color: white;
+    }
+
+    .sort-icon i {
+        font-size: 16px;
+    }
+
 </style>
 
 <div class="container">
@@ -108,6 +145,24 @@
     <a href="{{ path('panier_pdf') }}" title="Télécharger en PDF">
         <i class="fas fa-file-pdf"></i> Télécharger en PDF
     </a>
+ 
+    <!-- Conteneur avec icône et texte à droite -->
+    <div class="stats-container">
+        <a href="{{ path('panier_dashboard') }}" class="stats-icon">
+            <i class="fas fa-chart-bar"></i>
+        </a>
+        <a href="{{ path('panier_dashboard') }}" class="stats-text">Voir les Statistiques </a>  
+    </div>
+
+    <!-- Icônes de tri -->
+    <div class="sorting-buttons">
+        <a href="{{ path('panier_trier', {'ordre': 'asc'}) }}" class="sort-icon {% if app.request.query.get('ordre') == 'asc' %}active{% endif %}">
+            <i class="fas fa-sort-amount-up"></i> Croissant
+        </a>
+        <a href="{{ path('panier_trier', {'ordre': 'desc'}) }}" class="sort-icon {% if app.request.query.get('ordre') == 'desc' %}active{% endif %}">
+            <i class="fas fa-sort-amount-down"></i> Décroissant
+        </a>
+    </div>
 
     {% for message in app.flashes('success') %}
         <div class="alert alert-success">{{ message }}</div>
@@ -124,16 +179,17 @@
                 <th>Produit</th>
                 <th>Quantité</th>
                 <th>Prix Total</th>
+                <th>Client</th>
                 <th>Actions</th>
             </tr>
         </thead>
+       
         <tbody>
             {% for panier in paniers %}
             <tr>
                 <td>
                     {% if panier.product is not null and panier.product.image is not null %}
-                     <img src="{{ asset('uploads/images/' ~ panier.product.image) }}" alt="Image du produit"
- class="card-img-top">
+                        <img src="{{ asset('uploads/images/' ~ panier.product.image) }}" alt="Image du produit" class="card-img-top">
                     {% else %}
                         <span>Aucune image</span>
                     {% endif %}
@@ -147,6 +203,7 @@
                 </td>
                 <td>{{ panier.quantite }}</td>
                 <td>{{ panier.totale }} DT</td>
+                <td>{{ panier.product.utilisateurs.nom }}</td>
                 <td class="btn-container">
                     <form method="post" action="{{ path('panier_admin_supprimer', {'id': panier.id}) }}">
                         <button type="submit" class="btn-delete">

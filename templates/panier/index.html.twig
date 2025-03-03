@@ -237,39 +237,26 @@ body {
         <h3>MON PANIER</h3>
         <p>{{ paniers|length }} article(s)</p>
         <p>Total : <span id="total-general">0 TND</span></p>
-      <button class="btn-command" id="commander">
-    📱 COMMANDER
-</button>
-<script>
-    document.getElementById('commander').addEventListener('click', function() {
-        // Désactiver le bouton pour éviter plusieurs clics
-        this.disabled = true;
-        this.innerText = "Envoi en cours..."; // Changer le texte du bouton
+      
+<form action="{{ path('app_stripe') }}" method="post" id="checkout-form">
+    <button type="submit" id="checkout-button" class="btn-command">Payer </button>
+</form>
 
-        // Envoyer la requête AJAX à la route 'envoyer_sms'
-        fetch('{{ path('envoyer_sms') }}', {
-            method: 'POST',  // Tu peux choisir GET ou POST
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                // Si tu veux envoyer des données supplémentaires dans la requête, tu peux les ajouter ici
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                alert(data.message); // Afficher un message de succès
-                this.innerText = "Commande passée";
-            } 
-        }
-      )
-       
-    });
+<script>
+document.getElementById('commander').disabled = true; // Désactiver le bouton immédiatement
+document.getElementById('commander').innerText = 'Commande passée'; // Modifier le texte du bouton immédiatement
+
+document.getElementById('checkout-button').addEventListener('click', function (event) {
+    event.preventDefault(); // Empêcher l'envoi du formulaire
+
+    // Désactiver le bouton pour éviter plusieurs clics
+    this.disabled = true;
+    this.innerText = "Traitement...";
+
+    // Soumettre le formulaire pour effectuer le paiement Stripe
+    document.querySelector('form#checkout-form').submit();
+});
 </script>
-  <form action="{{ path('app_stripe') }}" method="post">
-            <button type="submit" id="checkout-button" class="btn-command">Payer avec Stripe</button>
-        </form>
         <form action="{{ path('panier_vider') }}" method="post">
             <button type="submit" class="btn-clear">🗑 Vider le panier</button>
         </form>

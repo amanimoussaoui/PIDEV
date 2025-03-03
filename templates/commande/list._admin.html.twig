@@ -91,17 +91,14 @@
 
 <!-- CONTENU PRINCIPAL -->
 <div class="container">
-    <h2>Liste des Commandes </h2>
+    <h2>Liste des Commandes</h2>
 
-    
     <table class="table">
         <thead>
             <tr>
                 <th>ID</th>
                 <th>Date</th>
                 <th>Adresse</th>
-                <th>Produits commandés</th>
-                <th>Client</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -111,16 +108,7 @@
                 <td>{{ commande.id }}</td>
                 <td>{{ commande.date|date('d/m/Y') }}</td>
                 <td>{{ commande.adresse }}</td>
-                <td>
-                    {% for panier in commande.paniers %}
-                        <li>{{ panier.product.nom }}</li>
-                    {% endfor %}
-                </td>
-                <td>
-                    {% for panier in commande.paniers %}
-                        <li>{{ panier.product.utilisateurs.nom }}</li>
-                    {% endfor %}
-                </td>
+               
                 <td class="btn-container">
                     <a href="{{ path('commande_delete', {'id': commande.id}) }}" class="btn-delete">
                         <i class="fas fa-trash-alt"></i> Supprimer
@@ -129,18 +117,11 @@
             </tr>
         {% else %}
             <tr>
-                <td colspan="4" class="text-center">Aucune commande trouvée.</td>
+                <td colspan="6" class="text-center">Aucune commande trouvée.</td>
             </tr>
         {% endfor %}
     </tbody>
     </table>
 </div>
 
-            
-
-              
-
 {% endblock %}
-
-
-

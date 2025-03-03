@@ -211,9 +211,8 @@ $totalGeneral = array_reduce($paniers, function ($total, $panier) {
 
         return $this->redirectToRoute('panier_admin_index');
     }
-   
     #[Route('/panier/pdf', name: 'panier_pdf', methods: ['GET'])]
-    public function generatePdf(PanierRepository $panierRepository, UtilisateursRepository $userRepository): Response
+    public function generatePdf(PanierRepository $panierRepository): Response
     {
         // Récupérer les produits du panier avec les utilisateurs
         $paniers = $panierRepository->findAll();
@@ -221,19 +220,23 @@ $totalGeneral = array_reduce($paniers, function ($total, $panier) {
             return $total + $panier->getTotale();
         }, 0);
     
-        
+        // Générer le chemin absolu pour l'image du logo
+        $logoPath = $this->getParameter('kernel.project_dir') . '/public/uploads/images/logo.png';
+        $logoUrl = 'file://' . realpath($logoPath); // Utilisation de realpath pour obtenir le chemin absolu
     
-        // Créer le contenu HTML pour le PDF
+        // Créer le contenu HTML pour le PDF avec les données dynamiques
         $html = $this->renderView('panier/pdf.html.twig', [
             'paniers' => $paniers,
             'totalGeneral' => $totalGeneral,
-           
+            'logoUrl' => $logoUrl,  // Passer l'URL de l'image
         ]);
     
         // Configurer DomPDF
         $options = new Options();
         $options->set('isHtml5ParserEnabled', true);
         $options->set('isPhpEnabled', true);
+        $options->set('isRemoteEnabled', true); // Permet les images distantes
+    
         $dompdf = new Dompdf($options);
     
         // Charger le contenu HTML dans DomPDF
@@ -254,7 +257,9 @@ $totalGeneral = array_reduce($paniers, function ($total, $panier) {
                 'Content-Disposition' => 'inline; filename="panier.pdf"',
             ]
         );
-    }
+    }    
+
+    
     #[Route('/dashboard', name: 'panier_dashboard', methods: ['GET'])]
     public function dashboard(PanierRepository $panierRepository, ProductRepository $productRepository): Response
     {

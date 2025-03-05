@@ -1,0 +1,38 @@
+{% extends 'FrontEnd/front.html.twig' %}
+
+{% block title %}Gestion des Machines{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4" style="color: #5D6D7E;">Gestion des Machines</h2>
+    <div class="row justify-content-center">
+        {% set hasMachines = false %}
+        {% for machine in tabmachines %}
+            {% if machine.user.id == app.user.id %}
+                {% set hasMachines = true %}
+                <div class="col-md-3 mb-4">
+                    <div class="card shadow-lg border-0" style="background-color: #f1f1f1; color: #333; height: 350px;">
+                        <div class="card-body p-3">
+                            <h5 class="card-title" style="color: #2C3E50;">{{ machine.nom }} 🚜</h5>
+                            <p class="card-text" style="color: #5D6D7E;"><strong>Prix :</strong> {{ machine.prix }} TND 💰</p>
+                            <p class="card-text" style="color: #5D6D7E;"><strong>État :</strong> {{ machine.etat }} 🛠️</p>
+                            <p class="card-text" style="color: #5D6D7E;"><strong>Disponibilité :</strong> {{ machine.disponibilite }} 📅</p>
+                            
+                            <div class="d-flex justify-content-between mt-auto">
+                                <a href="{{ path('gestion_machine_updatefront', {'id': machine.id}) }}" class="btn btn-primary btn-sm text-white"> modifier ✏️</a>
+                                <a href="{{ path('gestion_machine_deletefront', {'id': machine.id}) }}" class="btn btn-danger btn-sm text-white" 
+                                   onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette machine ?');"> supprimer ❌</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+        {% if not hasMachines %}
+            <div class="col-12 text-center">
+                <p>Aucune machine disponible 🚫</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

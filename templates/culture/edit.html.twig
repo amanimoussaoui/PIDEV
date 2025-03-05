@@ -1,0 +1,25 @@
+{% extends 'FrontEnd/front.html.twig' %}
+
+{% block title %}Modifier Culture{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <div class="glass-card shadow-sm border-0" style="max-width: 800px; margin: 0 auto;">
+            <div class="card-header py-3 px-4" style="background: linear-gradient(90deg, #1a9738, #1F4E3D); border-radius: 12px 12px 0 0;">
+                <h5 class="mb-0 text-white">Modifier la Culture</h5>
+            </div>
+            <div class="card-body">
+                {{ include('culture/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
+            </div>
+            <br>
+            <div class="card-footer d-flex justify-content-between">
+                <a href="{{ path('app_culture_index') }}" class="btn btn-light">
+                    <i class="bi bi-arrow-left"></i> Retour
+                </a>
+                <div>
+                    {{ include('culture/_delete_form.html.twig') }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

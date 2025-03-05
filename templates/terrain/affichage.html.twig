@@ -1,0 +1,298 @@
+{% extends 'FrontEnd/front.html.twig' %}
+
+{% block title %}AgriWise | Accueil{% endblock %}
+
+{% block content %}
+    <style>
+        /* Corps de la page */
+        body {
+            background-color: #f4f7fc;
+            font-family: 'Arial', sans-serif;
+        }
+
+        /* Conteneur principal */
+        .container {
+            max-width: 1200px;
+        }
+
+        /* En-tête */
+        h1 {
+            color: #2D6A4F;
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+            animation: fadeIn 1s ease-out;
+        }
+
+        /* Barre de recherche */
+        .search-form {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .search-form input {
+            padding: 15px;
+            border-radius: 25px;
+            border: 1px solid #2D6A4F;
+            width: 80%;
+            max-width: 600px;
+            margin-top: 10px;
+            font-size: 1.2rem;
+            background-color: #fff;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-form input:focus {
+            outline: none;
+            border-color: #1B4D3E;
+        }
+
+        /* Conteneur pour affichage horizontal */
+        .scroll-container {
+            display: flex;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            gap: 20px;
+            padding: 10px;
+            scroll-behavior: smooth;
+        }
+
+        /* Style de la scrollbar */
+        .scroll-container::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .scroll-container::-webkit-scrollbar-thumb {
+            background: #2D6A4F;
+            border-radius: 4px;
+        }
+
+        /* Cards des terrains */
+        .card {
+            min-width: 300px;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: white;
+            border: none;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Image */
+        .card img {
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 2px solid #2D6A4F;
+        }
+
+        /* Corps de la carte */
+        .card-body {
+            padding: 20px;
+            text-align: center;
+            background-color: #fff;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2D6A4F;
+            margin-bottom: 10px;
+            transition: color 0.3s ease;
+        }
+
+        .card-title:hover {
+            color: #1B4D3E;
+        }
+
+        .card-text {
+            font-size: 1.1rem;
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        .price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2D6A4F;
+            margin-bottom: 15px;
+        }
+
+        /* Bouton Voir Détails */
+        .btn-details {
+            background-color: #2D6A4F;
+            color: white;
+            font-weight: bold;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-details:hover {
+            background-color: #1B4D3E;
+        }
+
+        /* Message de résultats vides */
+        .no-results {
+            text-align: center;
+            font-size: 1.5rem;
+            color: #777;
+            padding: 40px;
+        }
+
+        /* Style pour le bouton favori */
+        .btn-favori {
+            font-size: 24px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .btn-favori:hover {
+            transform: scale(1.2);
+        }
+
+        .favorite-icon {
+            font-size: 40px;
+            color: #ccc;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .favorite-icon.active {
+            color: red;
+        }
+
+        /* Style pour le bouton favori en haut à droite */
+        .btn-favoris-page {
+            position: fixed;
+            top: 130px;
+            right: 20px;
+            font-size: 24px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out;
+            z-index: 1000; /* Pour s'assurer qu'il est au-dessus des autres éléments */
+        }
+
+        .btn-favoris-page:hover {
+            transform: scale(1.2);
+        }
+
+        .btn-favoris-page .heart-icon {
+            font-size: 40px;
+            color: red; /* Couleur du cœur */
+            transition: color 0.3s ease;
+        }
+
+        .btn-favoris-page:hover .heart-icon {
+            color: darkred; /* Changement de couleur au survol */
+        }
+    </style>
+    <!-- Bouton pour accéder à la page des favoris -->
+    <button class="btn-favoris-page" onclick="window.location.href='/favoris'">
+        <span class="heart-icon">❤️</span>
+    </button>
+
+ <div class="container my-5">
+        <h1>Découvrir Les Offres</h1>
+
+        <!-- Barre de recherche -->
+        <div class="search-form">
+            <input type="text" id="searchInput" placeholder="Rechercher par localisation..." class="search-form">
+        </div>
+
+        <!-- Conteneur scrollable -->
+        <div class="scroll-container" id="terrainTable">
+            {% if tab_terrain is empty %}
+                <div class="no-results">
+                    <p>Aucune offre trouvée. Essayez de modifier votre recherche.</p>
+                </div>
+            {% else %}
+                {% for terrain in tab_terrain %}
+                    <div class="card">
+                        <img src="{{ terrain.image ?: 'https://via.placeholder.com/300x200?text=Pas+d\'image' }}" class="card-img-top" alt="Image du terrain">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ terrain.localisation }}</h5>
+                            <p class="card-text">Superficie: {{ terrain.superficie }} m²</p>
+                            <p class="price">{{ terrain.prix }} TND</p>
+                            <a href="{{ path('app_affichage_terrain', {'id': terrain.id}) }}" class="btn-details">Voir Détails</a>
+
+                            <button class="btn-favori" data-id="{{ terrain.id }}">
+                                {% if terrain.id in app.session.get('favoris', []) %}
+                                    ❤️ <!-- Terrain en favori -->
+                                {% else %}
+                                    🤍 <!-- Terrain non favori -->
+                                {% endif %}
+                            </button>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("searchInput").addEventListener("keyup", function() {
+            let filter = this.value.toLowerCase();
+            let cards = document.querySelectorAll(".card");
+            let container = document.getElementById("terrainTable");
+            let hasResults = false;
+
+            cards.forEach(card => {
+                let localisation = card.querySelector(".card-title").textContent.toLowerCase();
+                let superficie = card.querySelector(".card-text").textContent.toLowerCase();
+                let prix = card.querySelector(".price").textContent.toLowerCase();
+
+                if (localisation.includes(filter) || superficie.includes(filter) || prix.includes(filter)) {
+                    card.style.display = "";
+                    hasResults = true;
+                } else {
+                    card.style.display = "none";
+                }
+            });
+
+            if (!hasResults) {
+                container.innerHTML = '<div class="no-results"><p>Aucune offre trouvée. Essayez de modifier votre recherche.</p></div>';
+            }
+        });
+
+        document.querySelectorAll(".btn-favori").forEach(button => {
+            button.addEventListener("click", function () {
+                let terrainId = this.getAttribute("data-id");
+                let isFavori = this.innerHTML === "❤️";
+
+                fetch(`/favori/toggle/${terrainId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        if (data.isFavori) {
+                            this.innerHTML = "❤️";
+                        } else {
+                            this.innerHTML = "🤍";
+                        }
+                    }
+                })
+                .catch(error => console.error('Erreur:', error));
+            });
+        });
+    </script>
+
+{% endblock %}

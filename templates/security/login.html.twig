@@ -1,0 +1,148 @@
+{% block styles %}
+    <style>
+        /* Center the login form */
+        .login-container {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1a9738, #1F4E3D);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Login card */
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        /* Title */
+        .login-box h1 {
+            font-size: 32px;
+            font-weight: bold;
+            color: #1F4E3D;
+            margin-bottom: 20px;
+        }
+
+        /* Form inputs */
+        .login-box input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #1F4E3D;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+            transition: 0.3s ease-in-out;
+            background: #F8FAFC;
+        }
+
+        /* Focus effect on input */
+        .login-box input:focus {
+            border-color: #1a9738;
+            background: #ffffff;
+            box-shadow: 0px 0px 10px rgba(37, 99, 235, 0.2);
+        }
+
+        /* Login button */
+        .login-box button {
+            width: 100%;
+            background: linear-gradient(135deg, #1a9738, #1F4E3D);
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+        }
+
+        /* Button hover effect */
+        .login-box button:hover {
+            transform: scale(1.05);
+            background: linear-gradient(135deg, #1F4E3D, #1a9738);
+        }
+
+        /* Error message */
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        /* Sign-up link */
+        .register-link {
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .register-link a {
+            color: #1a9738;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="login-container">
+        <div class="login-box">
+            <h1>Login</h1>
+
+            {% if error %}
+                <div class="error-message">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+            {% endif %}
+
+            {% if app.user %}
+                <div class="mb-3">
+                    You are logged in as {{ app.user.email }}, <a href="{{ path('app_logout') }}">Logout</a>
+                </div>
+            {% endif %}
+
+            <form method="post">
+                <input 
+                    type="email" 
+                    value="{{ last_username }}" 
+                    name="email" 
+                    id="inputEmail" 
+                    placeholder="Email"
+                    autocomplete="email" 
+                    required 
+                    autofocus
+                >
+
+                <input 
+                    type="password" 
+                    name="password" 
+                    id="inputPassword" 
+                    placeholder="Password"
+                    autocomplete="current-password" 
+                    required
+                >
+
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                <button type="submit">Sign in</button>
+            </form>
+
+            <!-- Sign-up link -->
+            <p class="register-link">
+                Pas encore de compte ? <a href="{{ path('app_register') }}">Inscrivez-vous ici</a>
+            </p>
+            <p class="register-link">
+                mot de passe oublié ? <a href="{{ path('app_forgot_password_request') }}">reset your password</a>
+            </p>
+        </div>
+    </div>
+{% endblock %}

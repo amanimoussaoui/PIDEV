@@ -1,0 +1,23 @@
+{% extends 'FrontEnd/front.html.twig' %}
+
+{% block title %}Recommandation - Candidature{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center">Recommandations pour votre candidature</h1>
+    
+    <div class="card mt-4">
+        <div class="card-body">
+            <h5 class="card-title">But de la candidature :</h5>
+            <p class="card-text"><strong>{{ candidature.but }}</strong></p>
+            
+            <h5 class="card-title mt-3">Conseils générés :</h5>
+            <p class="card-text">{{ recommandation }}</p>
+        </div>
+    </div>
+
+    <div class="text-center mt-4">
+        <a href="{{ path('app_showcandidature') }}" class="btn btn-primary">Retour à la liste</a>
+    </div>
+</div>
+{% endblock %}

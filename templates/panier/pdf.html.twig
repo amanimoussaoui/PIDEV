@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Résumé du Panier</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f7f7f7;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            max-width: 900px;
+            width: 100%;
+            text-align: center;
+            font-size: 16px;
+            position: relative;
+        }
+
+        .date {
+            position: absolute;
+            left: 30px;
+            top: 20px;
+            font-size: 14px;
+            color: #264653;
+        }
+
+        .header {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2a9d8f;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        h2 {
+            font-size: 26px;
+            color: #264653;
+            border-bottom: 3px solid #264653;
+            padding-bottom: 8px;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+            font-size: 18px;
+            background-color: #f1faee;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #2a9d8f;
+            color: white;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #e9f1f0;
+        }
+
+        .total {
+            font-size: 22px;
+            font-weight: 600;
+            color: #333;
+            background-color: #f4a261;
+            padding: 15px;
+            margin-top: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .footer {
+            margin-top: 40px;
+            font-size: 14px;
+            color: #777;
+            border-top: 2px solid #ddd;
+            padding-top: 20px;
+            font-style: italic;
+        }
+
+        .footer a {
+            color: #2a9d8f;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        .signataire {
+            margin-top: 40px;
+            font-size: 16px;
+            text-align: left;
+            color: #264653;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Date en haut à gauche -->
+        <div class="date">Généré le : {{ "now" | date("Y-m-d") }}</div>
+
+        <div class="header">AGRIWISE</div>
+        <h2>Rapport du Panier</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Agriculteur</th>
+                    <th>Produit</th>
+                    <th>Quantité</th>
+                    <th>Prix Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for panier in paniers %}
+                <tr>
+                    <td>{{ panier.product.utilisateurs.nom }}</td>
+                    <td>{{ panier.product.nom }}</td>
+                    <td>{{ panier.quantite }}</td>
+                    <td>{{ panier.totale }} DT</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="4">Aucun produit dans le panier.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <p class="total">Total Général : {{ totalGeneral }} DT</p>
+
+        <div class="footer">
+            Pour toute assistance, contactez-nous à +21695921917 <br>
+            Explorez nos services <a href="{{ path('app_services') }}">Services</a><br>
+            Suivez-nous sur <a href="https://www.facebook.com/people/AGROWise/61572280816167/" target="_blank">Facebook</a>.
+        </div>
+
+        <!-- Signataire -->
+        <div class="signataire">
+            Signé par : ____________________<br>
+            Date : {{ "now" | date("Y-m-d") }}
+        </div>
+    </div>
+
+</body>
+</html>

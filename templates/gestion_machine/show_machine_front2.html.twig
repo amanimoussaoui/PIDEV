@@ -1,0 +1,113 @@
+{% extends 'FrontEnd/front.html.twig' %}
+
+{% block title %}Gestion des Machines{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4" style="color: #5D6D7E;">Gestion des Machines</h2>
+    <div class="row justify-content-center">
+        {% for machine in tabmachines %}
+            {% if machine.user.id != app.user.id %}  {# Vérifie si la machine n'appartient pas à l'utilisateur connecté #}
+                <div class="col-md-3 mb-4">
+                    <div class="card shadow-lg border-0" style="background-color: #f1f1f1; color: #333; min-height: 450px;">
+                        <div class="card-body p-3 d-flex flex-column">
+                            <h5 class="card-title" style="color: #2C3E50; font-size: 1.2em;">{{ machine.nom }} 🚜</h5>
+                            <p class="card-text" style="color: #5D6D7E;"><strong>Prix :</strong> {{ machine.prix }} TND 💰</p>
+                            <p class="card-text" style="color: #5D6D7E;"><strong>État :</strong> {{ machine.etat }} 🛠️</p>
+                            <p class="card-text" style="color: #5D6D7E;"><strong>Disponibilité :</strong> {{ machine.disponibilite }} 📅</p>
+
+                            <!-- QR Code -->
+                            <div id="qrcode-{{ machine.id }}" class="text-center mt-3"></div>
+
+                            <!-- Like and Dislike buttons -->
+                            <div class="d-flex justify-content-between mt-3">
+                                <button class="btn btn-success btn-sm" id="like-{{ machine.id }}" onclick="voteMachine({{ machine.id }}, 'like')">👍 Like</button>
+                                <button class="btn btn-danger btn-sm" id="dislike-{{ machine.id }}" onclick="voteMachine({{ machine.id }}, 'dislike')">👎 Dislike</button>
+                            </div>
+
+                            <!-- Display likes and dislikes -->
+                            <div class="mt-2 text-center">
+                                <p><strong>Likes:</strong> <span id="likes-count-{{ machine.id }}">{{ machine.likes }}</span></p>
+                                <p><strong>Dislikes:</strong> <span id="dislikes-count-{{ machine.id }}">{{ machine.dislikes }}</span></p>
+                            </div>
+
+                            <div class="mt-auto">
+                                <a href="{{ path('reservation_new', {'id_machine': machine.id}) }}" class="btn btn-primary btn-sm text-white w-100">Réserver ✏️</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        {% else %}
+        <div class="col-12 text-center">
+            <p>Aucune machine disponible 🚫</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- 🔥 Pagination -->
+    <div class="d-flex justify-content-center mt-4">
+        {{ knp_pagination_render(tabmachines) }}
+    </div>
+</div>
+
+{% block javascripts %}
+    {{ parent() }}
+    
+    <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+
+    <script>
+        window.onload = function() {
+            {% for machine in tabmachines %}
+                {% if machine.user.id != app.user.id %}  {# Vérifie si la machine n'appartient pas à l'utilisateur connecté #}
+                    var qrcodeElement = document.getElementById('qrcode-{{ machine.id }}');
+
+                    var machineDetails = {
+                        nom: '{{ machine.nom }}',
+                        description: '{{ machine.description }}',
+                        prix: '{{ machine.prix }}',
+                        etat: '{{ machine.etat }}',
+                        disponibilite: '{{ machine.disponibilite }}',
+                    };
+
+                    var machineUrl = 'Machine Details: ' + JSON.stringify(machineDetails);
+
+                    if (qrcodeElement) {
+                        QRCode.toDataURL(machineUrl, function (err, url) {
+                            if (err) {
+                                console.error('Erreur de génération QR Code:', err);
+                            } else {
+                                var img = document.createElement('img');
+                                img.src = url;
+                                img.style.width = "100px";
+                                img.style.height = "100px";
+                                qrcodeElement.appendChild(img);
+                            }
+                        });
+                    }
+                {% endif %}
+            {% endfor %}
+        };
+
+        function voteMachine(machineId, action) {
+            fetch(`/machine/vote/${machineId}/${action}`, {
+                method: 'POST',
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update the like and dislike counts
+                    document.getElementById(`likes-count-${machineId}`).textContent = data.likes;
+                    document.getElementById(`dislikes-count-${machineId}`).textContent = data.dislikes;
+                } else {
+                    alert('Une erreur est survenue lors du vote.');
+                }
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                alert('Une erreur est survenue lors du vote.');
+            });
+        }
+    </script>
+{% endblock %}
+{% endblock %}

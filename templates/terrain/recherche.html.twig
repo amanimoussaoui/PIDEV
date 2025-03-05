@@ -1,0 +1,25 @@
+{% extends 'FrontEnd/front.html.twig' %}
+
+{% block title %}AgriWise | Accueil{% endblock %}
+
+{% block content %}
+    <h1>Rechercher un terrain par localisation</h1>
+
+    <form method="get" action="{{ path('terrain_recherche') }}">
+        <input type="text" name="localisation" value="{{ localisation }}" placeholder="Entrez une ville, un pays...">
+        <button type="submit">Rechercher</button>
+    </form>
+
+    {% if terrains is not empty %}
+        <h2>Résultats :</h2>
+        <ul>
+            {% for terrain in terrains %}
+                <li>
+                    <strong>{{ terrain.nom }}</strong> - {{ terrain.localisation }} - {{ terrain.superficie }} m²
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Aucun terrain trouvé.</p>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,186 @@
+{% block content %}
+<style>
+    /* Général */
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f0f8ff;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        color: #333;
+    }
+
+    /* Conteneur principal */
+    .container {
+        background: #ffffff;
+        width: 80%;
+        max-width: 1200px;
+        padding: 30px;
+        border-radius: 20px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* En-tête du rapport */
+    .header {
+        font-size: 26px;
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 30px;
+    }
+
+    .company-name {
+        font-size: 34px;
+        font-weight: 700;
+        color: #1abc9c;
+        text-transform: uppercase;
+    }
+
+    .report-date {
+        font-size: 14px;
+        color: #7f8c8d;
+        margin-top: 10px;
+    }
+
+    /* Titre principal */
+    h1 {
+        font-size: 28px;
+        font-weight: 700;
+        color: #3498db;
+        text-transform: uppercase;
+        margin: 30px 0;
+    }
+
+    /* Tableau */
+    table {
+        width: 100%;
+        margin-top: 20px;
+        font-size: 16px;
+        text-align: left;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    th, td {
+        padding: 15px;
+        vertical-align: middle;
+    }
+
+    th {
+        background-color: #3498db;
+        color: white;
+        font-weight: 600;
+    }
+
+    td {
+        background-color: #ecf0f1;
+    }
+
+    tr:nth-child(even) td {
+        background-color: #f9f9f9;
+    }
+
+    /* Pied de page stylé */
+    .footer {
+        margin-top: 40px;
+        padding: 20px;
+        background-color: #1abc9c;
+        color: white;
+        text-align: center;
+        font-size: 14px;
+        border-radius: 10px;
+    }
+
+    .footer a {
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    /* Responsive */
+    @media screen and (max-width: 768px) {
+        body {
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 24px;
+        }
+
+        table {
+            font-size: 14px;
+        }
+
+        th, td {
+            padding: 10px;
+        }
+    }
+</style>
+
+<!-- Conteneur Principal -->
+<div class="container">
+
+    <!-- En-tête du Rapport -->
+    <div class="header">
+        <div class="company-name">AGRIWISE</div>
+        Rapport des Utilisateurs
+    </div>
+
+    <div class="report-date">Généré le {{ "now" | date("Y-m-d") }}</div>
+
+    <h1>La Liste des Utilisateurs</h1>
+
+    <!-- Tableau des utilisateurs -->
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Prénom</th>
+                    <th>Nom</th>
+                    <th>Email</th>
+                    <th>Rôle</th>
+                    <th>Date d'inscription</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for a in tabusers %}
+                <tr>
+                    <td>{{ a.id }}</td>
+                    <td>{{ a.prenom }}</td>
+                    <td>{{ a.nom }}</td>
+                    <td>{{ a.email }}</td>
+                    <td>
+                    {% if a.roles %}
+                         {{ a.roles | join(', ') }}
+                    {% else %}
+                         N/A
+                    {% endif %}
+                    </td>
+                    <td>{{ a.dateinscription | date('Y-m-d') }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pied de Page -->
+    <div class="footer">
+        <a href="#" target="_blank">Agriwise.com</a>
+    </div>
+</div>
+
+{% endblock %}

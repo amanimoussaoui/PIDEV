@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Terrains - Client{% endblock %}
+
+{% block body %}
+    <h1>Liste des Terrains</h1>
+    
+    <p>Bienvenue sur la page des terrains. Voici les terrains disponibles :</p>
+
+    <ul>
+        {% for terrain in tab_terrain  %}
+            <li>
+                <strong>{{ terrain.id }}</strong> - 
+                {{ terrain.description }} - 
+                {{ terrain.prix }} € 
+            </li>
+        {% else %}
+            <p>Aucun terrain disponible pour le moment.</p>
+        {% endfor %}
+    </ul>
+
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends 'FrontEnd/front.html.twig' %}
+
+{% block title %}AgriWise |  Candidature{% endblock %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidature Refusée</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        .message {
+            background-color:rgb(219, 110, 59);
+            color:rgb(0, 0, 0);
+            padding: 20px;
+            border-radius: 5px;
+            display: inline-block;
+            font-size: 18px;
+            font-weight: bold;
+            border: 1px solid #c3e6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="message">
+        Desolé ! Votre candidature a été refusée.
+    </div>
+</body>
+</html>
+
+{% endblock %}

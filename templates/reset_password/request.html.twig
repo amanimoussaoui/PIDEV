@@ -1,0 +1,114 @@
+{% block styles %}
+    <style>
+        /* Center the request form */
+        .request-container {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #673ab7, #4527a0);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Request password box */
+        .request-box {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        /* Title */
+        .request-box h1 {
+            font-size: 28px;
+            font-weight: bold;
+            color: #4527a0;
+            margin-bottom: 20px;
+        }
+
+        /* Form inputs */
+        .request-box input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #4527a0;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+            transition: 0.3s ease-in-out;
+            background: #F8FAFC;
+        }
+
+        /* Focus effect on input */
+        .request-box input:focus {
+            border-color: #673ab7;
+            background: #ffffff;
+            box-shadow: 0px 0px 10px rgba(103, 58, 183, 0.2);
+        }
+
+        /* Description text */
+        .request-box small {
+            font-size: 14px;
+            color: #666;
+            display: block;
+            margin-bottom: 15px;
+        }
+
+        /* Request button */
+        .request-box button {
+            width: 100%;
+            background: linear-gradient(135deg, #673ab7, #4527a0);
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+        }
+
+        /* Button hover effect */
+        .request-box button:hover {
+            transform: scale(1.05);
+            background: linear-gradient(135deg, #4527a0, #673ab7);
+        }
+
+        /* Error alert */
+        .alert-danger {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="request-container">
+        <div class="request-box">
+            {% for flash_error in app.flashes('reset_password_error') %}
+                <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+            {% endfor %}
+            
+            <h1>Reset your password</h1>
+
+            {{ form_start(requestForm) }}
+                {{ form_row(requestForm.email) }}
+                <div>
+                    <small>
+                        Enter your email address, and we will send you a
+                        link to reset your password.
+                    </small>
+                </div>
+
+                <button type="submit">Send password reset email</button>
+            {{ form_end(requestForm) }}
+        </div>
+    </div>
+{% endblock %}

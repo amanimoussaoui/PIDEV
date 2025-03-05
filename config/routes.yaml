@@ -1,0 +1,9 @@
+controllers:
+    resource: '../src/Controller/'
+    type: attribute
+ajouter_favori:
+    path: /favori/ajouter/{id}
+    controller: App\Controller\TerrainController::ajouterFavori
+    methods: [POST]
+
+

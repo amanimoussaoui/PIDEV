@@ -1,0 +1,28 @@
+{% extends 'FrontEnd/front.html.twig' %}
+
+{% block title %}AgriWise | Recherche de Produits{% endblock %}
+
+{% block content %}
+    <h1>Rechercher un produit</h1>
+
+    <form method="get" action="{{ path('product_recherche') }}">
+        <input type="text" id="searchInput" name="query" value="{{ query }}" placeholder="Rechercher par nom, catégorie, prix ou stock...">
+        <button type="submit">Rechercher</button>
+    </form>
+
+    {% if products is not empty %}
+        <h2>Résultats :</h2>
+        <div id="productTable">
+            {% for product in products %}
+                <div class="card">
+                    <h3 class="card-title">{{ product.nom }}</h3>
+                    <p class="card-text">Catégorie : {{ product.category }}</p>
+                    <p class="price">Prix : {{ product.prix }} €</p>
+                    <p class="stock">Stock : {{ product.stock }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>Aucun produit trouvé.</p>
+    {% endif %}
+{% endblock %}

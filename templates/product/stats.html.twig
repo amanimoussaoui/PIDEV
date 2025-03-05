@@ -1,0 +1,44 @@
+{% extends 'BackEnd/back.html.twig' %}
+{% block title %} Statistiques des Produits{% endblock %}
+
+{% block styles %}
+<style>
+    canvas {
+        max-width: 80%;
+        margin: 20px auto;
+        display: block;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<h1>Statistiques des Produits par Catégorie</h1>
+
+<canvas id="productChart"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const ctx = document.getElementById('productChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: {{ stats|keys|json_encode|raw }},
+                datasets: [{
+                    label: 'Nombre de Produits',
+                    data: {{ stats|json_encode|raw }},
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

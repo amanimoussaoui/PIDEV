@@ -1,0 +1,10 @@
+twig:
+    file_name_pattern: '*.twig'
+    globals:
+        stripe_public_key: '%stripe_public_key%'
+    debug: '%kernel.debug%'
+
+
+when@test:
+    twig:
+        strict_variables: true

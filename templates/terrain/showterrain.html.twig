@@ -1,0 +1,103 @@
+{% extends 'FrontEnd/front.html.twig' %}
+
+{% block title %}AgriWise | Accueil{% endblock %}
+{% block content %}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+<style>
+    body {
+        background-color: #f4f7fc;
+    }
+    .container {
+        max-width: 1200px;
+    }
+    h1 {
+        color: #B1D182;
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+    }
+    table {
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    table th {
+        background-color: #B1D182;
+        color: white;
+    }
+    .image-cell img {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+    }
+    .search-box {
+        margin-bottom: 20px;
+    }
+</style>
+
+<div class="container my-5">
+    <h1>Liste des Terrains</h1>
+    <div class="search-box">
+        <input type="text" id="searchInput" class="form-control" placeholder="Rechercher par localisation...">
+    </div>
+    <div class="table-responsive">
+        <table class="table table-bordered" id="terrainTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Localisation</th>
+                    <th>Superficie</th>
+                    <th>Prix</th>
+                    <th>Description</th>
+                    <th>Image</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for a in tab_terrain %}
+                <tr>
+                    <td>{{ a.id }}</td>
+                    <td>{{ a.localisation }}</td>
+                    <td>{{ a.superficie }} m²</td>
+                    <td>{{ a.prix }} TND</td>
+                    <td>{{ a.description }}</td>
+                    <td class="image-cell">
+                        {% if a.image %}
+                            <img src="{{ a.image }}" alt="Image du terrain">
+                        {% else %}
+                            Pas d'image disponible
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ path('app_updateformterrain', {'id': a.id}) }}" class="btn btn-success">Modifier</a>
+                        <a href="{{ path('app_deleteformterrain', {'id': a.id}) }}" class="btn btn-danger"
+                           onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce terrain ?')">Supprimer</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    document.getElementById("searchInput").addEventListener("keyup", function() {
+        let filter = this.value.toLowerCase();
+        let rows = document.querySelectorAll("#terrainTable tbody tr");
+
+        rows.forEach(row => {
+            let localisation = row.cells[1].textContent.toLowerCase();
+            let superficie = row.cells[2].textContent.toLowerCase();
+            let prix = row.cells[3].textContent.toLowerCase();
+            let utilisateur = row.cells[6].textContent.toLowerCase();
+
+            if (localisation.includes(filter) || superficie.includes(filter) || prix.includes(filter) || utilisateur.includes(filter)) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+        });
+    });
+</script>
+
+{% endblock %}

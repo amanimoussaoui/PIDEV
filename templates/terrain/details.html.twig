@@ -1,0 +1,220 @@
+{% extends 'FrontEnd/front.html.twig' %}
+
+{% block title %}Détails du Terrain{% endblock %}
+
+{% block content %}
+    <div class="container my-5">
+        <div class="card terrain-card">
+            <div class="row g-0">
+                <div class="col-md-5 image-container">
+                    {% if terrain.image %}
+                        <img src="{{ terrain.image }}" alt="Image du terrain" class="img-fluid terrain-image">
+                    {% else %}
+                        <p class="no-image">Pas d'image disponible</p>
+                    {% endif %}
+                </div>
+                <div class="col-md-7">
+                    <div class="card-body">
+                        <h2 class="card-title">{{ terrain.localisation }}</h2>
+
+                        {# Lien pour voir l'adresse à partir des coordonnées GPS #}
+                        <p><a href="https://www.coordonnees-gps.fr/?lat={{ terrain.latitude }}&lng={{ terrain.longitude }}" target="_blank" class="btn btn-link">Voir adresse</a></p>
+
+                        <p class="card-text"><strong>Superficie :</strong> {{ terrain.superficie }} m²</p>
+                        <p class="card-text"><strong>Prix :</strong> <span class="prix">{{ terrain.prix }} TND</span></p>
+                        <p class="card-text"><strong>Description :</strong> {{ terrain.description }}</p>
+
+                        {# Affichage du message de confirmation (Flash Message) #}
+                        {% for label, messages in app.flashes %}
+                            {% for message in messages %}
+                                <div class="alert alert-{{ label }} mt-2">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        {% endfor %}
+
+                        {# Carte Google Maps #}
+                        <div id="map" style="height: 300px; width: 100%; margin-top: 20px;"></div>
+
+                        <a href="{{ path('app_addformcandidature', {'idTerrain': terrain.id}) }}" class="btn btn-custom">
+                            Faire candidature
+                        </a>
+
+                        <a href="{{ path('list_terrains') }}" class="btn btn-custom-secondary">Retour</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* Animation d’apparition */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Animation d’image (Zoom et Rotation) */
+        @keyframes imageHover {
+            0% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.05) rotate(2deg); }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+
+        .terrain-card {
+            max-width: 800px;
+            margin: auto;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            animation: fadeIn 1s ease-out;
+            background: #fff;
+        }
+
+        .terrain-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .image-container {
+            overflow: hidden;
+            border-radius: 20px 0 0 20px;
+        }
+
+        .terrain-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all 0.5s ease-in-out;
+        }
+
+        .image-container:hover .terrain-image {
+            animation: imageHover 0.8s ease-in-out infinite;
+        }
+
+        .card-body {
+            padding: 20px;
+            animation: fadeIn 1.2s ease-in-out;
+        }
+
+        .card-title {
+            font-size: 22px;
+            font-weight: bold;
+            color: #28a745;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .card-text {
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        .prix {
+            color: #28a745;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        /* Boutons personnalisés */
+        .btn-custom {
+            display: inline-block;
+            background: #28a745;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 30px;
+            color: white;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 3px 8px rgba(40, 167, 69, 0.4);
+        }
+
+        .btn-custom:hover {
+            background: #218838;
+            transform: scale(1.1);
+        }
+
+        .btn-custom-secondary {
+            display: inline-block;
+            background: #6c757d;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            color: white;
+            font-weight: bold;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 3px 8px rgba(108, 117, 125, 0.4);
+        }
+
+        .btn-custom-secondary:hover {
+            background: #5a6268;
+            transform: scale(1.05);
+        }
+
+        /* Flash messages animés */
+        .alert {
+            border-radius: 20px;
+            padding: 10px;
+            text-align: center;
+            margin-top: 10px;
+            font-weight: bold;
+            animation: fadeIn 0.8s ease-in-out;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Message d’image non disponible */
+        .no-image {
+            font-size: 16px;
+            color: #dc3545;
+            text-align: center;
+            margin-top: 50px;
+            font-weight: bold;
+            animation: fadeIn 1s ease-in-out;
+        }
+    </style>
+
+    <script>
+    function initMap() {
+        // Récupérez les coordonnées du terrain depuis les données Twig
+        var latitude = parseFloat("{{ terrain.latitude is defined ? terrain.latitude : 0 }}");
+        var longitude = parseFloat("{{ terrain.longitude is defined ? terrain.longitude : 0 }}");
+
+        // Vérification si les coordonnées sont valides
+        if (!isNaN(latitude) && !isNaN(longitude) && latitude !== 0 && longitude !== 0) {
+            // Créez une carte centrée sur les coordonnées du terrain
+            var map = new google.maps.Map(document.getElementById('map'), {
+                center: {lat: latitude, lng: longitude},
+                zoom: 15
+            });
+
+            // Ajoutez un marqueur à l'emplacement du terrain
+            var marker = new google.maps.Marker({
+                position: {lat: latitude, lng: longitude},
+                map: map,
+                title: 'Localisation du terrain'
+            });
+        } else {
+            console.log('Coordonnées invalides ou non définies');
+        }
+    }
+</script>
+
+    <!-- Incluez l'API Google Maps avec votre clé API -->
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDCagvTBruDUHVjdmTVhWpVMdWmwiyZevg&callback=initMap">
+    </script>
+{% endblock %}

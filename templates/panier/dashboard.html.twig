@@ -1,0 +1,42 @@
+{% extends 'BackEnd/back.html.twig' %}
+
+{% block title %}Graphique des ventes par produit{% endblock %}
+
+{% block content %}
+    <h1>Graphique des ventes par produit</h1>
+
+    <div class="row">
+        <!-- Graphique des ventes par produit -->
+      
+            <canvas id="productSalesChart"></canvas>
+    
+ <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Graphique des ventes par produit
+        var ctx = document.getElementById('productSalesChart').getContext('2d');
+        var productSalesChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: {{ productSales|keys|json_encode|raw }},
+                datasets: [{
+                    label: 'Ventes par produit',
+                    data: {{ productSales|json_encode|raw }},
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        
+
+        
+    </script>
+{% endblock %}

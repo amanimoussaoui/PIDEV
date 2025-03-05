@@ -1,0 +1,203 @@
+{% extends 'BackEnd/back.html.twig' %}
+
+{% block title %}Liste des produits{% endblock %}
+
+{% block content %}
+<style>
+    .container {
+        max-width: 1000px;
+        margin: 30px auto;
+        padding: 20px;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+        text-align: center;
+        color: #2c7b2c;
+        margin-bottom: 20px;
+        font-size: 28px;
+        font-weight: bold;
+        display: flex;
+        justify-content: space-between; /* Aligner les éléments à gauche et à droite */
+        align-items: center; /* Aligner verticalement */
+    }
+
+    .stats-container {
+        display: flex;
+        align-items: center;
+        gap: 10px; /* Espacement entre l'icône et le texte */
+    }
+
+    .stats-icon {
+        font-size: 30px;
+        color: #2c7b2c;
+        cursor: pointer;
+        transition: color 0.3s ease;
+    }
+
+    .stats-icon:hover {
+        color: #1c5a1c;
+    }
+
+    .stats-text {
+        font-size: 16px;
+        color: #2c7b2c;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    .stats-text:hover {
+        color: #1c5a1c;
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    .table th, .table td {
+        padding: 15px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .table th {
+        background: #2c7b2c;
+        color: white;
+        text-transform: uppercase;
+        font-size: 14px;
+    }
+
+    .table tr:hover {
+        background: rgba(44, 123, 44, 0.1);
+        transition: background 0.3s ease;
+    }
+
+    .btn-container {
+        display: flex;
+        gap: 10px;
+    }
+
+    .btn-delete {
+        padding: 10px 16px;
+        border-radius: 20px;
+        text-decoration: none;
+        font-size: 14px;
+        transition: all 0.3s ease-in-out;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        border: none;
+        background: #d9534f;
+        color: white;
+    }
+
+    .btn-delete:hover {
+        background: #c9302c;
+        transform: scale(1.05);
+    }
+
+    .btn-delete i {
+        margin-right: 5px;
+    }
+
+    .text-center {
+        text-align: center;
+        font-style: italic;
+        color: #888;
+        padding: 15px;
+    }
+</style>
+
+<div class="container mt-4">
+    <h2>
+        Liste des produits
+        <!-- Conteneur avec icône et texte à droite -->
+        <div class="stats-container">
+            <a href="{{ path('product_stats') }}" class="stats-icon">
+                <i class="fas fa-chart-bar"></i>
+            </a>
+            <a href="{{ path('product_stats') }}" class="stats-text">Voir les Statistiques</a>
+        </div>
+    </h2>
+<input type="text" id="searchInput" class="form-control mb-3" placeholder="Rechercher un produit...">
+<div id="noResultMessage" class="text-center text-danger mt-3" style="display: none;">
+    <p>Aucun produit trouvé.</p>
+</div>
+
+
+    <!-- Tableau des produits -->
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>Description</th>
+                <th>Prix</th>
+                <th>Stock</th>
+                <th>Catégorie</th>
+                <th>Image</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+                <tr>
+                    <td>{{ product.id }}</td>
+                    <td>{{ product.nom }}</td>
+                    <td>{{ product.description }}</td>
+                    <td>{{ product.prix }} DT</td>
+                    <td>{{ product.stock }}</td>
+                    <td>{{ product.category }}</td>
+                    <td>
+                        {% if product.image %}
+                            <img src="{{ asset('uploads/images/' ~ product.image) }}" alt="Image du produit" class="card-img-top" width="100">
+                        {% else %}
+                            <span>Aucune image</span>
+                        {% endif %}
+                    </td>
+                    <td class="btn-container">
+                        <a href="{{ path('product_delete_admin', {'id': product.id}) }}" class="btn-delete">
+                            <i class="fas fa-trash-alt"></i> Supprimer
+                        </a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="8" class="text-center">Aucun produit disponible.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    document.getElementById("searchInput").addEventListener("keyup", function() {
+        let filter = this.value.toLowerCase().trim();
+        let rows = document.querySelectorAll(".table tbody tr");
+        let hasResults = false;
+
+        rows.forEach(row => {
+            let name = row.cells[1].textContent.toLowerCase();
+            let price = row.cells[3].textContent.toLowerCase();
+            let stock = row.cells[4].textContent.toLowerCase();
+            let category = row.cells[5].textContent.toLowerCase();
+
+            if (name.includes(filter)  || price.includes(filter) || stock.includes(filter) || category.includes(filter)) {
+                row.style.display = "";
+                hasResults = true;
+            } else {
+                row.style.display = "none";
+            }
+        });
+
+        // Gérer l'affichage du message "Aucun produit trouvé"
+        document.getElementById("noResultMessage").style.display = hasResults ? "none" : "block";
+    });
+</script>
+
+{% endblock %}

@@ -1,0 +1,146 @@
+{% extends 'FrontEnd/front.html.twig' %}
+
+{% block title %}Parcelle{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <div class="glass-card shadow-sm border-0">
+            <div class="card-header py-3 px-4" style="background: linear-gradient(90deg, #1a9738, #1F4E3D); border-radius: 12px 12px 0 0;">
+                <h5 class="mb-0 text-white">Détails de la Parcelle</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3 justify-content-center">
+                    {% set info = [
+                        {'icon': 'tag-fill', 'label': 'Nom', 'value': parcelle.nom},
+                        {'icon': 'rulers', 'label': 'Superficie', 'value': parcelle.superficie | number_format(2, ',', ' ') ~ ' m²'},
+                        {'icon': 'geo-alt-fill', 'label': 'Localisation', 'value': parcelle.localisation},
+                        {'icon': 'cloud-sun-fill', 'label': 'Type de Sol', 'value': parcelle.typeSol | capitalize}
+                    ] %}
+
+                    {% for item in info %}
+                        <div class="col-md-3 col-6">
+                            <div class="info-card p-3 text-center">
+                                <div class="icon-box">
+                                    <i class="bi bi-{{ item.icon }}"></i>
+                                </div>
+                                <h6 class="text-muted">{{ item.label }}</h6>
+                                <p class="fw-bold mb-0">{{ item.value }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div id="map" style="height: 500px; width: 100%; margin-top: 20px;"></div>
+
+                <form id="parcel-form" method="post" action="{{ path('app_parcelle_save_coordinates', {'id': parcelle.id}) }}" class="mt-4">
+                    <input type="hidden" id="latitude" name="latitude" value="{{ parcelle.latitude }}">
+                    <input type="hidden" id="longitude" name="longitude" value="{{ parcelle.longitude }}">
+                    <input type="hidden" id="boundary" name="boundary" value="{{ parcelle.boundary | json_encode }}">
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-save"></i> Enregistrer les Coordonnées
+                    </button>
+                </form>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{{ path('app_parcelle_index') }}" class="btn btn-light">
+                        <i class="bi bi-arrow-left"></i> Retour
+                    </a>
+                    <div class="d-flex">
+                        <a href="{{ path('app_parcelle_edit', {'id': parcelle.id}) }}" class="btn btn-primary me-2">
+                            <i class="bi bi-pencil"></i> Modifier
+                        </a>
+                        {{ include('parcelle/_delete_form.html.twig') }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+
+<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+
+    <script>
+        const map = L.map('map').setView([36.8065, 10.1815], 8); 
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+
+const geocoder = L.Control.Geocoder.nominatim();
+L.Control.geocoder({
+    defaultMarkGeocode: false, 
+    geocoder: geocoder
+}).on('markgeocode', function (e) {
+    const { center, bbox } = e.geocode;
+    map.fitBounds(bbox); 
+}).addTo(map);
+
+        const drawnItems = new L.FeatureGroup();
+        map.addLayer(drawnItems);
+
+        const drawControl = new L.Control.Draw({
+            draw: {
+                polygon: {
+                    allowIntersection: false, 
+                    drawError: {
+                        color: '#e1e100', 
+                        message: '<strong>Erreur:<strong> Les polygones ne peuvent pas se croiser!' 
+                    },
+                    shapeOptions: {
+                        color: '#1a9738'
+                    }
+                },
+                circle: false, 
+                rectangle: false,
+                marker: false, 
+                polyline: false 
+            },
+            edit: {
+                featureGroup: drawnItems
+            }
+        });
+        map.addControl(drawControl);
+
+
+            map.on(L.Draw.Event.CREATED, function (e) {
+            const layer = e.layer;
+            drawnItems.addLayer(layer);
+
+            const coordinates = layer.getLatLngs()[0].map(latlng => [latlng.lat, latlng.lng]);
+
+            const centroid = calculateCentroid(coordinates);
+
+            document.getElementById('latitude').value = centroid[0];
+            document.getElementById('longitude').value = centroid[1];
+            document.getElementById('boundary').value = JSON.stringify(coordinates);
+        });
+
+        function calculateCentroid(coords) {
+            let x = 0, y = 0;
+            for (const [lat, lng] of coords) {
+                x += lat;
+                y += lng;
+            }
+            return [x / coords.length, y / coords.length];
+        }
+
+        {% if parcelle.boundary %}
+            const boundary = {{ parcelle.boundary | json_encode | raw }};
+            const polygon = L.polygon(boundary, { color: '#1a9738', weight: 3, opacity: 0.7 }).addTo(map);
+            drawnItems.addLayer(polygon);
+            map.fitBounds(polygon.getBounds());
+        {% endif %}
+    </script>
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+        }
+    </style>
+{% endblock %}

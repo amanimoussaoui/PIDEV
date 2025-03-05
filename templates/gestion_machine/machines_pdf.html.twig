@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Liste des Machines</title>
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid black; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        h1 { text-align: center; }
+    </style>
+</head>
+<body>
+    <h1>Liste des Machines</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nom</th>
+                <th>Description</th>
+                <th>Prix</th>
+                <th>État</th>
+                <th>Disponibilité</th>
+                <th>Date de Maintenance</th>
+                <th>Propriétaire</th>
+               
+            </tr>
+        </thead>
+        <tbody>
+            {% for machine in machines %}
+                <tr>
+                    <td>{{ machine.id }}</td>
+                    <td>{{ machine.nom }}</td>
+                    <td>{{ machine.description }}</td>
+                    <td>{{ machine.prix }} TND</td>
+                    <td>{{ machine.etat }}</td>
+                    <td>{{ machine.disponibilite }}</td>
+                    <td>{{ machine.dateMaintenance ? machine.dateMaintenance|date("d/m/Y") : 'Non définie' }}</td>
+                    <td>{{ machine.user.nom }}</td>
+                    
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

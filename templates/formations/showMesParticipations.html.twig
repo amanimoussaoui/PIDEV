@@ -72,9 +72,36 @@
             padding: 15px;
             border-radius: 5px;
         }
+
+        /* Style du bouton de tri */
+        .tri-button {
+            display: inline-block;
+            background-color: #dc3545;  /* Rouge */
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            border: none;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        .tri-button:hover {
+            background-color: #c82333;  /* Rouge foncé au survol */
+        }
     </style>
 
 <h1>Participations Actives de {{ user.nom }} {{ user.prenom }}</h1>
+
+<!-- Formulaire pour changer l'ordre de tri -->
+<form method="get" action="{{ path('showMesParticipations') }}">
+    <button type="submit" name="order" value="{{ order == 'asc' ? 'desc' : 'asc' }}" class="tri-button">
+        Trier par date de formation ({{ order == 'asc' ? 'Descendant' : 'Ascendant' }})
+    </button>
+</form>
 
 {% if participations is not empty %}
     <table>
@@ -100,6 +127,5 @@
 {% else %}
     <p>Aucune participation active.</p>
 {% endif %}
-
 
 {% endblock %}

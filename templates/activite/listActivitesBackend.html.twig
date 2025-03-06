@@ -47,7 +47,6 @@
                     <table class="table modern-table align-middle">
                         <thead class="border-bottom">
                             <tr>
-                                <th class="text-muted fw-semibold">#</th>
                                 <th class="text-muted fw-semibold">Description</th>
                                 <th class="text-muted fw-semibold">Type</th>
                                 <th class="text-muted fw-semibold">Date</th>
@@ -59,7 +58,6 @@
                         <tbody>
                             {% for activite in activites %}
                                 <tr class="row-hover">
-                                    <td>{{ activite.id }}</td>
                                     <td class="fw-medium">{{ activite.description }}</td>
                                     <td>
 										{% set activityColors = { 
@@ -112,6 +110,9 @@
                         </tbody>
                     </table>
                 </div>
+                                <div class="d-flex justify-content-center mt-4">
+    {{ knp_pagination_render(activites) }}
+</div>
             </div>
         </div>
     </div>

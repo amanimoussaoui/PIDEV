@@ -30,13 +30,83 @@
                     {% endfor %}
                 </div>
 
+
+                <!-- Terrain Details -->
+                <div class="row mt-4">
+                    <div class="col-md-12">
+                        <div class="info-card mb-4">
+                            <div class="detail-item">
+                                <i class="bi bi-map detail-icon"></i>
+                                <div class="detail-content row align-items-center">
+                                    <div class="col-md-4 d-flex flex-column justify-content-center">
+                                        <h6 class="text-muted">Terrain Associé</h6>
+                                        <a href="#" class="fw-bold mb-0">{{ parcelle.terrain.description }}</a>
+                                    </div>
+
+                                    <div class="col-md-4 d-flex flex-column justify-content-center">
+                                             <div class="terrain-image">
+                            <img src="{{ asset(parcelle.terrain.image) }}" alt="Image du Terrain" class="img-fluid rounded">                                    </div>
+
+                                    </div>
+                                    <div class="col-md-4 parcelle-details">
+                                        <p class="text-muted mb-1">
+                                            <i class="bi bi-rulers"></i>
+                                            Superficie:
+                                            {{ parcelle.terrain.superficie | number_format(2, ',', ' ') }} m²
+                                        </p>
+                                        <p class="text-muted mb-1">
+                                            <i class="bi bi-cash"></i>
+                                            Prix:
+                                            {{ parcelle.terrain.prix | number_format(2, ',', ' ') }} TND
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+{% if weather %}
+<div class="card shadow-lg border-0 rounded-4 mt-4 p-3" style="background: linear-gradient(135deg,rgb(186, 158, 149), #D7CCC8); color: #5D4037;">
+    <div class="card-body">
+        <div class="d-flex align-items-center">
+            <div class="flex-grow-1">
+                <h5 class="card-title fw-bold">Météo Actuelle</h5>
+                <h2 class="fw-bold" style="color:#1F4E3D;">{{ weather.main.temp }}°C</h2>
+                <p class="mb-1">{{ weather.weather[0].description | capitalize }}</p>
+            </div>
+            <div class="vr mx-3" style="height: 80px; background-color: #A1887F; width: 2px;"></div>
+            <div class="d-flex flex-grow-1 justify-content-between gap-4 text-center">
+                <div class="d-flex flex-column align-items-center">
+                    <i class="fas fa-tint fa-2x" style="color: #5D4037; padding:0px;"></i>
+                    <p class="mb-0 mt-2">Humidité</p>
+                    <p class="fw-bold">{{ weather.main.humidity }}%</p>
+                </div>
+                <div class="d-flex flex-column align-items-center">
+                    <i class="fas fa-wind fa-2x" style="color: #5D4037; padding:0px;"></i>
+                    <p class="mb-0 mt-2">Vent</p>
+                    <p class="fw-bold">{{ weather.wind.speed }} m/s</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endif %}
+
+
+
+
+
+
                 <div id="map" style="height: 500px; width: 100%; margin-top: 20px;"></div>
 
                 <form id="parcel-form" method="post" action="{{ path('app_parcelle_save_coordinates', {'id': parcelle.id}) }}" class="mt-4">
                     <input type="hidden" id="latitude" name="latitude" value="{{ parcelle.latitude }}">
                     <input type="hidden" id="longitude" name="longitude" value="{{ parcelle.longitude }}">
                     <input type="hidden" id="boundary" name="boundary" value="{{ parcelle.boundary | json_encode }}">
-                    <button type="submit" class="btn btn-success">
+                    <button type="submit" class="btn btn-primary">
                         <i class="bi bi-save"></i> Enregistrer les Coordonnées
                     </button>
                 </form>
@@ -63,6 +133,7 @@
 <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+
 
     <script>
         const map = L.map('map').setView([36.8065, 10.1815], 8); 
@@ -109,17 +180,31 @@ L.Control.geocoder({
 
 
             map.on(L.Draw.Event.CREATED, function (e) {
-            const layer = e.layer;
-            drawnItems.addLayer(layer);
+                const layer = e.layer;
+                drawnItems.addLayer(layer);
 
-            const coordinates = layer.getLatLngs()[0].map(latlng => [latlng.lat, latlng.lng]);
+                const coordinates = layer.getLatLngs()[0].map(latlng => [latlng.lat, latlng.lng]);
 
-            const centroid = calculateCentroid(coordinates);
+                const centroid = calculateCentroid(coordinates);
 
-            document.getElementById('latitude').value = centroid[0];
-            document.getElementById('longitude').value = centroid[1];
-            document.getElementById('boundary').value = JSON.stringify(coordinates);
-        });
+                document.getElementById('latitude').value = centroid[0];
+                document.getElementById('longitude').value = centroid[1];
+                document.getElementById('boundary').value = JSON.stringify(coordinates);
+            });
+
+            map.on(L.Draw.Event.EDITED, function (e) {
+                const layers = e.layers;
+                layers.eachLayer(function (layer) {
+                    const coordinates = layer.getLatLngs()[0].map(latlng => [latlng.lat, latlng.lng]);
+
+                    const centroid = calculateCentroid(coordinates);
+
+                    document.getElementById('latitude').value = centroid[0];
+                    document.getElementById('longitude').value = centroid[1];
+                    document.getElementById('boundary').value = JSON.stringify(coordinates);
+                });
+            });
+
 
         function calculateCentroid(coords) {
             let x = 0, y = 0;
@@ -137,6 +222,54 @@ L.Control.geocoder({
             map.fitBounds(polygon.getBounds());
         {% endif %}
     </script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const mapElement = document.getElementById('map');
+    const form = document.getElementById('parcel-form');
+
+    form.addEventListener('submit', function (event) {
+        event.preventDefault(); // Prevent immediate submission
+
+        // Get the bounding box of the drawn parcel
+        const bounds = drawnItems.getBounds();
+
+ const originalZoom = map.getZoom();
+        map.setZoom(originalZoom - 1); // Zoom out by 1 level        
+
+        // Hide map controls temporarily
+        const controls = document.querySelectorAll('.leaflet-control-container');
+        controls.forEach(control => control.style.display = 'none');
+
+        // Wait for the map to adjust before capturing
+        setTimeout(() => {
+            html2canvas(mapElement, {
+                useCORS: true,
+                logging: false,
+                backgroundColor: null,
+                scale: 2 // Increase resolution for better quality
+            }).then(canvas => {
+                const imageData = canvas.toDataURL('image/png');
+
+                // Restore map controls
+                controls.forEach(control => control.style.display = 'block');
+
+                // Create hidden input to send the image data
+                const imageInput = document.createElement('input');
+                imageInput.type = 'hidden';
+                imageInput.name = 'map_image';
+                imageInput.value = imageData;
+                form.appendChild(imageInput);
+
+                // Submit the form
+                form.submit();
+            });
+        }, 1000); // Wait 1 second before capturing
+    });
+});
+</script>
 
     <style>
         body {

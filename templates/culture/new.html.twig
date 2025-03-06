@@ -1,21 +1,126 @@
 {% extends 'FrontEnd/front.html.twig' %}
 
-{% block title %}Ajouter Culture{% endblock %}
+{% block title %}Ajouter Culture
+{% endblock %}
 
 {% block content %}
-    <div class="container mt-4">
-        <div class="glass-card shadow-sm border-0" style="max-width: 800px; margin: 0 auto;">
-            <div class="card-header py-3 px-4" style="background: linear-gradient(90deg, #1a9738, #1F4E3D); border-radius: 12px 12px 0 0;">
-                <h5 class="mb-0 text-white">Créer une Nouvelle Culture</h5>
-            </div>
-            <div class="card-body">
-                {{ include('culture/_form.html.twig') }}
-            </div>
-            <div class="card-footer">
-                <a href="{{ path('app_culture_index') }}" class="btn btn-light">
-                    <i class="bi bi-arrow-left"></i> Retour
-                </a>
-            </div>
-        </div>
-    </div>
+	<div class="container mt-4">
+		<div class="glass-card shadow-sm border-0" style="max-width: 800px; margin: 0 auto;">
+			<div class="card-header py-3 px-4" style="background: linear-gradient(90deg, #1a9738, #1F4E3D); border-radius: 12px 12px 0 0;">
+				<h5 class="mb-0 text-white">Créer une Nouvelle Culture</h5>
+			</div>
+			<div class="card-body">
+				{{ include('culture/_form.html.twig') }}
+			</div>
+            			<!-- Prediction Result Card (Initially Hidden) -->
+			<div id="prediction-result" class="mt-4 d-none">
+				<div class="card border-success">
+			<div class="card-header py-3 px-4" style="background: linear-gradient(90deg, #1a9738, #1F4E3D); border-radius: 12px 12px 0 0;">
+						<h5 class="mb-0  text-white">Résultat de la Prédiction</h5>
+					</div>
+					<div class="card-body">
+						<p id="prediction-text" class="mb-0"></p>
+					</div>
+				</div>
+			</div>
+
+			
+
+
+
+			<div class="card-footer mt-4">
+            <a href="{{ path('app_culture_index') }}" class="btn btn-light">
+					<i class="bi bi-arrow-left"></i>
+					Retour
+				</a>
+				<button type="button" id="predict-btn" class="btn btn-warning ms-2">
+					<i class="bi bi-lightbulb"></i>
+					Prédire la récolte
+				</button>
+				
+			</div>
+		</div>
+	</div>
+
+    <script>
+    
+ document.getElementById("predict-btn").addEventListener("click", function () {
+    // Get form data
+    const form = document.querySelector("form");
+    const formData = new FormData(form);
+
+    // Convert FormData to a plain object
+    const formObject = {};
+    formData.forEach((value, key) => {
+        formObject[key] = value;
+    });
+
+    // Add nested data for parcelle
+    const parcelleId = formData.get('culture[parcelle]');
+    if (parcelleId) {
+        // Fetch parcelle details from the server
+        fetch(`/parcelle/${parcelleId}/details`, {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(parcelle => {
+            console.log("Parcelle Data:", parcelle); // Log the fetched parcelle data
+
+            // Ensure parcelle data is correctly structured
+            if (parcelle.success && parcelle.parcelle) {
+                formObject['parcelle'] = {
+                    superficie: parcelle.parcelle.superficie,
+                    typeSol: parcelle.parcelle.typeSol,
+                    latitude: parcelle.parcelle.latitude,
+                    longitude: parcelle.parcelle.longitude,
+                };
+
+                console.log("Form Object with Parcelle Data:", formObject); // Log the final formObject
+
+                // Send data to Symfony prediction route
+                return fetch("{{ path('app_culture_predict') }}", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formObject),
+                });
+            } else {
+                throw new Error("Invalid parcelle data received from the server.");
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                // Display prediction result
+                document.getElementById("prediction-text").innerHTML = 
+                 `<strong>Estimation :</strong> ${data.prediction.toFixed(2)} kg`;
+                document.getElementById("prediction-result").classList.remove("d-none");
+            } else {
+                alert("Erreur : " + data.error);
+            }
+        })
+        .catch(error => {
+            console.error("Erreur lors de la requête :", error);
+            alert("Erreur lors de la requête : " + error.message);
+        });
+    } else {
+        alert("Veuillez sélectionner une parcelle.");
+    }
+});
+    </script>
+
 {% endblock %}

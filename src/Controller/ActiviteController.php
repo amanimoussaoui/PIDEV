@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Activite;
+use App\Entity\Culture;
 use App\Form\ActiviteType;
 use App\Form\SearchActiviteType;
 use App\Repository\ActiviteRepository;
@@ -11,6 +12,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Knp\Component\Pager\PaginatorInterface;
+
 
 #[Route('/activite')]
 final class ActiviteController extends AbstractController
@@ -29,7 +32,7 @@ final class ActiviteController extends AbstractController
     
 
     #[Route('/listactivite',name: 'app_activite_back', methods: ['GET', 'POST'])]
-    public function listActivitesBackend(Request $request, ActiviteRepository $activiteRepository): Response
+    public function listActivitesBackend(Request $request, ActiviteRepository $activiteRepository, PaginatorInterface $paginator): Response
     {
         $form = $this->createForm(SearchActiviteType::class);
         $form->handleRequest($request);
@@ -46,8 +49,16 @@ final class ActiviteController extends AbstractController
         $sort = $request->query->get('sort', 'date');
         $direction = $request->query->get('direction', 'ASC');
     
-        $activites = $activiteRepository->findBySearchAndFilterBack($searchTerm, $typeFilter, $sort, $direction);
+        $query = $activiteRepository->findBySearchAndFilterBack($searchTerm, $typeFilter, $sort, $direction);
     
+   // Paginer les résultats
+   $page = $request->query->getInt('page', 1);
+   $activites = $paginator->paginate(
+       $query,
+       $page,
+       10 // Nombre d'éléments par page
+   );
+
         return $this->render('activite/listActivitesBackend.html.twig', [
             'activites' => $activites,
             'form' => $form->createView(),
@@ -58,40 +69,49 @@ final class ActiviteController extends AbstractController
 
     
     #[Route('/new', name: 'app_activite_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $activite = new Activite();
-    
-        $user = $this->getUser();
-    
-        $date = $request->query->get('date');
-        if ($date) {
-            try {
-                $activite->setDate(new \DateTime($date));
-            } catch (\Exception $e) {
-                $activite->setDate(new \DateTime());
-            }
-        }
+public function new(Request $request, EntityManagerInterface $entityManager): Response
+{
+    $activite = new Activite();
 
+    $user = $this->getUser();
 
-        $form = $this->createForm(ActiviteType::class, $activite, [
-            'user' => $user,
-        ]);
-    
-        $form->handleRequest($request);
-    
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($activite);
-            $entityManager->flush();
-    
-            return $this->redirectToRoute('app_activite_index', [], Response::HTTP_SEE_OTHER);
+    // Retrieve cultureId from query parameters
+    $cultureId = $request->query->get('cultureId');
+    if ($cultureId) {
+        $culture = $entityManager->getRepository(Culture::class)->find($cultureId);
+        if ($culture) {
+            $activite->setCulture($culture); // Pre-set the culture for the new activity
         }
-    
-        return $this->render('activite/new.html.twig', [
-            'activite' => $activite,
-            'form' => $form->createView(),
-        ]);
     }
+
+    // Retrieve date from query parameters
+    $date = $request->query->get('date');
+    if ($date) {
+        try {
+            $activite->setDate(new \DateTime($date));
+        } catch (\Exception $e) {
+            $activite->setDate(new \DateTime());
+        }
+    }
+
+    $form = $this->createForm(ActiviteType::class, $activite, [
+        'user' => $user,
+    ]);
+
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+        $entityManager->persist($activite);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_activite_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    return $this->render('activite/new.html.twig', [
+        'activite' => $activite,
+        'form' => $form->createView(),
+    ]);
+}
 
 
     #[Route('/{id}', name: 'app_activite_show', methods: ['GET'])]

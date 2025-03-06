@@ -134,48 +134,66 @@
     .search-form button:hover {
         background-color: #45a049;
     }
+    
 
 </style>
 
 <h1 class="text-center my-4">Liste des participations</h1>
 
-<!-- Formulaire de recherche -->
-<form class="search-form" method="GET" action="{{ path('showParticipations') }}">
-    <input type="text" name="search" placeholder="Rechercher une formation" value="{{ app.request.get('search') }}">
-    <button type="submit">Rechercher</button>
-</form>
 
-{% if participations is not empty %}
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Formation</th>
-                <th>Date d'inscription</th>
-                <th>Nom Utilisateur</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for participation in participations %}
+    <!-- Formulaire de recherche pour le titre de la formation -->
+    <form method="get" action="{{ path('showParticipations') }}">
+        <div class="mb-3">
+            <label for="search" class="form-label">Titre de la formation</label>
+            <input type="text" class="form-control" id="search" name="search" placeholder="Rechercher par titre"
+                   value="{{ search }}">
+        </div>
+        <button type="submit" class="btn btn-primary">Rechercher</button>
+    </form>
+
+    <!-- Affichage du nombre de participants -->
+    {% if count is not null %}
+        <p>Le nombre de participants à la formation est : {{ count }}</p>
+    {% endif %}
+
+    <!-- Tableau des participations -->
+    {% if participations is not empty %}
+        <table class="table">
+            <thead>
                 <tr>
-                    <td>{{ participation.formation.titre }}</td>
-                    <td>{{ participation.dateCreation|date('d/m/Y') }}</td>
-                    <td>
-                        {% if participation.utilisateurs is not null %}
-                            {{ participation.utilisateurs.nom }} {{ participation.utilisateurs.prenom }}
-                        {% else %}
-                            Utilisateur non assigné
-                        {% endif %}
-                    </td>
-                    <td>
-                        <a href="{{ path('deleteParticipation', {'id': participation.id}) }}" class="btn btn-danger">Delete</a>
-                    </td>
+                    <th>Formation</th>
+                    <th>Date d'inscription</th>
+                    <th>Nom Utilisateur</th>
+                    <th>Action</th>
+                    <th>PDF</th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-{% else %}
-    <p>Aucune participation trouvée.</p>
-{% endif %}
-
+            </thead>
+            <tbody>
+                {% for participation in participations %}
+                    <tr>
+                        <td>{{ participation.formation.titre }}</td>
+                        <td>{{ participation.dateCreation|date('d/m/Y') }}</td>
+                        <td>
+                            {% if participation.utilisateurs is not null %}
+                                {{ participation.utilisateurs.nom }} {{ participation.utilisateurs.prenom }}
+                            {% else %}
+                                Utilisateur non assigné
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ path('deleteParticipation', {'id': participation.id}) }}" class="btn btn-danger">Delete</a>
+                        </td>
+                        <td>
+                            <a href="{{ path('generate_certificate', {'id': participation.id}) }}" class="btn btn-primary">Générer PDF</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Aucune participation trouvée.</p>
+    {% endif %}
 {% endblock %}
+
+
+

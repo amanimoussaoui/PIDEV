@@ -56,6 +56,17 @@
             {{ form_errors(form.typeSol) }}
             <small class="form-text text-muted">Sélectionnez le type de sol prédominant</small>
         </div>
+
+        <div class="col-md-6 mb-3">
+            {{ form_label(form.terrain) }}
+            {{ form_widget(form.terrain, { 
+                'attr': {
+                    'class': 'form-control'
+                }
+            }) }}
+            {{ form_errors(form.terrain) }}
+            <small class="form-text text-muted">Sélectionnez le terrain associé</small>
+        </div>
     </div>
 
     <div class="d-flex justify-content-end">
@@ -66,4 +77,3 @@
 </div>
 
 {{ form_end(form) }}
-

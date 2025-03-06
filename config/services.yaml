@@ -14,7 +14,8 @@ parameters:
     stripe_public_key: '%env(STRIPE_PUBLIC_KEY)%'
     google_maps_api_key: '%env(GOOGLE_MAPS_API_KEY)%'
     openai.api_key: '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'
-
+    logo_path: '%kernel.project_dir%/public/uploads/images/logo.jpg'
+    signature_path: '%kernel.project_dir%/public/uploads/images/signature.jpg'
 
     
 
@@ -51,6 +52,15 @@ services:
     App\Service\OpenAIService:
         arguments:
             $apiKey: '%env(OPENAI_API_KEY)%'
-           
+             # Service definition for EmailService
+    App\Service\EmailService:
+        arguments:
+            $mailer: '@mailer'
+
+
+    App\Service\MeteoService:
+        arguments:
+            $apiKey: '%env(WEATHER_API_KEY)%'
+            $cache: '@cache.app'
             
    

@@ -1,132 +1,133 @@
 {% extends 'FrontEnd/front.html.twig' %}
 
-{% block title %}Parcelles{% endblock %}
+{% block title %}Parcelles
+{% endblock %}
 
 {% block content %}
-    <div class="container mt-4">
-        <div class="custom-card shadow-lg border-0 rounded-4 overflow-hidden">
-            <div class="custom-card-header p-4 d-flex justify-content-between align-items-center py-4" 
-                 style="background: linear-gradient(90deg, #1a9738, #1F4E3D);">
-                <h5 class="card-title mb-0 text-white fw-semibold">Vos Parcelles</h5>
-                <a href="{{ path('app_parcelle_new') }}" class="btn btn-light btn-sm rounded-pill px-3 shadow-sm">
-                    <i class="bi bi-plus-circle me-1"></i> Créer une Parcelle
-                </a>
-            </div>
-            
-            <div class="custom-card-body p-4">
-                {% if not hasTerrain %}
-                    <div class="col">
-                        <div class="alert alert-info border-0 shadow-sm rounded-4 mt-3">
-                            <i class="bi bi-info-circle me-2"></i>
-                            Vous devez d'abord ajouter un terrain avant de pouvoir créer une parcelle.
-                            <a href="{{ path('app_addformterrain') }}" class="alert-link">Ajouter un terrain</a>.
-                        </div>
-                    </div>
-                {% else %}
-                    {{ form_start(form, {'attr': {'class': 'mb-5'}, 'action': path('app_parcelle_index')}) }}
-                        <div class="container">
-                            <div class="row justify-content-center">
-                                <div class="col-md-8">
-                                    <div class="input-group input-group shadow-sm ">
-                                        {{ form_widget(form.typeSol, {
+	<div class="container mt-4">
+		<div class="custom-card shadow-lg border-0 rounded-4 overflow-hidden">
+			<div class="custom-card-header p-4 d-flex justify-content-between align-items-center py-4" style="background: linear-gradient(90deg, #1a9738, #1F4E3D);">
+				<h5 class="card-title mb-0 text-white fw-semibold">Vos Parcelles</h5>
+				<a href="{{ path('app_parcelle_new') }}" class="btn btn-light btn-sm rounded-pill px-3 shadow-sm">
+					<i class="bi bi-plus-circle me-1"></i>
+					Créer une Parcelle
+				</a>
+			</div>
+
+			<div class="custom-card-body p-4">
+				{% if not hasTerrain %}
+					<div class="col">
+						<div class="alert alert-info border-0 shadow-sm rounded-4 mt-3">
+							<i class="bi bi-info-circle me-2"></i>
+							Vous devez d'abord ajouter un terrain avant de pouvoir créer une parcelle.
+							<a href="{{ path('app_addformterrain') }}" class="alert-link">Ajouter un terrain</a>.
+						</div>
+					</div>
+				{% else %}
+					{{ form_start(form, {'attr': {'class': 'mb-5'}, 'action': path('app_parcelle_index')}) }}
+					<div class="container">
+						<div class="row justify-content-center">
+							<div class="col-md-8">
+								<div class="input-group input-group shadow-sm ">
+									{{ form_widget(form.typeSol, {
                                             'attr': {
                                                 'class': 'form-select custom-select ',
                                                 'style': 'max-width: 150px;'
                                             }
                                         }) }}
-                                        {{ form_widget(form.nom, {
+									{{ form_widget(form.nom, {
                                             'attr': {
                                                 'class': 'form-control ',
                                                 'placeholder': 'Rechercher par nom...'
                                             }
                                         }) }}
-                                        <button type="submit" class="btn btn-primary px-4">
-                                            <i class="bi bi-search"></i>
-                                        </button>
-                                        <a href="{{ path('app_parcelle_index') }}" class="btn btn-light">
-                                            <i class="bi bi-arrow-counterclockwise"></i> 
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    {{ form_end(form) }}
+									<button type="submit" class="btn btn-primary px-4">
+										<i class="bi bi-search"></i>
+									</button>
+									<a href="{{ path('app_parcelle_index') }}" class="btn btn-light">
+										<i class="bi bi-arrow-counterclockwise"></i>
+									</a>
+								</div>
+							</div>
+						</div>
+					</div>
+					{{ form_end(form) }}
 
-                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-                        {% for parcelle in parcelles %}
-                            <div class="col">
-                                <div class="parcelle-card h-100 shadow-lg border-2 rounded-4 overflow-hidden hover-scale">
-                                    <div class="parcelle-card-header p-4 bg-light py-3">
-                                        <h6 class="card-title mb-0 fw-semibold">{{ parcelle.nom }}</h6>
-                                    </div>
-                                    <div class="parcelle-card-body p-4">
-                                        <div class="d-flex flex-column gap-2">
-                                            <div class="d-flex align-items-center">
-                                                <i class="bi bi-rulers me-2 text-primary"></i>
-                                                <span class="text-muted">Superficie :</span>
-                                                <span class="ms-auto fw-medium">{{ parcelle.superficie | number_format(2, ',', ' ') }} m²</span>
-                                            </div>
-                                            <div class="d-flex align-items-center">
-                                                <i class="bi bi-geo-alt me-2 text-primary"></i>
-                                                <span class="text-muted">Localisation :</span>
-                                                <span class="ms-auto fw-medium">{{ parcelle.localisation }}</span>
-                                            </div>
-                                            <div class="d-flex align-items-center">
-                                                <i class="bi bi-droplet me-2 text-primary"></i>
-                                                <span class="text-muted">Type de sol :</span>
-                                                {% set badgeColors = {
-                                                    'argileux': 'warning',
-                                                    'sableux': 'info',
-                                                    'limoneux': 'success'
-                                                } %}
-                                                <span class="ms-auto badge rounded-pill bg-{{ badgeColors[parcelle.typeSol] ?? 'secondary' }}">
-                                                    {{ parcelle.typeSol | capitalize }}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="parcelle-card-footer p-4 bg-light py-3">
-                                        <div class="d-flex gap-2 justify-content-end">
-                                            <a href="{{ path('app_parcelle_show', {'id': parcelle.id}) }}" 
-                                               class="btn btn-info btn-sm rounded-pill"
-                                               data-bs-toggle="tooltip"
-                                               title="Voir les détails">
-                                                <i class="bi bi-eye"></i>
-                                            </a>
-                                            <a href="{{ path('app_parcelle_edit', {'id': parcelle.id}) }}" 
-                                               class="btn btn-warning btn-sm rounded-pill"
-                                               data-bs-toggle="tooltip"
-                                               title="Modifier">
-                                                <i class="bi bi-pencil"></i>
-                                            </a>
-                                            <form action="{{ path('app_parcelle_delete', {'id': parcelle.id}) }}" 
-                                                  method="post" 
-                                                  class="d-inline"
-                                                  onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette parcelle ?');">
-                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ parcelle.id) }}">
-                                                <button type="submit" 
-                                                        class="btn btn-danger btn-sm rounded-pill"
-                                                        data-bs-toggle="tooltip"
-                                                        title="Supprimer">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        {% else %}
-                            <div class="col">
-                                <div class="alert alert-info border-0 shadow-sm rounded-4 mt-3">
-                                    <i class="bi bi-info-circle me-2"></i>
-                                    Aucune parcelle trouvée. Essayez de modifier vos critères de recherche ou 
-                                    <a href="{{ path('app_parcelle_new') }}" class="alert-link">créez une nouvelle parcelle</a>.
-                                </div>
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-    </div>
+					<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+						{% for parcelle in parcelles %}
+							<div class="col">
+								<div class="parcelle-card h-100 shadow-lg border-2 rounded-4 overflow-hidden hover-scale">
+									<div class="parcelle-card-header p-4 bg-light py-3">
+										<h6 class="card-title mb-0 fw-semibold">{{ parcelle.nom }}</h6>
+									</div>
+									<div class="parcelle-card-body p-4">
+										<div class="mb-3">
+											{% if parcelle.mapImage %}
+												<img src="{{ asset(parcelle.mapImage) }}" alt="Map of {{ parcelle.nom }}" class="img-fluid rounded-3">
+											{% else %}
+												<img src="{{ asset('assets/assetsFront/img/default-map.jpg') }}" alt="Default Map Image" class="img-fluid rounded-3">
+											{% endif %}
+										</div>
+
+										<div class="d-flex flex-column gap-2">
+											<div class="d-flex align-items-center">
+												<i class="bi bi-rulers me-2 text-primary"></i>
+												<span class="text-muted">Superficie :</span>
+												<span class="ms-auto fw-medium">{{ parcelle.superficie | number_format(2, ',', ' ') }}
+													m²</span>
+											</div>
+											<div class="d-flex align-items-center">
+												<i class="bi bi-geo-alt me-2 text-primary"></i>
+												<span class="text-muted">Localisation :</span>
+												<span class="ms-auto fw-medium">{{ parcelle.localisation }}</span>
+											</div>
+											<div class="d-flex align-items-center">
+												<i class="bi bi-droplet me-2 text-primary"></i>
+												<span class="text-muted">Type de sol :</span>
+												{% set badgeColors = {
+                    'argileux': 'warning',
+                    'sableux': 'info',
+                    'limoneux': 'success'
+                } %}
+												<span class="ms-auto badge rounded-pill bg-{{ badgeColors[parcelle.typeSol] ?? 'secondary' }}">
+													{{ parcelle.typeSol | capitalize }}
+												</span>
+											</div>
+										</div>
+									</div>
+									<div class="parcelle-card-footer p-4 bg-light py-3">
+										<div class="d-flex gap-2 justify-content-end">
+											<a href="{{ path('app_parcelle_show', {'id': parcelle.id}) }}" class="btn btn-info btn-sm rounded-pill" data-bs-toggle="tooltip" title="Voir les détails">
+												<i class="bi bi-eye"></i>
+											</a>
+											<a href="{{ path('app_parcelle_edit', {'id': parcelle.id}) }}" class="btn btn-warning btn-sm rounded-pill" data-bs-toggle="tooltip" title="Modifier">
+												<i class="bi bi-pencil"></i>
+											</a>
+											<form action="{{ path('app_parcelle_delete', {'id': parcelle.id}) }}" method="post" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette parcelle ?');">
+												<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ parcelle.id) }}">
+												<button type="submit" class="btn btn-danger btn-sm rounded-pill" data-bs-toggle="tooltip" title="Supprimer">
+													<i class="bi bi-trash"></i>
+												</button>
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>
+						{% else %}
+							<div class="col">
+								<div class="alert alert-info border-0 shadow-sm rounded-4 mt-3">
+									<i class="bi bi-info-circle me-2"></i>
+									Aucune parcelle trouvée. Essayez de modifier vos critères de recherche ou
+									<a href="{{ path('app_parcelle_new') }}" class="alert-link">créez une nouvelle parcelle</a>.
+								</div>
+							</div>
+						{% endfor %}
+					</div>
+				{% endif %}
+			</div>
+			        <div class="d-flex justify-content-center mt-4">
+                    {{ knp_pagination_render(parcelles) }}
+                </div>
+		</div>
+	</div>
 {% endblock %}

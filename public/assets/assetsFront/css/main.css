@@ -30,6 +30,195 @@ a {
 
 
 
+
+
+
+.pagination {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin-top: 20px !important;
+}
+
+.pagination .page-item {
+  transition: all 0.3s ease-in-out !important;
+}
+
+.pagination .page-link {
+  font-weight: 500 !important;
+  font-size: 1rem !important;
+  color: #2D6A4F !important;  /* Classy dark green */
+  border: none !important;
+  padding: 10px 16px !important;
+  border-radius: 50px !important;
+  background: #E9F5EC !important; /* Light elegant green */
+  transition: all 0.3s ease-in-out !important;
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1) !important;
+}
+
+.pagination .page-item.active .page-link {
+  background: linear-gradient(135deg, #2D6A4F, #1B4332) !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+.pagination .page-item .page-link:hover {
+  background: linear-gradient(135deg, #1B4332, #145C33) !important;
+  color: #ffffff !important;
+  transform: scale(1.05) !important;
+}
+
+.pagination .page-item:first-child .page-link, 
+.pagination .page-item:last-child .page-link {
+  font-weight: bold !important;
+  padding: 10px 20px !important;
+}
+
+.pagination .page-item.disabled .page-link {
+  background: #F0F3F5 !important;
+  color: #A0A0A0 !important;
+  box-shadow: none !important;
+  cursor: not-allowed !important;
+}
+
+
+
+.gradient-tabs {
+  background: linear-gradient(90deg, #1a9738, #1F4E3D);
+  padding: 2rem;
+  border-radius: 1rem;
+}
+
+.gradient-tabs .nav-tabs {
+  border: none;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.gradient-tabs .nav-link {
+  border: none;
+  padding: 1rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+  transition: all 0.3s ease;
+}
+
+.gradient-tabs .nav-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.gradient-tabs .nav-link.active {
+  background: white;
+  color: #1F4E3D;
+}
+
+.gradient-tabs .tab-content {
+  background: rgba(173, 186, 181, 0.1);
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+        box-shadow: 0 1px 2px 0 rgb(218 218 253 / 20%), 0 2px 6px 0 rgb(206 206 238 / 20%);
+
+}
+
+/* Content Animation */
+.tab-pane.fade {
+  transition: all 0.2s ease-out;
+}
+
+.tab-pane.fade.show {
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+      opacity: 0;
+      transform: translateY(10px);
+  }
+
+  to {
+      opacity: 1;
+      transform: translateY(0);
+  }
+}
+
+
+  .radius-10 {
+    border-radius: 10px !important;
+  }
+
+
+  .widgets-icons-2 {
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ededed;
+    font-size: 27px;
+    border-radius: 10px;
+  }
+
+  .rounded-circle {
+    border-radius: 50% !important;
+  }
+
+  .text-white {
+    color: #fff !important;
+  }
+
+  .ms-auto {
+    margin-left: auto !important;
+  }
+
+  .border-info {
+    border-left: 5px solid #1f4e3d !important; /* Dark Green */
+  }
+  .border-danger {
+    border-left: 5px solid #4f8159 !important; /* Medium Green */
+  }
+  .border-success {
+    border-left: 5px solid #00a875 !important; /* Bright Green */
+  }
+  .border-warning {
+    border-left: 5px solid #90b670 !important; /* Light Green */
+  }
+
+  .bg-gradient-scooter {
+    background: #00a875; /* Bright Green */
+    background: -webkit-linear-gradient(45deg, #00a875, #90b670) !important; /* Gradient from Bright Green to Light Green */
+    background: linear-gradient(45deg, #00a875, #90b670) !important;
+  }
+
+  .bg-gradient-bloody {
+    background: #4f8159; /* Medium Green */
+    background: -webkit-linear-gradient(45deg, #4f8159, #1f4e3d) !important; /* Gradient from Medium Green to Dark Green */
+    background: linear-gradient(45deg, #4f8159, #1f4e3d) !important;
+  }
+
+  .bg-gradient-ohhappiness {
+    background: #90b670; /* Light Green */
+    background: -webkit-linear-gradient(45deg, #90b670, #e0ea87) !important; /* Gradient from Light Green to Pale Green */
+    background: linear-gradient(45deg, #90b670, #e0ea87) !important;
+  }
+
+  .bg-gradient-blooker {
+    background: #e0ea87; /* Pale Green */
+    background: -webkit-linear-gradient(45deg, #e0ea87, #00a875) !important; /* Gradient from Pale Green to Bright Green */
+    background: linear-gradient(45deg, #e0ea87, #00a875) !important;
+  }
+
+  /* Ensure charts are responsive */
+  canvas {
+    max-width: 100%;
+    height: auto !important;
+  }
+
+
+
  .welcome-message {
         font-size: 16px;
         font-weight: bold;

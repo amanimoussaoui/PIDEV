@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Repository\ParcelleRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity(repositoryClass: ParcelleRepository::class)]
 class Parcelle
@@ -51,10 +53,34 @@ private ?float $longitude = null;
 #[ORM\Column(type: 'json', nullable: true)]
 private ?array $boundary = null;
 
+#[ORM\ManyToOne(targetEntity: Terrain::class, inversedBy: 'parcelles')]
+#[ORM\JoinColumn(nullable: false)]
+#[Assert\NotNull(message: "Le terrain est obligatoire.")]
+private ?Terrain $terrain = null;
+
 
 #[ORM\ManyToOne(targetEntity: Utilisateurs::class, inversedBy: 'parcelles')]
 #[ORM\JoinColumn(name: 'utilisateur_id', referencedColumnName: 'id', nullable: true)]
 private ?Utilisateurs $utilisateur = null;
+
+#[ORM\Column(type: 'string', length: 255, nullable: true)]
+private ?string $mapImage = null;
+
+#[ORM\OneToMany(targetEntity: Culture::class, mappedBy: 'parcelle')]
+    private Collection $cultures;
+
+   
+
+public function getMapImage(): ?string
+{
+    return $this->mapImage;
+}
+
+public function setMapImage(?string $mapImage): self
+{
+    $this->mapImage = $mapImage;
+    return $this;
+}
 
     public function getId(): ?int
     {
@@ -149,6 +175,18 @@ public function setUtilisateur(?Utilisateurs $utilisateur): static
     return $this;
 }
 
+
+public function getTerrain(): ?Terrain
+{
+    return $this->terrain;
+}
+
+public function setTerrain(?Terrain $terrain): self
+{
+    $this->terrain = $terrain;
+    return $this;
+}
+
     public static function getTypeSolChoices(): array
 {
     return [
@@ -158,5 +196,29 @@ public function setUtilisateur(?Utilisateurs $utilisateur): static
         'Humifère' => 'humifère',
     ];
 }
+
+public function __construct()
+{
+    $this->cultures = new ArrayCollection();
+}
+
+/**
+ * @return Collection<int, Culture>
+ */
+public function getCultures(): Collection
+{
+    return $this->cultures;
+}
+
+public function addCulture(Culture $culture): self
+{
+    if (!$this->cultures->contains($culture)) {
+        $this->cultures[] = $culture;
+        $culture->setParcelle($this);
+    }
+
+    return $this;
+}
+
 
 }

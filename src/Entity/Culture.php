@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity(repositoryClass: 'App\Repository\CultureRepository')]
 class Culture
@@ -41,6 +43,37 @@ class Culture
         message: "Le statut doit être l'un des suivants : en_culture, terminé."
     )]
     private ?string $statut;
+
+    #[ORM\OneToMany(targetEntity: Recolte::class, mappedBy: 'culture')]
+    private Collection $recoltes;
+
+
+    public function getRecoltes(): Collection
+    {
+        return $this->recoltes;
+    }
+
+    public function addRecolte(Recolte $recolte): self
+    {
+        if (!$this->recoltes->contains($recolte)) {
+            $this->recoltes[] = $recolte;
+            $recolte->setCulture($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRecolte(Recolte $recolte): self
+    {
+        if ($this->recoltes->removeElement($recolte)) {
+            // Set the owning side to null (unless already changed)
+            if ($recolte->getCulture() === $this) {
+                $recolte->setCulture(null);
+            }
+        }
+
+        return $this;
+    }
 
 
     public function getId(): ?int
@@ -119,6 +152,6 @@ class Culture
     public function __construct()
     {
         $this->dateSemis = new \DateTime();
+        $this->recoltes = new ArrayCollection();
     }
 }
-

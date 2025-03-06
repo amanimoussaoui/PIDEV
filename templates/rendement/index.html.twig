@@ -1,0 +1,532 @@
+{% extends 'FrontEnd/front.html.twig' %}
+
+{% block title %}Rendement
+{% endblock %}
+
+{% block content %}
+	<div class="container">
+		<h1 class="my-4">Tableau de Bord - Rendement</h1>
+
+		<!-- Section En-tête : Métriques Clés -->
+		<div class="row mb-4">
+			<div class="col-md-3">
+				<div class="card radius-10 border-start border-0 border-3 border-info">
+					<div class="card-body">
+						<div class="d-flex align-items-center">
+							<div>
+								<p class="mb-0 text-secondary">Total Parcelles</p>
+								<h4 class="my-1">{{ totalParcelles }}</h4>
+							</div>
+							<div class="widgets-icons-2 rounded-circle bg-gradient-scooter text-white ms-auto">
+								<i class="fa fa-map"></i>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div class="card radius-10 border-start border-0 border-3 border-danger">
+					<div class="card-body">
+						<div class="d-flex align-items-center">
+							<div>
+								<p class="mb-0 text-secondary">Total Cultures</p>
+								<h4 class="my-1">{{ totalCultures }}</h4>
+							</div>
+							<div class="widgets-icons-2 rounded-circle bg-gradient-bloody text-white ms-auto">
+								<i class="fa fa-leaf"></i>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div class="card radius-10 border-start border-0 border-3 border-success">
+					<div class="card-body">
+						<div class="d-flex align-items-center">
+							<div>
+								<p class="mb-0 text-secondary">Total Récoltes</p>
+								<h4 class="my-1">{{ totalRecoltes }}</h4>
+							</div>
+							<div class="widgets-icons-2 rounded-circle bg-gradient-ohhappiness text-white ms-auto">
+								<i class="fa-solid fa-wheat-awn"></i>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div class="card radius-10 border-start border-0 border-3 border-warning">
+					<div class="card-body">
+						<div class="d-flex align-items-center">
+							<div>
+								<p class="mb-0 text-secondary">Total Activités</p>
+								<h4 class="my-1">{{ totalActivites }}</h4>
+							</div>
+							<div class="widgets-icons-2 rounded-circle bg-gradient-blooker text-white ms-auto">
+								<i class="fa fa-tasks"></i>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	  <div class="gradient-tabs">
+            <ul class="nav nav-tabs" id="gradientTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="parcelles-tab" data-bs-toggle="tab" data-bs-target="#parcelles" type="button" role="tab">
+                        Parcelles
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="cultures-tab" data-bs-toggle="tab" data-bs-target="#cultures" type="button" role="tab">
+                        Cultures
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="recoltes-tab" data-bs-toggle="tab" data-bs-target="#recoltes" type="button" role="tab">
+                        Récoltes
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="activites-tab" data-bs-toggle="tab" data-bs-target="#activites" type="button" role="tab">
+                        Activités
+                    </button>
+                </li>
+            </ul>
+            <div class="tab-content" id="gradientTabsContent">
+                <!-- Parcelles Tab -->
+                <div class="tab-pane fade show active" id="parcelles" role="tabpanel">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">Répartition des Parcelles par Type de Sol</h5>
+                                    <canvas id="parcelleSoilTypeChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                             <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">Rendement des Parcelles par Mois</h5>
+                                    <canvas id="parcelleYieldChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cultures Tab -->
+                <div class="tab-pane fade" id="cultures" role="tabpanel">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">Répartition des Cultures par Type</h5>
+                                    <canvas id="cropTypeChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">Statut de Croissance des Cultures</h5>
+                                    <canvas id="cropStatusChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">Rendement des Cultures par Type</h5>
+                                    <canvas id="cultureYieldChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">Répartition des Récoltes par Type de Culture</h5>
+                                    <canvas id="recolteCultureTypeChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Récoltes Tab -->
+                <div class="tab-pane fade" id="recoltes" role="tabpanel">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">Revenu Total des Récoltes</h5>
+                                    <p class="card-text display-6 text-success">{{ totalRevenue|number_format(2, ',', ' ') }} TND</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">Quantité des Récoltes par Mois</h5>
+                                    <canvas id="recolteQuantityChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">Répartition des Récoltes par Qualité</h5>
+                                    <canvas id="recolteQualityChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Activités Tab -->
+                <div class="tab-pane fade" id="activites" role="tabpanel">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">Fréquence des Activités par Type</h5>
+                                    <canvas id="activityFrequencyChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">Répartition des Activités par Culture</h5>
+                                    <canvas id="activityCropDistributionChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">Fréquence des Activités par Mois</h5>
+                                    <canvas id="activityFrequencyOverTimeChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+	</div>
+
+	<style>
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 0 solid rgba(0, 0, 0, 0);
+    border-radius: 0.25rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 6px 0 rgb(218 218 253 / 65%), 0 2px 6px 0 rgb(206 206 238 / 54%);
+  }
+
+	</style>
+
+	<!-- Inclure Chart.js -->
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+	<script>
+
+    console.log('Activity Months:', {{ activityMonths|json_encode|raw }});
+    console.log('Activity Frequencies:', {{ activityFrequencies|json_encode|raw }});
+// Define a list of default colors
+const defaultColors = [
+'#1f4e3d',
+'#4f8159',
+'#00a875',
+'#90b670',
+'#e0ea87'
+];
+
+
+// Graphique : Rendement des Parcelles par Mois
+const parcelleYieldData = {
+    labels: {{ parcelleYieldMonths|json_encode|raw }}, // Example: ['2023-01', '2023-02']
+    datasets: [
+        {% for index, parcelle in parcelleYieldData %}
+        {
+            label: '{{ parcelle.nom }}',
+            data: {{ parcelle.yields|json_encode|raw }}, // Example: [10, 15]
+            borderColor: defaultColors[{{ index }} % defaultColors.length], // Assign a color dynamically
+            fill: false
+        },
+        {% endfor %}
+    ]
+};
+
+new Chart(document.getElementById('parcelleYieldChart'), {
+    type: 'line',
+    data: parcelleYieldData,
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+
+// Graphique : Rendement des Cultures par Type
+const cultureYieldData = {
+labels: {{ cultureTypes|json_encode|raw }}, // Example: ['Blé', 'Maïs', 'Orge']
+datasets: [
+{
+label: 'Rendement',
+data: {{ cultureYields|json_encode|raw }}, // Example: [100, 200, 150]
+backgroundColor: [
+'#1f4e3d',
+'#4f8159',
+'#00a875',
+'#90b670',
+'#e0ea87'
+]
+}
+]
+};
+new Chart(document.getElementById('cultureYieldChart'), {
+type: 'bar',
+data: cultureYieldData
+});
+
+// Graphique : Répartition des Récoltes par Type de Culture
+const recolteCultureTypeData = {
+labels: {{ recolteCultureTypes|json_encode|raw }}, // Example: ['Blé', 'Maïs', 'Orge']
+datasets: [
+{
+label: 'Récoltes par Type de Culture',
+data: {{ recolteCultureQuantities|json_encode|raw }}, // Example: [50, 100, 75]
+backgroundColor: [
+'#1f4e3d',
+'#4f8159',
+'#00a875',
+'#90b670',
+'#e0ea87'
+]
+}
+]
+};
+new Chart(document.getElementById('recolteCultureTypeChart'), {
+type: 'pie',
+data: recolteCultureTypeData
+});
+
+// Graphique : Fréquence des Activités par Mois
+const activityFrequencyOverTimeData = {
+    labels: {{ activityMonths|json_encode|raw }}, // Example: ['2023-01', '2023-02']
+    datasets: [
+        {
+            label: 'Activités',
+            data: {{ activityFrequencies|json_encode|raw }}, // Example: [5, 10]
+            backgroundColor: '#00a875',
+            borderColor: '#1f4e3d',
+            borderWidth: 2
+        }
+    ]
+};
+
+new Chart(document.getElementById('activityFrequencyOverTimeChart'), {
+    type: 'line',
+    data: activityFrequencyOverTimeData,
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+new Chart(document.getElementById('activityByCultureChart'), {
+type: 'bar',
+data: activityByCultureData
+});
+	</script>
+
+
+	<script>
+		// Graphique : Répartition des Parcelles par Type de Sol
+const parcelleSoilTypeData = {
+labels: {{ parcelleSoilTypes|map(p => p['soilType'])|json_encode|raw }},
+datasets: [
+{
+label: 'Parcelles par Type de Sol',
+data: {{ parcelleSoilTypes|map(p => p['count'])|json_encode|raw }},
+backgroundColor: [
+'#1f4e3d',
+'#4f8159',
+'#00a875',
+'#4f8159',
+'#90b670',
+'#e0ea87',
+'#00a875'
+]
+}
+]
+};
+new Chart(document.getElementById('parcelleSoilTypeChart'), {
+type: 'doughnut',
+data: parcelleSoilTypeData
+});
+
+
+// Graphique : Répartition des Cultures par Type
+const cropTypeData = {
+labels: {{ cropTypes|map(c => c['cropType'])|json_encode|raw }},
+datasets: [
+{
+label: 'Cultures par Type',
+data: {{ cropTypes|map(c => c['count'])|json_encode|raw }},
+backgroundColor: [
+'#1f4e3d',
+'#4f8159',
+'#00a875',
+'#90b670',
+'#e0ea87',
+'#00a875'
+]
+}
+]
+};
+new Chart(document.getElementById('cropTypeChart'), {
+type: 'pie',
+data: cropTypeData
+});
+
+// Graphique : Statut de Croissance des Cultures
+const cropStatusData = {
+labels: {{ cropStatuses|map(c => c['status'])|json_encode|raw }},
+datasets: [
+{
+label: 'Cultures par Statut',
+data: {{ cropStatuses|map(c => c['count'])|json_encode|raw }},
+backgroundColor: [
+'#1f4e3d', '#00a875'
+], // Use green and yellow for status
+}
+]
+};
+new Chart(document.getElementById('cropStatusChart'), {
+type: 'doughnut',
+data: cropStatusData
+});
+	</script>
+
+	<script>
+		const recolteQuantityData = {
+labels: {{ recolteMonths|json_encode|raw }},
+datasets: [
+{
+label: 'Quantité des Récoltes',
+data: {{ recolteQuantities|json_encode|raw }},
+backgroundColor: '#00a875',
+borderColor: '#1f4e3d',
+borderWidth: 2
+}
+]
+};
+new Chart(document.getElementById('recolteQuantityChart'), {
+type: 'line',
+data: recolteQuantityData,
+options: {
+scales: {
+y: {
+beginAtZero: true
+}
+}
+}
+});
+
+// Graphique : Répartition des Récoltes par Qualité
+const recolteQualityData = {
+    labels: {{ recolteQualities|map(q => q['quality'])|json_encode|raw }}, // Example: ['Excellente', 'Bonne', 'Moyenne']
+    datasets: [
+        {
+            label: 'Récoltes par Qualité',
+            data: {{ recolteQualities|map(q => q['count'])|json_encode|raw }}, // Example: [5, 10, 15]
+            backgroundColor: [
+                '#1f4e3d',
+                '#4f8159',
+                '#00a875',
+                '#90b670',
+                '#e0ea87'
+            ]
+        }
+    ]
+};
+
+new Chart(document.getElementById('recolteQualityChart'), {
+    type: 'doughnut', // Change 'pie' to 'doughnut'
+    data: recolteQualityData
+});
+// Graphique : Fréquence des Activités par Type
+const activityFrequencyData = {
+labels: {{ activityTypes|map(a => a['type'])|json_encode|raw }}, // Example: ['Semis', 'Plantation', 'Arrosage']
+datasets: [
+{
+label: 'Activités par Type',
+data: {{ activityTypes|map(a => a['count'])|json_encode|raw }}, // Example: [5, 10, 15]
+backgroundColor: [
+'#1f4e3d',
+'#4f8159',
+'#00a875',
+'#90b670',
+'#e0ea87'
+]
+}
+]
+};
+new Chart(document.getElementById('activityFrequencyChart'), {
+type: 'bar',
+data: activityFrequencyData,
+options: {
+scales: {
+y: {
+beginAtZero: true
+}
+}
+}
+});
+
+// Graphique : Répartition des Activités par Culture
+const activityCropDistributionData = {
+labels: {{ activityCrops|map(a => a['crop'])|json_encode|raw }}, // Example: ['Blé', 'Maïs', 'Orge']
+datasets: [
+{
+label: 'Activités par Culture',
+data: {{ activityCrops|map(a => a['count'])|json_encode|raw }}, // Example: [5, 10, 15]
+backgroundColor: [
+'#1f4e3d',
+'#4f8159',
+'#00a875',
+'#90b670',
+'#e0ea87'
+]
+}
+]
+};
+new Chart(document.getElementById('activityCropDistributionChart'), {
+type: 'doughnut',
+data: activityCropDistributionData
+});
+	</script>
+{% endblock %}

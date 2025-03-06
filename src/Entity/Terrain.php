@@ -70,10 +70,15 @@ private ?string $latitude = null;
 private ?string $longitude = null;
 
 
+#[ORM\OneToMany(mappedBy: 'terrain', targetEntity: Parcelle::class, cascade: ['persist', 'remove'])]
+private Collection $parcelles;
+
 public function __construct()
 {
     $this->candidatures = new ArrayCollection();
+    $this->parcelles = new ArrayCollection(); // Initialize the parcelles collection
 }
+
 
 public function getCandidatures(): Collection
 {

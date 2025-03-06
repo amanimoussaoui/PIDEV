@@ -111,18 +111,70 @@
 		background-color: #218838; /* Vert plus foncé */
 		transform: scale(1.05);
 	}
+
+	.no-results {
+		text-align: center;
+		font-size: 1.2rem;
+		color: red;
+		margin-top: 20px;
+	}
+#searchInput {
+		border: 2px solid #28a745;
+		border-radius: 20px;
+		padding: 8px 15px;
+		outline: none;
+		transition: all 0.3s ease-in-out;
+	}
+
+	#searchInput::placeholder {
+		color: #6c757d;
+		font-style: italic;
+		opacity: 0.8;
+	}
+
+	.search-container {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 10px;
+		margin-bottom: 20px;
+	}
+
+	.search-container button {
+		background: none;
+		border: none;
+		cursor: pointer;
+		font-size: 1.5rem;
+		color: #28a745;
+		transition: transform 0.3s ease, color 0.3s ease;
+	}
+
+	.search-container button:hover {
+		color: #218838;
+		transform: scale(1.2);
+	}
+
 </style>
 
+<!-- Champ de recherche -->
+<div class="search-container">
+    <form method="get" action="{{ path('formation_recherche') }}">
+        <input type="text" name="query" id="searchInput" placeholder="Rechercher une formation...">
+        <button type="submit">🔍</button>
+    </form>
+</div>
+
+<!-- Liste des formations -->
 <div class="section-formations">
 	<div class="section-header">
 		<h1>Nos Formations</h1>
 	</div>
 
-	<div class="cards-container">
+	<div id="formationsContainer" class="cards-container">
 		{% if formations is not empty %}
 			{% for formation in formations %}
 				<div class="card">
-					<img src="{{ asset('uploads/images/' ~ formation.image) }}" alt="Image de formation">
+					<img src="{{ asset('uploads/images/' ~ formation.image) }}" alt="Image de formation" class="card-img-top">
 					<div class="card-body">
 						<h5 class="card-title">{{ formation.titre }}</h5>
 						<p class="card-price"><strong> {{ formation.prix }} DT</strong></p>
@@ -132,12 +184,54 @@
 				</div>
 			{% endfor %}
 		{% else %}
-			<p>Aucune formation trouvée.</p>
+			<p class="no-results">Aucune formation trouvée.</p>
 		{% endif %}
 	</div>
 
+	<!-- Bouton Participer -->
 	<div class="participer-container">
 		<a href="{{ path('addParticipation') }}" class="participer-btn">Participer</a>
 	</div>
 </div>
+
+<!-- Script de recherche dynamique -->
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const searchInput = document.querySelector('input[name="query"]');
+    const cards = document.querySelectorAll(".card");
+    const container = document.getElementById("formationsContainer");
+    const noResultsMessage = document.createElement("p");
+    noResultsMessage.classList.add("no-results");
+    noResultsMessage.textContent = "Aucune formation trouvée.";
+    let hasResults = true;
+
+    searchInput.addEventListener("keyup", function() {
+        let filter = searchInput.value.toLowerCase();
+        hasResults = false;
+
+        cards.forEach(card => {
+            let titre = card.querySelector(".card-title").textContent.toLowerCase();
+            let prix = card.querySelector(".card-price").textContent.toLowerCase();
+
+            if (titre.includes(filter) || prix.includes(filter)) {
+                card.style.display = "";
+                hasResults = true;
+            } else {
+                card.style.display = "none";
+            }
+        });
+
+        if (!hasResults) {
+            if (!container.querySelector(".no-results")) {
+                container.appendChild(noResultsMessage);
+            }
+        } else {
+            if (container.contains(noResultsMessage)) {
+                container.removeChild(noResultsMessage);
+            }
+        }
+    });
+});
+</script>
+
 {% endblock %}

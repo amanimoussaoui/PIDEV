@@ -1,0 +1,23 @@
+{% extends 'FrontEnd/front.html.twig' %}
+
+{% block title %}Récolte{% endblock %}
+
+{% block content %}
+     <div class="container mt-5">
+        <h1 class="text-center">Crop Yield Prediction</h1>
+        <div class="card mt-4">
+            <div class="card-body">
+                <h5 class="card-title">Predicted Yield</h5>
+                <p class="card-text">
+                    The predicted crop yield is: <strong>{{ rendementPrediction }}</strong> Kg.
+                </p>
+            </div>
+        </div>
+
+        <!-- Optional: Add a button to go back to the home page -->
+        <div class="mt-4 text-center">
+            <a href="{{ path('app_parcelle_index') }}" class="btn btn-primary">Go Back</a>
+        </div>
+    </div>
+
+{% endblock %}

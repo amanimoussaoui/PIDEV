@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Recherche de formation{% endblock %}
+
+{% block body %}
+    <h1>Rechercher une formation</h1>
+
+    <form method="get" action="{{ path('formation_recherche') }}">
+        <input type="text" name="query" value="{{ query }}" placeholder="Entrez un titre ou un prix...">
+        <button type="submit">Rechercher</button>
+    </form>
+
+    {% if formations is not empty %}
+        <h2>Résultats :</h2>
+        <ul>
+            {% for formation in formations %}
+                <li>
+                    <strong>{{ formation.titre }}</strong> - {{ formation.prix }} DT
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Aucune formation trouvée.</p>
+    {% endif %}
+{% endblock %}

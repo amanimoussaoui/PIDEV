@@ -12,13 +12,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Knp\Component\Pager\PaginatorInterface;
+
 
 #[Route('/recolte')]
 final class RecolteController extends AbstractController
 {
 
     #[Route('/listrecoltes', name: 'app_recolte_back', methods: ['GET', 'POST'])]
-    public function listRecoltesBackend(Request $request, RecolteRepository $recolteRepository): Response
+    public function listRecoltesBackend(Request $request, RecolteRepository $recolteRepository,PaginatorInterface $paginator): Response
     {
 
         $form = $this->createForm(SearchRecolteType::class);
@@ -36,7 +38,15 @@ final class RecolteController extends AbstractController
         $sort = $request->query->get('sort', 'dateRecolte');
         $direction = $request->query->get('direction', 'ASC');
 
-        $recoltes = $recolteRepository->findBySearchAndFilter($searchTerm, $qualiteFilter, $sort, $direction);
+        $query = $recolteRepository->findBySearchAndFilter($searchTerm, $qualiteFilter, $sort, $direction);
+
+      // Paginate the results
+      $recoltes = $paginator->paginate(
+        $query, // Query to paginate
+        $request->query->getInt('page', 1), // Page number, default to 1
+        10 // Items per page
+    );
+
 
         return $this->render('recolte/listRecolteBackend.html.twig', [
             'recoltes' => $recoltes,
@@ -145,4 +155,5 @@ final class RecolteController extends AbstractController
         }
         return $this->redirectToRoute('app_recolte_back', [], Response::HTTP_SEE_OTHER);
     }
+
 }

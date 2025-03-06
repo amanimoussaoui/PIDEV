@@ -44,7 +44,6 @@
                     <table class="table modern-table align-middle">
                         <thead class="border-bottom">
                             <tr>
-                                <th class="text-muted fw-semibold">#</th>
                                 <th class="text-muted fw-semibold">Nom Culture</th>
                                 <th class="text-muted fw-semibold">
                                     <a href="{{ path('app_culture_back', {
@@ -66,14 +65,13 @@
                                 </th>
                                 <th class="text-muted fw-semibold">Statut</th>
                                 <th class="text-muted fw-semibold">Parcelle</th>
-                                <th class="text-muted fw-semibold">UtilisateurId</th>
+                                <th class="text-muted fw-semibold">Utilisateur</th>
                                 <th class="text-muted fw-semibold text-end">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for culture in cultures %}
                                 <tr class="row-hover">
-                                    <td>{{ culture.id }}</td>
                                     <td class="fw-medium">{{ culture.nomCulture }}</td>
                                     <td>{{ culture.dateSemis ? culture.dateSemis|date('Y-m-d') : '' }}</td>
                                     <td>{{ culture.duree }} Jours</td>
@@ -88,7 +86,7 @@
                                         </span>
                                     </td>
                                     <td>{{ culture.parcelle.nom }}</td>
-                                    <td>{{ culture.parcelle.utilisateur.nom }}{{ culture.parcelle.utilisateur.prenom }}</td>
+                                    <td>{{ culture.parcelle.utilisateur.nom }} {{ culture.parcelle.utilisateur.prenom }}</td>
                                     <td>
                                         <div class="d-flex gap-2 justify-content-end">    
                                             <a href="{{ path('app_culture_show_back', {'id': culture.id}) }}" 
@@ -125,6 +123,12 @@
                         </tbody>
                     </table>
                 </div>
+
+                <div class="d-flex justify-content-center mt-4">
+    {{ knp_pagination_render(cultures) }}
+</div>
+
+
             </div>
         </div>
     </div>

@@ -19,9 +19,4 @@
 /phpunit.xml
 ###< symfony/phpunit-bridge ###
 
-# Ignore .env file
-.env
-
-# Ignore other sensitive files
-config/secrets.yaml
 

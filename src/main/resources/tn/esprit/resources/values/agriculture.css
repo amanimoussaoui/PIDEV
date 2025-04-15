@@ -1,0 +1,96 @@
+/* Couleurs thématiques */
+.root {
+    -fx-primary-color: #4CAF50;
+    -fx-secondary-color: #8BC34A;
+    -fx-light-color: #DCEDC8;
+    -fx-dark-color: #2E7D32;
+    -fx-accent-color: #FFC107;
+}
+
+/* Style général */
+.header-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-padding: 15px;
+}
+
+/* Style des cartes de terrain */
+.terrain-card {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: #E0E0E0;
+    -fx-border-width: 1px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 0);
+    -fx-padding: 0;
+    -fx-cursor: hand;
+}
+
+.terrain-card:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(46,125,50,0.3), 10, 0, 0, 0);
+}
+
+.terrain-image {
+    -fx-border-radius: 10 10 0 0;
+}
+
+.terrain-price {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2E7D32;
+    -fx-padding: 10px;
+    -fx-alignment: center;
+}
+
+/* Panneau de détails */
+.details-pane {
+    -fx-background-color: #F1F8E9;
+    -fx-padding: 20;
+    -fx-spacing: 20;
+}
+
+.details-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2E7D32;
+    -fx-padding: 0 0 10 0;
+}
+
+.detail-label {
+    -fx-font-weight: bold;
+    -fx-text-fill: #455A64;
+}
+
+.detail-value {
+    -fx-text-fill: #37474F;
+}
+
+.detail-textarea {
+    -fx-background-color: transparent;
+    -fx-border-color: #BDBDBD;
+    -fx-border-radius: 5;
+    -fx-padding: 5;
+}
+
+/* Bouton de candidature */
+.candidature-button {
+    -fx-background-color: #FFC107;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-padding: 8 20;
+    -fx-background-radius: 5;
+}
+
+.candidature-button:hover {
+    -fx-background-color: #FFA000;
+}
+
+/* Arrière-plan agricole */
+.root {
+    -fx-background-image: url("/tn/esprit/resources/images/background_agriculture.jpg");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover;
+    -fx-background-position: center;
+}

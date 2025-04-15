@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="tn.esprit.controllers.AffichageClient"
+            stylesheets="@/tn/esprit/resources/values/agriculture.css"
+            styleClass="border-pane-background">
+    <top>
+        <HBox alignment="CENTER" style="-fx-background-color: #4CAF50;">
+            <Label text="🌾 Nos Terrains Agricoles Disponibles 🌾"
+                   styleClass="header-title"/>
+        </HBox>
+    </top>
+
+    <center>
+        <SplitPane dividerPositions="0.7">
+            <items>
+                <!-- Partie gauche : Liste des terrains sous forme de cartes -->
+                <ScrollPane fitToWidth="true">
+                    <content>
+                        <FlowPane fx:id="terrainsContainer"
+                                  hgap="20" vgap="20"
+                                  alignment="CENTER"/>
+                    </content>
+                </ScrollPane>
+
+                <!-- Partie droite : Détails du terrain sélectionné -->
+                <VBox fx:id="detailsPane" styleClass="details-pane">
+                    <ImageView fx:id="detailImage" fitWidth="300" fitHeight="200"
+                               preserveRatio="true"/>
+                    <VBox spacing="10" styleClass="details-content">
+                        <Label text="Détails du Terrain" styleClass="details-title"/>
+
+                        <GridPane hgap="10" vgap="10">
+                            <columnConstraints>
+                                <ColumnConstraints prefWidth="100"/>
+                                <ColumnConstraints prefWidth="200"/>
+                            </columnConstraints>
+
+                            <Label text="Prix:" styleClass="detail-label"/>
+                            <Label fx:id="prixLabel" GridPane.columnIndex="1" styleClass="detail-value"/>
+
+                            <Label text="Localisation:" styleClass="detail-label" GridPane.rowIndex="1"/>
+                            <Label fx:id="localisationLabel" GridPane.columnIndex="1" GridPane.rowIndex="1" styleClass="detail-value"/>
+
+                            <Label text="Superficie:" styleClass="detail-label" GridPane.rowIndex="2"/>
+                            <Label fx:id="superficieLabel" GridPane.columnIndex="1" GridPane.rowIndex="2" styleClass="detail-value"/>
+
+                            <Label text="Description:" styleClass="detail-label" GridPane.rowIndex="3"/>
+                            <TextArea fx:id="descriptionArea" editable="false" wrapText="true"
+                                      GridPane.columnIndex="1" GridPane.rowIndex="3"
+                                      styleClass="detail-textarea"/>
+                        </GridPane>
+
+                        <Button fx:id="candidatureBtn" text="Faire Candidature"
+                                styleClass="candidature-button"/>
+                    </VBox>
+                </VBox>
+            </items>
+        </SplitPane>
+    </center>
+</BorderPane>

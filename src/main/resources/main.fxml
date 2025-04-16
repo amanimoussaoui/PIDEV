@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.esprit.controllers.MainController"
+            prefHeight="600.0" prefWidth="900.0">
+    
+    <!-- Header avec le nom de l'application en vert -->
+    <top>
+        <VBox style="-fx-background-color: #f0f0f0;">
+            <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-padding: 10 20 10 20;">
+                <Label text="Agriwise" style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #2e8b57;">
+                    <font>
+                        <Font name="System Bold" size="32.0"/>
+                    </font>
+                </Label>
+                <Label text="Gestion agricole intelligente" style="-fx-font-size: 16px; -fx-text-fill: #333333;"/>
+            </HBox>
+            
+            <!-- Menu de navigation -->
+            <HBox style="-fx-background-color: #2e8b57; -fx-padding: 5 0 5 0;">
+                <Button fx:id="homeBtn" text="Accueil" onAction="#goToHome" 
+                        style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;">
+                    <padding>
+                        <Insets top="5" right="15" bottom="5" left="15"/>
+                    </padding>
+                </Button>
+                <Button fx:id="machineBtn" text="Machines" onAction="#goToMachines" 
+                        style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;">
+                    <padding>
+                        <Insets top="5" right="15" bottom="5" left="15"/>
+                    </padding>
+                </Button>
+                <Button fx:id="addMachineBtn" text="Ajouter Machine" onAction="#goToAddMachine" 
+                        style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;">
+                    <padding>
+                        <Insets top="5" right="15" bottom="5" left="15"/>
+                    </padding>
+                </Button>
+                <Button fx:id="reservationBtn" text="Réservations" onAction="#goToReservations" 
+                        style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;">
+                    <padding>
+                        <Insets top="5" right="15" bottom="5" left="15"/>
+                    </padding>
+                </Button>
+            </HBox>
+        </VBox>
+    </top>
+    
+    <!-- Contenu principal qui changera en fonction de la navigation -->
+    <center>
+        <StackPane fx:id="contentArea">
+            <!-- Le contenu sera chargé dynamiquement ici -->
+        </StackPane>
+    </center>
+    
+    <!-- Footer -->
+    <bottom>
+        <HBox alignment="CENTER" style="-fx-background-color: #f0f0f0; -fx-padding: 10;">
+            <Label text="© 2023 Agriwise - Tous droits réservés" style="-fx-text-fill: #555555;"/>
+        </HBox>
+    </bottom>
+    
+</BorderPane> 

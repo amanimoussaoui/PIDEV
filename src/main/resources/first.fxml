@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="tn.esprit.controllers.MachineController"
+            prefWidth="740.0" prefHeight="440.0">
+    <children>
+        <TableView fx:id="machineTable" layoutX="20.0" layoutY="20.0" prefWidth="700.0" prefHeight="400.0">
+            <columns>
+                <TableColumn fx:id="idCol" text="ID" prefWidth="50.0"/>
+                <TableColumn fx:id="nomCol" text="Nom" prefWidth="100.0"/>
+                <TableColumn fx:id="descCol" text="Description" prefWidth="150.0"/>
+                <TableColumn fx:id="prixCol" text="Prix" prefWidth="80.0"/>
+                <TableColumn fx:id="etatCol" text="État" prefWidth="80.0"/>
+                <TableColumn fx:id="dispoCol" text="Disponibilité" prefWidth="100.0"/>
+                <TableColumn fx:id="dateCol" text="Date Maintenance" prefWidth="140.0"/>
+            </columns>
+        </TableView>
+    </children>
+</AnchorPane>

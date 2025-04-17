@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface IServiceCandidature {
     void ajouter(Candidature c);
-    void modifier(Candidature c);
-    void supprimer(int id);
+    boolean modifier(Candidature c);
+    boolean supprimer(int id);
     List<Candidature> afficher();
 }

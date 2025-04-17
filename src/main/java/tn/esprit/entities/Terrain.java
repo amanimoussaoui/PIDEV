@@ -1,5 +1,7 @@
 package tn.esprit.entities;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
@@ -38,7 +40,19 @@ public class Terrain {
     public int getId() {
         return id;
     }
+    private IntegerProperty utilisateurId = new SimpleIntegerProperty();
 
+    public int getUtilisateurId() {
+        return utilisateurId.get();
+    }
+
+    public void setUtilisateurId(int utilisateurId) {
+        this.utilisateurId.set(utilisateurId);
+    }
+
+    public IntegerProperty utilisateurIdProperty() {
+        return utilisateurId;
+    }
     public void setId(Integer id) {
         this.id = id;
     }
@@ -50,7 +64,6 @@ public class Terrain {
     public void setUtilisateur_id(Integer utilisateur_id) {
         this.utilisateur_id = utilisateur_id;
     }
-
     public String getLocalisation() {
         return localisation;
     }

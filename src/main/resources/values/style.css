@@ -233,3 +233,40 @@
     -fx-text-fill: #2e7d32;
     -fx-font-weight: bold;
 }
+/* Couleurs et styles des boutons de la sidebar */
+.sidebar-button {
+    -fx-background-color: #34495E;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 10px;
+    -fx-border-radius: 5px;
+}
+
+.sidebar-button:hover {
+    -fx-background-color: #1ABC9C;
+}
+
+/* Titre de chaque section */
+.table-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2980B9;
+    -fx-padding: 10px;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.fade-in {
+    animation: fadeIn 1s ease-in;
+}
+
+/* Style général */
+.tableView {
+    -fx-background-color: #ecf0f1;
+    -fx-border-color: #bdc3c7;
+    -fx-border-width: 1px;
+}

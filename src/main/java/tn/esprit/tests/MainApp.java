@@ -4,35 +4,38 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 
 public class MainApp extends Application {
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) {
         try {
-            // 1. Charger le fichier FXML avec le bon chemin
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AffichageClient.fxml"));
-
+            // Load the main interface (AffichageClient)
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/GestionCandidature.fxml"));
             Parent root = loader.load();
 
-            // 2. Créer la scène
-            Scene scene = new Scene(root, 900, 650); // Dimensions ajustées
-
-            // 3. Configurer la fenêtre
-            primaryStage.setTitle("Gestion des Terrains");
+            Scene scene = new Scene(root, 900, 650);
+            primaryStage.setTitle("Gestion des Terrains Agricoles");
             primaryStage.setScene(scene);
-
-            // 4. Afficher la fenêtre
             primaryStage.show();
+
         } catch (Exception e) {
+            showAlert("Erreur", "Impossible de démarrer l'application: " + e.getMessage(), Alert.AlertType.ERROR);
             e.printStackTrace();
-            throw e; // Pour mieux voir l'erreur
         }
     }
 
+    private void showAlert(String title, String message, Alert.AlertType type) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
     public static void main(String[] args) {
-        // 5. Lancer l'application
         launch(args);
     }
 }

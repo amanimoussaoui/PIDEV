@@ -6,32 +6,66 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.AffichageAdmin">
+<AnchorPane prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.AffichageAdmin">
 
-    <children>
-        <ImageView fitHeight="423.0" fitWidth="600.0" pickOnBounds="true" preserveRatio="true">
+    <!-- Sidebar avec boutons pour naviguer entre les tables -->
+    <VBox layoutX="0.0" layoutY="0.0" prefWidth="200.0" style="-fx-background-color: #2C3E50; -fx-padding: 20;">
+        <!-- Bouton Liste des Terrains -->
+        <Button text="Liste des Terrains" fx:id="btnTerrains" styleClass="sidebar-button" prefWidth="160.0" onAction="#showTerrains"/>
+        <!-- Bouton Liste des Candidatures -->
+        <Button text="Liste des Candidatures" fx:id="btnCandidatures" styleClass="sidebar-button" prefWidth="160.0" onAction="#showCandidatures"/>
+    </VBox>
+
+    <!-- Conteneur pour les données affichées -->
+    <AnchorPane layoutX="200.0" layoutY="0.0" prefHeight="600.0" prefWidth="700.0">
+        <!-- Fond de l'image de fond -->
+        <ImageView fitHeight="600.0" fitWidth="700.0" pickOnBounds="true" preserveRatio="true">
             <image>
                 <Image url="@images/pexels-lum3n-44775-295771.jpg" />
             </image>
         </ImageView>
 
-        <Label layoutX="20.0" layoutY="13.0" text="Liste Des Terrains">
-            <font>
-                <Font name="System Bold" size="18.0" />
-            </font>
-        </Label>
+        <!-- Zone de contenu avec les tables -->
+        <VBox layoutX="10.0" layoutY="50.0" prefWidth="680.0" spacing="20.0">
 
-        <TableView fx:id="terrainTableView" layoutX="9.0" layoutY="65.0" prefHeight="236.0" prefWidth="586.0" stylesheets="@values/style.css">            <columns>
-                <TableColumn fx:id="idColumn" prefWidth="75.0" text="ID" />
-                <TableColumn fx:id="utilisateurIdColumn" prefWidth="86.0" text="Utilisateur ID" />
-                <TableColumn fx:id="localisationColumn" prefWidth="86.0" text="Localisation" />
-                <TableColumn fx:id="superficieColumn" prefWidth="78.0" text="Superficie (m²)" />
-                <TableColumn fx:id="prixColumn" prefWidth="66.0" text="Prix (DT)" />
-                <TableColumn fx:id="descriptionColumn" prefWidth="103.0" text="Description" />
-                <TableColumn fx:id="imageColumn" prefWidth="97.0" text="Image" />
-            </columns>
-        </TableView>
-    </children>
+            <!-- Titre et Table des Terrains -->
+            <VBox fx:id="terrainVBox" visible="false">
+                <Label text="Liste des Terrains" styleClass="table-title"/>
+                <TableView fx:id="terrainTableView" prefHeight="250.0" prefWidth="680.0">
+                    <columns>
+                        <TableColumn fx:id="idColumn" text="ID" prefWidth="75.0"/>
+                        <TableColumn fx:id="utilisateurIdColumn" text="Utilisateur ID" prefWidth="90.0"/>
+                        <TableColumn fx:id="localisationColumn" text="Localisation" prefWidth="100.0"/>
+                        <TableColumn fx:id="superficieColumn" text="Superficie (m²)" prefWidth="80.0"/>
+                        <TableColumn fx:id="prixColumn" text="Prix (DT)" prefWidth="70.0"/>
+                        <TableColumn fx:id="descriptionColumn" text="Description" prefWidth="150.0"/>
+                        <TableColumn fx:id="imageColumn" text="Image" prefWidth="100.0"/>
+                    </columns>
+                </TableView>
+            </VBox>
+
+            <!-- Titre et Table des Candidatures -->
+            <VBox fx:id="candidatureVBox" visible="false">
+                <Label text="Liste des Candidatures" styleClass="table-title"/>
+                <TableView fx:id="candidatureTableView" prefHeight="250.0" prefWidth="680.0">
+                    <columns>
+                        <TableColumn fx:id="candidatureIdColumn" text="ID" prefWidth="75.0"/>
+                        <TableColumn fx:id="terrainIdColumn" text="Terrain ID" prefWidth="90.0"/>
+                        <TableColumn fx:id="userIdColumn" text="Utilisateur ID" prefWidth="90.0"/>
+                        <TableColumn fx:id="dateDebutColumn" text="Date Début" prefWidth="90.0"/>
+                        <TableColumn fx:id="dateFinColumn" text="Date Fin" prefWidth="90.0"/>
+                        <TableColumn fx:id="butColumn" text="But" prefWidth="90.0"/>
+                        <TableColumn fx:id="montantColumn" text="Montant" prefWidth="80.0"/>
+                        <TableColumn fx:id="etatColumn" text="État" prefWidth="70.0"/>
+                    </columns>
+                </TableView>
+            </VBox>
+
+        </VBox>
+    </AnchorPane>
 </AnchorPane>

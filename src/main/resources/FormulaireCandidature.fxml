@@ -1,14 +1,112 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.paint.Color?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="$CONTROLLER_NAME$"
-            prefHeight="400.0" prefWidth="600.0" >
+<AnchorPane prefHeight="700" prefWidth="900" stylesheets="@/values/candidature.css"
+            xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="tn.esprit.controllers.FaireCandidature">
 
+    <!-- Effet d'ombre portée pour le conteneur principal -->
+    <VBox alignment="TOP_CENTER" spacing="20" style="-fx-background-color: #f5f5f5;"
+          AnchorPane.topAnchor="20" AnchorPane.bottomAnchor="20"
+          AnchorPane.leftAnchor="20" AnchorPane.rightAnchor="20">
+
+        <!-- Titre avec animation -->
+        <Label styleClass="form-title" text="📝 Formulaire de Candidature">
+            <font>
+                <Font name="System Bold" size="24"/>
+            </font>
+        </Label>
+
+        <!-- Conteneur pour formulaire + tableau -->
+        <HBox spacing="30" alignment="TOP_CENTER">
+            <!-- Formulaire -->
+            <VBox spacing="15" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 20;"
+                  prefWidth="350">
+                <effect>
+                    <DropShadow color="#00000033" radius="10" spread="0.1"/>
+                </effect>
+
+                <GridPane hgap="10" vgap="15">
+                    <columnConstraints>
+                        <ColumnConstraints minWidth="100" halignment="RIGHT"/>
+                        <ColumnConstraints minWidth="250"/>
+                    </columnConstraints>
+
+                    <!-- Votre contenu de formulaire existant ici -->
+                    <Label styleClass="form-label" text="Date de début:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                    <DatePicker fx:id="dateDebutPicker" styleClass="date-picker" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+                    <Label styleClass="form-label" text="Date de fin:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                    <DatePicker fx:id="dateFinPicker" styleClass="date-picker" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+                    <Label styleClass="form-label" text="But:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+                    <TextArea fx:id="butArea" prefRowCount="3" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+
+                    <Label styleClass="form-label" text="Montant:" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+                    <TextField fx:id="montantField" editable="false" styleClass="disabled-input" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+
+                    <Label styleClass="form-label" text="État:" GridPane.columnIndex="0" GridPane.rowIndex="5"/>
+                    <TextField fx:id="etatField" editable="false" styleClass="disabled-input" text="en attente" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+                </GridPane>
+
+                <!-- Boutons d'actions -->
+                <HBox alignment="CENTER" spacing="15">
+                    <Button onAction="#modifierCandidature" styleClass="icon-button">
+                        <graphic>
+                            <ImageView fitHeight="24" fitWidth="24" pickOnBounds="true" preserveRatio="true">
+                                <Image url="@/images/edit-icon.png"/>
+                            </ImageView>
+                        </graphic>
+                        <tooltip>
+                            <Tooltip text="Modifier la candidature sélectionnée"/>
+                        </tooltip>
+                    </Button>
+
+                    <Button onAction="#supprimerCandidature" styleClass="icon-button delete">
+                        <graphic>
+                            <ImageView fitHeight="24" fitWidth="24" pickOnBounds="true" preserveRatio="true">
+                                <Image url="@/images/delete-icon.png"/>
+                            </ImageView>
+                        </graphic>
+                        <tooltip>
+                            <Tooltip text="Supprimer la candidature sélectionnée"/>
+                        </tooltip>
+                    </Button>
+
+                    <Button onAction="#validerCandidature" styleClass="submit-button" text="Soumettre">
+                        <graphic>
+                            <ImageView fitHeight="20" fitWidth="20" pickOnBounds="true" preserveRatio="true">
+                                <Image url="@/images/save-icon.png"/>
+                            </ImageView>
+                        </graphic>
+                    </Button>
+                </HBox>
+            </VBox>
+
+            <!-- TableView agrandi -->
+            <VBox spacing="10" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 15;"
+                  prefWidth="500">
+                <effect>
+                    <DropShadow color="#00000033" radius="10" spread="0.1"/>
+                </effect>
+                <Label text="Liste des Candidatures" style="-fx-font-weight: bold; -fx-font-size: 16;"/>
+                <TableView fx:id="tableCandidatures" style="-fx-font-size: 14;" prefHeight="400">
+                    <columns>
+                        <TableColumn fx:id="colDateDebut" text="Date début" prefWidth="100"/>
+                        <TableColumn fx:id="colDateFin" text="Date fin" prefWidth="100"/>
+                        <TableColumn fx:id="colBut" text="But" prefWidth="150"/>
+                        <TableColumn fx:id="colPrixTerrain" text="Prix" prefWidth="80"/>
+                        <TableColumn fx:id="colEtat" text="État" prefWidth="70"/>
+                    </columns>
+                </TableView>
+            </VBox>
+        </HBox>
+    </VBox>
 </AnchorPane>

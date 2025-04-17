@@ -1,9 +1,11 @@
 package tn.esprit.services;
 
+import tn.esprit.entities.Candidature;
 import tn.esprit.entities.Terrain;
 import tn.esprit.tools.MaConnexion;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -144,5 +146,45 @@ public class ServiceTerrain implements IServiceTerrain {
         }
         return false;
     }
+    public List<Terrain> getAllTerrains() {
+        // Logique pour récupérer les terrains depuis la base de données
+        // Par exemple, avec JDBC ou ORM comme Hibernate
+        return
+                new ArrayList<>(); // Remplacer avec données réelles
+    }
+    public Candidature getCandidatureFromResultSet(ResultSet rs) throws SQLException {
+        int id = rs.getInt("id");
+        int idTerrainId = rs.getInt("idTerrainId");
+        int utilisateurId = rs.getInt("utilisateurId");
+        LocalDate dateDebut = rs.getDate("dateDebut").toLocalDate();
+        LocalDate dateFin = rs.getDate("dateFin").toLocalDate();
+        String but = rs.getString("but");
+        double montant = rs.getDouble("montant");
+        String etat = rs.getString("etat");
+        String recommandation = rs.getString("recommandation");
+
+        return new Candidature(id, idTerrainId, utilisateurId, dateDebut, dateFin, but, montant, etat, recommandation);
+    }
+    public List<Candidature> getCandidaturesByTerrain(int terrainId) {
+        List<Candidature> candidatures = new ArrayList<>();
+        String query = "SELECT * FROM Candidature WHERE idTerrainId = ?";
+
+        try (Connection conn = MaConnexion.getInstance().getCnx(); // Utilisation de la connexion via le Singleton
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setInt(1, terrainId);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                candidatures.add(getCandidatureFromResultSet(rs)); // Convertit chaque ligne du ResultSet en Candidature
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return candidatures;
+    }
+
+
+
 
 }

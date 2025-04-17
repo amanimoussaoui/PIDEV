@@ -1,0 +1,95 @@
+/* adminStyle.css */
+
+/* Styles globaux */
+.root {
+    -fx-font-family: 'Segoe UI', Arial, sans-serif;
+    -fx-accent: #4CAF50;
+}
+
+/* Titres */
+.main-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2E7D32;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0.2, 0, 1);
+}
+
+.section-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #388E3C;
+}
+
+/* Tables modernes */
+.modern-table {
+    -fx-background-color: transparent;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 0;
+    -fx-table-cell-border-color: transparent;
+}
+
+.modern-table .column-header {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-border-color: #388E3C;
+}
+
+.modern-table .column-header-background {
+    -fx-background-color: transparent;
+}
+
+.modern-table .table-row-cell {
+    -fx-background-color: white;
+    -fx-border-color: #f0f0f0;
+    -fx-border-width: 0 0 1 0;
+}
+
+.modern-table .table-row-cell:odd {
+    -fx-background-color: #f9f9f9;
+}
+
+.modern-table .table-row-cell:selected {
+    -fx-background-color: #C8E6C9;
+}
+
+.table-column {
+    -fx-alignment: CENTER_LEFT;
+}
+
+/* Effets et animations */
+.modern-table .table-row-cell:hover {
+    -fx-background-color: #E8F5E9;
+    -fx-translate-y: -1;
+    -fx-effect: dropshadow(three-pass-box, rgba(76,175,80,0.1), 5, 0.2, 0, 1);
+    -fx-transition: all 0.3s;
+}
+
+/* Boutons dans la table */
+.action-button {
+    -fx-background-color: transparent;
+    -fx-cursor: hand;
+    -fx-padding: 3 6;
+}
+
+.action-button:hover {
+    -fx-background-color: #f0f0f0;
+    -fx-background-radius: 3;
+}
+
+/* Style spécifique pour les états */
+.etat-en-attente {
+    -fx-text-fill: #FFA000;
+    -fx-font-weight: bold;
+}
+
+.etat-validee {
+    -fx-text-fill: #388E3C;
+    -fx-font-weight: bold;
+}
+
+.etat-refusee {
+    -fx-text-fill: #D32F2F;
+    -fx-font-weight: bold;
+}

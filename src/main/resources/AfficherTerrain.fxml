@@ -1,19 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.FlowPane?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.*?>
 
 <BorderPane prefHeight="650" prefWidth="900" stylesheets="@values/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.AfficherTerrain">
 
@@ -34,7 +24,7 @@
 
                   <ImageView fx:id="imageViewTerrain" fitHeight="200" fitWidth="300" preserveRatio="true" style="-fx-border-color: #ddd; -fx-border-width: 1; -fx-border-radius: 3;" />
 
-                  <GridPane hgap="10" style="-fx-padding: 10 0 0 0;" vgap="10">
+                  <GridPane hgap="10" vgap="10" style="-fx-padding: 10 0 0 0;">
                      <columnConstraints>
                         <ColumnConstraints prefWidth="100" />
                         <ColumnConstraints prefWidth="200" />
@@ -50,7 +40,9 @@
                      <Label fx:id="textSuperficie" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
                      <Label style="-fx-font-weight: bold;" text="Description:" GridPane.rowIndex="3" />
-                     <TextArea fx:id="textDescription" editable="false" prefRowCount="3" style="-fx-background-color: transparent; -fx-border-color: #eee;" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                     <TextArea fx:id="textDescription" editable="false" prefRowCount="3" wrapText="true"
+                               style="-fx-background-color: transparent; -fx-border-color: #eee;"
+                               GridPane.columnIndex="1" GridPane.rowIndex="3" />
                      <rowConstraints>
                         <RowConstraints />
                         <RowConstraints />
@@ -60,14 +52,40 @@
                   </GridPane>
 
                   <HBox alignment="CENTER" spacing="15" style="-fx-padding: 20 0 0 0;">
-                     <Button fx:id="btnAjouter" onAction="#ouvrirAjouterTerrain" style="-fx-background-color: #278f57; -fx-text-fill: white; -fx-font-weight: bold; -fx-min-width: 120;" text="Ajouter Terrain" />
+                     <Button fx:id="btnAjouter" onAction="#ouvrirAjouterTerrain"
+                             text="Ajouter Terrain"
+                             style="-fx-background-color: #278f57; -fx-text-fill: white; -fx-font-weight: bold; -fx-min-width: 120;" />
 
-                     <Button fx:id="btnModifier" onAction="#modifierTerrain" style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold; -fx-min-width: 100;" text="Modifier" />
+                     <Button fx:id="btnModifier" onAction="#modifierTerrain"
+                             text="Modifier"
+                             style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold; -fx-min-width: 100;" />
 
-                     <Button fx:id="btnSupprimer" onAction="#supprimerTerrain" style="-fx-background-color: #f44336; -fx-text-fill: white; -fx-font-weight: bold; -fx-min-width: 100;" text="Supprimer" />
+                     <Button fx:id="btnSupprimer" onAction="#supprimerTerrain"
+                             text="Supprimer"
+                             style="-fx-background-color: #f44336; -fx-text-fill: white; -fx-font-weight: bold; -fx-min-width: 100;" />
+
+                     <Button fx:id="btnVoirCandidatures" onAction="#voirCandidatures"
+                             text="Voir Candidatures"
+                             style="-fx-background-color: #6A5ACD; -fx-text-fill: white; -fx-font-weight: bold; -fx-min-width: 150;" />
                   </HBox>
+
+                  <!-- TableView cachée au début -->
+                  <TableView fx:id="tableCandidatures" visible="false"
+                             prefHeight="200" prefWidth="600"
+                             style="-fx-background-color: white; -fx-border-color: lightgrey; -fx-border-radius: 5; -fx-padding: 10;">
+                     <columns>
+                        <TableColumn fx:id="colId" text="ID" />
+                        <TableColumn fx:id="colDateDebut" text="Date Début" />
+                        <TableColumn fx:id="colDateFin" text="Date Fin" />
+                        <TableColumn fx:id="colBut" text="But" />
+                        <TableColumn fx:id="colMontant" text="Montant" />
+                        <TableColumn fx:id="colEtat" text="État" />
+                     </columns>
+                  </TableView>
+
                </VBox>
             </VBox>
+
             <!-- Partie gauche : Liste des terrains -->
             <ScrollPane fitToWidth="true" prefHeight="588.0" prefWidth="370.0">
                <content>
@@ -78,7 +96,9 @@
                   </FlowPane>
                </content>
             </ScrollPane>
+
          </items>
       </SplitPane>
    </center>
+
 </BorderPane>

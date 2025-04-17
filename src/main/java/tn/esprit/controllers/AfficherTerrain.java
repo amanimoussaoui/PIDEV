@@ -5,17 +5,20 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import tn.esprit.entities.Candidature;
 import tn.esprit.entities.Terrain;
+import tn.esprit.services.ServiceCandidature;
 import tn.esprit.services.ServiceTerrain;
 
+import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.List;
 
@@ -26,11 +29,17 @@ public class AfficherTerrain {
     @FXML private Label textPrix, textLocalisation, textSuperficie;
     @FXML private TextArea textDescription;
     @FXML private Button btnModifier, btnSupprimer;
-
+    @FXML private Button btnVoirCandidatures;
     private Terrain terrainSelectionne;
     private final ServiceTerrain service = new ServiceTerrain();
     private static Stage afficherTerrainStage;
-
+    @FXML private TableView<Candidature> tableCandidatures;
+    @FXML private TableColumn<Candidature, Integer> colId;
+    @FXML private TableColumn<Candidature, String> colDateDebut;
+    @FXML private TableColumn<Candidature, String> colDateFin;
+    @FXML private TableColumn<Candidature, String> colBut;
+    @FXML private TableColumn<Candidature, Double> colMontant;
+    @FXML private TableColumn<Candidature, String> colEtat;
     // Méthode pour ouvrir la fenêtre principale
     public static void showWindow() throws IOException {
         if (afficherTerrainStage != null) {
@@ -63,10 +72,12 @@ public class AfficherTerrain {
         // Initialisez le reste de votre UI
         chargerTerrains();
     }
+
     public void rafraichirListeTerrains() {
         chargerTerrains(); // Recharge les données depuis la BDD
         reinitialiserInterface(); // Nettoie les détails affichés
     }
+
     public void chargerTerrains() {
         terrainList.getChildren().clear(); // Fonctionne aussi avec FlowPane
         List<Terrain> terrains = service.afficher();
@@ -136,6 +147,9 @@ public class AfficherTerrain {
         } catch (Exception e) {
             System.err.println("Erreur image détail: " + e.getMessage());
         }
+
+        // Activation du bouton Voir Candidatures
+        btnVoirCandidatures.setDisable(false);
     }
 
     @FXML
@@ -219,12 +233,52 @@ public class AfficherTerrain {
         btnSupprimer.setDisable(true);
     }
 
+
+    // Méthode pour récupérer les candidatures depuis la base de données
+    private List<Candidature> chargerCandidatures(int terrainId) {
+        // Appelez un service qui récupère les candidatures pour ce terrain
+        // Vous devez implémenter cette méthode pour récupérer les candidatures depuis votre base de données
+        return new ServiceCandidature().getCandidaturesByTerrain(terrainId);
+    }
+
+
+
     private void afficherAlerte(String titre, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(titre);
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+    @FXML
+    private void voirCandidatures() {
+        // Rendre visible le TableView pour afficher les candidatures
+        tableCandidatures.setVisible(true);
+
+        // Lier les colonnes du TableView avec les propriétés de Candidature
+        colId.setCellValueFactory(new PropertyValueFactory<>("id"));
+        colDateDebut.setCellValueFactory(new PropertyValueFactory<>("date_debut"));
+        colDateFin.setCellValueFactory(new PropertyValueFactory<>("date_fin"));
+        colBut.setCellValueFactory(new PropertyValueFactory<>("but"));
+        colMontant.setCellValueFactory(new PropertyValueFactory<>("montant"));
+        colEtat.setCellValueFactory(new PropertyValueFactory<>("etat"));
+
+        // Charger toutes les candidatures depuis la base de données
+        ServiceCandidature serviceCandidature = new ServiceCandidature();
+        List<Candidature> candidatures = serviceCandidature.afficherToutesCandidatures();
+
+        // Injecter les candidatures dans le TableView
+        tableCandidatures.getItems().setAll(candidatures);
+    }
+
+    @FXML
+    private void afficherCandidatures(ActionEvent event) {
+        ServiceCandidature service = new ServiceCandidature();
+        List<Candidature> candidatures = service.afficher();
+
+        for (Candidature c : candidatures) {
+            System.out.println(c); // ou ajouter dans TableView etc.
+        }
     }
 
 

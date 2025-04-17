@@ -1,0 +1,177 @@
+.form-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2E7D32;
+    -fx-padding: 10 0 20 0;
+}
+
+.form-grid {
+    -fx-background-color: #f9f9f9;
+    -fx-padding: 20;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);
+}
+
+.form-label {
+    -fx-font-weight: bold;
+    -fx-text-fill: #333;
+}
+
+.form-input, .disabled-input {
+    -fx-pref-width: 250px;
+    -fx-padding: 5 10;
+    -fx-background-radius: 5;
+    -fx-border-color: #ccc;
+    -fx-border-radius: 5;
+}
+
+.disabled-input {
+    -fx-opacity: 0.6;
+}
+
+.submit-button {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-padding: 10 20;
+    -fx-background-radius: 5;
+}
+
+.submit-button:hover {
+    -fx-background-color: #388E3C;
+}
+.table-view {
+    -fx-base: #f8f8f8;
+    -fx-control-inner-background: #ffffff;
+    -fx-table-header-border-color: transparent;
+    -fx-table-cell-border-color: #e0e0e0;
+}
+
+.table-view .column-header {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: #f9f9f9;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #C8E6C9;
+}
+.modify-button {
+    -fx-background-color: #FFC107;
+    -fx-text-fill: #212121;
+    -fx-font-weight: bold;
+}
+
+.modify-button:hover {
+    -fx-background-color: #FFD54F;
+}
+
+.delete-button {
+    -fx-background-color: #F44336;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.delete-button:hover {
+    -fx-background-color: #EF5350;
+}
+
+/* Style global */
+.root {
+    -fx-font-family: 'Segoe UI', Arial;
+    -fx-base: #4CAF50;
+}
+
+/* Titre */
+.form-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2E7D32;
+    -fx-padding: 0 0 10px 0;
+}
+
+/* Boutons avec icônes */
+.icon-button {
+    -fx-background-radius: 20;
+    -fx-min-width: 40;
+    -fx-min-height: 40;
+    -fx-background-color: transparent;
+    -fx-cursor: hand;
+}
+
+.icon-button:hover {
+    -fx-background-color: #E8F5E9;
+}
+
+.icon-button.delete:hover {
+    -fx-background-color: #FFEBEE;
+}
+
+/* Bouton Soumettre */
+.submit-button {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 5;
+    -fx-padding: 8 15 8 15;
+    -fx-cursor: hand;
+}
+
+.submit-button:hover {
+    -fx-background-color: #388E3C;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0.5, 0, 1);
+}
+
+/* Champs de formulaire */
+.form-label {
+    -fx-font-weight: bold;
+    -fx-text-fill: #455A64;
+}
+
+.date-picker, .text-area, .text-field {
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+    -fx-border-color: #BDBDBD;
+    -fx-padding: 5;
+}
+
+.disabled-input {
+    -fx-background-color: #EEEEEE;
+    -fx-text-fill: #616161;
+}
+
+/* TableView */
+.table-view {
+    -fx-background-color: white;
+    -fx-table-cell-border-color: transparent;
+}
+
+.table-view .column-header {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: #F5F5F5;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #C8E6C9;
+}
+
+/* Animation pour les boutons */
+.button {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0.3, 0, 1);
+    -fx-transition: all 0.3s;
+}
+
+.button:hover {
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}

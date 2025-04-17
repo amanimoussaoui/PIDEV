@@ -1,13 +1,16 @@
 package tn.esprit.controllers;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.FlowPane;
+import javafx.stage.Stage;
 import tn.esprit.entities.Terrain;
 import tn.esprit.services.ServiceTerrain;
 
@@ -25,13 +28,14 @@ public class AffichageClient implements Initializable {
     @FXML private TextArea descriptionArea;
     @FXML private Button candidatureBtn;
 
-    private ServiceTerrain serviceTerrain = new ServiceTerrain();
-    private Terrain selectedTerrain;
+    private Terrain terrainSelectionne;
+    private final ServiceTerrain serviceTerrain = new ServiceTerrain();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         loadTerrains();
         detailsPane.setVisible(false);
+        candidatureBtn.setDisable(true);
     }
 
     private void loadTerrains() {
@@ -50,7 +54,6 @@ public class AffichageClient implements Initializable {
             Image img = new Image("file:" + terrain.getImage());
             imageView.setImage(img);
         } catch (Exception e) {
-            // Image par défaut si non trouvée
             imageView.setImage(new Image("/tn/esprit/images/default_terrain.jpg"));
         }
         imageView.setFitWidth(200);
@@ -66,13 +69,16 @@ public class AffichageClient implements Initializable {
         card.setPrefWidth(200);
 
         // Gestion du clic sur la carte
-        card.setOnMouseClicked(event -> showTerrainDetails(terrain));
+        card.setOnMouseClicked(event -> {
+            terrainSelectionne = terrain;
+            showTerrainDetails(terrain);
+            candidatureBtn.setDisable(false);
+        });
 
         return card;
     }
 
     private void showTerrainDetails(Terrain terrain) {
-        selectedTerrain = terrain;
         detailsPane.setVisible(true);
 
         try {
@@ -89,19 +95,36 @@ public class AffichageClient implements Initializable {
 
     @FXML
     private void handleCandidature() {
-        if (selectedTerrain != null) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Candidature");
-            alert.setHeaderText("Candidature pour le terrain");
-            alert.setContentText("Votre candidature pour le terrain à " + selectedTerrain.getLocalisation()
-                    + " a été enregistrée!");
-            alert.showAndWait();
-        } else {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Aucun terrain sélectionné");
-            alert.setHeaderText(null);
-            alert.setContentText("Veuillez sélectionner un terrain avant de faire une candidature.");
-            alert.showAndWait();
+        if (terrainSelectionne == null) {
+            showAlert("Erreur", "Veuillez sélectionner un terrain", Alert.AlertType.WARNING);
+            return;
         }
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FormulaireCandidature.fxml"));
+            Parent root = loader.load();
+
+            FaireCandidature controller = loader.getController();
+            controller.setIdTerrain(terrainSelectionne.getId());
+            controller.setMontant(terrainSelectionne.getPrix());
+            controller.setTerrainSelectionne(terrainSelectionne); // Cette ligne était manquante
+
+            Stage stage = new Stage();
+            stage.setTitle("Formulaire de Candidature");
+            stage.setScene(new Scene(root, 700, 600));
+            stage.show();
+
+        } catch (Exception e) {
+            showAlert("Erreur", "Impossible d'ouvrir le formulaire: " + e.getMessage(), Alert.AlertType.ERROR);
+            e.printStackTrace();
+        }
+    }
+
+    private void showAlert(String title, String message, Alert.AlertType type) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="592.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.MainmenuScene">
+   <children>
+      <!-- Navigation Bar on the Left -->
+      <VBox layoutX="0.0" layoutY="82.0" prefHeight="318.0" prefWidth="196.0" style="-fx-background-color: #2E8B57;">
+         <children>
+            <Button fx:id="btnProducts" mnemonicParsing="false" onAction="#redirectToProductList" prefHeight="40.0" prefWidth="174.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;" text="Gestion des produits" />
+            <Button fx:id="btnMateriels" mnemonicParsing="false" onAction="#redirectToMateriels" prefHeight="40.0" prefWidth="180.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;" text="Gestion des matériels" />
+            <Button fx:id="btnFormations" mnemonicParsing="false" onAction="#redirectToFormations" prefHeight="40.0" prefWidth="177.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;" text="Gestion des formations" />
+         </children>
+      </VBox>
+      <!-- Top Header -->
+      <AnchorPane layoutY="8.0" prefHeight="74.0" prefWidth="600.0" style="-fx-background-color: #228B22;">
+         <children>
+            <Label fx:id="connecteduser" alignment="CENTER" contentDisplay="CENTER" layoutX="33.0" layoutY="10.0" prefHeight="26.0" prefWidth="138.0" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
+            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="213.0" layoutY="10.0" prefHeight="54.0" prefWidth="156.0" text="Agriwise" textAlignment="CENTER" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="38.0" />
+               </font>
+            </Label>
+            <Button fx:id="btnprofile" layoutX="8.0" layoutY="36.0" mnemonicParsing="false" onAction="#redirectoprofile" prefHeight="26.0" prefWidth="78.0" text="Mon profile" />
+            <Button fx:id="btnredirectdashboard" layoutX="461.0" layoutY="23.0" mnemonicParsing="false" onAction="#redirectdashboard" prefHeight="26.0" prefWidth="130.0" text="Vers le dashboard" />
+            <Button fx:id="logoutbtn" layoutX="95.0" layoutY="36.0" mnemonicParsing="false" onAction="#logout" prefHeight="26.0" prefWidth="104.0" text="se déconnecter" />
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>

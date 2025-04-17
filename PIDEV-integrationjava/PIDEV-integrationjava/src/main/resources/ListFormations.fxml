@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21"
+            fx:controller="tn.esprit.controllers.ListFormationsController"
+            stylesheets="formations.css">
+
+    <!-- LEFT SIDEBAR -->
+    <left>
+        <VBox spacing="20" style="-fx-background-color: #f4f4f4; -fx-padding: 20;">
+            <Label text="AgriWise" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
+            <!-- In your left sidebar VBox -->
+            <Button text="Liste des Formations" styleClass="sidebar-button" onAction="#switchToFrontView"/>
+            <Button text="Liste des Participations" styleClass="sidebar-button" onAction="#goToParticipationAdmin"/>
+        </VBox>
+    </left>
+
+    <!-- MAIN CONTENT (your existing content) -->
+    <center>
+        <VBox spacing="20" style="-fx-padding: 20;">
+            <Label text="Liste des Formations" styleClass="title-label" />
+
+            <TableView fx:id="formationTable" styleClass="styled-table">
+                <columns>
+                    <TableColumn fx:id="idColumn" text="ID" />
+                    <TableColumn fx:id="titreColumn" text="Titre" />
+                    <TableColumn fx:id="descriptionColumn" text="Description" />
+                    <TableColumn fx:id="prixColumn" text="Prix" />
+                    <TableColumn fx:id="dateColumn" text="Date" />
+                    <TableColumn fx:id="imageColumn" text="Image" />
+                    <TableColumn fx:id="actionColumn" text="Actions" />
+                </columns>
+            </TableView>
+
+            <Button text="Ajouter une nouvelle formation" styleClass="add-button"
+                    onAction="#goToAddFormation" />
+        </VBox>
+    </center>
+</BorderPane>

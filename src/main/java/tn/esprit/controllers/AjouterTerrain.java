@@ -10,6 +10,8 @@ import javafx.stage.Stage;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import tn.esprit.models.Terrain;
+import tn.esprit.models.Utilisateur;
+import tn.esprit.models.UserSession;
 import tn.esprit.services.ServiceTerrain;
 
 import java.io.File;
@@ -21,12 +23,16 @@ public class AjouterTerrain {
     @FXML private ImageView imageView;
     @FXML private Button btnChoisirImage, btnAjouter;
     @FXML private Label lblFileName;
+    private int utilisateurId;
 
     private File imageFile;
     private Terrain terrainModifier;
     private AfficherTerrain parentController;
     private Stage parentStage;
     private final ServiceTerrain service = new ServiceTerrain();
+    public void setUtilisateurId(int utilisateurId) {
+        this.utilisateurId = utilisateurId;
+    }
 
     @FXML
     private void initialize() {
@@ -165,11 +171,13 @@ public class AjouterTerrain {
         alert.showAndWait();
     }
     private Terrain createTerrainFromInput() {
+        Utilisateur utilisateurConnecte = UserSession.getInstance().getUtilisateurConnecte();
+
         Integer id = (terrainModifier != null) ? terrainModifier.getId() : null;
 
         return new Terrain(
                 id,
-                null, // utilisateur_id
+                utilisateurConnecte,
                 txtLocalisation.getText().trim(),
                 Double.parseDouble(txtSuperficie.getText().trim()),
                 Double.parseDouble(txtPrix.getText().trim()),

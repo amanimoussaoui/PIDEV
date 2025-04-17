@@ -14,18 +14,32 @@
 
     <top>
         <StackPane style="-fx-background-color: linear-gradient(to right, #2E7D32, #4CAF50);">
-            <Label text="🌾 Nos Terrains Agricoles Disponibles 🌾"
-                   styleClass="header-title">
-                <effect>
-                    <DropShadow color="#00000080" radius="5" spread="0.3"/>
-                </effect>
-                <padding>
-                    <Insets top="15" bottom="15"/>
-                </padding>
-            </Label>
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <!-- Bouton Back -->
+                <Button fx:id="backButton" text="← Retour" onAction="#handleBackButton"
+                        styleClass="back-button">
+                    <graphic>
+                        <ImageView fitWidth="16" fitHeight="16">
+                            <Image url="@/images/back-arrow.png"/>
+                        </ImageView>
+                    </graphic>
+                    <padding>
+                        <Insets left="10" right="10" top="5" bottom="5"/>
+                    </padding>
+                </Button>
+
+                <Label text="🌾 Nos Terrains Agricoles Disponibles 🌾"
+                       styleClass="header-title">
+                    <effect>
+                        <DropShadow color="#00000080" radius="5" spread="0.3"/>
+                    </effect>
+                </Label>
+            </HBox>
+            <padding>
+                <Insets top="15" bottom="15" left="15"/>
+            </padding>
         </StackPane>
     </top>
-
     <center>
         <SplitPane dividerPositions="0.6" style="-fx-background-color: #f5f5f5;">
             <effect>

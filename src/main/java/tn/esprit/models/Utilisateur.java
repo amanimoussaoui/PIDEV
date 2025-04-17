@@ -24,6 +24,16 @@ public class Utilisateur {
         this.roles = roles;
         this.date_inscription = date_inscription;
     }
+    public Utilisateur(int id_utilisateur, String nom) {
+        this.id_utilisateur = id_utilisateur;
+        this.nom = nom;
+        // You can set default values for other fields or leave them as null
+        this.prenom = null;
+        this.email = null;
+        this.password = null;
+        this.roles = new String[0];
+        this.date_inscription = null;
+    }
 
     public Utilisateur(String nom, String prenom, String email, String password, String[] roles, Date date_inscription) {
         this.nom = nom;

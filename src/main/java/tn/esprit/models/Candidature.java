@@ -1,92 +1,135 @@
 package tn.esprit.models;
 
-import javafx.beans.property.*;
 import java.time.LocalDate;
 
 public class Candidature {
-    private final IntegerProperty id = new SimpleIntegerProperty();
-    private final IntegerProperty idTerrainId = new SimpleIntegerProperty(); // corrigé
-    private final IntegerProperty utilisateurId = new SimpleIntegerProperty(); // corrigé
-    private final ObjectProperty<LocalDate> dateDebut = new SimpleObjectProperty<>();
-    private final ObjectProperty<LocalDate> dateFin = new SimpleObjectProperty<>();
-    private final StringProperty but = new SimpleStringProperty();
-    private final DoubleProperty montant = new SimpleDoubleProperty();
-    private final StringProperty etat = new SimpleStringProperty();
-    private final StringProperty recommandation = new SimpleStringProperty();
+    private int id;
+    private int idTerrainId;
+
+    private Utilisateur utilisateur;
+    private LocalDate dateDebut;
+    private LocalDate dateFin;
+    private String but;
+    private double montant;
+    private String etat;
+    private String recommandation;
     private Terrain terrain;
+    private int utilisateurId;
 
-    // Constructeurs
-    public Candidature() {}
-
-    public Candidature(int id, int idTerrainId, int utilisateurId, LocalDate dateDebut, LocalDate dateFin,
-                       String but, double montant, String etat, String recommandation) {
-        this.id.set(id);
-        this.idTerrainId.set(idTerrainId);
-        this.utilisateurId.set(utilisateurId);
-        this.dateDebut.set(dateDebut);
-        this.dateFin.set(dateFin);
-        this.but.set(but);
-        this.montant.set(montant);
-        this.etat.set(etat);
-        this.recommandation.set(recommandation);
+    // Constructeur par défaut
+    public Candidature() {
+        // Initialisation de l'utilisateur pour éviter NullPointerException
+        this.utilisateur = new Utilisateur(); // Valeur par défaut pour éviter null
     }
 
-    public Candidature(int idTerrainId, int utilisateurId, LocalDate dateDebut, LocalDate dateFin,
-                       String but, double montant, String etat, String recommandation) {
-        this.idTerrainId.set(idTerrainId);
-        this.utilisateurId.set(utilisateurId);
-        this.dateDebut.set(dateDebut);
-        this.dateFin.set(dateFin);
-        this.but.set(but);
-        this.montant.set(montant);
-        this.etat.set(etat);
-        this.recommandation.set(recommandation);
+    // Constructeur complet
+    public Candidature(int id, int idTerrainId, Utilisateur utilisateur, LocalDate dateDebut, LocalDate dateFin, String but, double montant, String etat, String recommandation) {
+        this.id = id;
+        this.idTerrainId = idTerrainId;
+        // Initialisation de l'utilisateur pour éviter null
+        this.utilisateur = utilisateur != null ? utilisateur : new Utilisateur(); // Valeur par défaut si utilisateur est null
+        this.dateDebut = dateDebut;
+        this.dateFin = dateFin;
+        this.but = but;
+        this.montant = montant;
+        this.etat = etat;
+        this.recommandation = recommandation;
     }
 
-    public Candidature(LocalDate dateDebut, LocalDate dateFin, String but) {
-        this.dateDebut.set(dateDebut);
-        this.dateFin.set(dateFin);
-        this.but.set(but);
+    // Constructeur sans id (pour l'ajout)
+    public Candidature(int idTerrainId, Utilisateur utilisateur, LocalDate dateDebut, LocalDate dateFin, String but, double montant, String etat) {
+        this.idTerrainId = idTerrainId;
+        // Initialisation de l'utilisateur pour éviter null
+        this.utilisateur = utilisateur != null ? utilisateur : new Utilisateur(); // Valeur par défaut si utilisateur est null
+        this.dateDebut = dateDebut;
+        this.dateFin = dateFin;
+        this.but = but;
+        this.montant = montant;
+        this.etat = etat;
     }
 
-    // Getters et Setters JavaFX properties
-    public IntegerProperty idProperty() { return id; }
-    public IntegerProperty idTerrainIdProperty() { return idTerrainId; }
-    public IntegerProperty utilisateurIdProperty() { return utilisateurId; }
-    public ObjectProperty<LocalDate> dateDebutProperty() { return dateDebut; }
-    public ObjectProperty<LocalDate> dateFinProperty() { return dateFin; }
-    public StringProperty butProperty() { return but; }
-    public DoubleProperty montantProperty() { return montant; }
-    public StringProperty etatProperty() { return etat; }
-    public StringProperty recommandationProperty() { return recommandation; }
+    // Getters et Setters
 
-    // Getters classiques
-    public int getId() { return id.get(); }
-    public void setId(int id) { this.id.set(id); }
+    public int getId() {
+        return id;
+    }
 
-    public int getIdTerrainId() { return idTerrainId.get(); }
-    public void setIdTerrainId(int idTerrainId) { this.idTerrainId.set(idTerrainId); }
+    public void setId(int id) {
+        this.id = id;
+    }
 
-    public int getUtilisateurId() { return utilisateurId.get(); }
-    public void setUtilisateurId(int utilisateurId) { this.utilisateurId.set(utilisateurId); }
+    public int getUtilisateurId() {
+        return utilisateurId;
+    }
 
-    public LocalDate getDateDebut() { return dateDebut.get(); }
-    public void setDateDebut(LocalDate dateDebut) { this.dateDebut.set(dateDebut); }
+    public void setUtilisateurId(int utilisateurId) {
+        this.utilisateurId = utilisateurId;
+    }
 
-    public LocalDate getDateFin() { return dateFin.get(); }
-    public void setDateFin(LocalDate dateFin) { this.dateFin.set(dateFin); }
+    public int getIdTerrainId() {
+        return idTerrainId;
+    }
 
-    public String getBut() { return but.get(); }
-    public void setBut(String but) { this.but.set(but); }
+    public void setIdTerrainId(int idTerrainId) {
+        this.idTerrainId = idTerrainId;
+    }
 
-    public double getMontant() { return montant.get(); }
-    public void setMontant(double montant) { this.montant.set(montant); }
+    public Utilisateur getUtilisateur() {
+        return utilisateur;
+    }
 
-    public String getEtat() { return etat.get(); }
-    public void setEtat(String etat) { this.etat.set(etat); }
+    public void setUtilisateur(Utilisateur utilisateur) {
+        // Si l'utilisateur est null, l'initialiser avec un utilisateur par défaut
+        this.utilisateur = utilisateur != null ? utilisateur : new Utilisateur();
+    }
 
-    public String getRecommandation() { return recommandation.get(); }
-    public void setRecommandation(String recommandation) { this.recommandation.set(recommandation); }
+    public LocalDate getDateDebut() {
+        return dateDebut;
+    }
+
+    public void setDateDebut(LocalDate dateDebut) {
+        this.dateDebut = dateDebut;
+    }
+
+    public LocalDate getDateFin() {
+        return dateFin;
+    }
+
+    public void setDateFin(LocalDate dateFin) {
+        this.dateFin = dateFin;
+    }
+
+    public String getBut() {
+        return but;
+    }
+
+    public void setBut(String but) {
+        this.but = but;
+    }
+
+    public double getMontant() {
+        return montant;
+    }
+
+    public void setMontant(double montant) {
+        this.montant = montant;
+    }
+
+    public String getEtat() {
+        return etat;
+    }
+
+    public void setEtat(String etat) {
+        this.etat = etat;
+    }
+
+    public String getRecommandation() {
+        return recommandation;
+    }
+
+    public void setRecommandation(String recommandation) {
+        this.recommandation = recommandation;
+    }
 
     public Terrain getTerrain() {
         return terrain;
@@ -99,15 +142,15 @@ public class Candidature {
     @Override
     public String toString() {
         return "Candidature{" +
-                "id=" + id.get() +
-                ", idTerrainId=" + idTerrainId.get() +
-                ", utilisateurId=" + utilisateurId.get() +
-                ", dateDebut=" + dateDebut.get() +
-                ", dateFin=" + dateFin.get() +
-                ", but='" + but.get() + '\'' +
-                ", montant=" + montant.get() +
-                ", etat='" + etat.get() + '\'' +
-                ", recommandation='" + recommandation.get() + '\'' +
+                "id=" + id +
+                ", idTerrainId=" + idTerrainId +
+                ", utilisateur=" + (utilisateur != null ? utilisateur.getId_utilisateur() : "null") +
+                ", dateDebut=" + dateDebut +
+                ", dateFin=" + dateFin +
+                ", but='" + but + '\'' +
+                ", montant=" + montant +
+                ", etat='" + etat + '\'' +
+                ", recommandation='" + recommandation + '\'' +
                 '}';
     }
 }

@@ -9,9 +9,10 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 import tn.esprit.models.Candidature;
 import tn.esprit.models.Terrain;
+import tn.esprit.models.UserSession;
 import tn.esprit.services.ServiceCandidature;
 import tn.esprit.services.ServiceTerrain;
-
+import tn.esprit.models.Utilisateur;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
@@ -31,7 +32,13 @@ public class FaireCandidature {
     @FXML private TextField montantField; // Ajoutez cette ligne si ce n'est pas déjà fait
     @FXML private TextField etatField;
     private int idTerrain;
-    private int idUtilisateur = 1; // à remplacer par l’ID réel si tu as un système de login
+    private int getConnectedUserId() {
+        UserSession session = UserSession.getInstance();
+        if (session == null) {
+            throw new IllegalStateException("Aucun utilisateur connecté");
+        }
+        return session.getUserId();
+    }
 
     public void setIdTerrain(int id) {
         this.idTerrain = id;
@@ -118,17 +125,53 @@ public class FaireCandidature {
                 return;
             }
 
+            // Récupération de l'utilisateur connecté
+            UserSession session = UserSession.getInstance();
+            if (session == null) {
+                showAlert(Alert.AlertType.ERROR, "Aucun utilisateur connecté.");
+                return;
+            }
+
+            int connectedUserId = session.getUserId();
+            Utilisateur connectedUser = session.getUtilisateurConnecte();
+
             ServiceCandidature service = new ServiceCandidature();
 
+            // Mode ajout
+            if (candidatureSelectionnee == null) {
+                // Vérification d'unicité
+                if (service.existeCandidature(connectedUserId, terrainSelectionne.getId(), dateDebut, dateFin, but)) {
+                    showAlert(Alert.AlertType.ERROR, "Une candidature similaire existe déjà.");
+                    return;
+                }
+
+                // Création de la nouvelle candidature
+                Candidature nouvelleCandidature = new Candidature();
+                nouvelleCandidature.setDateDebut(dateDebut);
+                nouvelleCandidature.setDateFin(dateFin);
+                nouvelleCandidature.setBut(but);
+                nouvelleCandidature.setEtat("en attente");
+                nouvelleCandidature.setMontant(terrainSelectionne.getPrix());
+                nouvelleCandidature.setIdTerrainId(terrainSelectionne.getId());
+
+                // Association de l'utilisateur connecté
+                nouvelleCandidature.setUtilisateurId(connectedUserId);
+                nouvelleCandidature.setUtilisateur(connectedUser);
+
+                // Ajout à la base de données
+                service.ajouter(nouvelleCandidature);
+
+                showAlert(Alert.AlertType.INFORMATION, "Candidature envoyée avec succès !");
+            }
             // Mode modification
-            if (candidatureSelectionnee != null) {
+            else {
                 // Vérification des modifications
                 if (!dateDebut.equals(candidatureSelectionnee.getDateDebut()) ||
                         !dateFin.equals(candidatureSelectionnee.getDateFin()) ||
                         !but.equals(candidatureSelectionnee.getBut())) {
 
                     // Vérification d'unicité seulement si modification
-                    if (service.existeCandidature(idUtilisateur, idTerrain, dateDebut, dateFin, but)) {
+                    if (service.existeCandidature(connectedUserId, terrainSelectionne.getId(), dateDebut, dateFin, but)) {
                         showAlert(Alert.AlertType.ERROR, "Une candidature similaire existe déjà.");
                         return;
                     }
@@ -139,30 +182,11 @@ public class FaireCandidature {
                 candidatureSelectionnee.setDateFin(dateFin);
                 candidatureSelectionnee.setBut(but);
 
-                service.modifier(candidatureSelectionnee); // Ne pas assigner le résultat si void
-                showAlert(Alert.AlertType.INFORMATION, "Candidature modifiée avec succès !");
-            }
-            // Mode ajout
-            else {
-                // Vérification d'unicité
-                if (service.existeCandidature(idUtilisateur, idTerrain, dateDebut, dateFin, but)) {
-                    showAlert(Alert.AlertType.ERROR, "Une candidature similaire existe déjà.");
-                    return;
+                if (service.modifier(candidatureSelectionnee)) {
+                    showAlert(Alert.AlertType.INFORMATION, "Candidature modifiée avec succès !");
+                } else {
+                    showAlert(Alert.AlertType.ERROR, "Échec de la modification de la candidature.");
                 }
-
-                // Création nouvelle candidature
-                Candidature nouvelleCandidature = new Candidature();
-                nouvelleCandidature.setDateDebut(dateDebut);
-                nouvelleCandidature.setDateFin(dateFin);
-                nouvelleCandidature.setBut(but);
-                nouvelleCandidature.setEtat("en attente");
-                nouvelleCandidature.setMontant(terrainSelectionne.getPrix());
-                nouvelleCandidature.setIdTerrainId(terrainSelectionne.getId());
-                nouvelleCandidature.setUtilisateurId(idUtilisateur);
-                nouvelleCandidature.setTerrain(terrainSelectionne);
-
-                service.ajouter(nouvelleCandidature); // Ne pas assigner le résultat si void
-                showAlert(Alert.AlertType.INFORMATION, "Candidature envoyée avec succès !");
             }
 
             resetForm();
@@ -173,7 +197,6 @@ public class FaireCandidature {
             e.printStackTrace();
         }
     }
-
     private void resetForm() {
         dateDebutPicker.setValue(null);
         dateFinPicker.setValue(null);

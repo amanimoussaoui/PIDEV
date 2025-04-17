@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 import tn.esprit.models.Terrain;
 import tn.esprit.services.ServiceTerrain;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -27,7 +28,8 @@ public class AffichageClient implements Initializable {
     @FXML private Label superficieLabel;
     @FXML private TextArea descriptionArea;
     @FXML private Button candidatureBtn;
-
+    @FXML
+    private Button backButton;
     private Terrain terrainSelectionne;
     private final ServiceTerrain serviceTerrain = new ServiceTerrain();
 
@@ -126,5 +128,25 @@ public class AffichageClient implements Initializable {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+    @FXML
+    private void handleBackButton() {
+        try {
+            // Charger la nouvelle interface
+            Parent root = FXMLLoader.load(getClass().getResource("/GestionCandidature.fxml"));
+
+            // Récupérer la scène actuelle
+            Scene currentScene = backButton.getScene();
+
+            // Remplacer le contenu de la scène actuelle
+            currentScene.setRoot(root);
+
+            // Optionnel: ajuster la taille de la fenêtre
+            Stage stage = (Stage) currentScene.getWindow();
+            stage.sizeToScene();
+        } catch (IOException e) {
+            System.err.println("Erreur lors du chargement de GestionCandidature.fxml");
+            e.printStackTrace();
+        }
     }
 }

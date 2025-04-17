@@ -1,15 +1,10 @@
 package tn.esprit.models;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-
 import java.util.Objects;
 
 public class Terrain {
     private Integer id;
-    private Integer utilisateur_id;
+    private Utilisateur utilisateur;
     private String localisation;
     private double superficie;
     private double prix;
@@ -18,9 +13,9 @@ public class Terrain {
 
     public Terrain() {}
 
-    public Terrain(Integer id, Integer utilisateur_id, String localisation, double superficie, double prix, String description, String image) {
+    public Terrain(Integer id, Utilisateur utilisateur, String localisation, double superficie, double prix, String description, String image) {
         this.id = id;
-        this.utilisateur_id = utilisateur_id;
+        this.utilisateur = utilisateur;
         this.localisation = localisation;
         this.superficie = superficie;
         this.prix = prix;
@@ -28,8 +23,8 @@ public class Terrain {
         this.image = image;
     }
 
-    public Terrain(Integer utilisateur_id, String localisation, double superficie, double prix, String description, String image) {
-        this.utilisateur_id = utilisateur_id;
+    public Terrain(Utilisateur utilisateur, String localisation, double superficie, double prix, String description, String image) {
+        this.utilisateur = utilisateur;
         this.localisation = localisation;
         this.superficie = superficie;
         this.prix = prix;
@@ -37,33 +32,22 @@ public class Terrain {
         this.image = image;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
-    private IntegerProperty utilisateurId = new SimpleIntegerProperty();
 
-    public int getUtilisateurId() {
-        return utilisateurId.get();
-    }
-
-    public void setUtilisateurId(int utilisateurId) {
-        this.utilisateurId.set(utilisateurId);
-    }
-
-    public IntegerProperty utilisateurIdProperty() {
-        return utilisateurId;
-    }
     public void setId(Integer id) {
         this.id = id;
     }
 
-    public Integer getUtilisateur_id() {
-        return utilisateur_id;
+    public Utilisateur getUtilisateur() {
+        return utilisateur;
     }
 
-    public void setUtilisateur_id(Integer utilisateur_id) {
-        this.utilisateur_id = utilisateur_id;
+    public void setUtilisateur(Utilisateur utilisateur) {
+        this.utilisateur = utilisateur;
     }
+
     public String getLocalisation() {
         return localisation;
     }
@@ -104,14 +88,6 @@ public class Terrain {
         this.image = image;
     }
 
-    // Pour affichage dans TableView
-    public ImageView getImageView() {
-        if (image != null && !image.isEmpty()) {
-            return new ImageView(new Image("file:" + image)); // "file:" est essentiel
-        }
-        return new ImageView();
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -119,17 +95,12 @@ public class Terrain {
         Terrain terrain = (Terrain) o;
         return Double.compare(terrain.superficie, superficie) == 0 &&
                 Double.compare(terrain.prix, prix) == 0 &&
-                localisation.equalsIgnoreCase(terrain.localisation) &&
-                description.equalsIgnoreCase(terrain.description);
+                localisation.equals(terrain.localisation) &&
+                description.equals(terrain.description);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(
-                localisation.toLowerCase(),
-                superficie,
-                prix,
-                description.toLowerCase()
-        );
+        return Objects.hash(localisation, superficie, prix, description);
     }
 }

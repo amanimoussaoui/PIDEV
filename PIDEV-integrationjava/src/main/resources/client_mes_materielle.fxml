@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Font?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="tn.esprit.controllers.ClientMesMaterielleController"
+      spacing="20"
+      style="-fx-background-color: #f4f4f4;"
+      alignment="TOP_CENTER">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <!-- En-tête -->
+    <HBox alignment="CENTER" spacing="20">
+        <Button text="Retour" onAction="#goBack"
+                style="-fx-background-color: #2e8b57; -fx-text-fill: white;"/>
+        <Label text="Mes Matériels" style="-fx-font-size: 24; -fx-font-weight: bold;">
+            <font>
+                <Font name="System Bold" size="24.0"/>
+            </font>
+        </Label>
+    </HBox>
+
+    <!-- Barre de recherche -->
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <TextField fx:id="searchField" promptText="Rechercher un matériel..." HBox.hgrow="ALWAYS"
+                  style="-fx-background-radius: 3; -fx-border-radius: 3;">
+            <padding>
+                <Insets top="8" right="15" bottom="8" left="15"/>
+            </padding>
+        </TextField>
+    </HBox>
+
+    <!-- ScrollPane pour contenir le FlowPane -->
+    <ScrollPane VBox.vgrow="ALWAYS" fitToWidth="true" style="-fx-background-color: transparent;">
+        <FlowPane fx:id="materielsContainer" hgap="20" vgap="20" style="-fx-background-color: transparent;">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+        </FlowPane>
+    </ScrollPane>
+
+    <!-- Boutons d'action -->
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button text="Supprimer" onAction="#supprimerMateriel" 
+                style="-fx-background-color: #ff4444; -fx-text-fill: white; -fx-cursor: hand; -fx-background-radius: 3;">
+            <padding>
+                <Insets top="8" right="15" bottom="8" left="15"/>
+            </padding>
+        </Button>
+        <Button text="Modifier" onAction="#handleModifierMateriel"
+                style="-fx-background-color: #2e8b57; -fx-text-fill: white; -fx-cursor: hand; -fx-background-radius: 3;">
+            <padding>
+                <Insets top="8" right="15" bottom="8" left="15"/>
+            </padding>
+        </Button>
+    </HBox>
+
+</VBox> 

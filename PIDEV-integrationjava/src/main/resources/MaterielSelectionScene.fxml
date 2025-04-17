@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.MaterielSelectionController">
+   <children>
+      <VBox alignment="CENTER" layoutX="150.0" layoutY="100.0" spacing="20.0">
+         <children>
+            <Button fx:id="btnBienvenueAdmin" mnemonicParsing="false" onAction="#redirectToHomeAdmin" prefHeight="40.0" prefWidth="300.0" style="-fx-background-color: #2E8B57; -fx-text-fill: white;" text="Bienvenue Admin">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </Button>
+            <Button fx:id="btnBienvenueClient" mnemonicParsing="false" onAction="#redirectToHomeClient" prefHeight="40.0" prefWidth="300.0" style="-fx-background-color: #228B22; -fx-text-fill: white;" text="Bienvenue">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </Button>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane> 

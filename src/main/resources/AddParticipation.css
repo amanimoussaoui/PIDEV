@@ -1,0 +1,48 @@
+/* Global Styles */
+.root {
+    -fx-background-color: #ffffff; /* Fond blanc */
+}
+
+/* Style pour le VBox */
+.vbox {
+    -fx-background-color: transparent; /* Transparence */
+    -fx-padding: 20;
+    -fx-spacing: 20;
+    -fx-alignment: center;
+}
+
+/* Style pour le Label */
+.label {
+    -fx-font-size: 18;
+    -fx-font-weight: bold;
+    -fx-text-fill: #4CAF50; /* Texte en vert */
+}
+
+/* Style pour le ComboBox */
+.combo-box {
+    -fx-pref-width: 250;
+    -fx-background-color: #ffffff;
+    -fx-border-color: #4CAF50; /* Bordure verte */
+    -fx-border-radius: 5;
+    -fx-padding: 5;
+}
+
+/* Style pour le Button */
+.button {
+    -fx-background-color: #4CAF50; /* Vert */
+    -fx-text-fill: white; /* Texte blanc */
+    -fx-font-weight: bold;
+    -fx-border-radius: 5;
+    -fx-padding: 10 20;
+    -fx-font-size: 14;
+}
+
+/* Style au survol du bouton */
+.button:hover {
+    -fx-background-color: darkgreen; /* Couleur plus sombre au survol */
+}
+
+/* Style pour le ComboBox au survol */
+.combo-box:hover {
+    -fx-border-color: darkgreen; /* Bordure verte sombre au survol */
+}

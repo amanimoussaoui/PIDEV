@@ -1,0 +1,272 @@
+/* Style général du formulaire */
+.form-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+    -fx-padding: 0 0 10 0;
+}
+
+.form-label {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #34495e;
+}
+
+/* Style des champs de saisie */
+.text-field, .text-area {
+    -fx-font-size: 13px;
+    -fx-background-radius: 4px;
+    -fx-border-radius: 4px;
+    -fx-border-color: #bdc3c7;
+    -fx-border-width: 1px;
+    -fx-padding: 5px;
+    -fx-background-color: white;
+}
+
+.text-field:focused, .text-area:focused {
+    -fx-border-color: #3498db;
+}
+
+.text-area {
+    -fx-background-insets: 0;
+    -fx-background-color: transparent, white, transparent, white;
+}
+
+/* Style des champs en erreur */
+.text-field.error, .text-area.error {
+    -fx-border-color: #e74c3c;
+    -fx-border-width: 2px;
+    -fx-background-color: #ffeeee;
+    -fx-effect: dropshadow(three-pass-box, rgba(231, 76, 60, 0.3), 5, 0, 0, 0);
+}
+
+.text-field.error:focused, .text-area.error:focused {
+    -fx-border-color: #c0392b;
+}
+
+/* Style des champs valides */
+.text-field.success, .text-area.success {
+    -fx-border-color: #2ecc71;
+    -fx-border-width: 1px;
+}
+
+/* Style de l'image */
+.image-preview {
+    -fx-border-color: #95a5a6;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 0);
+}
+
+.image-preview.error {
+    -fx-border-color: #e74c3c;
+    -fx-border-width: 2px;
+    -fx-effect: dropshadow(three-pass-box, rgba(231, 76, 60, 0.5), 7, 0, 0, 0);
+}
+
+/* Style des boutons */
+.browse-button {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-padding: 5px 10px;
+    -fx-background-radius: 4px;
+}
+
+.browse-button:hover {
+    -fx-background-color: #2980b9;
+}
+
+.browse-button.error {
+    -fx-border-color: #e74c3c;
+    -fx-border-width: 2px;
+    -fx-background-color: #ffdddd;
+}
+
+.submit-button {
+    -fx-background-color: #2ecc71;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-padding: 8px 20px;
+    -fx-background-radius: 4px;
+}
+
+.submit-button:hover {
+    -fx-background-color: #27ae60;
+}
+
+.submit-button:disabled {
+    -fx-background-color: #95a5a6;
+}
+
+/* Labels d'information */
+.file-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #7f8c8d;
+    -fx-font-style: italic;
+}
+
+.file-label.error {
+    -fx-text-fill: #e74c3c;
+}
+
+.required-fields-label {
+    -fx-font-size: 11px;
+    -fx-text-fill: #e74c3c;
+    -fx-font-style: italic;
+}
+
+/* Tooltips */
+.tooltip {
+    -fx-font-size: 12px;
+    -fx-background-color: #2c3e50;
+    -fx-text-fill: white;
+    -fx-padding: 5px;
+    -fx-background-radius: 3px;
+}
+
+.tooltip.error {
+    -fx-background-color: #e74c3c;
+}
+
+/* Messages d'erreur flottants */
+.error-message {
+    -fx-text-fill: #e74c3c;
+    -fx-font-size: 11px;
+    -fx-font-style: italic;
+    -fx-padding: 2px 0 0 5px;
+}
+
+/* Style de base du TableView */
+.table-view {
+    -fx-background-color: #f5f5f5;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1px;
+}
+
+/* En-têtes des colonnes */
+.table-view .column-header {
+    -fx-background-color: linear-gradient(to bottom, #4CAF50, #2E7D32);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-border-color: #e0e0e0;
+}
+
+/* Cellules */
+.table-view .table-cell {
+    -fx-padding: 8px;
+    -fx-border-color: #e0e0e0;
+    -fx-alignment: CENTER;
+}
+
+/* Alternance des couleurs de ligne */
+.table-row-cell:odd {
+    -fx-background-color: #E8F5E9;
+}
+
+.table-row-cell:even {
+    -fx-background-color: #C8E6C9;
+}
+
+/* Style au survol */
+.table-row-cell:hover {
+    -fx-background-color: #A5D6A7;
+}
+
+.header {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2e7d32;
+    -fx-padding: 10;
+    -fx-alignment: center;
+}
+
+.card {
+    -fx-padding: 10;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-background-color: #dcedc8;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 4, 0.5, 0, 2);
+    -fx-cursor: hand;
+    -fx-min-width: 180;
+    -fx-min-height: 160;
+}
+
+.prix-label {
+    -fx-text-fill: #33691e;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.details-box {
+    -fx-padding: 20;
+    -fx-background-color: #f1f8e9;
+    -fx-background-radius: 15;
+    -fx-border-radius: 15;
+    -fx-border-color: #aed581;
+    -fx-spacing: 8;
+}
+
+.btn {
+    -fx-background-color: #7cb342;
+    -fx-text-fill: white;
+    -fx-padding: 6 12;
+    -fx-background-radius: 10;
+    -fx-font-weight: bold;
+}
+
+.root {
+    -fx-background-image: url("../images/background_agriculture.jpg");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover;
+    -fx-background-position: center;
+}
+
+.success-alert {
+    -fx-background-color: #e8f5e9;
+    -fx-border-color: #4caf50;
+}
+
+.success-alert .label {
+    -fx-text-fill: #2e7d32;
+    -fx-font-weight: bold;
+}
+/* Couleurs et styles des boutons de la sidebar */
+.sidebar-button {
+    -fx-background-color: #34495E;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 10px;
+    -fx-border-radius: 5px;
+}
+
+.sidebar-button:hover {
+    -fx-background-color: #1ABC9C;
+}
+
+/* Titre de chaque section */
+.table-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2980B9;
+    -fx-padding: 10px;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.fade-in {
+    animation: fadeIn 1s ease-in;
+}
+
+/* Style général */
+.tableView {
+    -fx-background-color: #ecf0f1;
+    -fx-border-color: #bdc3c7;
+    -fx-border-width: 1px;
+}

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="600.0" prefWidth="500.0" styleClass="order-form-background" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.orderFormController">
+    <children>
+        <VBox alignment="CENTER" prefHeight="600.0" prefWidth="500.0" spacing="20.0">
+            <!-- Bouton de retour -->
+            <HBox alignment="CENTER_LEFT" prefHeight="40.0" prefWidth="500.0">
+                <children>
+                    <Button fx:id="backButton" onAction="#returnToMarket" styleClass="back-button" stylesheets="@style.css">
+                        <graphic>
+                            <ImageView fitHeight="20.0" fitWidth="20.0" preserveRatio="true">
+                                <image>
+                                    <Image url="@/images/back_arrow.png" />
+                                </image>
+                            </ImageView>
+                        </graphic>
+                        <HBox.margin>
+                            <Insets left="20.0" top="10.0" />
+                        </HBox.margin>
+                    </Button>
+                </children>
+            </HBox>
+
+            <!-- Titre -->
+            <Label text="Formulaire de Commande" styleClass="order-form-title">
+                <font>
+                    <Font name="System Bold" size="28.0" />
+                </font>
+            </Label>
+
+            <!-- Informations du produit -->
+            <VBox alignment="CENTER" spacing="10.0" styleClass="product-info-container">
+                <Label fx:id="productNameLabel" styleClass="product-info-label" text="Produit: " />
+                <Label fx:id="productPriceLabel" styleClass="product-info-label" text="Prix unitaire: " />
+            </VBox>
+
+            <!-- Formulaire -->
+            <VBox alignment="CENTER" spacing="15.0" styleClass="form-container">
+                <!-- Quantité -->
+                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                    <Label text="Quantité:" styleClass="form-label" />
+                    <TextField fx:id="quantityField" prefWidth="200.0" promptText="Entrez la quantité" styleClass="form-field" />
+                </HBox>
+
+                <!-- Adresse -->
+                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                    <Label text="Adresse de livraison:" styleClass="form-label" />
+                    <TextField fx:id="addressField" prefWidth="200.0" promptText="Entrez votre adresse" styleClass="form-field" />
+                </HBox>
+
+                <!-- Date de livraison -->
+                <HBox alignment="CENTER_LEFT" spacing="10.0">
+                    <Label text="Date de livraison:" styleClass="form-label" />
+                    <DatePicker fx:id="deliveryDatePicker" prefWidth="200.0" styleClass="form-field" />
+                </HBox>
+
+                <!-- Bouton de confirmation -->
+                <Button fx:id="confirmButton" onAction="#confirmOrder" text="Ajouter Au Panier" styleClass="confirm-button" stylesheets="@style.css">
+                    <font>
+                        <Font name="System Bold" size="16.0" />
+                    </font>
+                </Button>
+            </VBox>
+        </VBox>
+    </children>
+</AnchorPane>

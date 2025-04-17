@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="tn.esprit.controllers.AjouterTerrain"
+            stylesheets="@/values/style.css">
+
+   <!-- Background Image -->
+   <ImageView fitWidth="800" fitHeight="600" preserveRatio="false">
+      <image>
+         <Image url="@/images/background.jpg" />
+      </image>
+   </ImageView>
+
+   <center>
+      <VBox alignment="CENTER" spacing="20" style="-fx-background-color: rgba(255, 255, 255, 0.9); -fx-background-radius: 10; -fx-padding: 30;">
+         <!-- Titre -->
+         <Label text="Ajouter Nouveau Terrain" styleClass="form-title"/>
+
+         <!-- Formulaire -->
+         <GridPane hgap="15" vgap="20">
+            <columnConstraints>
+               <ColumnConstraints prefWidth="120" halignment="RIGHT"/>
+               <ColumnConstraints prefWidth="250"/>
+            </columnConstraints>
+
+            <!-- Ligne 0 - Localisation -->
+            <Label text="Localisation*:" styleClass="form-label" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+            <TextField fx:id="txtLocalisation" promptText="Minimum 6 caractères" styleClass="form-field" GridPane.rowIndex="0" GridPane.columnIndex="1">
+               <tooltip>
+                  <Tooltip text="Localisation doit contenir au moins 6 caractères"/>
+               </tooltip>
+            </TextField>
+
+            <!-- Ligne 1 - Superficie -->
+            <Label text="Superficie (m²)*:" styleClass="form-label" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+            <TextField fx:id="txtSuperficie" promptText="Nombre décimal" styleClass="form-field" GridPane.rowIndex="1" GridPane.columnIndex="1">
+               <tooltip>
+                  <Tooltip text="Doit être un nombre valide (ex: 125.50)"/>
+               </tooltip>
+            </TextField>
+
+            <!-- Ligne 2 - Prix -->
+            <Label text="Prix (DT)*:" styleClass="form-label" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+            <TextField fx:id="txtPrix" promptText="Nombre décimal" styleClass="form-field" GridPane.rowIndex="2" GridPane.columnIndex="1">
+               <tooltip>
+                  <Tooltip text="Doit être un nombre valide (ex: 250000.99)"/>
+               </tooltip>
+            </TextField>
+
+            <!-- Ligne 3 - Description -->
+            <Label text="Description*:" styleClass="form-label" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+            <TextArea fx:id="txtDescription" promptText="Minimum 10 caractères" GridPane.rowIndex="3" GridPane.columnIndex="1"
+                      wrapText="true" prefRowCount="3" styleClass="form-field">
+               <tooltip>
+                  <Tooltip text="Description détaillée (10 caractères minimum)"/>
+               </tooltip>
+            </TextArea>
+
+            <!-- Ligne 4 - Image -->
+            <Label text="Image:" styleClass="form-label" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+            <VBox spacing="10" GridPane.rowIndex="4" GridPane.columnIndex="1">
+               <HBox spacing="10" alignment="CENTER_LEFT">
+                  <Button fx:id="btnChoisirImage" text="Parcourir..." onAction="#choisirImage"
+                          styleClass="browse-button"/>
+                  <Label fx:id="lblFileName" text="Aucune image sélectionnée" styleClass="file-label"/>
+               </HBox>
+               <ImageView fx:id="imageView" fitHeight="150" fitWidth="200" preserveRatio="true"
+                          styleClass="image-preview"/>
+            </VBox>
+         </GridPane>
+
+         <!-- Bouton Valider -->
+         <Button fx:id="btnAjouter" text="Enregistrer le Terrain" onAction="#ajouterTerrain"
+                 styleClass="submit-button"/>
+
+         <Label text="* Champs obligatoires" styleClass="required-fields-label"/>
+      </VBox>
+   </center>
+</BorderPane>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import java.net.URL?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+
+<StackPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="GestionAgricole.controllers.Parcelle.BackendParcelleController">
+    <stylesheets>
+        <URL value="@../../css/styles.css" />
+    </stylesheets>
+
+    <BorderPane styleClass="app-container">
+        <!-- Main Content Area -->
+        <center>
+            <BorderPane styleClass="content-area">
+                <!-- Top Header Bar -->
+                <top>
+                    <HBox styleClass="top-bar">
+                        <HBox styleClass="page-header">
+                            <Label text="Liste des Parcelles" styleClass="page-title"/>
+                        </HBox>
+
+                        <Region HBox.hgrow="ALWAYS" />
+
+
+                    </HBox>
+                </top>
+
+                <!-- Main Content -->
+                <center>
+                    <VBox styleClass="main-content">
+                        <HBox styleClass="action-bar">
+                            <Region HBox.hgrow="ALWAYS" />
+
+                            <HBox styleClass="right-actions">
+                                <Button text="Créer une nouvelle Parcelle" styleClass="btn-submit">
+                                    <graphic>
+                                        <FontAwesomeIconView glyphName="PLUS_CIRCLE" styleClass="button-icon"/>
+                                    </graphic>
+                                </Button>
+                            </HBox>
+                        </HBox>
+
+                        <!-- Table Container -->
+                        <StackPane styleClass="table-wrapper" VBox.vgrow="ALWAYS">
+                                <TableView fx:id="parcelleTable" styleClass="modern-table">
+                                    <columns>
+                                        <TableColumn fx:id="idColumn" text="ID" prefWidth="80" />
+                                        <TableColumn fx:id="nomColumn" text="Nom" prefWidth="200" />
+                                        <TableColumn fx:id="superficieColumn" text="Superficie (m²)" prefWidth="150" />
+                                        <TableColumn fx:id="localisationColumn" text="Localisation" prefWidth="250" />
+                                        <TableColumn fx:id="typeSolColumn" text="Type Sol" prefWidth="150" />
+                                        <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="120" />
+                                    </columns>
+                                    <placeholder>
+                                        <VBox styleClass="empty-state">
+                                            <FontAwesomeIconView glyphName="MAP" styleClass="empty-icon"/>
+                                            <Label text="Aucune parcelle trouvée" styleClass="empty-title"/>
+                                            <Label text="Créez votre première parcelle pour commencer" styleClass="empty-desc"/>
+                                            <Button styleClass="empty-action">
+                                                <graphic>
+                                                    <HBox styleClass="button-content">
+                                                        <FontAwesomeIconView glyphName="PLUS" styleClass="button-icon"/>
+                                                        <Label text="Ajouter une parcelle" styleClass="button-text"/>
+                                                    </HBox>
+                                                </graphic>
+                                            </Button>
+                                        </VBox>
+                                    </placeholder>
+                                </TableView>
+                        </StackPane>
+                    </VBox>
+                </center>
+            </BorderPane>
+        </center>
+    </BorderPane>
+</StackPane>

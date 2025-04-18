@@ -1,0 +1,443 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* Color variables */
+:root {
+    /* JavaFX color scheme */
+    --primary-color: #1F4E3D;
+    --secondary-color: #2A9D8F;
+    --accent-color: #E9C46A;
+    --warning-color: #F4A261;
+    --danger-color: #E76F51;
+    --light-gray: #f8f9fa;
+    --medium-gray: #e9ecef;
+    --dark-gray: #6c757d;
+    --darker-gray: #495057;
+    --background-color: #F5F7FA;
+
+    /* Additional colors for events */
+    --purple-color: #6C5B7B;
+    --blue-color: #355C7D;
+
+    /* UI constants */
+    --border-radius: 8px;
+    --border-color: #dbe0e6;
+    --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --hover-transition: all 0.2s ease;
+}
+
+html, body {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    background-color: var(--background-color);
+    color: var(--darker-gray);
+    line-height: 1.5;
+}
+
+/* Main calendar container */
+#calendar-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    padding: 0; /* Remove padding */
+}
+
+/* Calendar wrapper */
+#calendar-wrapper {
+    flex: 1;
+    min-height: 500px; /* Ensure minimum height */
+    margin-bottom: 10px;
+    border-radius: var(--border-radius);
+    background-color: white;
+    box-shadow: var(--box-shadow);
+    overflow: hidden;
+}
+
+/* Calendar element */
+#calendar {
+    height: 100%; /* Take full height of parent */
+    width: 100%;
+}
+
+/* Legend section */
+.calendar-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px;
+    background-color: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+/* Legend items */
+.legend-item {
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+    color: var(--darker-gray);
+    background-color: var(--light-gray);
+    padding: 5px 10px;
+    border-radius: 20px;
+    transition: var(--hover-transition);
+}
+
+.legend-item:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.legend-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+/* FullCalendar overrides */
+.fc {
+    height: 100% !important;
+}
+
+/* Header Section */
+.fc-header-toolbar {
+    padding: 12px !important;
+    margin-bottom: 0 !important;
+    background-color: white;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.fc-toolbar-title {
+    font-size: 20px !important;
+    font-weight: 600 !important;
+    color: var(--primary-color) !important;
+    text-transform: capitalize;
+}
+
+/* Buttons */
+.fc-button {
+    background: white !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--primary-color) !important;
+    border-radius: 6px !important;
+    padding: 8px 16px !important;
+    font-weight: 500 !important;
+    font-size: 13px !important;
+    box-shadow: none !important;
+    transition: var(--hover-transition) !important;
+}
+
+.fc-button:hover {
+    background: rgba(31, 78, 61, 0.08) !important;
+    color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+    transform: translateY(-2px);
+}
+
+.fc-button-active {
+    background: var(--primary-color) !important;
+    color: white !important;
+    border-color: var(--primary-color) !important;
+}
+
+.fc-button-active:hover {
+    background: var(--secondary-color) !important;
+    color: white !important;
+    border-color: var(--secondary-color) !important;
+}
+
+.fc-prev-button, .fc-next-button {
+    padding: 8px 12px !important;
+}
+
+.fc-icon {
+    font-size: 1.3em !important;
+}
+
+.fc-today-button {
+    background: var(--secondary-color) !important;
+    color: white !important;
+    border-color: var(--secondary-color) !important;
+}
+
+.fc-today-button:hover {
+    background: var(--primary-color) !important;
+    color: white !important;
+    border-color: var(--primary-color) !important;
+}
+
+/* Table Headers */
+.fc-col-header {
+    background-color: rgba(42, 157, 143, 0.08);
+}
+
+.fc-col-header-cell {
+    padding: 10px 0 !important;
+}
+
+.fc-col-header-cell-cushion {
+    color: var(--primary-color) !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    padding: 8px 0 !important;
+}
+
+/* Day Cells */
+.fc-daygrid-day {
+    transition: var(--hover-transition);
+}
+
+.fc-daygrid-day:hover {
+    background-color: rgba(42, 157, 143, 0.08);
+}
+
+.fc-daygrid-day-frame {
+    padding: 6px !important;
+}
+
+.fc-daygrid-day-number {
+    color: var(--darker-gray);
+    font-weight: 500;
+    text-decoration: none !important;
+    font-size: 14px;
+    padding: 8px !important;
+}
+
+/* Today's Cell */
+.fc-day-today {
+    background-color: rgba(42, 157, 143, 0.12) !important;
+}
+
+.fc-day-today .fc-daygrid-day-number {
+    background-color: var(--secondary-color);
+    color: white;
+    font-weight: 600;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Weekend Days */
+.fc-day-sat, .fc-day-sun {
+    background-color: rgba(233, 196, 106, 0.05);
+}
+
+.fc-day-sat .fc-daygrid-day-number,
+.fc-day-sun .fc-daygrid-day-number {
+    color: var(--dark-gray);
+}
+
+/* Events */
+.fc-event {
+    border: none !important;
+    border-radius: 4px !important;
+    padding: 4px 8px !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+    margin-bottom: 2px !important;
+    transition: var(--hover-transition) !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08) !important;
+}
+
+.fc-event:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Different colors for event types - using the JavaFX color scheme */
+.fc-event.Semis {
+    background: var(--secondary-color) !important;
+    border-left: 3px solid var(--primary-color) !important;
+}
+
+.fc-event.Arrosage {
+    background: var(--blue-color) !important;
+    border-left: 3px solid #2A4365 !important;
+}
+
+.fc-event.Fertilisation {
+    background: var(--accent-color) !important;
+    border-left: 3px solid #D69E2E !important;
+    color: var(--darker-gray) !important;
+}
+
+.fc-event.Récolte {
+    background: var(--primary-color) !important;
+    border-left: 3px solid #102A20 !important;
+}
+
+.fc-event.Traitement {
+    background: var(--warning-color) !important;
+    border-left: 3px solid #DD6B20 !important;
+    color: var(--darker-gray) !important;
+}
+
+.fc-event.Désherbage {
+    background: var(--purple-color) !important;
+    border-left: 3px solid #553C9A !important;
+}
+
+.fc-event.Autre {
+    background: var(--danger-color) !important;
+    border-left: 3px solid #C53030 !important;
+}
+
+/* Event Content */
+.fc-event-title {
+    font-weight: 500 !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.fc-event-time {
+    font-weight: 400 !important;
+    opacity: 0.9;
+}
+
+/* Week and Day View */
+.fc-timegrid-slot {
+    height: 45px !important;
+}
+
+.fc-timegrid-axis-cushion {
+    font-weight: 500;
+    color: var(--dark-gray);
+    font-size: 12px;
+}
+
+.fc-timegrid-slot-label-cushion {
+    font-size: 12px;
+    color: var(--dark-gray);
+}
+
+/* Popovers */
+.fc-popover {
+    border-radius: var(--border-radius) !important;
+    box-shadow: var(--box-shadow) !important;
+    border: none !important;
+}
+
+.fc-popover-header {
+    background-color: var(--primary-color) !important;
+    color: white !important;
+    padding: 10px !important;
+    border-top-left-radius: var(--border-radius) !important;
+    border-top-right-radius: var(--border-radius) !important;
+}
+
+/* SweetAlert2 Custom Styling */
+.swal2-popup {
+    border-radius: var(--border-radius) !important;
+    padding: 25px !important;
+    background-color: white !important;
+}
+
+.swal2-title {
+    color: var(--primary-color) !important;
+    font-size: 20px !important;
+    font-weight: 600 !important;
+}
+
+.swal2-html-container {
+    color: var(--darker-gray) !important;
+    font-size: 15px !important;
+}
+
+.swal2-icon.swal2-info,
+.swal2-icon.swal2-question {
+    color: var(--secondary-color) !important;
+    border-color: var(--secondary-color) !important;
+}
+
+.swal2-confirm {
+    background-color: var(--secondary-color) !important;
+    color: white !important;
+    border-radius: var(--border-radius) !important;
+    padding: 10px 24px !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    transition: var(--hover-transition) !important;
+}
+
+.swal2-confirm:hover {
+    background-color: var(--primary-color) !important;
+    transform: translateY(-1px);
+}
+
+.swal2-cancel {
+    background-color: var(--light-gray) !important;
+    color: var(--darker-gray) !important;
+    border-radius: var(--border-radius) !important;
+    border: 1px solid var(--border-color) !important;
+    padding: 10px 24px !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    transition: var(--hover-transition) !important;
+}
+
+.swal2-cancel:hover {
+    background-color: var(--medium-gray) !important;
+    transform: translateY(-1px);
+}
+
+/* Activity details popup */
+.activity-details {
+    background-color: white;
+    border-radius: var(--border-radius);
+    padding: 15px;
+    text-align: left;
+}
+
+.activity-details p {
+    margin-bottom: 10px;
+    color: var(--darker-gray);
+}
+
+.activity-details strong {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.activity-type {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    color: white;
+    font-size: 12px;
+    font-weight: 500;
+    margin-top: 5px;
+}
+
+.activity-type.Semis { background-color: var(--secondary-color); }
+.activity-type.Arrosage { background-color: var(--blue-color); }
+.activity-type.Fertilisation { background-color: var(--accent-color); color: var(--darker-gray); }
+.activity-type.Récolte { background-color: var(--primary-color); }
+.activity-type.Traitement { background-color: var(--warning-color); color: var(--darker-gray); }
+.activity-type.Désherbage { background-color: var(--purple-color); }
+.activity-type.Autre { background-color: var(--danger-color); }
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .fc-toolbar-title {
+        font-size: 18px !important;
+    }
+
+    .fc-button {
+        padding: 6px 10px !important;
+        font-size: 12px !important;
+    }
+}

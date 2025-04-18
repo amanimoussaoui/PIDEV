@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import java.net.URL?>
+
+<VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="GestionAgricole.controllers.Culture.CultureController"
+      spacing="20" style="-fx-padding: 20; -fx-background-color: #f8f9fa;">
+    <stylesheets>
+        <URL value="@../../css/styles.css" />
+    </stylesheets>
+
+    <HBox alignment="CENTER_RIGHT" spacing="10">
+        <Label text="Vos Cultures" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1F4E3D;" />
+        <Region HBox.hgrow="ALWAYS" />
+        <Button fx:id="addButton" text="Créer une Culture" onAction="#handleAddCulture" />
+    </HBox>
+
+    <ScrollPane fx:id="scrollPane" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
+                style="-fx-background: transparent; -fx-background-color: transparent;">
+        <StackPane>
+            <FlowPane fx:id="cultureContainer"
+                      hgap="20" vgap="20" alignment="TOP_CENTER"
+                      style="-fx-padding: 20 0 0 0;" />
+        </StackPane>
+    </ScrollPane>
+</VBox>

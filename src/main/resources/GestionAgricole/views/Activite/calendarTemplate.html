@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendrier des Activités</title>
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="../../css/calendar.css" rel="stylesheet">
+    <style>
+        .activity-type {
+            padding: 3px 8px;
+            border-radius: 4px;
+            color: white;
+            font-weight: bold;
+        }
+        .Semis { background-color: var(--secondary-color); }
+        .Arrosage { background-color: var(--blue-color); }
+        .Fertilisation { background-color: var(--accent-color); }
+        .Récolte { background-color: var(--primary-color); }
+        .Traitement { background-color: var(--warning-color); }
+        .Désherbage { background-color: var(--purple-color); }
+        .Autre { background-color: var(--danger-color); }
+    </style>
+</head>
+<body>
+<div id="calendar-container">
+    <div id="calendar-wrapper">
+        <div id="calendar"></div>
+    </div>
+    <div class="calendar-legend">
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: var(--secondary-color);"></div>
+            <span>Semis</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: var(--blue-color);"></div>
+            <span>Arrosage</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: var(--accent-color);"></div>
+            <span>Fertilisation</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: var(--primary-color);"></div>
+            <span>Récolte</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: var(--warning-color);"></div>
+            <span>Traitement</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: var(--purple-color);"></div>
+            <span>Désherbage</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: var(--danger-color);"></div>
+            <span>Autre</span>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/locales/fr.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                locale: 'fr',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: '' // Removed view switching buttons
+                },
+                height: '100%',
+                aspectRatio: 1.5,
+                events: window.calendarEvents || [],
+                eventClick: function(info) {
+                    const eventType = info.event.classNames[0] || 'Autre';
+                    const eventDate = info.event.start.toLocaleDateString('fr-FR', {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    });
+
+                    Swal.fire({
+                        title: info.event.title,
+                        html: `
+                            <div class="activity-details">
+                                <p><strong>Date:</strong> ${eventDate}</p>
+                                <p><strong>Type:</strong> <span class="activity-type ${eventType}">${eventType}</span></p>
+                                <p><strong>Description:</strong> ${info.event.extendedProps.description || 'Aucune description'}</p>
+                            </div>
+                        `,
+                        icon: 'info',
+                        confirmButtonText: 'Fermer',
+                        showCloseButton: true
+                    });
+                },
+                dateClick: function(info) {
+                    const formattedDate = new Date(info.dateStr).toLocaleDateString('fr-FR', {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    });
+
+                    Swal.fire({
+                        title: `Nouvelle Activité`,
+                        html: `
+                        <div class="activity-details">
+                            <p><strong>Date sélectionnée:</strong> ${formattedDate}</p>
+                            <p>Souhaitez-vous ajouter une nouvelle activité pour cette date?</p>
+                        </div>
+                    `,
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonText: 'Ajouter',
+                        cancelButtonText: 'Annuler'
+                    }).then((result) => {
+                        debugLog("Dialog result: " + (result.isConfirmed ? "confirmed" : "canceled"));
+
+                        if (result.isConfirmed) {
+                            debugLog("Attempting to call JavaFX bridge");
+
+                            if (window.javafx) {
+                                try {
+                                    debugLog("Calling JavaFX.callAddActivity with: " + info.dateStr);
+                                    const formattedDate = new Date(info.dateStr).toISOString().split('T')[0]; // Converts to yyyy-MM-dd
+                                    if (window.javafx && typeof window.javafx.callAddActivity === 'function') {
+                                        window.javafx.callAddActivity(formattedDate);
+                                    } else {
+                                        console.error("JavaFX bridge is not available or not a function");
+                                    }
+                                } catch (e) {
+                                    debugLog("Error calling JavaFX: " + e.toString());
+                                    console.error("Error calling JavaFX bridge: ", e);
+                                    alert("Error communicating with application: " + e.toString());
+                                }
+                            } else {
+                                debugLog("JavaFX bridge is not available!");
+                                console.error("JavaFX bridge is not available");
+                                alert("JavaFX bridge is not available");
+                            }
+                        }
+                    });
+                },
+                dayMaxEvents: true,
+                fixedWeekCount: false,
+                firstDay: 1,
+                showNonCurrentDates: false
+            });
+
+            calendar.render();
+            window.calendarInstance = calendar;
+            window.dispatchEvent(new Event('resize'));
+        }, 100);
+    });
+
+    window.updateCalendarEvents = function(eventsJson) {
+        try {
+            const events = JSON.parse(eventsJson);
+            if (window.calendarInstance) {
+                window.calendarInstance.removeAllEvents();
+                window.calendarInstance.addEventSource(events);
+            } else {
+                window.calendarEvents = events;
+            }
+        } catch (e) {
+            console.error("Error updating calendar events:", e);
+        }
+    };
+
+    window.addEventListener('resize', function() {
+        if (window.calendarInstance) {
+            window.calendarInstance.updateSize();
+        }
+    });
+</script>
+</body>
+</html>

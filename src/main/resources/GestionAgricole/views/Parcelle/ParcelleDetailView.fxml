@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import java.net.URL?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+
+<?import java.lang.String?>
+<VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="GestionAgricole.controllers.Parcelle.ParcelleDetailController"
+      stylesheets="@../../css/styles.css">
+    <stylesheets>
+        <URL value="@../../css/styles.css" />
+    </stylesheets>
+
+    <VBox styleClass="detail-card">
+        <HBox styleClass="form-header" spacing="15" alignment="CENTER_LEFT">
+            <StackPane styleClass="header-icon-container">
+                <FontAwesomeIconView glyphName="MAP" styleClass="header-icon"/>
+            </StackPane>
+            <VBox spacing="5">
+                <Label fx:id="formTitle" styleClass="header-title" text="Détails de la Parcelle"/>
+                <Label styleClass="header-subtitle" text="Consulter les détails de votre parcelle agricole"/>
+            </VBox>
+        </HBox>
+
+        <!-- Content -->
+        <GridPane fx:id="infoGrid" styleClass="detail-grid" hgap="20" vgap="20">
+            <columnConstraints>
+                <ColumnConstraints percentWidth="25"/>
+                <ColumnConstraints percentWidth="25"/>
+                <ColumnConstraints percentWidth="25"/>
+                <ColumnConstraints percentWidth="25"/>
+            </columnConstraints>
+        </GridPane>
+
+        <!-- Footer -->
+        <HBox styleClass="detail-footer">
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="Retour" fx:id="backButton" onAction="#handleBack" styleClass="btn-light"/>
+            <Button text="Modifier" fx:id="editButton" onAction="#handleEdit" styleClass="btn-primary"/>
+            <Button text="Supprimer" fx:id="deleteButton" onAction="#handleDelete" styleClass="btn-danger"/>
+        </HBox>
+    </VBox>
+</VBox>

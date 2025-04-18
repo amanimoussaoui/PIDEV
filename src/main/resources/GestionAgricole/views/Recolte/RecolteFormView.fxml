@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import java.net.URL?>
+
+<VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="GestionAgricole.controllers.Recolte.RecolteFormController"
+      styleClass="form-card" prefWidth="600" prefHeight="650">
+    <stylesheets>
+        <URL value="@../../css/styles.css" />
+    </stylesheets>
+
+    <!-- Header -->
+    <HBox styleClass="form-header" spacing="15" alignment="CENTER_LEFT">
+        <StackPane styleClass="header-icon-container">
+            <FontAwesomeIconView glyphName="SHOPPING_BASKET" styleClass="header-icon"/>
+        </StackPane>
+        <VBox spacing="5">
+            <Label fx:id="formTitle" styleClass="header-title" text="Nouvelle Récolte"/>
+            <Label styleClass="header-subtitle" text="Enregistrez les détails de votre récolte agricole"/>
+        </VBox>
+    </HBox>
+
+    <!-- Content Area -->
+    <ScrollPane fitToWidth="true" styleClass="form-scroll" vbarPolicy="AS_NEEDED">
+        <VBox styleClass="form-content" spacing="15">
+            <!-- Harvest Information Section -->
+            <TitledPane text="Informations de récolte" styleClass="form-section" expanded="true">
+                <VBox spacing="15">
+                    <!-- Date Field -->
+                    <VBox styleClass="field-group">
+                        <Label text="Date de récolte" styleClass="field-label">
+                            <graphic>
+                                <FontAwesomeIconView glyphName="CALENDAR" styleClass="label-icon"/>
+                            </graphic>
+                        </Label>
+                        <DatePicker fx:id="dateRecoltePicker" styleClass="modern-datepicker"/>
+                    </VBox>
+
+                    <!-- Quantity Field -->
+                    <VBox styleClass="field-group">
+                        <Label text="Quantité (kg)" styleClass="field-label">
+                            <graphic>
+                                <FontAwesomeIconView glyphName="SORT_NUMERIC_ASC" styleClass="label-icon"/>
+                            </graphic>
+                        </Label>
+                        <TextField fx:id="quantiteField" promptText="Ex: 150.5" styleClass="modern-input"/>
+                    </VBox>
+
+                    <!-- Quality Field -->
+                    <VBox styleClass="field-group">
+                        <Label text="Qualité" styleClass="field-label">
+                            <graphic>
+                                <FontAwesomeIconView glyphName="STAR" styleClass="label-icon"/>
+                            </graphic>
+                        </Label>
+                        <ComboBox fx:id="qualiteCombo" promptText="Sélectionnez la qualité" styleClass="modern-combo"/>
+                    </VBox>
+
+                    <!-- Unit Price Field -->
+                    <VBox styleClass="field-group">
+                        <Label text="Prix unitaire (Dt)" styleClass="field-label">
+                            <graphic>
+                                <FontAwesomeIconView glyphName="MONEY" styleClass="label-icon"/>
+                            </graphic>
+                        </Label>
+                        <TextField fx:id="prixUnitaireField" promptText="Ex: 2.5" styleClass="modern-input"/>
+                    </VBox>
+                </VBox>
+            </TitledPane>
+
+            <!-- Culture Section -->
+            <TitledPane text="Culture associée" styleClass="form-section" expanded="true">
+                <VBox spacing="15">
+                    <!-- Culture Field -->
+                    <VBox styleClass="field-group">
+                        <Label text="Culture" styleClass="field-label">
+                            <graphic>
+                                <FontAwesomeIconView glyphName="LEAF" styleClass="label-icon"/>
+                            </graphic>
+                        </Label>
+                        <ComboBox fx:id="cultureCombo" promptText="Sélectionnez une culture" styleClass="modern-combo"/>
+                    </VBox>
+                </VBox>
+            </TitledPane>
+        </VBox>
+    </ScrollPane>
+
+    <!-- Footer -->
+    <HBox styleClass="form-footer" spacing="10" alignment="CENTER_RIGHT">
+        <Button fx:id="cancelButton" onAction="#handleCancel" styleClass="btn-cancel" text="Annuler">
+            <graphic>
+                <FontAwesomeIconView glyphName="TIMES" styleClass="button-icon"/>
+            </graphic>
+        </Button>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button fx:id="submitButton" onAction="#handleSubmit" styleClass="btn-submit">
+            <graphic>
+                <FontAwesomeIconView glyphName="CHECK" styleClass="button-icon"/>
+            </graphic>
+            Enregistrer
+        </Button>
+    </HBox>
+</VBox>

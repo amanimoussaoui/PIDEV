@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import java.net.URL?>
+
+<VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="GestionAgricole.controllers.Activite.ActiviteFormController"
+      styleClass="form-card" prefWidth="600" prefHeight="500">
+    <stylesheets>
+        <URL value="@../../css/styles.css" />
+    </stylesheets>
+
+    <!-- Header -->
+    <HBox styleClass="form-header" spacing="15" alignment="CENTER_LEFT">
+        <StackPane styleClass="header-icon-container">
+            <FontAwesomeIconView glyphName="TASKS" styleClass="header-icon"/>
+        </StackPane>
+        <VBox spacing="5">
+            <Label fx:id="formTitle" styleClass="header-title" text="Nouvelle Activité"/>
+            <Label styleClass="header-subtitle" text="Créez ou modifiez les détails de votre activité agricole"/>
+        </VBox>
+    </HBox>
+
+    <!-- Content Area -->
+    <ScrollPane fitToWidth="true" styleClass="form-scroll" vbarPolicy="AS_NEEDED">
+        <VBox styleClass="form-content" spacing="15">
+            <!-- General Information Section -->
+            <TitledPane text="Informations générales" styleClass="form-section" expanded="true">
+                <VBox spacing="15">
+                    <!-- Description Field -->
+                    <VBox styleClass="field-group">
+                        <Label text="Description" styleClass="field-label">
+                            <graphic>
+                                <FontAwesomeIconView glyphName="FILE_TEXT" styleClass="label-icon"/>
+                            </graphic>
+                        </Label>
+                        <TextField fx:id="descriptionField" promptText="Ex: Arrosage matinal" styleClass="modern-input"/>
+                    </VBox>
+
+                    <!-- Type -->
+                    <VBox styleClass="field-group">
+                        <Label text="Type d'activité" styleClass="field-label">
+                            <graphic>
+                                <FontAwesomeIconView glyphName="TASKS" styleClass="label-icon"/>
+                            </graphic>
+                        </Label>
+                        <ComboBox fx:id="typeCombo" promptText="Sélectionnez le type" styleClass="modern-combo"/>
+                    </VBox>
+
+                    <!-- Date -->
+                    <VBox styleClass="field-group">
+                        <Label text="Date" styleClass="field-label">
+                            <graphic>
+                                <FontAwesomeIconView glyphName="CALENDAR" styleClass="label-icon"/>
+                            </graphic>
+                        </Label>
+                        <DatePicker fx:id="datePicker" styleClass="modern-datepicker"/>
+                    </VBox>
+                </VBox>
+            </TitledPane>
+
+            <!-- Culture Section -->
+            <TitledPane text="Culture Associée" styleClass="form-section" expanded="true">
+                <VBox spacing="15">
+                    <!-- Culture -->
+                    <VBox styleClass="field-group">
+                        <Label text="Culture" styleClass="field-label">
+                            <graphic>
+                                <FontAwesomeIconView glyphName="LEAF" styleClass="label-icon"/>
+                            </graphic>
+                        </Label>
+                        <ComboBox fx:id="cultureCombo" promptText="Sélectionnez une culture" styleClass="modern-combo"/>
+                    </VBox>
+                </VBox>
+            </TitledPane>
+        </VBox>
+    </ScrollPane>
+
+    <!-- Footer -->
+    <HBox styleClass="form-footer" spacing="10" alignment="CENTER_RIGHT">
+        <Button fx:id="cancelButton" onAction="#handleCancel" styleClass="btn-cancel" text="Annuler">
+            <graphic>
+                <FontAwesomeIconView glyphName="TIMES" styleClass="button-icon"/>
+            </graphic>
+        </Button>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button fx:id="submitButton" onAction="#handleSubmit" styleClass="btn-submit">
+            <graphic>
+                <FontAwesomeIconView glyphName="CHECK" styleClass="button-icon"/>
+            </graphic>
+            Enregistrer
+        </Button>
+    </HBox>
+</VBox>

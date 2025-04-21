@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+
+<?import java.net.URL?>
+<VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="Agriwise.controllers.Parcelle.ParcelleFormController"
+      styleClass="form-card" prefWidth="600" prefHeight="650">
+    <stylesheets>
+        <URL value="@../../css/styles.css" />
+    </stylesheets>
+
+    <!-- Header -->
+    <HBox styleClass="form-header" spacing="15" alignment="CENTER_LEFT">
+        <StackPane styleClass="header-icon-container">
+            <FontAwesomeIconView glyphName="MAP" styleClass="header-icon"/>
+        </StackPane>
+        <VBox spacing="5">
+            <Label fx:id="formTitle" styleClass="header-title" text="Nouvelle Parcelle"/>
+            <Label styleClass="header-subtitle" text="Créez ou modifiez les détails de votre parcelle agricole"/>
+        </VBox>
+    </HBox>
+
+    <!-- Content Area -->
+    <ScrollPane fitToWidth="true" styleClass="form-scroll" vbarPolicy="AS_NEEDED">
+        <VBox styleClass="form-content" spacing="15">
+            <!-- General Information Section -->
+            <TitledPane text="Informations générales" styleClass="form-section" expanded="true">
+                <VBox spacing="15">
+                    <!-- Name Field -->
+                    <VBox styleClass="field-group">
+                        <Label text="Nom de la parcelle" styleClass="field-label">
+                            <graphic>
+                                <FontAwesomeIconView glyphName="TAG" styleClass="label-icon"/>
+                            </graphic>
+                        </Label>
+                        <TextField fx:id="nomField" promptText="Ex: Parcelle Nord" styleClass="modern-input"/>
+                    </VBox>
+
+                    <!-- Area Field -->
+                    <VBox styleClass="field-group">
+                        <Label text="Superficie" styleClass="field-label">
+                            <graphic>
+                                <FontAwesomeIconView glyphName="EXPAND" styleClass="label-icon"/>
+                            </graphic>
+                        </Label>
+                        <HBox styleClass="input-with-suffix" spacing="5">
+                            <TextField fx:id="superficieField" promptText="Ex: 5000" styleClass="modern-input" HBox.hgrow="ALWAYS"/>
+                            <Label text="m²" styleClass="input-unit"/>
+                        </HBox>
+                    </VBox>
+                </VBox>
+            </TitledPane>
+
+            <!-- Location Section -->
+            <TitledPane text="Emplacement et caractéristiques" styleClass="form-section" expanded="true">
+                <VBox spacing="15">
+                    <!-- Location Field -->
+                    <VBox styleClass="field-group">
+                        <Label text="Localisation" styleClass="field-label">
+                            <graphic>
+                                <FontAwesomeIconView glyphName="MAP_MARKER" styleClass="label-icon"/>
+                            </graphic>
+                        </Label>
+                        <TextField fx:id="localisationField" promptText="Ex: Ferme Agricole, Tunisie" styleClass="modern-input"/>
+                    </VBox>
+
+                    <!-- Soil Type -->
+                    <VBox styleClass="field-group">
+                        <Label text="Type de sol" styleClass="field-label">
+                            <graphic>
+                                <FontAwesomeIconView glyphName="LEAF" styleClass="label-icon"/>
+                            </graphic>
+                        </Label>
+                        <ComboBox fx:id="typeSolCombo" promptText="Sélectionnez le type de sol" styleClass="modern-combo"/>
+                    </VBox>
+                </VBox>
+            </TitledPane>
+        </VBox>
+    </ScrollPane>
+
+    <!-- Footer -->
+    <HBox styleClass="form-footer" spacing="10" alignment="CENTER_RIGHT">
+        <Button fx:id="cancelButton" onAction="#handleCancel" styleClass="btn-cancel" text="Annuler">
+            <graphic>
+                <FontAwesomeIconView glyphName="TIMES" styleClass="button-icon"/>
+            </graphic>
+        </Button>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button fx:id="submitButton" onAction="#handleSubmit" styleClass="btn-submit">
+            <graphic>
+                <FontAwesomeIconView glyphName="CHECK" styleClass="button-icon"/>
+            </graphic>
+            Enregistrer
+        </Button>
+    </HBox>
+</VBox>

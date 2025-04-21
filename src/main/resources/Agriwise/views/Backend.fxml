@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import java.net.URL?>
+
+<BorderPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="Agriwise.controllers.BackendController">
+
+    <stylesheets>
+        <URL value="@../css/styles.css" />
+    </stylesheets>
+
+    <!-- Left Side: Sidebar -->
+    <left>
+        <fx:include fx:id="sidebar" source="SidebarBackend.fxml" />
+    </left>
+
+    <!-- Center: Content Area - This will be dynamically replaced -->
+    <center>
+        <StackPane fx:id="contentArea" /> <!-- Changed from StackPane to Pane -->
+    </center>
+
+</BorderPane>

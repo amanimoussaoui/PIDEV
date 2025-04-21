@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.scene.image.*?>
+
+<?import java.net.URL?>
+<AnchorPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="Agriwise.controllers.SidebarFrontendController" styleClass="main-container">
+    <stylesheets>
+        <URL value="@../css/sidebar.css" />
+    </stylesheets>
+    <!-- Main Sidebar Container -->
+    <HBox AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0">
+        <!-- Expanded Sidebar -->
+        <VBox fx:id="sidebarExpanded" styleClass="sidebar-expanded">
+            <!-- Logo and Brand -->
+            <HBox styleClass="logo-container" alignment="CENTER_LEFT">
+                <ImageView fitHeight="40" preserveRatio="true">
+                    <image>
+                        <Image url="@../images/logo.png" />
+                    </image>
+                </ImageView>
+            </HBox>
+
+            <!-- Toggle Button (positioned separately) -->
+            <StackPane styleClass="toggle-btn-container" alignment="CENTER_RIGHT">
+                <Button fx:id="toggleBtn" styleClass="toggle-btn" onAction="#toggleSidebar">
+                    <graphic>
+                        <FontAwesomeIconView glyphName="CHEVRON_LEFT" styleClass="toggle-icon" size="12"/>
+                    </graphic>
+                </Button>
+            </StackPane>
+
+            <!-- Navigation Menu -->
+            <ScrollPane fitToWidth="true" styleClass="sidebar-scroll-pane">
+                <VBox styleClass="nav-section" spacing="8">
+
+                    <!-- Accueil Button -->
+                    <Button fx:id="accueilBtn" styleClass="menu-button" onAction="#handleNavigation">
+                        <graphic>
+                            <HBox styleClass="menu-item-content" spacing="12" alignment="CENTER_LEFT">
+                                <StackPane styleClass="menu-icon-container">
+                                    <FontAwesomeIconView glyphName="HOME" styleClass="menu-icon" size="16"/>
+                                </StackPane>
+                                <Label text="Accueil" styleClass="menu-text"/>
+                            </HBox>
+                        </graphic>
+                    </Button>
+
+                    <!-- Profile Button -->
+                    <Button fx:id="profileBtn" styleClass="menu-button" onAction="#handleNavigation">
+                        <graphic>
+                            <HBox styleClass="menu-item-content" spacing="12" alignment="CENTER_LEFT">
+                                <StackPane styleClass="menu-icon-container">
+                                    <FontAwesomeIconView glyphName="USER" styleClass="menu-icon" size="16"/>
+                                </StackPane>
+                                <Label text="Profile" styleClass="menu-text"/>
+                            </HBox>
+                        </graphic>
+                    </Button>
+
+                    <!-- Marketplace Parent Button -->
+                    <Button fx:id="marketplaceBtn" styleClass="menu-button" onAction="#toggleSubmenu">
+                        <graphic>
+                            <HBox styleClass="menu-item-content" spacing="12" alignment="CENTER_LEFT">
+                                <StackPane styleClass="menu-icon-container">
+                                    <FontAwesomeIconView glyphName="SHOPPING_CART" styleClass="menu-icon" size="16"/>
+                                </StackPane>
+                                <HBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="10">
+                                    <Label text="Marketplace" styleClass="menu-text"/>
+                                    <Region HBox.hgrow="ALWAYS" />
+                                    <FontAwesomeIconView fx:id="marketplaceArrow" glyphName="CHEVRON_DOWN" styleClass="menu-icon" size="12"/>
+                                </HBox>
+                            </HBox>
+                        </graphic>
+                    </Button>
+
+                    <!-- Marketplace Submenu -->
+                    <VBox fx:id="marketplaceSubmenu" styleClass="submenu-container" visible="false" managed="false">
+                        <!-- Produits Button -->
+                        <Button fx:id="produitsBtn" styleClass="submenu-button" onAction="#handleNavigation">
+                            <graphic>
+                                <HBox styleClass="submenu-item-content" spacing="12" alignment="CENTER_LEFT">
+                                    <StackPane styleClass="submenu-icon-container">
+                                        <FontAwesomeIconView glyphName="SHOPPING_BAG" styleClass="submenu-icon" size="14"/>
+                                    </StackPane>
+                                    <Label text="Produits" styleClass="submenu-text"/>
+                                </HBox>
+                            </graphic>
+                        </Button>
+
+                        <!-- Panier Button -->
+                        <Button fx:id="panierBtn" styleClass="submenu-button" onAction="#handleNavigation">
+                            <graphic>
+                                <HBox styleClass="submenu-item-content" spacing="12" alignment="CENTER_LEFT">
+                                    <StackPane styleClass="submenu-icon-container">
+                                        <FontAwesomeIconView glyphName="SHOPPING_BASKET" styleClass="submenu-icon" size="14"/>
+                                    </StackPane>
+                                    <Label text="Panier" styleClass="submenu-text"/>
+                                </HBox>
+                            </graphic>
+                        </Button>
+                    </VBox>
+
+
+                    <!-- Gestion Agricole Parent Button -->
+                    <Button fx:id="gestionAgricoleBtn" styleClass="menu-button" onAction="#toggleSubmenu">
+                        <graphic>
+                            <HBox styleClass="menu-item-content" spacing="12" alignment="CENTER_LEFT">
+                                <StackPane styleClass="menu-icon-container">
+                                    <FontAwesomeIconView glyphName="LEAF" styleClass="menu-icon" size="16"/>
+                                </StackPane>
+                                <HBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="10">
+                                    <Label text="Gestion Agricole" styleClass="menu-text"/>
+                                    <Region HBox.hgrow="ALWAYS" />
+                                    <FontAwesomeIconView fx:id="gestionAgricoleArrow" glyphName="CHEVRON_DOWN" styleClass="menu-icon" size="12"/>
+                                </HBox>
+                            </HBox>
+                        </graphic>
+                    </Button>
+
+                    <!-- Gestion Agricole Submenu -->
+                    <VBox fx:id="gestionAgricoleSubmenu" styleClass="submenu-container" visible="false" managed="false">
+                        <!-- Parcelle Button -->
+                        <Button fx:id="parcelleBtn" styleClass="submenu-button" onAction="#handleNavigation">
+                            <graphic>
+                                <HBox styleClass="submenu-item-content" spacing="12" alignment="CENTER_LEFT">
+                                    <StackPane styleClass="submenu-icon-container">
+                                        <FontAwesomeIconView glyphName="MAP_MARKER" styleClass="submenu-icon" size="14"/>
+                                    </StackPane>
+                                    <Label text="Parcelle" styleClass="submenu-text"/>
+                                </HBox>
+                            </graphic>
+                        </Button>
+
+                        <!-- Culture Button -->
+                        <Button fx:id="cultureBtn" styleClass="submenu-button" onAction="#handleNavigation">
+                            <graphic>
+                                <HBox styleClass="submenu-item-content" spacing="12" alignment="CENTER_LEFT">
+                                    <StackPane styleClass="submenu-icon-container">
+                                        <FontAwesomeIconView glyphName="PAGELINES" styleClass="submenu-icon" size="14"/>
+                                    </StackPane>
+                                    <Label text="Culture" styleClass="submenu-text"/>
+                                </HBox>
+                            </graphic>
+                        </Button>
+
+                        <!-- Activité Button -->
+                        <Button fx:id="activiteBtn" styleClass="submenu-button" onAction="#handleNavigation">
+                            <graphic>
+                                <HBox styleClass="submenu-item-content" spacing="12" alignment="CENTER_LEFT">
+                                    <StackPane styleClass="submenu-icon-container">
+                                        <FontAwesomeIconView glyphName="TASKS" styleClass="submenu-icon" size="14"/>
+                                    </StackPane>
+                                    <Label text="Activité" styleClass="submenu-text"/>
+                                </HBox>
+                            </graphic>
+                        </Button>
+                    </VBox>
+
+
+
+
+                    <!-- Formations Button -->
+                    <Button fx:id="formationsBtn" styleClass="menu-button" onAction="#handleNavigation">
+                        <graphic>
+                            <HBox styleClass="menu-item-content" spacing="12" alignment="CENTER_LEFT">
+                                <StackPane styleClass="menu-icon-container">
+                                    <FontAwesomeIconView glyphName="GRADUATION_CAP" styleClass="menu-icon" size="16"/>
+                                </StackPane>
+                                <Label text="Formations" styleClass="menu-text"/>
+                            </HBox>
+                        </graphic>
+                    </Button>
+
+                    <!-- Matériels Button -->
+                    <Button fx:id="materielsBtn" styleClass="menu-button" onAction="#handleNavigation">
+                        <graphic>
+                            <HBox styleClass="menu-item-content" spacing="12" alignment="CENTER_LEFT">
+                                <StackPane styleClass="menu-icon-container">
+                                    <FontAwesomeIconView glyphName="WRENCH" styleClass="menu-icon" size="16"/>
+                                </StackPane>
+                                <Label text="Matériels" styleClass="menu-text"/>
+                            </HBox>
+                        </graphic>
+                    </Button>
+
+                    <!-- Replace Candidature with Enchères Button -->
+                    <Button fx:id="encheresBtn" styleClass="menu-button" onAction="#toggleSubmenu">
+                        <graphic>
+                            <HBox styleClass="menu-item-content" spacing="12" alignment="CENTER_LEFT">
+                                <StackPane styleClass="menu-icon-container">
+                                    <FontAwesomeIconView glyphName="GAVEL" styleClass="menu-icon" size="16"/>
+                                </StackPane>
+                                <HBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="10">
+                                    <Label text="Enchères" styleClass="menu-text"/>
+                                    <Region HBox.hgrow="ALWAYS" />
+                                    <FontAwesomeIconView fx:id="encheresArrow" glyphName="CHEVRON_DOWN" styleClass="menu-icon" size="12"/>
+                                </HBox>
+                            </HBox>
+                        </graphic>
+                    </Button>
+
+                    <!-- Enchères Submenu -->
+                    <VBox fx:id="encheresSubmenu" styleClass="submenu-container" visible="false" managed="false">
+                        <!-- Terrains Button -->
+                        <Button fx:id="terrainsBtn" styleClass="submenu-button" onAction="#handleNavigation">
+                            <graphic>
+                                <HBox styleClass="submenu-item-content" spacing="12" alignment="CENTER_LEFT">
+                                    <StackPane styleClass="submenu-icon-container">
+                                        <FontAwesomeIconView glyphName="MAP" styleClass="submenu-icon" size="14"/>
+                                    </StackPane>
+                                    <Label text="Terrains" styleClass="submenu-text"/>
+                                </HBox>
+                            </graphic>
+                        </Button>
+
+                        <!-- Candidature Button -->
+                        <Button fx:id="candidatureBtn" styleClass="submenu-button" onAction="#handleNavigation">
+                            <graphic>
+                                <HBox styleClass="submenu-item-content" spacing="12" alignment="CENTER_LEFT">
+                                    <StackPane styleClass="submenu-icon-container">
+                                        <FontAwesomeIconView glyphName="FILE" styleClass="submenu-icon" size="14"/>
+                                    </StackPane>
+                                    <Label text="Candidature" styleClass="submenu-text"/>
+                                </HBox>
+                            </graphic>
+                        </Button>
+                    </VBox>
+
+                </VBox>
+            </ScrollPane>
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <!-- Footer - Logout Button -->
+            <VBox styleClass="sidebar-footer">
+                <Button fx:id="logoutBtn" styleClass="logout-button" onAction="#handleNavigation">
+                    <graphic>
+                        <HBox spacing="12" alignment="CENTER_LEFT">
+                            <FontAwesomeIconView glyphName="SIGN_OUT" styleClass="logout-icon" size="16"/>
+                            <Label text="Logout" styleClass="logout-text"/>
+                        </HBox>
+                    </graphic>
+                </Button>
+            </VBox>
+        </VBox>
+
+        <!-- Collapsed Sidebar (Icon Only) -->
+        <VBox fx:id="sidebarCollapsed" styleClass="sidebar-collapsed" visible="false" managed="false">
+            <!-- Logo Area -->
+            <StackPane styleClass="collapsed-logo-container">
+                <ImageView fitWidth="32" fitHeight="32" preserveRatio="true">
+                    <image>
+                        <Image url="@../images/icon.png" />
+                    </image>
+                </ImageView>
+            </StackPane>
+
+            <!-- Toggle Button -->
+            <StackPane styleClass="toggle-btn-container" alignment="CENTER">
+                <Button fx:id="expandBtn" styleClass="toggle-btn" onAction="#toggleSidebar">
+                    <graphic>
+                        <FontAwesomeIconView glyphName="CHEVRON_RIGHT" styleClass="toggle-icon" size="12"/>
+                    </graphic>
+                </Button>
+            </StackPane>
+
+            <!-- Icon-Only Navigation -->
+            <ScrollPane fitToWidth="true" styleClass="sidebar-collapsed-scroll">
+                <VBox styleClass="collapsed-nav-section" spacing="8" alignment="CENTER">
+                    <!-- Main Menu Divider -->
+                    <Separator styleClass="icon-section-divider"/>
+
+                    <!-- Accueil Icon Button -->
+                    <Button fx:id="accueilIconBtn" styleClass="icon-button" onAction="#handleNavigation">
+                        <graphic>
+                            <FontAwesomeIconView glyphName="HOME" styleClass="icon-only" size="16"/>
+                        </graphic>
+                        <tooltip>
+                            <Tooltip text="Accueil" styleClass="modern-tooltip"/>
+                        </tooltip>
+                    </Button>
+
+                    <!-- Profile Icon Button -->
+                    <Button fx:id="profileIconBtn" styleClass="icon-button" onAction="#handleNavigation">
+                        <graphic>
+                            <FontAwesomeIconView glyphName="USER" styleClass="icon-only" size="16"/>
+                        </graphic>
+                        <tooltip>
+                            <Tooltip text="Profile" styleClass="modern-tooltip"/>
+                        </tooltip>
+                    </Button>
+
+                    <!-- MarketPlace Icon Button -->
+                    <Button fx:id="marketplaceIconBtn" styleClass="icon-button" onAction="#handleNavigation">
+                        <graphic>
+                            <FontAwesomeIconView glyphName="SHOPPING_CART" styleClass="icon-only" size="16"/>
+                        </graphic>
+                        <tooltip>
+                            <Tooltip text="Marketplace" styleClass="modern-tooltip"/>
+                        </tooltip>
+                    </Button>
+
+                    <!-- Gestion Agricole Icon Button -->
+                    <Button fx:id="gestionAgricoleIconBtn" styleClass="icon-button" onAction="#handleNavigation">
+                        <graphic>
+                            <FontAwesomeIconView glyphName="LEAF" styleClass="icon-only" size="16"/>
+                        </graphic>
+                        <tooltip>
+                            <Tooltip text="Gestion Agricole" styleClass="modern-tooltip"/>
+                        </tooltip>
+                    </Button>
+
+
+
+                    <!-- Formations Icon Button -->
+                    <Button fx:id="formationsIconBtn" styleClass="icon-button" onAction="#handleNavigation">
+                        <graphic>
+                            <FontAwesomeIconView glyphName="GRADUATION_CAP" styleClass="icon-only" size="16"/>
+                        </graphic>
+                        <tooltip>
+                            <Tooltip text="Formations" styleClass="modern-tooltip"/>
+                        </tooltip>
+                    </Button>
+
+                    <!-- Matériels Icon Button -->
+                    <Button fx:id="materielsIconBtn" styleClass="icon-button" onAction="#handleNavigation">
+                        <graphic>
+                            <FontAwesomeIconView glyphName="WRENCH" styleClass="icon-only" size="16"/>
+                        </graphic>
+                        <tooltip>
+                            <Tooltip text="Matériels" styleClass="modern-tooltip"/>
+                        </tooltip>
+                    </Button>
+
+                    <!-- Candidature Icon Button -->
+                    <Button fx:id="encheresIconBtn" styleClass="icon-button" onAction="#handleNavigation">
+                        <graphic>
+                            <FontAwesomeIconView glyphName="GAVEL" styleClass="icon-only" size="16"/>
+                        </graphic>
+                        <tooltip>
+                            <Tooltip text="Enchères" styleClass="modern-tooltip"/>
+                        </tooltip>
+                    </Button>
+                </VBox>
+            </ScrollPane>
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <!-- Footer Icon - Logout -->
+            <StackPane styleClass="collapsed-footer">
+                <Button fx:id="logoutIconBtn" styleClass="icon-button-logout" onAction="#handleNavigation">
+                    <graphic>
+                        <FontAwesomeIconView glyphName="SIGN_OUT" styleClass="icon-only" size="16"/>
+                    </graphic>
+                    <tooltip>
+                        <Tooltip text="Logout" styleClass="modern-tooltip"/>
+                    </tooltip>
+                </Button>
+            </StackPane>
+        </VBox>
+    </HBox>
+</AnchorPane>

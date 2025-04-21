@@ -1,0 +1,440 @@
+/* Admin Sidebar CSS - Modern Earth-tone Theme */
+
+/* Main container */
+.main-container {
+    -fx-background-color: #F5F7FA;
+    -fx-padding: 0;
+}
+
+/* ======== EXPANDED SIDEBAR STYLES ======== */
+.sidebar-expanded {
+    -fx-background-color: #1F4E3D;
+    -fx-min-width: 260px;
+    -fx-pref-width: 260px;
+    -fx-max-width: 260px;
+    -fx-padding: 0;
+    -fx-border-width: 0 1px 0 0;
+    -fx-border-color: #2A9D8F;
+}
+
+/* Admin Header and Logo */
+.admin-header {
+    -fx-padding: 18px 24px;
+    -fx-spacing: 12px;
+    -fx-alignment: center-left;
+    -fx-background-color: #1a4334;
+}
+
+.admin-label {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #E9C46A;
+}
+
+/* Admin Info Section */
+.admin-info {
+    -fx-padding: 16px 24px;
+    -fx-spacing: 14px;
+    -fx-alignment: center-left;
+    -fx-background-color: #1a4334;
+    -fx-border-width: 0 0 1px 0;
+    -fx-border-color: #2A9D8F;
+}
+
+.admin-avatar {
+    -fx-background-radius: 50%;
+    -fx-border-width: 2px;
+    -fx-border-color: #2A9D8F;
+    -fx-border-radius: 50%;
+}
+
+.admin-details {
+    -fx-spacing: 4px;
+}
+
+.admin-name {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff;
+}
+
+.admin-role {
+    -fx-font-size: 12px;
+    -fx-text-fill: #2A9D8F;
+}
+
+/* Toggle button styling */
+.toggle-btn-container {
+    -fx-padding: 12px 12px 12px 0;
+    -fx-min-height: 24px;
+    -fx-alignment: center-right;
+}
+
+.toggle-btn {
+    -fx-background-color: #2A9D8F;
+    -fx-background-radius: 4px;
+    -fx-min-width: 26px;
+    -fx-min-height: 26px;
+    -fx-max-width: 26px;
+    -fx-max-height: 26px;
+    -fx-cursor: hand;
+    -fx-padding: 0;
+}
+
+.toggle-btn:hover {
+    -fx-background-color: #E9C46A;
+}
+
+.toggle-icon {
+    -fx-fill: #ffffff;
+}
+
+/* Category Labels */
+.nav-category-label {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #E9C46A;
+    -fx-padding: 16px 16px 8px 24px;
+    -fx-letter-spacing: 0.05em;
+}
+
+/* Sidebar scrollpane - hide scrollbar */
+.sidebar-scroll-pane {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-padding: 0;
+}
+
+.sidebar-scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.sidebar-scroll-pane .scroll-bar:vertical {
+    -fx-pref-width: 8px;
+    -fx-opacity: 0;
+    -fx-background-color: transparent;
+}
+
+.sidebar-scroll-pane:hover .scroll-bar:vertical {
+    -fx-opacity: 0.5;
+}
+
+.sidebar-scroll-pane .scroll-bar:vertical .thumb {
+    -fx-background-color: #2A9D8F;
+    -fx-background-radius: 4px;
+}
+
+.sidebar-scroll-pane .scroll-bar:vertical .track {
+    -fx-background-color: transparent;
+}
+
+/* Navigation section styling */
+.nav-section {
+    -fx-padding: 0;
+    -fx-spacing: 2px;
+}
+
+/* Menu buttons */
+.menu-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 0;
+    -fx-padding: 10px 16px 10px 24px;
+    -fx-cursor: hand;
+    -fx-alignment: center-left;
+    -fx-content-display: graphic-only;
+    -fx-min-height: 42px;
+    -fx-border-width: 0 0 0 3px;
+    -fx-border-color: transparent;
+}
+
+.menu-button:hover {
+    -fx-background-color: #2a6353;
+    -fx-border-color: #2A9D8F;
+}
+
+.menu-button:pressed {
+    -fx-background-color: #1a4334;
+}
+
+/* Active menu button style */
+.menu-button.active {
+    -fx-background-color: #2a6353;
+    -fx-border-width: 0 0 0 3px;
+    -fx-border-color: #E9C46A;
+    -fx-padding: 10px 16px 10px 21px; /* Offset for the border */
+}
+
+.menu-button.active .menu-text {
+    -fx-text-fill: #E9C46A;
+    -fx-font-weight: bold;
+}
+
+.menu-button.active .menu-icon-container {
+    -fx-background-color: #2A9D8F;
+}
+
+.menu-button.active .menu-icon {
+    -fx-fill: #ffffff;
+}
+
+.menu-item-content {
+    -fx-spacing: 12px;
+    -fx-alignment: center-left;
+}
+
+.menu-icon-container {
+    -fx-min-width: 32px;
+    -fx-pref-width: 32px;
+    -fx-max-width: 32px;
+    -fx-min-height: 32px;
+    -fx-pref-height: 32px;
+    -fx-max-height: 32px;
+    -fx-background-color: #2a6353;
+    -fx-background-radius: 4px;
+    -fx-alignment: center;
+}
+
+.menu-icon {
+    -fx-fill: #ffffff;
+}
+
+.menu-text {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 14px;
+}
+
+/* Arrow icon for dropdown menus */
+.menu-icon-arrow {
+    -fx-fill: #2A9D8F;
+}
+
+/* Footer styling */
+.sidebar-footer {
+    -fx-padding: 16px 24px;
+    -fx-border-width: 1px 0 0 0;
+    -fx-border-color: #2a6353;
+    -fx-border-style: solid;
+    -fx-background-color: #1a4334;
+}
+
+.logout-button {
+    -fx-background-color: #1a4334;
+    -fx-padding: 10px 16px;
+    -fx-background-radius: 4px;
+    -fx-cursor: hand;
+    -fx-border-width: 1px;
+    -fx-border-color: #E76F51;
+    -fx-border-radius: 4px;
+}
+
+.logout-button:hover {
+    -fx-background-color: #E76F51;
+}
+
+.logout-icon {
+    -fx-fill: #E76F51;
+}
+
+.logout-button:hover .logout-icon {
+    -fx-fill: #ffffff;
+}
+
+.logout-text {
+    -fx-text-fill: #E76F51;
+    -fx-font-weight: normal;
+}
+
+.logout-button:hover .logout-text {
+    -fx-text-fill: #ffffff;
+}
+
+/* Submenu container and animation */
+.submenu-container {
+    -fx-background-color: #1a4334;
+    -fx-padding: 6px 0 6px 24px; /* Indent submenu items */
+    -fx-spacing: 2px;
+    -fx-border-width: 0 0 0 1px;
+    -fx-border-color: #2A9D8F;
+    -fx-border-style: solid;
+    -fx-border-insets: 0 0 0 29px; /* Align with parent icon */
+}
+
+/* Submenu buttons */
+.submenu-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 0;
+    -fx-padding: 8px 16px 8px 20px;
+    -fx-cursor: hand;
+    -fx-alignment: center-left;
+    -fx-content-display: graphic-only;
+    -fx-min-height: 34px;
+    -fx-border-width: 0 0 0 2px;
+    -fx-border-color: transparent;
+}
+
+.submenu-button:hover {
+    -fx-background-color: #2a6353;
+    -fx-border-color: #2A9D8F;
+}
+
+.submenu-button:pressed {
+    -fx-background-color: #1a4334;
+}
+
+.submenu-button.active {
+    -fx-background-color: #2a6353;
+    -fx-border-width: 0 0 0 2px;
+    -fx-border-color: #E9C46A;
+}
+
+.submenu-item-content {
+    -fx-spacing: 10px;
+    -fx-alignment: center-left;
+}
+
+.submenu-icon {
+    -fx-fill: #2A9D8F;
+}
+
+.submenu-text {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 13px;
+}
+
+.submenu-button:hover .submenu-icon,
+.submenu-button.active .submenu-icon {
+    -fx-fill: #E9C46A;
+}
+
+.submenu-button:hover .submenu-text,
+.submenu-button.active .submenu-text {
+    -fx-text-fill: #E9C46A;
+}
+
+/* ======== COLLAPSED SIDEBAR STYLES ======== */
+.sidebar-collapsed {
+    -fx-background-color: #1F4E3D;
+    -fx-min-width: 72px;
+    -fx-pref-width: 72px;
+    -fx-max-width: 72px;
+    -fx-padding: 0;
+    -fx-border-width: 0 1px 0 0;
+    -fx-border-color: #2A9D8F;
+}
+
+.collapsed-logo-container {
+    -fx-padding: 18px 0;
+    -fx-background-color: #1a4334;
+    -fx-alignment: center;
+}
+
+.mini-admin-avatar-container {
+    -fx-padding: 16px 0;
+    -fx-background-color: #1a4334;
+    -fx-alignment: center;
+    -fx-border-width: 0 0 1px 0;
+    -fx-border-color: #2A9D8F;
+}
+
+.mini-admin-avatar {
+    -fx-border-radius: 50%;
+    -fx-background-radius: 50%;
+    -fx-border-width: 2px;
+    -fx-border-color: #2A9D8F;
+}
+
+.collapsed-nav-section {
+    -fx-padding: 8px 0;
+    -fx-spacing: 10px;
+}
+
+.mini-category-label {
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #E9C46A;
+    -fx-padding: 8px 0 4px 0;
+    -fx-alignment: center;
+    -fx-letter-spacing: 0.05em;
+}
+
+.icon-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 4px;
+    -fx-min-width: 40px;
+    -fx-min-height: 40px;
+    -fx-max-width: 40px;
+    -fx-max-height: 40px;
+    -fx-padding: 0;
+    -fx-cursor: hand;
+    -fx-alignment: center;
+}
+
+.icon-button:hover {
+    -fx-background-color: #2a6353;
+}
+
+.icon-button.active {
+    -fx-background-color: #2A9D8F;
+}
+
+.icon-only {
+    -fx-fill: #ffffff;
+}
+
+.icon-button-logout {
+    -fx-background-color: transparent;
+    -fx-background-radius: 4px;
+    -fx-min-width: 40px;
+    -fx-min-height: 40px;
+    -fx-max-width: 40px;
+    -fx-max-height: 40px;
+    -fx-padding: 0;
+    -fx-cursor: hand;
+    -fx-alignment: center;
+    -fx-border-width: 1px;
+    -fx-border-color: #E76F51;
+    -fx-border-radius: 4px;
+}
+
+.icon-button-logout:hover {
+    -fx-background-color: #E76F51;
+}
+
+.icon-button-logout:hover .icon-only {
+    -fx-fill: #ffffff;
+}
+
+.icon-button-logout .icon-only {
+    -fx-fill: #E76F51;
+}
+
+.collapsed-footer {
+    -fx-padding: 16px 0;
+    -fx-alignment: center;
+    -fx-background-color: #1a4334;
+    -fx-border-width: 1px 0 0 0;
+    -fx-border-color: #2a6353;
+}
+
+.sidebar-collapsed-scroll {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-padding: 0;
+}
+
+.sidebar-collapsed-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
+.sidebar-collapsed-scroll .scroll-bar:vertical {
+    -fx-opacity: 0;
+}
+
+/* Tooltip styling */
+.modern-tooltip {
+    -fx-background-color: #2A9D8F;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-padding: 6px 10px;
+    -fx-background-radius: 4px;
+}

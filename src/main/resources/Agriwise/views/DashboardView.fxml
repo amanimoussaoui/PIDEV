@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.scene.text.*?>
+
+<?import java.net.URL?>
+<VBox xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="Agriwise.controllers.DashboardController">
+
+    <stylesheets>
+        <URL value="@../css/accueil.css" />
+    </stylesheets>
+
+    <!-- Root HBox for Sidebar + Main Content -->
+
+    <!-- Main Content -->
+    <VBox spacing="20" style="-fx-padding: 20; -fx-background-color: #f8f9fa;" HBox.hgrow="ALWAYS">
+
+        <ScrollPane fitToWidth="true" fitToHeight="true" styleClass="content-scroll-pane">
+            <GridPane hgap="20" vgap="20" styleClass="cards-container">
+                <padding>
+                    <Insets top="20" right="30" bottom="30" left="30" />
+                </padding>
+
+                <columnConstraints>
+                    <ColumnConstraints hgrow="SOMETIMES" percentWidth="33.33" />
+                    <ColumnConstraints hgrow="SOMETIMES" percentWidth="33.33" />
+                    <ColumnConstraints hgrow="SOMETIMES" percentWidth="33.33" />
+                </columnConstraints>
+
+                <rowConstraints>
+                    <RowConstraints vgrow="SOMETIMES" />
+                    <RowConstraints vgrow="SOMETIMES" />
+                </rowConstraints>
+
+                <!-- Profile Card -->
+                <StackPane fx:id="profileCard" styleClass="module-card" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                    <VBox alignment="CENTER" spacing="15">
+                        <StackPane styleClass="icon-circle">
+                            <FontAwesomeIconView glyphName="USER" styleClass="card-icon" size="40"/>
+                        </StackPane>
+                        <Label text="Profile" styleClass="card-title" />
+                        <Label text="Gérer votre profil et vos informations personnelles" styleClass="card-description" wrapText="true" />
+                        <Button fx:id="profileCardBtn" text="Accéder" styleClass="card-button" onAction="#handleCardClick" />
+                    </VBox>
+                </StackPane>
+
+                <!-- Gestion Agricole Card -->
+                <StackPane fx:id="gestionAgricoleCard" styleClass="module-card" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                    <VBox alignment="CENTER" spacing="15">
+                        <StackPane styleClass="icon-circle">
+                            <FontAwesomeIconView glyphName="LEAF" styleClass="card-icon" size="40"/>
+                        </StackPane>
+                        <Label text="Gestion Agricole" styleClass="card-title" />
+                        <Label text="Gérez vos parcelles, cultures et activités agricoles" styleClass="card-description" wrapText="true" />
+                        <Button fx:id="gestionAgricoleCardBtn" text="Accéder" styleClass="card-button" onAction="#handleCardClick" />
+                    </VBox>
+                </StackPane>
+
+                <!-- Marketplace Card -->
+                <StackPane fx:id="marketplaceCard" styleClass="module-card" GridPane.columnIndex="2" GridPane.rowIndex="0">
+                    <VBox alignment="CENTER" spacing="15">
+                        <StackPane styleClass="icon-circle">
+                            <FontAwesomeIconView glyphName="SHOPPING_CART" styleClass="card-icon" size="40"/>
+                        </StackPane>
+                        <Label text="Marketplace" styleClass="card-title" />
+                        <Label text="Achetez et vendez des produits agricoles en ligne" styleClass="card-description" wrapText="true" />
+                        <Button fx:id="marketplaceCardBtn" text="Accéder" styleClass="card-button" onAction="#handleCardClick" />
+                    </VBox>
+                </StackPane>
+
+                <!-- Formations Card -->
+                <StackPane fx:id="formationsCard" styleClass="module-card" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                    <VBox alignment="CENTER" spacing="15">
+                        <StackPane styleClass="icon-circle">
+                            <FontAwesomeIconView glyphName="GRADUATION_CAP" styleClass="card-icon" size="40"/>
+                        </StackPane>
+                        <Label text="Formations" styleClass="card-title" />
+                        <Label text="Découvrez nos formations et ressources pédagogiques" styleClass="card-description" wrapText="true" />
+                        <Button fx:id="formationsCardBtn" text="Accéder" styleClass="card-button" onAction="#handleCardClick" />
+                    </VBox>
+                </StackPane>
+
+                <!-- Matériels Card -->
+                <StackPane fx:id="materielsCard" styleClass="module-card" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                    <VBox alignment="CENTER" spacing="15">
+                        <StackPane styleClass="icon-circle">
+                            <FontAwesomeIconView glyphName="WRENCH" styleClass="card-icon" size="40"/>
+                        </StackPane>
+                        <Label text="Matériels" styleClass="card-title" />
+                        <Label text="Consultez et gérez vos équipements agricoles" styleClass="card-description" wrapText="true" />
+                        <Button fx:id="materielsCardBtn" text="Accéder" styleClass="card-button" onAction="#handleCardClick" />
+                    </VBox>
+                </StackPane>
+
+                <!-- Enchères Card -->
+                <StackPane fx:id="encheresCard" styleClass="module-card" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                    <VBox alignment="CENTER" spacing="15">
+                        <StackPane styleClass="icon-circle">
+                            <FontAwesomeIconView glyphName="GAVEL" styleClass="card-icon" size="40"/>
+                        </StackPane>
+                        <Label text="Enchères" styleClass="card-title" />
+                        <Label text="Participez aux enchères de terrains agricoles" styleClass="card-description" wrapText="true" />
+                        <Button fx:id="encheresCardBtn" text="Accéder" styleClass="card-button" onAction="#handleCardClick" />
+                    </VBox>
+                </StackPane>
+
+            </GridPane>
+        </ScrollPane>
+
+
+
+    </VBox>
+</VBox>

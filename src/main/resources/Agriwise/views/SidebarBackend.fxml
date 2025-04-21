@@ -1,0 +1,429 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.scene.image.*?>
+
+<?import java.net.URL?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="Agriwise.controllers.SidebarBackendController">
+    <stylesheets>
+        <URL value="@../css/admin-sidebar.css" />
+    </stylesheets>
+    <!-- Main Admin Sidebar Container -->
+    <HBox AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+        <!-- Expanded Sidebar -->
+        <VBox fx:id="sidebarExpanded" styleClass="sidebar-expanded">
+            <!-- Admin Header and Brand -->
+            <HBox styleClass="admin-header">
+                <ImageView fitHeight="36" preserveRatio="true">
+                    <image>
+                        <Image url="@../images/logo.png" />
+                    </image>
+                </ImageView>
+            </HBox>
+
+            <!-- Admin Info Section -->
+            <HBox styleClass="admin-info">
+                <ImageView fitHeight="42" fitWidth="42" styleClass="admin-avatar">
+                    <image>
+                        <Image url="@../images/default-avatar.jpg" />
+                    </image>
+                </ImageView>
+                <VBox styleClass="admin-details">
+                    <Label text="Admin User" styleClass="admin-name"/>
+                    <Label text="Super Admin" styleClass="admin-role"/>
+                </VBox>
+            </HBox>
+
+            <!-- Toggle Button -->
+            <StackPane styleClass="toggle-btn-container">
+                <Button fx:id="toggleBtn" styleClass="toggle-btn" onAction="#toggleSidebar">
+                    <graphic>
+                        <FontAwesomeIconView glyphName="CHEVRON_LEFT" styleClass="toggle-icon" size="12"/>
+                    </graphic>
+                </Button>
+            </StackPane>
+
+            <!-- Navigation Menu -->
+            <ScrollPane fitToWidth="true" styleClass="sidebar-scroll-pane">
+                <VBox styleClass="nav-section" spacing="10">
+                    <!-- Dashboard Button -->
+                    <Button fx:id="dashboardBtn" styleClass="menu-button" onAction="#handleNavigation">
+                        <graphic>
+                            <HBox styleClass="menu-item-content" spacing="14" alignment="CENTER_LEFT">
+                                <StackPane styleClass="menu-icon-container">
+                                    <FontAwesomeIconView glyphName="DASHBOARD" styleClass="menu-icon" size="16"/>
+                                </StackPane>
+                                <Label text="Dashboard" styleClass="menu-text"/>
+                            </HBox>
+                        </graphic>
+                    </Button>
+
+                    <!-- Users Button -->
+                    <Button fx:id="usersBtn" styleClass="menu-button" onAction="#handleNavigation">
+                        <graphic>
+                            <HBox styleClass="menu-item-content" spacing="14" alignment="CENTER_LEFT">
+                                <StackPane styleClass="menu-icon-container">
+                                    <FontAwesomeIconView glyphName="USERS" styleClass="menu-icon" size="16"/>
+                                </StackPane>
+                                <Label text="Utilisateurs" styleClass="menu-text"/>
+                            </HBox>
+                        </graphic>
+                    </Button>
+
+                    <!-- Marketplace Management Button -->
+                    <Button fx:id="marketplaceBtn" styleClass="menu-button" onAction="#toggleSubmenu">
+                        <graphic>
+                            <HBox styleClass="menu-item-content" spacing="14" alignment="CENTER_LEFT">
+                                <StackPane styleClass="menu-icon-container">
+                                    <FontAwesomeIconView glyphName="SHOPPING_CART" styleClass="menu-icon" size="16"/>
+                                </StackPane>
+                                <HBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="10">
+                                    <Label text="Marketplace" styleClass="menu-text"/>
+                                    <Region HBox.hgrow="ALWAYS" />
+                                    <FontAwesomeIconView fx:id="marketplaceArrow" glyphName="CHEVRON_DOWN" styleClass="menu-icon-arrow" size="10"/>
+                                </HBox>
+                            </HBox>
+                        </graphic>
+                    </Button>
+
+                    <!-- Marketplace Submenu -->
+                    <VBox fx:id="marketplaceSubmenu" styleClass="submenu-container" visible="false" managed="false">
+                        <!-- Products Button -->
+                        <Button fx:id="produitsBtn" styleClass="submenu-button" onAction="#handleNavigation">
+                            <graphic>
+                                <HBox styleClass="submenu-item-content" spacing="12" alignment="CENTER_LEFT">
+                                    <FontAwesomeIconView glyphName="CUBE" styleClass="submenu-icon" size="14"/>
+                                    <Label text="Liste des produits" styleClass="submenu-text"/>
+                                </HBox>
+                            </graphic>
+                        </Button>
+
+                        <!-- Orders Button -->
+                        <Button fx:id="commandesBtn" styleClass="submenu-button" onAction="#handleNavigation">
+                            <graphic>
+                                <HBox styleClass="submenu-item-content" spacing="12" alignment="CENTER_LEFT">
+                                    <FontAwesomeIconView glyphName="LIST_ALT" styleClass="submenu-icon" size="14"/>
+                                    <Label text="Liste des commandes" styleClass="submenu-text"/>
+                                </HBox>
+                            </graphic>
+                        </Button>
+                    </VBox>
+
+                    <!-- Agricultural Management Button -->
+                    <Button fx:id="gestionAgricoleBtn" styleClass="menu-button" onAction="#toggleSubmenu">
+                        <graphic>
+                            <HBox styleClass="menu-item-content" spacing="14" alignment="CENTER_LEFT">
+                                <StackPane styleClass="menu-icon-container">
+                                    <FontAwesomeIconView glyphName="LEAF" styleClass="menu-icon" size="16"/>
+                                </StackPane>
+                                <HBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="10">
+                                    <Label text="Gestion Agricole" styleClass="menu-text"/>
+                                    <Region HBox.hgrow="ALWAYS" />
+                                    <FontAwesomeIconView fx:id="gestionAgricoleArrow" glyphName="CHEVRON_DOWN" styleClass="menu-icon-arrow" size="10"/>
+                                </HBox>
+                            </HBox>
+                        </graphic>
+                    </Button>
+
+                    <!-- Agricultural Management Submenu -->
+                    <VBox fx:id="gestionAgricoleSubmenu" styleClass="submenu-container" visible="false" managed="false">
+                        <!-- Parcels Button -->
+                        <Button fx:id="parcelleBtn" styleClass="submenu-button" onAction="#handleNavigation">
+                            <graphic>
+                                <HBox styleClass="submenu-item-content" spacing="12" alignment="CENTER_LEFT">
+                                    <FontAwesomeIconView glyphName="MAP" styleClass="submenu-icon" size="14"/>
+                                    <Label text="Liste des parcelles" styleClass="submenu-text"/>
+                                </HBox>
+                            </graphic>
+                        </Button>
+
+                        <!-- Crops Button -->
+                        <Button fx:id="cultureBtn" styleClass="submenu-button" onAction="#handleNavigation">
+                            <graphic>
+                                <HBox styleClass="submenu-item-content" spacing="12" alignment="CENTER_LEFT">
+                                    <FontAwesomeIconView glyphName="PAGELINES" styleClass="submenu-icon" size="14"/>
+                                    <Label text="Liste des cultures" styleClass="submenu-text"/>
+                                </HBox>
+                            </graphic>
+                        </Button>
+
+                        <!-- Harvests Button -->
+                        <Button fx:id="recolteBtn" styleClass="submenu-button" onAction="#handleNavigation">
+                            <graphic>
+                                <HBox styleClass="submenu-item-content" spacing="12" alignment="CENTER_LEFT">
+                                    <FontAwesomeIconView glyphName="SCISSORS" styleClass="submenu-icon" size="14"/>
+                                    <Label text="Liste des récoltes" styleClass="submenu-text"/>
+                                </HBox>
+                            </graphic>
+                        </Button>
+
+                        <!-- Activities Button -->
+                        <Button fx:id="activiteBtn" styleClass="submenu-button" onAction="#handleNavigation">
+                            <graphic>
+                                <HBox styleClass="submenu-item-content" spacing="12" alignment="CENTER_LEFT">
+                                    <FontAwesomeIconView glyphName="CALENDAR" styleClass="submenu-icon" size="14"/>
+                                    <Label text="Liste des activités" styleClass="submenu-text"/>
+                                </HBox>
+                            </graphic>
+                        </Button>
+                    </VBox>
+
+                    <!-- Equipment Management Button -->
+                    <Button fx:id="materielsBtn" styleClass="menu-button" onAction="#toggleSubmenu">
+                        <graphic>
+                            <HBox styleClass="menu-item-content" spacing="14" alignment="CENTER_LEFT">
+                                <StackPane styleClass="menu-icon-container">
+                                    <FontAwesomeIconView glyphName="WRENCH" styleClass="menu-icon" size="16"/>
+                                </StackPane>
+                                <HBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="10">
+                                    <Label text="Matériels" styleClass="menu-text"/>
+                                    <Region HBox.hgrow="ALWAYS" />
+                                    <FontAwesomeIconView fx:id="materielsArrow" glyphName="CHEVRON_DOWN" styleClass="menu-icon-arrow" size="10"/>
+                                </HBox>
+                            </HBox>
+                        </graphic>
+                    </Button>
+
+                    <!-- Equipment Management Submenu -->
+                    <VBox fx:id="materielsSubmenu" styleClass="submenu-container" visible="false" managed="false">
+                        <!-- Equipment List Button -->
+                        <Button fx:id="listeMaterielsBtn" styleClass="submenu-button" onAction="#handleNavigation">
+                            <graphic>
+                                <HBox styleClass="submenu-item-content" spacing="12" alignment="CENTER_LEFT">
+                                    <FontAwesomeIconView glyphName="WRENCH" styleClass="submenu-icon" size="14"/>
+                                    <Label text="Liste des matériels" styleClass="submenu-text"/>
+                                </HBox>
+                            </graphic>
+                        </Button>
+
+                        <!-- Reservations Button -->
+                        <Button fx:id="reservationsBtn" styleClass="submenu-button" onAction="#handleNavigation">
+                            <graphic>
+                                <HBox styleClass="submenu-item-content" spacing="12" alignment="CENTER_LEFT">
+                                    <FontAwesomeIconView glyphName="CALENDAR" styleClass="submenu-icon" size="14"/>
+                                    <Label text="Liste des réservations" styleClass="submenu-text"/>
+                                </HBox>
+                            </graphic>
+                        </Button>
+                    </VBox>
+
+                    <!-- Training Management Button -->
+                    <Button fx:id="formationsBtn" styleClass="menu-button" onAction="#toggleSubmenu">
+                        <graphic>
+                            <HBox styleClass="menu-item-content" spacing="14" alignment="CENTER_LEFT">
+                                <StackPane styleClass="menu-icon-container">
+                                    <FontAwesomeIconView glyphName="GRADUATION_CAP" styleClass="menu-icon" size="16"/>
+                                </StackPane>
+                                <HBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="10">
+                                    <Label text="Formations" styleClass="menu-text"/>
+                                    <Region HBox.hgrow="ALWAYS" />
+                                    <FontAwesomeIconView fx:id="formationsArrow" glyphName="CHEVRON_DOWN" styleClass="menu-icon-arrow" size="10"/>
+                                </HBox>
+                            </HBox>
+                        </graphic>
+                    </Button>
+
+                    <!-- Training Management Submenu -->
+                    <VBox fx:id="formationsSubmenu" styleClass="submenu-container" visible="false" managed="false">
+                        <!-- Training List Button -->
+                        <Button fx:id="listeFormationsBtn" styleClass="submenu-button" onAction="#handleNavigation">
+                            <graphic>
+                                <HBox styleClass="submenu-item-content" spacing="12" alignment="CENTER_LEFT">
+                                    <FontAwesomeIconView glyphName="BOOK" styleClass="submenu-icon" size="14"/>
+                                    <Label text="Liste des formations" styleClass="submenu-text"/>
+                                </HBox>
+                            </graphic>
+                        </Button>
+
+                        <!-- Participation Button -->
+                        <Button fx:id="participationsBtn" styleClass="submenu-button" onAction="#handleNavigation">
+                            <graphic>
+                                <HBox styleClass="submenu-item-content" spacing="12" alignment="CENTER_LEFT">
+                                    <FontAwesomeIconView glyphName="USERS" styleClass="submenu-icon" size="14"/>
+                                    <Label text="Liste des participations" styleClass="submenu-text"/>
+                                </HBox>
+                            </graphic>
+                        </Button>
+                    </VBox>
+
+                    <!-- Application Management Button -->
+                    <Button fx:id="candidatureBtn" styleClass="menu-button" onAction="#toggleSubmenu">
+                        <graphic>
+                            <HBox styleClass="menu-item-content" spacing="14" alignment="CENTER_LEFT">
+                                <StackPane styleClass="menu-icon-container">
+                                    <FontAwesomeIconView glyphName="FILE_TEXT" styleClass="menu-icon" size="16"/>
+                                </StackPane>
+                                <HBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" spacing="10">
+                                    <Label text="Candidature" styleClass="menu-text"/>
+                                    <Region HBox.hgrow="ALWAYS" />
+                                    <FontAwesomeIconView fx:id="candidatureArrow" glyphName="CHEVRON_DOWN" styleClass="menu-icon-arrow" size="10"/>
+                                </HBox>
+                            </HBox>
+                        </graphic>
+                    </Button>
+
+                    <!-- Application Management Submenu -->
+                    <VBox fx:id="candidatureSubmenu" styleClass="submenu-container" visible="false" managed="false">
+                        <!-- Land List Button -->
+                        <Button fx:id="terrainsBtn" styleClass="submenu-button" onAction="#handleNavigation">
+                            <graphic>
+                                <HBox styleClass="submenu-item-content" spacing="12" alignment="CENTER_LEFT">
+                                    <FontAwesomeIconView glyphName="GLOBE" styleClass="submenu-icon" size="14"/>
+                                    <Label text="Liste des terrains" styleClass="submenu-text"/>
+                                </HBox>
+                            </graphic>
+                        </Button>
+
+                        <!-- Applications Button -->
+                        <Button fx:id="listeCandidatureBtn" styleClass="submenu-button" onAction="#handleNavigation">
+                            <graphic>
+                                <HBox styleClass="submenu-item-content" spacing="12" alignment="CENTER_LEFT">
+                                    <FontAwesomeIconView glyphName="LIST" styleClass="submenu-icon" size="14"/>
+                                    <Label text="Liste des candidatures" styleClass="submenu-text"/>
+                                </HBox>
+                            </graphic>
+                        </Button>
+                    </VBox>
+                </VBox>
+            </ScrollPane>
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <!-- Footer - Logout Button -->
+            <VBox styleClass="sidebar-footer">
+                <Button fx:id="logoutBtn" styleClass="logout-button" onAction="#handleNavigation">
+                    <graphic>
+                        <HBox spacing="14" alignment="CENTER_LEFT">
+                            <FontAwesomeIconView glyphName="SIGN_OUT" styleClass="logout-icon" size="16"/>
+                            <Label text="Logout" styleClass="logout-text"/>
+                        </HBox>
+                    </graphic>
+                </Button>
+            </VBox>
+        </VBox>
+
+        <!-- Collapsed Sidebar (Icon Only) -->
+        <VBox fx:id="sidebarCollapsed" styleClass="sidebar-collapsed" visible="false" managed="false">
+            <!-- Logo Area -->
+            <StackPane styleClass="collapsed-logo-container">
+                <ImageView fitWidth="28" fitHeight="28" preserveRatio="true">
+                    <image>
+                        <Image url="@../images/icon.png" />
+                    </image>
+                </ImageView>
+            </StackPane>
+
+            <!-- Admin Avatar (mini) -->
+            <StackPane styleClass="mini-admin-avatar-container">
+                <ImageView fitWidth="32" fitHeight="32" styleClass="mini-admin-avatar">
+                    <image>
+                        <Image url="@../images/default-avatar.jpg" />
+                    </image>
+                </ImageView>
+            </StackPane>
+
+            <!-- Toggle Button -->
+            <StackPane styleClass="toggle-btn-container">
+                <Button fx:id="expandBtn" styleClass="toggle-btn" onAction="#toggleSidebar">
+                    <graphic>
+                        <FontAwesomeIconView glyphName="CHEVRON_RIGHT" styleClass="toggle-icon" size="12"/>
+                    </graphic>
+                </Button>
+            </StackPane>
+
+            <!-- Icon-Only Navigation -->
+            <ScrollPane fitToWidth="true" styleClass="sidebar-collapsed-scroll">
+                <VBox styleClass="collapsed-nav-section" spacing="12" alignment="CENTER">
+                    <!-- Dashboard Icon Button -->
+                    <Button fx:id="dashboardIconBtn" styleClass="icon-button" onAction="#handleNavigation">
+                        <graphic>
+                            <FontAwesomeIconView glyphName="DASHBOARD" styleClass="icon-only" size="16"/>
+                        </graphic>
+                        <tooltip>
+                            <Tooltip text="Dashboard" styleClass="modern-tooltip"/>
+                        </tooltip>
+                    </Button>
+
+                    <!-- Users Icon Button -->
+                    <Button fx:id="usersIconBtn" styleClass="icon-button" onAction="#handleNavigation">
+                        <graphic>
+                            <FontAwesomeIconView glyphName="USERS" styleClass="icon-only" size="16"/>
+                        </graphic>
+                        <tooltip>
+                            <Tooltip text="Utilisateurs" styleClass="modern-tooltip"/>
+                        </tooltip>
+                    </Button>
+
+                    <!-- MarketPlace Icon Button -->
+                    <Button fx:id="marketplaceIconBtn" styleClass="icon-button" onAction="#handleNavigation">
+                        <graphic>
+                            <FontAwesomeIconView glyphName="SHOPPING_CART" styleClass="icon-only" size="16"/>
+                        </graphic>
+                        <tooltip>
+                            <Tooltip text="Marketplace" styleClass="modern-tooltip"/>
+                        </tooltip>
+                    </Button>
+
+                    <!-- Agricultural Icon Button -->
+                    <Button fx:id="gestionAgricoleIconBtn" styleClass="icon-button" onAction="#handleNavigation">
+                        <graphic>
+                            <FontAwesomeIconView glyphName="LEAF" styleClass="icon-only" size="16"/>
+                        </graphic>
+                        <tooltip>
+                            <Tooltip text="Gestion Agricole" styleClass="modern-tooltip"/>
+                        </tooltip>
+                    </Button>
+
+                    <!-- Equipment Icon Button -->
+                    <Button fx:id="materielsIconBtn" styleClass="icon-button" onAction="#handleNavigation">
+                        <graphic>
+                            <FontAwesomeIconView glyphName="WRENCH" styleClass="icon-only" size="16"/>
+                        </graphic>
+                        <tooltip>
+                            <Tooltip text="Matériels" styleClass="modern-tooltip"/>
+                        </tooltip>
+                    </Button>
+
+                    <!-- Training Icon Button -->
+                    <Button fx:id="formationsIconBtn" styleClass="icon-button" onAction="#handleNavigation">
+                        <graphic>
+                            <FontAwesomeIconView glyphName="GRADUATION_CAP" styleClass="icon-only" size="16"/>
+                        </graphic>
+                        <tooltip>
+                            <Tooltip text="Formations" styleClass="modern-tooltip"/>
+                        </tooltip>
+                    </Button>
+
+                    <!-- Application Icon Button -->
+                    <Button fx:id="candidatureIconBtn" styleClass="icon-button" onAction="#handleNavigation">
+                        <graphic>
+                            <FontAwesomeIconView glyphName="FILE_TEXT" styleClass="icon-only" size="16"/>
+                        </graphic>
+                        <tooltip>
+                            <Tooltip text="Candidature" styleClass="modern-tooltip"/>
+                        </tooltip>
+                    </Button>
+                </VBox>
+            </ScrollPane>
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <!-- Footer Icon - Logout -->
+            <StackPane styleClass="collapsed-footer">
+                <Button fx:id="logoutIconBtn" styleClass="icon-button-logout" onAction="#handleNavigation">
+                    <graphic>
+                        <FontAwesomeIconView glyphName="SIGN_OUT" styleClass="icon-only" size="16"/>
+                    </graphic>
+                    <tooltip>
+                        <Tooltip text="Logout" styleClass="modern-tooltip"/>
+                    </tooltip>
+                </Button>
+            </StackPane>
+        </VBox>
+    </HBox>
+</AnchorPane>

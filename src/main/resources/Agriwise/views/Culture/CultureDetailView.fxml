@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import java.net.URL?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+
+<BorderPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="Agriwise.controllers.Culture.CultureDetailController"
+            stylesheets="@../../css/styles.css" style="-fx-background-color: #f0f2f5;">
+
+    <top>
+        <VBox styleClass="detail-card">
+            <HBox styleClass="form-header" spacing="15" alignment="CENTER_LEFT">
+                <StackPane styleClass="header-icon-container">
+                    <FontAwesomeIconView glyphName="LEAF" styleClass="header-icon"/>
+                </StackPane>
+                <VBox spacing="5">
+                    <Label fx:id="formTitle" styleClass="header-title" text="Détails de la Culture"/>
+                    <Label styleClass="header-subtitle" text="Consulter les détails de votre culture agricole"/>
+                </VBox>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <ScrollPane fx:id="scrollPane" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
+                    style="-fx-background: transparent; -fx-background-color: transparent;">
+            <VBox spacing="20" style="-fx-padding: 20 15;">
+                <!-- Culture Overview Card -->
+                <VBox styleClass="modern-card" style="-fx-background-color: white; -fx-background-radius: 8; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 8, 0, 0, 2);">
+                    <VBox style="-fx-padding: 20;">
+                        <HBox spacing="15" alignment="CENTER_LEFT">
+                            <StackPane styleClass="culture-icon-container" style="-fx-background-color: #E9F5F0; -fx-background-radius: 50%; -fx-min-width: 50; -fx-min-height: 50; -fx-max-width: 50; -fx-max-height: 50;">
+                                <FontAwesomeIconView glyphName="LEAF" size="20" fill="#1F4E3D"/>
+                            </StackPane>
+                            <VBox spacing="2">
+                                <Label fx:id="cultureNameLabel" text="Nom de la culture" styleClass="culture-title" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+                                <Label fx:id="cultureStatusLabel" text="en_culture" styleClass="status-badge"/>
+                            </VBox>
+                        </HBox>
+
+                        <!-- Progress Section -->
+                        <VBox spacing="10" style="-fx-padding: 20 0 10 0;">
+                            <HBox alignment="CENTER_LEFT" spacing="5">
+                                <Label fx:id="progressLabel" text="Progression: 45%" styleClass="progress-label" style="-fx-font-size: 14px;"/>
+                                <Region HBox.hgrow="ALWAYS" />
+                                <Label fx:id="daysLabel" text="45 jours restants" styleClass="days-label" style="-fx-font-size: 14px; -fx-text-fill: #6c757d;"/>
+                            </HBox>
+                            <ProgressBar fx:id="progressBar" styleClass="culture-progress" progress="0.45" style="-fx-pref-height: 8; -fx-background-radius: 4; -fx-accent: #28a745;"/>
+                        </VBox>
+
+                        <!-- Info tiles -->
+                        <GridPane fx:id="infoGrid" styleClass="info-grid" hgap="20" vgap="20" style="-fx-padding: 20 0 10 0;">
+                            <columnConstraints>
+                                <ColumnConstraints percentWidth="33"/>
+                                <ColumnConstraints percentWidth="33"/>
+                                <ColumnConstraints percentWidth="33"/>
+                            </columnConstraints>
+                        </GridPane>
+                    </VBox>
+                </VBox>
+
+
+                <!-- Parcel Section -->
+                <VBox styleClass="modern-card" style="-fx-background-color: white; -fx-background-radius: 8; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 8, 0, 0, 2);">
+                    <VBox style="-fx-padding: 20;">
+                        <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-padding: 0 0 15 0;">
+                            <StackPane styleClass="section-icon-container" style="-fx-background-color: #E6F3FF; -fx-background-radius: 50%; -fx-min-width: 40; -fx-min-height: 40; -fx-max-width: 40; -fx-max-height: 40;">
+                                <FontAwesomeIconView glyphName="MAP" size="16" fill="#0077CC"/>
+                            </StackPane>
+                            <Label text="Parcelle" styleClass="section-title" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+                        </HBox>
+                        <VBox fx:id="parcelleContainer" styleClass="detail-container"/>
+                    </VBox>
+                </VBox>
+
+
+                <!-- Harvest Section -->
+                <VBox styleClass="modern-card" style="-fx-background-color: white; -fx-background-radius: 8; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 8, 0, 0, 2);">
+                    <VBox style="-fx-padding: 20;">
+                        <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-padding: 0 0 15 0;">
+                            <StackPane styleClass="section-icon-container" style="-fx-background-color: #FFF4E6; -fx-background-radius: 50%; -fx-min-width: 40; -fx-min-height: 40; -fx-max-width: 40; -fx-max-height: 40;">
+                                <FontAwesomeIconView glyphName="SHOPPING_BASKET" size="16" fill="#FF8C00"/>
+                            </StackPane>
+                            <Label text="Détails de la Récolte" styleClass="section-title" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+                        </HBox>
+                        <VBox fx:id="recolteContainer" styleClass="detail-container"/>
+                        <HBox style="-fx-padding: 10 0 0 0;">
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Button fx:id="addRecolteButton" text="Enregistrer une Récolte" onAction="#handleAddRecolte"
+                                    styleClass="btn-primary" visible="false" style="-fx-background-radius: 4;">
+                                <graphic>
+                                    <FontAwesomeIconView glyphName="PLUS" size="12" fill="WHITE"/>
+                                </graphic>
+                            </Button>
+                        </HBox>
+                    </VBox>
+                </VBox>
+
+                <!-- Footer with action buttons -->
+                <HBox styleClass="detail-footer">
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Button text="Retour" fx:id="backButton" onAction="#handleBack" styleClass="btn-light"/>
+                    <Button text="Modifier" fx:id="editButton" onAction="#handleEdit" styleClass="btn-primary"/>
+                    <Button text="Supprimer" fx:id="deleteButton" onAction="#handleDelete" styleClass="btn-danger"/>
+                </HBox>
+            </VBox>
+        </ScrollPane>
+    </center>
+</BorderPane>

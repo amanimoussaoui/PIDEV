@@ -1,0 +1,165 @@
+/* Base Styles */
+.section-title {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-padding: 15px;
+    -fx-background-radius: 8px;
+    -fx-alignment: CENTER;
+    -fx-max-width: infinity;
+}
+
+/* Search Bar */
+.search-field {
+    -fx-border-color: #4CAF50;
+    -fx-border-radius: 20px;
+    -fx-padding: 8px 15px;
+    -fx-pref-width: 300px;
+}
+
+.search-button {
+    -fx-background-color: transparent;
+    -fx-cursor: hand;
+}
+
+.search-button:hover {
+    -fx-scale-x: 1.2;
+    -fx-scale-y: 1.2;
+}
+
+/* Cards */
+.card {
+    -fx-background-color: white;
+    -fx-border-color: #ccc;
+    -fx-border-radius: 8px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 4, 0, 0, 4);
+    -fx-pref-width: 300px;
+    -fx-pref-height: 400px;
+    -fx-cursor: hand;
+}
+
+.card:hover {
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+.card-image {
+    -fx-fit-width: 300px;
+    -fx-fit-height: 200px;
+    -fx-preserve-ratio: true;
+}
+
+.card-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-wrap-text: true;
+    -fx-text-alignment: center;
+}
+
+.card-price {
+    -fx-font-size: 16px;
+    -fx-fill: #4CAF50;
+    -fx-font-weight: bold;
+}
+
+.card-description {
+    -fx-font-size: 14px;
+    -fx-fill: #555;
+    -fx-wrap-text: true;
+}
+
+.details-btn {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 16px;
+    -fx-background-radius: 5px;
+    -fx-cursor: hand;
+}
+
+.details-btn:hover {
+    -fx-background-color: #45a049;
+}
+
+/* Participer Button */
+.participer-btn {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-padding: 10px 20px;
+    -fx-background-radius: 5px;
+    -fx-cursor: hand;
+    -fx-alignment: CENTER;
+}
+
+.participer-btn:hover {
+    -fx-background-color: #45a049;
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+/* ===== Sidebar Styling ===== */
+.left {
+    -fx-background-color: #f4f4f4;
+    -fx-padding: 20px;
+    -fx-border-color: #ddd;
+    -fx-border-width: 0 1px 0 0; /* Right border only */
+}
+
+.sidebar-button {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 12px 20px;
+    -fx-background-radius: 5px;
+    -fx-cursor: hand;
+    -fx-alignment: center-left;
+    -fx-min-width: 200px;
+    -fx-font-size: 14px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 2, 0, 0, 2);
+}
+
+.sidebar-button:hover {
+    -fx-background-color: #45a049;
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+
+/* App title in sidebar */
+.sidebar-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #4CAF50;
+    -fx-padding: 0 0 20px 0;
+    -fx-alignment: center;
+}
+/* ScrollPane Styling */
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-padding: 10px;
+}
+
+.scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar:vertical {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar:vertical .thumb {
+    -fx-background-color: #4CAF50;
+    -fx-background-radius: 5px;
+}
+
+.scroll-bar:vertical .increment-button,
+.scroll-bar:vertical .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0 10px 0 0;
+}
+
+/* Ensure FlowPane doesn't clip content */
+.flow-pane {
+    -fx-padding: 10px;
+}

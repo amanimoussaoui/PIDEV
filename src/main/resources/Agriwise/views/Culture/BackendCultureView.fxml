@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import java.net.URL?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+
+<StackPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="Agriwise.controllers.Culture.BackendCultureController">
+    <stylesheets>
+        <URL value="@../../css/styles.css" />
+    </stylesheets>
+
+
+
+        <!-- Main Content -->
+        <BorderPane styleClass="app-container" HBox.hgrow="ALWAYS">
+            <!-- Top Header Bar -->
+            <top>
+                <HBox styleClass="top-bar">
+                    <HBox styleClass="page-header">
+                        <Label text="Liste des Cultures" styleClass="page-title"/>
+                    </HBox>
+                    <Region HBox.hgrow="ALWAYS" />
+                </HBox>
+            </top>
+
+            <!-- Main Content -->
+            <center>
+                <VBox styleClass="main-content">
+                    <HBox styleClass="action-bar">
+                        <Region HBox.hgrow="ALWAYS" />
+                        <HBox styleClass="right-actions">
+                            <Button text="Créer une nouvelle Culture" styleClass="btn-submit" onAction="#handleAddCulture">
+                                <graphic>
+                                    <FontAwesomeIconView glyphName="PLUS_CIRCLE" styleClass="button-icon"/>
+                                </graphic>
+                            </Button>
+                        </HBox>
+                    </HBox>
+
+                    <!-- Table Container -->
+                    <StackPane styleClass="table-wrapper" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="cultureTable" styleClass="modern-table">
+                            <columns>
+                                <TableColumn fx:id="idColumn" text="ID" prefWidth="80" />
+                                <TableColumn fx:id="nomColumn" text="Nom Culture" prefWidth="200" />
+                                <TableColumn fx:id="dateSemisColumn" text="Date Semis" prefWidth="120">
+                                    <cellValueFactory>
+                                        <PropertyValueFactory property="dateSemis" />
+                                    </cellValueFactory>
+                                </TableColumn>
+                                <TableColumn fx:id="dureeColumn" text="Durée (jours)" prefWidth="100" />
+                                <TableColumn fx:id="statutColumn" text="Statut" prefWidth="120" />
+                                <TableColumn fx:id="parcelleColumn" text="Parcelle" prefWidth="150" />
+                                <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="180" />
+                            </columns>
+                            <placeholder>
+                                <VBox styleClass="empty-state">
+                                    <FontAwesomeIconView glyphName="LEAF" styleClass="empty-icon"/>
+                                    <Label text="Aucune culture trouvée" styleClass="empty-title"/>
+                                    <Label text="Créez votre première culture pour commencer" styleClass="empty-desc"/>
+                                    <Button styleClass="empty-action" onAction="#handleAddCulture">
+                                        <graphic>
+                                            <HBox styleClass="button-content">
+                                                <FontAwesomeIconView glyphName="PLUS" styleClass="button-icon"/>
+                                                <Label text="Ajouter une culture" styleClass="button-text"/>
+                                            </HBox>
+                                        </graphic>
+                                    </Button>
+                                </VBox>
+                            </placeholder>
+                        </TableView>
+                    </StackPane>
+                </VBox>
+            </center>
+        </BorderPane>
+
+
+</StackPane>

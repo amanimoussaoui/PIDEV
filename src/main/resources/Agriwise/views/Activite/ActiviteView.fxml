@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.web.*?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import java.net.URL?>
+
+<VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="Agriwise.controllers.Activite.ActiviteController"
+      styleClass="app-container" spacing="10">
+    <stylesheets>
+        <URL value="@../../css/styles.css" />
+    </stylesheets>
+
+        <!-- Main Content -->
+        <VBox styleClass="app-container" spacing="10" HBox.hgrow="ALWAYS" style="-fx-padding: 20; -fx-background-color: #f8f9fa;" >
+
+            <!-- Header -->
+            <HBox styleClass="header-box" spacing="10">
+                <Label text="Calendrier des Activités" styleClass="header-title"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button fx:id="addButton" text="Ajouter une activité" styleClass="btn-primary">
+                    <graphic>
+                        <FontAwesomeIconView glyphName="PLUS_CIRCLE" styleClass="button-icon"/>
+                    </graphic>
+                </Button>
+            </HBox>
+
+            <!-- WebView -->
+            <WebView fx:id="webView" VBox.vgrow="ALWAYS"/>
+        </VBox>
+</VBox>

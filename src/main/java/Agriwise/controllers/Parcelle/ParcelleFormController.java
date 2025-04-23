@@ -10,6 +10,7 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class ParcelleFormController implements Initializable {
@@ -106,8 +107,27 @@ public class ParcelleFormController implements Initializable {
 
             closeWindow();
             showSuccessAlert();
+        } catch (SQLException e) {
+            handleDatabaseError(e);
         } catch (Exception e) {
-            showAlert("Erreur", isEditMode ? "Échec de la modification" : "Échec de l'ajout", e.getMessage());
+            showAlert("Erreur",
+                    isEditMode ? "Échec de la modification" : "Échec de l'ajout",
+                    "Une erreur inattendue s'est produite: " + e.getMessage());
+        }
+    }
+
+    private void handleDatabaseError(SQLException e) {
+        // Check if this is a duplicate entry error (MySQL error code 1062)
+        if (e.getErrorCode() == 1062 || e.getMessage().contains("Duplicate entry") ||
+                e.getMessage().contains("unique_parcelle")) {
+            showAlert("Erreur",
+                    "Parcelle existante",
+                    "Une parcelle avec ces informations existe déjà.\n" +
+                            "Veuillez vérifier le nom, la superficie, la localisation et le type de sol.");
+        } else {
+            showAlert("Erreur de base de données",
+                    "Erreur technique",
+                    "Une erreur de base de données s'est produite: " + e.getMessage());
         }
     }
 
@@ -140,7 +160,7 @@ public class ParcelleFormController implements Initializable {
         return true;
     }
 
-    private void updateExistingParcelle() {
+    private void updateExistingParcelle() throws SQLException {
         currentParcelle.setNom(nomField.getText().trim());
         currentParcelle.setSuperficie(Float.parseFloat(superficieField.getText().trim()));
         currentParcelle.setLocalisation(localisationField.getText().trim());
@@ -148,7 +168,7 @@ public class ParcelleFormController implements Initializable {
         parcelleService.updateParcelle(currentParcelle);
     }
 
-    private void createNewParcelle() {
+    private void createNewParcelle() throws SQLException {
         Parcelle newParcelle = new Parcelle();
         newParcelle.setNom(nomField.getText().trim());
         newParcelle.setSuperficie(Float.parseFloat(superficieField.getText().trim()));

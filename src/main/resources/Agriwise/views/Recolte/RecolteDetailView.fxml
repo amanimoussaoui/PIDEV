@@ -8,8 +8,7 @@
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 
 <VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="Agriwise.controllers.Recolte.RecolteDetailController"
-      stylesheets="@../../css/styles.css">
+      fx:controller="Agriwise.controllers.Recolte.RecolteDetailController">
     <stylesheets>
         <URL value="@../../css/styles.css" />
     </stylesheets>

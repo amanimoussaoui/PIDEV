@@ -28,16 +28,47 @@
             <!-- Main Content -->
             <center>
                 <VBox styleClass="main-content">
+                    <!-- Action Bar with Search and Create Button -->
                     <HBox styleClass="action-bar">
-                        <Region HBox.hgrow="ALWAYS" />
+                        <!-- Search and Filter Section -->
+                        <HBox styleClass="search-filter-bar" HBox.hgrow="ALWAYS">
+                            <!-- Search Field -->
+                            <HBox alignment="CENTER_LEFT" spacing="8" styleClass="search-box" HBox.hgrow="ALWAYS">
+                                <FontAwesomeIconView glyphName="SEARCH" size="14" styleClass="search-icon"/>
+                                <TextField fx:id="searchField" promptText="Rechercher une activité..."
+                                           onKeyReleased="#handleSearch" styleClass="search-input" HBox.hgrow="ALWAYS"/>
+                                <Button fx:id="clearSearchButton" styleClass="icon-button" onAction="#clearSearch">
+                                    <graphic>
+                                        <FontAwesomeIconView glyphName="TIMES" size="12"/>
+                                    </graphic>
+                                </Button>
+                            </HBox>
+
+                            <!-- Type Filter -->
+                            <HBox alignment="CENTER_LEFT" spacing="8" styleClass="filter-box">
+                                <FontAwesomeIconView glyphName="FILTER" size="14" styleClass="filter-icon"/>
+                                <ComboBox fx:id="typeFilter" promptText="Type d'activité"
+                                          onAction="#handleTypeFilter" styleClass="filter-combo"/>
+                                <Button fx:id="clearFilterButton" styleClass="icon-button" onAction="#clearFilters">
+                                    <graphic>
+                                        <FontAwesomeIconView glyphName="TIMES" size="12"/>
+                                    </graphic>
+                                </Button>
+                            </HBox>
+                        </HBox>
+
+                        <!-- Create Button -->
                         <HBox styleClass="right-actions">
-                            <Button text="Créer une nouvelle Activité" styleClass="btn-submit" onAction="#handleAddActivite">
+                            <Button fx:id="createButton" text="Créer une nouvelle Activité" onAction="#handleAddActivite" styleClass="btn-submit">
                                 <graphic>
                                     <FontAwesomeIconView glyphName="PLUS_CIRCLE" styleClass="button-icon"/>
                                 </graphic>
                             </Button>
                         </HBox>
                     </HBox>
+
+                    <!-- Active Filters Display -->
+                    <FlowPane fx:id="activeFiltersContainer" hgap="10" vgap="5" visible="false" managed="false" styleClass="filter-tags"/>
 
                     <!-- Table Container -->
                     <StackPane styleClass="table-wrapper" VBox.vgrow="ALWAYS">

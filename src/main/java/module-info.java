@@ -11,7 +11,6 @@ module org.example.gestionagricolejavafx {
     opens Agriwise.entities to javafx.base;
     opens Agriwise.controllers to javafx.fxml;
     opens Agriwise.views to javafx.fxml;
-    opens Agriwise.icons to javafx.fxml;
     opens Agriwise.views.Culture to javafx.fxml;
     opens Agriwise.views.Activite to javafx.fxml;
 

@@ -3,10 +3,11 @@ package Agriwise.tests;
 import Agriwise.entities.Parcelle;
 import Agriwise.services.ParcelleService;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public class TestParcelle {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
         ParcelleService parcelleService = new ParcelleService();
 
         Parcelle p1 = new Parcelle();

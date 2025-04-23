@@ -13,21 +13,57 @@
         <URL value="@../../css/styles.css" />
     </stylesheets>
 
-        <!-- Main Content -->
-        <VBox styleClass="app-container" spacing="10" HBox.hgrow="ALWAYS" style="-fx-padding: 20; -fx-background-color: #f8f9fa;" >
-
+    <!-- Main Content inside ScrollPane -->
+    <ScrollPane fx:id="scrollPane" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
+                VBox.vgrow="ALWAYS" styleClass="content-pane">
+        <VBox styleClass="app-container" spacing="15" style="-fx-padding: 20; -fx-background-color: #f8f9fa;" prefWidth="Infinity">
             <!-- Header -->
-            <HBox styleClass="header-box" spacing="10">
-                <Label text="Calendrier des Activités" styleClass="header-title"/>
-                <Region HBox.hgrow="ALWAYS"/>
-                <Button fx:id="addButton" text="Ajouter une activité" styleClass="btn-primary">
+            <HBox alignment="CENTER" spacing="10">
+                <HBox alignment="CENTER_LEFT" spacing="8" HBox.hgrow="ALWAYS">
+                    <FontAwesomeIconView glyphName="CALENDAR" size="18" styleClass="title-icon"/>
+                    <Label text="Calendrier des Activités" styleClass="title-text"/>
+                </HBox>
+                <Button fx:id="addButton" text="Ajouter une activité" styleClass="btn-submit">
                     <graphic>
                         <FontAwesomeIconView glyphName="PLUS_CIRCLE" styleClass="button-icon"/>
                     </graphic>
                 </Button>
             </HBox>
 
+            <!-- Search and Filter Bar -->
+            <HBox styleClass="search-filter-bar">
+                <!-- Search Field -->
+                <HBox alignment="CENTER_LEFT" spacing="8" styleClass="search-box" HBox.hgrow="ALWAYS">
+                    <FontAwesomeIconView glyphName="SEARCH" size="14" styleClass="search-icon"/>
+                    <TextField fx:id="searchField" promptText="Rechercher une activité par description..."
+                               onKeyReleased="#handleSearch" styleClass="search-input" HBox.hgrow="ALWAYS"/>
+                    <Button fx:id="clearSearchButton" styleClass="icon-button" onAction="#clearSearch">
+                        <graphic>
+                            <FontAwesomeIconView glyphName="TIMES" size="12"/>
+                        </graphic>
+                    </Button>
+                </HBox>
+
+                <!-- Type Filter -->
+                <HBox alignment="CENTER_LEFT" spacing="8" styleClass="filter-box">
+                    <FontAwesomeIconView glyphName="FILTER" size="14" styleClass="filter-icon"/>
+                    <ComboBox fx:id="typeFilter" promptText="Type d'activité"
+                              onAction="#handleTypeFilter" styleClass="filter-combo"/>
+                    <Button fx:id="clearFilterButton" styleClass="icon-button" onAction="#clearFilters">
+                        <graphic>
+                            <FontAwesomeIconView glyphName="TIMES" size="12"/>
+                        </graphic>
+                    </Button>
+                </HBox>
+            </HBox>
+
+            <!-- Active Filters Display -->
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <FlowPane fx:id="activeFiltersContainer" hgap="10" vgap="5" visible="false" managed="false" styleClass="filter-tags"/>
+                <Label fx:id="resultCountLabel" styleClass="results-count" />
+            </HBox>
             <!-- WebView -->
             <WebView fx:id="webView" VBox.vgrow="ALWAYS"/>
         </VBox>
+    </ScrollPane>
 </VBox>

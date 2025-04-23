@@ -11,11 +11,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ActiviteService implements IActiviteService {
+    private static ActiviteService instance;
 
     private Connection cnx;
 
     public ActiviteService() {
         cnx = MyConnection.getInstance().getCnx();
+    }
+
+    public static ActiviteService getInstance() {
+        if (instance == null) {
+            instance = new ActiviteService();
+        }
+        return instance;
     }
 
     @Override

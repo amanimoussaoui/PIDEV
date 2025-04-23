@@ -4,6 +4,7 @@ import Agriwise.entities.Culture;
 import Agriwise.services.CultureService;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -23,9 +24,11 @@ import javafx.util.Duration;
 import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 public class CultureController implements Initializable {
 
@@ -38,7 +41,26 @@ public class CultureController implements Initializable {
     @FXML
     private ScrollPane scrollPane;
 
+    @FXML
+    private TextField searchField;
+
+    @FXML
+    private Button clearSearchButton;
+
+    @FXML
+    private ComboBox<String> statusFilter;
+
+    @FXML
+    private Button clearFilterButton;
+
+    @FXML
+    private FlowPane activeFiltersContainer;
+
     private CultureService cultureService;
+    private List<Culture> allCultures; // Store all cultures for filtering
+    private String currentSearchTerm = "";
+    private String currentStatusFilter = "";
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -50,23 +72,185 @@ public class CultureController implements Initializable {
         // Center the flow pane content
         cultureContainer.setAlignment(Pos.TOP_CENTER);
 
-        loadCultures();
+        // Initialize UI components
         styleAddButton();
+        setupSearchField();
+        setupStatusFilter();
+
+        // Load data
+        loadAllCultures();
 
         // Responsive width binding
         scrollPane.viewportBoundsProperty().addListener((obs, oldVal, newVal) -> {
             cultureContainer.setPrefWidth(Math.max(newVal.getWidth() - 40, 0));
         });
-
     }
 
-    private void loadCultures() {
+
+
+
+    private void setupSearchField() {
+        // Style the search field
+        searchField.getStyleClass().add("search-field");
+
+        // Make the clear button visible only when there is text
+        clearSearchButton.setVisible(false);
+        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+            clearSearchButton.setVisible(!newValue.isEmpty());
+            currentSearchTerm = newValue.trim().toLowerCase();
+            applyFilters();
+        });
+    }
+
+    private void setupStatusFilter() {
+        // Initially hide the clear filter button
+        clearFilterButton.setVisible(false);
+
+        // Add status options
+        List<String> statusOptions = new ArrayList<>();
+        statusOptions.add("Tous les statuts");
+        statusOptions.add("en_culture");
+        statusOptions.add("terminé");
+
+        statusFilter.setItems(FXCollections.observableArrayList(statusOptions));
+        statusFilter.getSelectionModel().selectFirst();
+
+        statusFilter.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null && !newValue.equals("Tous les statuts")) {
+                currentStatusFilter = newValue;
+                clearFilterButton.setVisible(true);
+            } else {
+                currentStatusFilter = "";
+                clearFilterButton.setVisible(false);
+            }
+            applyFilters();
+        });
+    }
+
+    private void loadAllCultures() {
+        // Load all cultures from the database and store them
+        allCultures = cultureService.getAllCultures();
+        displayCultures(allCultures);
+    }
+
+    @FXML
+    private void handleSearch() {
+        currentSearchTerm = searchField.getText().trim().toLowerCase();
+        applyFilters();
+    }
+
+    @FXML
+    private void handleStatusFilter() {
+        String selectedStatus = statusFilter.getValue();
+        if (selectedStatus != null && !selectedStatus.equals("Tous les statuts")) {
+            currentStatusFilter = selectedStatus;
+            clearFilterButton.setVisible(true);
+        } else {
+            currentStatusFilter = "";
+            clearFilterButton.setVisible(false);
+        }
+        applyFilters();
+    }
+
+    private void applyFilters() {
+        List<Culture> filteredCultures = allCultures;
+
+        // Apply search filter if there's a search term
+        if (!currentSearchTerm.isEmpty()) {
+            filteredCultures = filteredCultures.stream()
+                    .filter(c -> c.getNomCulture().toLowerCase().contains(currentSearchTerm))
+                    .collect(Collectors.toList());
+        }
+
+        // Apply status filter if selected
+        if (!currentStatusFilter.isEmpty()) {
+            filteredCultures = filteredCultures.stream()
+                    .filter(c -> c.getStatut().equalsIgnoreCase(currentStatusFilter))
+                    .collect(Collectors.toList());
+        }
+
+        // Update active filters display
+        updateActiveFiltersDisplay();
+
+        // Display the filtered results
+        displayCultures(filteredCultures);
+    }
+
+    private void updateActiveFiltersDisplay() {
+        activeFiltersContainer.getChildren().clear();
+        boolean hasFilters = false;
+
+        // Add search term filter badge if active
+        if (!currentSearchTerm.isEmpty()) {
+            activeFiltersContainer.getChildren().add(
+                    createFilterBadge("Recherche: " + currentSearchTerm, () -> {
+                        searchField.clear();
+                        currentSearchTerm = "";
+                        applyFilters();
+                    })
+            );
+            hasFilters = true;
+        }
+
+        // Add status filter badge if active
+        if (!currentStatusFilter.isEmpty()) {
+            activeFiltersContainer.getChildren().add(
+                    createFilterBadge("Statut: " + currentStatusFilter, () -> {
+                        statusFilter.getSelectionModel().selectFirst();
+                        currentStatusFilter = "";
+                        clearFilterButton.setVisible(false);
+                        applyFilters();
+                    })
+            );
+            hasFilters = true;
+        }
+
+        // Show/hide the active filters container
+        activeFiltersContainer.setVisible(hasFilters);
+        activeFiltersContainer.setManaged(hasFilters);
+    }
+
+    private HBox createFilterBadge(String text, Runnable onRemove) {
+        HBox badge = new HBox();
+        badge.getStyleClass().add("filter-badge");
+        badge.setAlignment(Pos.CENTER);
+        badge.setSpacing(5);
+
+        Label label = new Label(text);
+
+        Button removeButton = new Button();
+        removeButton.getStyleClass().add("filter-badge-remove");
+        FontAwesomeIconView removeIcon = new FontAwesomeIconView(FontAwesomeIcon.TIMES);
+        removeIcon.setSize("10px");
+        removeButton.setGraphic(removeIcon);
+        removeButton.setOnAction(e -> onRemove.run());
+
+        badge.getChildren().addAll(label, removeButton);
+        return badge;
+    }
+
+    @FXML
+    private void clearSearch() {
+        searchField.clear();
+        currentSearchTerm = "";
+        clearSearchButton.setVisible(false);
+        applyFilters();
+    }
+
+    @FXML
+    private void clearFilters() {
+        statusFilter.getSelectionModel().selectFirst();
+        currentStatusFilter = "";
+        clearFilterButton.setVisible(false);
+        applyFilters();
+    }
+
+    private void displayCultures(List<Culture> culturesToDisplay) {
         cultureContainer.getChildren().clear();
         cultureContainer.setPrefWidth(Region.USE_COMPUTED_SIZE);
-        List<Culture> cultures = cultureService.getAllCultures();
 
-        if (cultures.isEmpty()) {
-            Label emptyLabel = new Label("Aucune culture trouvée. Créez une nouvelle culture.");
+        if (culturesToDisplay.isEmpty()) {
+            Label emptyLabel = new Label("Aucune culture trouvée avec les critères sélectionnés.");
             emptyLabel.getStyleClass().addAll("empty-label", "h4");
             FontAwesomeIconView icon = new FontAwesomeIconView(FontAwesomeIcon.EXCLAMATION_TRIANGLE);
             icon.setSize("24px");
@@ -74,12 +258,39 @@ public class CultureController implements Initializable {
             emptyLabel.setContentDisplay(ContentDisplay.TOP);
             cultureContainer.getChildren().add(emptyLabel);
         } else {
-            for (Culture culture : cultures) {
+            for (Culture culture : culturesToDisplay) {
                 cultureContainer.getChildren().add(createCultureCard(culture));
             }
         }
     }
 
+
+
+    public void loadCultures() {
+        // Save current filter state
+        String savedSearchTerm = currentSearchTerm;
+        String savedStatusFilter = currentStatusFilter;
+
+        loadAllCultures();
+
+        // Restore filter state
+        currentSearchTerm = savedSearchTerm;
+        currentStatusFilter = savedStatusFilter;
+
+        // Restore UI state
+        if (!currentSearchTerm.isEmpty()) {
+            searchField.setText(currentSearchTerm);
+            clearSearchButton.setVisible(true);
+        }
+
+        if (!currentStatusFilter.isEmpty()) {
+            statusFilter.setValue(currentStatusFilter);
+            clearFilterButton.setVisible(true);
+        }
+
+        // Apply filters
+        applyFilters();
+    }
 
     private VBox createCultureCard(Culture culture) {
         // Main card container

@@ -4,6 +4,8 @@ import Agriwise.entities.Parcelle;
 import Agriwise.services.ParcelleService;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -26,9 +28,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class ParcelleController implements Initializable {
 
@@ -38,50 +39,277 @@ public class ParcelleController implements Initializable {
     @FXML
     private Button addButton;
 
-    private ParcelleService parcelleService;
+    @FXML
+    private TextField searchField;
+
+    @FXML
+    private Button clearSearchButton;
+
+    @FXML
+    private ComboBox<String> soilTypeFilter;
+
+    @FXML
+    private Button clearFilterButton;
+
+    @FXML
+    private FlowPane activeFiltersContainer;
 
     @FXML
     private ScrollPane scrollPane;
+    @FXML
+    private Label resultCountLabel;
+
+    private ParcelleService parcelleService;
+    private List<Parcelle> allParcelles; // Store all parcelles for filtering
+    private String currentSearchTerm = "";
+    private String currentSoilTypeFilter = "";
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         parcelleService = new ParcelleService();
 
         scrollPane.setStyle("-fx-background: transparent; -fx-background-color: transparent;");
-
         parcelleContainer.setAlignment(Pos.TOP_CENTER);
 
-        loadParcelles();
+        // Initialize UI components
         styleAddButton();
+        setupSearchField();
+        setupSoilTypeFilter();
+
+        // Load data
+        loadAllParcelles();
 
         scrollPane.viewportBoundsProperty().addListener((obs, oldVal, newVal) -> {
             parcelleContainer.setPrefWidth(Math.max(newVal.getWidth() - 40, 0));
         });
-
     }
 
-    private void loadParcelles() {
+    private void setupSearchField() {
+        // Style the search field
+        searchField.getStyleClass().add("search-field");
+
+        // Make the clear button visible only when there is text
+        clearSearchButton.setVisible(false);
+        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+            clearSearchButton.setVisible(!newValue.isEmpty());
+            currentSearchTerm = newValue.trim().toLowerCase();
+            applyFilters();
+        });
+    }
+
+    private void setupSoilTypeFilter() {
+        // Initially hide the clear filter button
+        clearFilterButton.setVisible(false);
+
+        // Add an "All" option
+        List<String> soilTypes = new ArrayList<>();
+        soilTypes.add("Tous les types de sol");
+
+        // Load the ComboBox when parcelles are loaded
+        soilTypeFilter.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null && !newValue.equals("Tous les types de sol")) {
+                currentSoilTypeFilter = newValue;
+                clearFilterButton.setVisible(true);
+            } else {
+                currentSoilTypeFilter = "";
+                clearFilterButton.setVisible(false);
+            }
+            applyFilters();
+        });
+    }
+
+    private void populateSoilTypeFilter() {
+        // Extract unique soil types from all parcelles
+        Set<String> uniqueSoilTypes = allParcelles.stream()
+                .map(Parcelle::getTypeSol)
+                .collect(Collectors.toSet());
+
+        // Create a sorted list with "All" option first
+        List<String> soilTypeOptions = new ArrayList<>();
+        soilTypeOptions.add("Tous les types de sol");
+        soilTypeOptions.addAll(uniqueSoilTypes.stream().sorted().collect(Collectors.toList()));
+
+        // Set the items in the ComboBox
+        soilTypeFilter.setItems(FXCollections.observableArrayList(soilTypeOptions));
+        soilTypeFilter.getSelectionModel().selectFirst();
+    }
+
+    private void loadAllParcelles() {
+        // Load all parcelles from the database and store them
+        allParcelles = parcelleService.getAllParcelles();
+        populateSoilTypeFilter(); // Populate the soil type filter after loading parcelles
+        displayParcelles(allParcelles);
+    }
+
+    @FXML
+    private void handleSearch() {
+        currentSearchTerm = searchField.getText().trim().toLowerCase();
+        applyFilters();
+    }
+
+    @FXML
+    private void handleSoilTypeFilter() {
+        String selectedSoilType = soilTypeFilter.getValue();
+        if (selectedSoilType != null && !selectedSoilType.equals("Tous les types de sol")) {
+            currentSoilTypeFilter = selectedSoilType;
+            clearFilterButton.setVisible(true);
+        } else {
+            currentSoilTypeFilter = "";
+            clearFilterButton.setVisible(false);
+        }
+        applyFilters();
+    }
+
+    private void applyFilters() {
+        List<Parcelle> filteredParcelles = allParcelles;
+
+        // Apply search filter if there's a search term
+        if (!currentSearchTerm.isEmpty()) {
+            filteredParcelles = filteredParcelles.stream()
+                    .filter(p -> p.getNom().toLowerCase().contains(currentSearchTerm))
+                    .collect(Collectors.toList());
+        }
+
+        // Apply soil type filter if selected
+        if (!currentSoilTypeFilter.isEmpty()) {
+            filteredParcelles = filteredParcelles.stream()
+                    .filter(p -> p.getTypeSol().equals(currentSoilTypeFilter))
+                    .collect(Collectors.toList());
+        }
+
+        // Update active filters display
+        updateActiveFiltersDisplay();
+
+        // Display the filtered results
+        displayParcelles(filteredParcelles);
+    }
+
+    private void updateActiveFiltersDisplay() {
+        activeFiltersContainer.getChildren().clear();
+        boolean hasFilters = false;
+
+        // Add search term filter badge if active
+        if (!currentSearchTerm.isEmpty()) {
+            activeFiltersContainer.getChildren().add(
+                    createFilterBadge("Recherche: " + currentSearchTerm, () -> {
+                        searchField.clear();
+                        currentSearchTerm = "";
+                        applyFilters();
+                    })
+            );
+            hasFilters = true;
+        }
+
+        // Add soil type filter badge if active
+        if (!currentSoilTypeFilter.isEmpty()) {
+            activeFiltersContainer.getChildren().add(
+                    createFilterBadge("Type de sol: " + currentSoilTypeFilter, () -> {
+                        soilTypeFilter.getSelectionModel().selectFirst();
+                        currentSoilTypeFilter = "";
+                        clearFilterButton.setVisible(false);
+                        applyFilters();
+                    })
+            );
+            hasFilters = true;
+        }
+
+
+        // Show/hide the active filters container
+        activeFiltersContainer.setVisible(hasFilters);
+        activeFiltersContainer.setManaged(hasFilters);
+    }
+
+    private HBox createFilterBadge(String text, Runnable onRemove) {
+        HBox badge = new HBox();
+        badge.getStyleClass().add("filter-badge");
+        badge.setAlignment(Pos.CENTER);
+        badge.setSpacing(5);
+
+        Label label = new Label(text);
+
+        Button removeButton = new Button();
+        removeButton.getStyleClass().add("filter-badge-remove");
+        FontAwesomeIconView removeIcon = new FontAwesomeIconView(FontAwesomeIcon.TIMES);
+        removeIcon.setSize("10px");
+        removeButton.setGraphic(removeIcon);
+        removeButton.setOnAction(e -> onRemove.run());
+
+        badge.getChildren().addAll(label, removeButton);
+        return badge;
+    }
+
+    @FXML
+    private void clearSearch() {
+        searchField.clear();
+        currentSearchTerm = "";
+        clearSearchButton.setVisible(false);
+        applyFilters();
+    }
+
+    @FXML
+    private void clearFilters() {
+        soilTypeFilter.getSelectionModel().selectFirst();
+        currentSoilTypeFilter = "";
+        clearFilterButton.setVisible(false);
+        applyFilters();
+    }
+
+    private void displayParcelles(List<Parcelle> parcellesToDisplay) {
         parcelleContainer.getChildren().clear();
         parcelleContainer.setPrefWidth(Region.USE_COMPUTED_SIZE);
-        List<Parcelle> parcelles = parcelleService.getAllParcelles();
 
-        if (parcelles.isEmpty()) {
-            Label emptyLabel = new Label("Aucune parcelle trouvée. Créez une nouvelle parcelle.");
-            emptyLabel.getStyleClass().addAll("empty-label", "h4"); // Add h4 for larger text
-            // Consider adding an icon:
+        // Update the result count label
+        int count = parcellesToDisplay.size();
+        if (count == 0) {
+            resultCountLabel.setText("Aucun résultat trouvé");
+        } else if (count == 1) {
+            resultCountLabel.setText("1 résultat trouvé");
+        } else {
+            resultCountLabel.setText(count + " résultats trouvés");
+        }
+
+        if (parcellesToDisplay.isEmpty()) {
+            Label emptyLabel = new Label("Aucune parcelle trouvée avec les critères sélectionnés.");
+            emptyLabel.getStyleClass().addAll("empty-label", "h4");
             FontAwesomeIconView icon = new FontAwesomeIconView(FontAwesomeIcon.EXCLAMATION_TRIANGLE);
             icon.setSize("24px");
             emptyLabel.setGraphic(icon);
             emptyLabel.setContentDisplay(ContentDisplay.TOP);
             parcelleContainer.getChildren().add(emptyLabel);
-        }else {
-            for (Parcelle parcelle : parcelles) {
+        } else {
+            for (Parcelle parcelle : parcellesToDisplay) {
                 parcelleContainer.getChildren().add(createParcelleCard(parcelle));
             }
         }
     }
 
 
+    // This method refreshes the parcelle list after adding, editing, or deleting
+    public void loadParcelles() {
+        // Save current filter state
+        String savedSearchTerm = currentSearchTerm;
+        String savedSoilType = currentSoilTypeFilter;
+
+        loadAllParcelles();
+
+        // Restore filter state
+        currentSearchTerm = savedSearchTerm;
+        currentSoilTypeFilter = savedSoilType;
+
+        // Restore UI state
+        if (!currentSearchTerm.isEmpty()) {
+            searchField.setText(currentSearchTerm);
+            clearSearchButton.setVisible(true);
+        }
+
+        if (!currentSoilTypeFilter.isEmpty()) {
+            soilTypeFilter.setValue(currentSoilTypeFilter);
+            clearFilterButton.setVisible(true);
+        }
+
+        // Apply filters
+        applyFilters();
+    }
 
     private VBox createParcelleCard(Parcelle parcelle) {
         // Main card container with drop shadow
@@ -134,7 +362,6 @@ public class ParcelleController implements Initializable {
             System.err.println("Error loading image: " + e.getMessage());
             mapImage.setImage(new Image(getClass().getResourceAsStream("/Agriwise/images/default-map.jpg")));
         }
-
 
         mapImage.setFitWidth(320);
         mapImage.setFitHeight(180);
@@ -205,7 +432,7 @@ public class ParcelleController implements Initializable {
 
         // Set actions
         viewButton.setOnAction(e -> showParcelleDetails(parcelle));
-        editButton.setOnAction(e ->editParcelle(parcelle));
+        editButton.setOnAction(e -> editParcelle(parcelle));
         deleteButton.setOnAction(e -> deleteParcelle(parcelle));
 
         // Add quick action button that appears on hover
@@ -217,10 +444,8 @@ public class ParcelleController implements Initializable {
         // Assemble the card
         card.getChildren().addAll(headerStack, imageContainer, body, footer);
 
-        // Add hover effects (handled in CSS)
         return card;
     }
-
 
 
     private Button createModernActionButton(FontAwesomeIcon icon, String tooltip, String styleClass) {
@@ -238,7 +463,6 @@ public class ParcelleController implements Initializable {
 
         return button;
     }
-
 
     private String getBadgeStyle(String typeSol) {
         switch (typeSol.toLowerCase()) {
@@ -265,8 +489,6 @@ public class ParcelleController implements Initializable {
                 return "soil-indicator-other";
         }
     }
-
-
 
     private void styleAddButton() {
         addButton.getStyleClass().addAll("btn-submit");
@@ -299,7 +521,6 @@ public class ParcelleController implements Initializable {
         stage.show();
     }
 
-
     private void deleteParcelle(Parcelle parcelle) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmation de suppression");
@@ -312,9 +533,6 @@ public class ParcelleController implements Initializable {
             loadParcelles();
         }
     }
-
-
-
 
     private void showErrorAlert(String title, String header, Exception e) {
         e.printStackTrace();
@@ -363,6 +581,4 @@ public class ParcelleController implements Initializable {
             showErrorAlert("Erreur", "Impossible d'ouvrir le formulaire", e);
         }
     }
-
-
 }

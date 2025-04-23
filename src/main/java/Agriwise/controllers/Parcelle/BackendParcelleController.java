@@ -6,6 +6,7 @@ import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -14,6 +15,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -21,7 +23,10 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class BackendParcelleController {
 
@@ -32,11 +37,18 @@ public class BackendParcelleController {
     @FXML private TableColumn<Parcelle, String> localisationColumn;
     @FXML private TableColumn<Parcelle, String> typeSolColumn;
     @FXML private TableColumn<Parcelle, Void> actionsColumn;
-    @FXML
-    private Button createButton;
+    @FXML private Button createButton;
+    @FXML private TextField searchField;
+    @FXML private ComboBox<String> soilTypeFilter;
+    @FXML private Button clearSearchButton;
+    @FXML private Button clearFilterButton;
+    @FXML private FlowPane activeFiltersContainer;
 
     private ParcelleService parcelleService;
     private ObservableList<Parcelle> parcelleData = FXCollections.observableArrayList();
+    private FilteredList<Parcelle> filteredData;
+    private String currentSearchTerm = "";
+    private String currentSoilTypeFilter = "";
 
     @FXML
     public void initialize() {
@@ -60,36 +72,182 @@ public class BackendParcelleController {
         configureTypeSolColumn();
         configureActionsColumn();
 
+        // Setup search and filter components
+        setupSearchField();
+        setupSoilTypeFilter();
+
         // Load data
         loadParcelles();
 
         // Enable sorting
         enableSorting();
-
-        // Set up the "Create New Parcelle" button
-
     }
 
+    private void setupSearchField() {
+        // Make the clear button visible only when there is text
+        clearSearchButton.setVisible(false);
+        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+            clearSearchButton.setVisible(!newValue.isEmpty());
+            currentSearchTerm = newValue.trim().toLowerCase();
+            applyFilters();
+        });
+    }
+    @FXML
+    private void handleSoilTypeFilter() {
+        String selectedSoilType = soilTypeFilter.getValue();
+        if (selectedSoilType != null && !selectedSoilType.equals("Tous les types de sol")) {
+            currentSoilTypeFilter = selectedSoilType;
+            clearFilterButton.setVisible(true);
+        } else {
+            currentSoilTypeFilter = "";
+            clearFilterButton.setVisible(false);
+        }
+        applyFilters();
+    }
 
+    private void setupSoilTypeFilter() {
+        // Initially hide the clear filter button
+        clearFilterButton.setVisible(false);
+
+        // Add an "All" option
+        List<String> soilTypes = new ArrayList<>();
+        soilTypes.add("Tous les types de sol");
+
+        // Load the ComboBox when parcelles are loaded
+        soilTypeFilter.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null && !newValue.equals("Tous les types de sol")) {
+                currentSoilTypeFilter = newValue;
+                clearFilterButton.setVisible(true);
+            } else {
+                currentSoilTypeFilter = "";
+                clearFilterButton.setVisible(false);
+            }
+            applyFilters();
+        });
+    }
+
+    private void populateSoilTypeFilter() {
+        // Extract unique soil types from all parcelles
+        Set<String> uniqueSoilTypes = parcelleData.stream()
+                .map(Parcelle::getTypeSol)
+                .collect(Collectors.toSet());
+
+        // Create a sorted list with "All" option first
+        List<String> soilTypeOptions = new ArrayList<>();
+        soilTypeOptions.add("Tous les types de sol");
+        soilTypeOptions.addAll(uniqueSoilTypes.stream().sorted().collect(Collectors.toList()));
+
+        // Set the items in the ComboBox
+        soilTypeFilter.setItems(FXCollections.observableArrayList(soilTypeOptions));
+        soilTypeFilter.getSelectionModel().selectFirst();
+    }
+
+    private void applyFilters() {
+        filteredData.setPredicate(parcelle -> {
+            // Search term filter
+            if (!currentSearchTerm.isEmpty() &&
+                    !parcelle.getNom().toLowerCase().contains(currentSearchTerm) &&
+                    !parcelle.getLocalisation().toLowerCase().contains(currentSearchTerm)) {
+                return false;
+            }
+
+            // Soil type filter
+            if (!currentSoilTypeFilter.isEmpty() &&
+                    !parcelle.getTypeSol().equalsIgnoreCase(currentSoilTypeFilter)) {
+                return false;
+            }
+
+            return true;
+        });
+
+        // Update active filters display
+        updateActiveFiltersDisplay();
+    }
+
+    private void updateActiveFiltersDisplay() {
+        activeFiltersContainer.getChildren().clear();
+        boolean hasFilters = false;
+
+        // Add search term filter badge if active
+        if (!currentSearchTerm.isEmpty()) {
+            activeFiltersContainer.getChildren().add(
+                    createFilterBadge("Recherche: " + currentSearchTerm, () -> {
+                        searchField.clear();
+                        currentSearchTerm = "";
+                        applyFilters();
+                    })
+            );
+            hasFilters = true;
+        }
+
+        // Add soil type filter badge if active
+        if (!currentSoilTypeFilter.isEmpty()) {
+            activeFiltersContainer.getChildren().add(
+                    createFilterBadge("Type de sol: " + currentSoilTypeFilter, () -> {
+                        soilTypeFilter.getSelectionModel().selectFirst();
+                        currentSoilTypeFilter = "";
+                        clearFilterButton.setVisible(false);
+                        applyFilters();
+                    })
+            );
+            hasFilters = true;
+        }
+
+        // Add results count label if any filters are active
+        if (hasFilters) {
+            int resultsCount = filteredData.size();
+            Label countLabel = new Label(resultsCount + " résultat" + (resultsCount > 1 ? "s" : "") + " trouvé" + (resultsCount > 1 ? "s" : ""));
+            countLabel.getStyleClass().add("results-count");
+            countLabel.setStyle("-fx-font-weight: bold; -fx-padding: 5px 10px; -fx-text-fill: #495057;");
+
+            activeFiltersContainer.getChildren().add(countLabel);
+        }
+
+        // Show/hide the active filters container
+        activeFiltersContainer.setVisible(hasFilters);
+        activeFiltersContainer.setManaged(hasFilters);
+    }
+
+    
+    private HBox createFilterBadge(String text, Runnable onRemove) {
+        HBox badge = new HBox();
+        badge.getStyleClass().add("filter-badge");
+        badge.setAlignment(Pos.CENTER);
+        badge.setSpacing(5);
+
+        Label label = new Label(text);
+
+        Button removeButton = new Button();
+        removeButton.getStyleClass().add("filter-badge-remove");
+        FontAwesomeIconView removeIcon = new FontAwesomeIconView(FontAwesomeIcon.TIMES);
+        removeIcon.setSize("10px");
+        removeButton.setGraphic(removeIcon);
+        removeButton.setOnAction(e -> onRemove.run());
+
+        badge.getChildren().addAll(label, removeButton);
+        return badge;
+    }
 
     @FXML
-    private void handleAddParcelle() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Agriwise/views/Parcelle/ParcelleFormView.fxml"));
-            Parent root = loader.load();
+    private void handleSearch() {
+        currentSearchTerm = searchField.getText().trim().toLowerCase();
+        applyFilters();
+    }
 
-            ParcelleFormController controller = loader.getController();
-            controller.setParcelle(null); // This puts the form in add mode
-            controller.setRefreshCallback(this::refreshParcelleList);
+    @FXML
+    private void clearSearch() {
+        searchField.clear();
+        currentSearchTerm = "";
+        clearSearchButton.setVisible(false);
+        applyFilters();
+    }
 
-            Stage stage = new Stage();
-            stage.setTitle("Nouvelle Parcelle");
-            stage.setScene(new Scene(root, 650, 650));
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.show();
-        } catch (IOException e) {
-            showAlert("Erreur", "Impossible d'ouvrir le formulaire", e.getMessage());
-        }
+    @FXML
+    private void clearFilters() {
+        soilTypeFilter.getSelectionModel().selectFirst();
+        currentSoilTypeFilter = "";
+        clearFilterButton.setVisible(false);
+        applyFilters();
     }
 
     private void styleTableView() {
@@ -135,7 +293,7 @@ public class BackendParcelleController {
                     // Clear old style classes
                     badgeLabel.getStyleClass().clear();
                     badgeLabel.getStyleClass().add("badge");
-                    badgeLabel.getStyleClass().add(getBadgeStyleClass(typeSol)); // See method below
+                    badgeLabel.getStyleClass().add(getBadgeStyleClass(typeSol));
 
                     badgeLabel.setAlignment(Pos.CENTER);
                     badgeLabel.setMaxWidth(Double.MAX_VALUE);
@@ -203,11 +361,17 @@ public class BackendParcelleController {
         parcelleData.clear();
         parcelleData.addAll(parcelleService.getAllParcelles());
 
-        // Wrap the ObservableList in a SortedList
-        SortedList<Parcelle> sortedData = new SortedList<>(parcelleData);
+        // Initialize filtered list
+        filteredData = new FilteredList<>(parcelleData, p -> true);
+
+        // Wrap the FilteredList in a SortedList
+        SortedList<Parcelle> sortedData = new SortedList<>(filteredData);
         sortedData.comparatorProperty().bind(parcelleTable.comparatorProperty());
 
         parcelleTable.setItems(sortedData);
+
+        // Populate soil type filter after loading data
+        populateSoilTypeFilter();
     }
 
     private void enableSorting() {
@@ -228,7 +392,7 @@ public class BackendParcelleController {
 
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
-            stage.sizeToScene(); // Call sizeToScene() after the scene is set
+            stage.sizeToScene();
             stage.setTitle("Détails de la Parcelle");
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.show();
@@ -245,7 +409,7 @@ public class BackendParcelleController {
             Parent root = loader.load();
 
             ParcelleFormController controller = loader.getController();
-            controller.setParcelle(parcelle); // This puts the form in edit mode
+            controller.setParcelle(parcelle);
             controller.setRefreshCallback(this::refreshParcelleList);
 
             Stage stage = new Stage();
@@ -294,18 +458,38 @@ public class BackendParcelleController {
         try {
             List<Parcelle> updatedParcelles = parcelleService.getAllParcelles();
             parcelleData.setAll(updatedParcelles);
+            applyFilters();
         } catch (Exception e) {
             showAlert("Erreur", "Actualisation des données",
                     "Impossible de rafraîchir la liste: " + e.getMessage());
         }
     }
 
-    // Add this utility method to show alerts
     private void showAlert(String title, String header, String content) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
         alert.setHeaderText(header);
         alert.setContentText(content);
         alert.showAndWait();
+    }
+
+    @FXML
+    private void handleAddParcelle() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Agriwise/views/Parcelle/ParcelleFormView.fxml"));
+            Parent root = loader.load();
+
+            ParcelleFormController controller = loader.getController();
+            controller.setParcelle(null);
+            controller.setRefreshCallback(this::refreshParcelleList);
+
+            Stage stage = new Stage();
+            stage.setTitle("Nouvelle Parcelle");
+            stage.setScene(new Scene(root, 650, 650));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.show();
+        } catch (IOException e) {
+            showAlert("Erreur", "Impossible d'ouvrir le formulaire", e.getMessage());
+        }
     }
 }

@@ -11,62 +11,92 @@
         <URL value="@../../css/styles.css" />
     </stylesheets>
 
-        <!-- Main Content -->
-        <BorderPane styleClass="app-container" HBox.hgrow="ALWAYS">
-            <!-- Top Header Bar -->
-            <top>
-                <HBox styleClass="top-bar">
-                    <HBox styleClass="page-header">
-                        <Label text="Liste des Parcelles" styleClass="page-title"/>
-                    </HBox>
-                    <Region HBox.hgrow="ALWAYS" />
+    <!-- Main Content -->
+    <BorderPane styleClass="app-container" HBox.hgrow="ALWAYS">
+        <!-- Top Header Bar -->
+        <top>
+            <HBox styleClass="top-bar">
+                <HBox styleClass="page-header">
+                    <Label text="Liste des Parcelles" styleClass="page-title"/>
                 </HBox>
-            </top>
+                <Region HBox.hgrow="ALWAYS" />
+            </HBox>
+        </top>
 
-            <!-- Main Content -->
-            <center>
-                <VBox styleClass="main-content">
-                    <HBox styleClass="action-bar">
-                        <Region HBox.hgrow="ALWAYS" />
-                        <HBox styleClass="right-actions">
-                            <Button fx:id="createButton" text="Créer une nouvelle Parcelle" onAction="#handleAddParcelle" styleClass="btn-submit">
+        <!-- Main Content -->
+        <center>
+            <VBox styleClass="main-content">
+                <!-- Action Bar with Search and Create Button -->
+                <HBox styleClass="action-bar">
+                    <!-- Search and Filter Section -->
+                    <HBox styleClass="search-filter-bar" HBox.hgrow="ALWAYS">
+                        <!-- Search Field -->
+                        <HBox alignment="CENTER_LEFT" spacing="8" styleClass="search-box" HBox.hgrow="ALWAYS">
+                            <FontAwesomeIconView glyphName="SEARCH" size="14" styleClass="search-icon"/>
+                            <TextField fx:id="searchField" promptText="Rechercher une parcelle..."
+                                       onKeyReleased="#handleSearch" styleClass="search-input" HBox.hgrow="ALWAYS"/>
+                            <Button fx:id="clearSearchButton" styleClass="icon-button" onAction="#clearSearch">
                                 <graphic>
-                                    <FontAwesomeIconView glyphName="PLUS_CIRCLE" styleClass="button-icon"/>
+                                    <FontAwesomeIconView glyphName="TIMES" size="12"/>
+                                </graphic>
+                            </Button>
+                        </HBox>
+
+                        <!-- Soil Type Filter -->
+                        <HBox alignment="CENTER_LEFT" spacing="8" styleClass="filter-box">
+                            <FontAwesomeIconView glyphName="FILTER" size="14" styleClass="filter-icon"/>
+                            <ComboBox fx:id="soilTypeFilter" promptText="Type de sol"
+                                      onAction="#handleSoilTypeFilter" styleClass="filter-combo"/>
+                            <Button fx:id="clearFilterButton" styleClass="icon-button" onAction="#clearFilters">
+                                <graphic>
+                                    <FontAwesomeIconView glyphName="TIMES" size="12"/>
                                 </graphic>
                             </Button>
                         </HBox>
                     </HBox>
 
-                    <!-- Table Container -->
-                    <StackPane styleClass="table-wrapper" VBox.vgrow="ALWAYS">
-                        <TableView fx:id="parcelleTable" styleClass="modern-table">
-                            <columns>
-                                <TableColumn fx:id="idColumn" text="ID" prefWidth="80" />
-                                <TableColumn fx:id="nomColumn" text="Nom" prefWidth="200" />
-                                <TableColumn fx:id="superficieColumn" text="Superficie (m²)" prefWidth="150" />
-                                <TableColumn fx:id="localisationColumn" text="Localisation" prefWidth="250" />
-                                <TableColumn fx:id="typeSolColumn" text="Type Sol" prefWidth="150" />
-                                <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="120" />
-                            </columns>
-                            <placeholder>
-                                <VBox styleClass="empty-state">
-                                    <FontAwesomeIconView glyphName="MAP" styleClass="empty-icon"/>
-                                    <Label text="Aucune parcelle trouvée" styleClass="empty-title"/>
-                                    <Label text="Créez votre première parcelle pour commencer" styleClass="empty-desc"/>
-                                    <Button styleClass="empty-action">
-                                        <graphic>
-                                            <HBox styleClass="button-content">
-                                                <FontAwesomeIconView glyphName="PLUS" styleClass="button-icon"/>
-                                                <Label text="Ajouter une parcelle" styleClass="button-text"/>
-                                            </HBox>
-                                        </graphic>
-                                    </Button>
-                                </VBox>
-                            </placeholder>
-                        </TableView>
-                    </StackPane>
-                </VBox>
-            </center>
-        </BorderPane>
+                    <!-- Create Button -->
+                    <HBox styleClass="right-actions">
+                        <Button fx:id="createButton" text="Créer une nouvelle Parcelle" onAction="#handleAddParcelle" styleClass="btn-submit">
+                            <graphic>
+                                <FontAwesomeIconView glyphName="PLUS_CIRCLE" styleClass="button-icon"/>
+                            </graphic>
+                        </Button>
+                    </HBox>
+                </HBox>
 
+                <!-- Active Filters Display -->
+                <FlowPane fx:id="activeFiltersContainer" hgap="10" vgap="5" visible="false" managed="false" styleClass="filter-tags"/>
+
+                <!-- Table Container -->
+                <StackPane styleClass="table-wrapper" VBox.vgrow="ALWAYS">
+                    <TableView fx:id="parcelleTable" styleClass="modern-table">
+                        <columns>
+                            <TableColumn fx:id="idColumn" text="ID" prefWidth="80" />
+                            <TableColumn fx:id="nomColumn" text="Nom" prefWidth="200" />
+                            <TableColumn fx:id="superficieColumn" text="Superficie (m²)" prefWidth="150" />
+                            <TableColumn fx:id="localisationColumn" text="Localisation" prefWidth="250" />
+                            <TableColumn fx:id="typeSolColumn" text="Type Sol" prefWidth="150" />
+                            <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="120" />
+                        </columns>
+                        <placeholder>
+                            <VBox styleClass="empty-state">
+                                <FontAwesomeIconView glyphName="MAP" styleClass="empty-icon"/>
+                                <Label text="Aucune parcelle trouvée" styleClass="empty-title"/>
+                                <Label text="Créez votre première parcelle pour commencer" styleClass="empty-desc"/>
+                                <Button styleClass="empty-action" onAction="#handleAddParcelle">
+                                    <graphic>
+                                        <HBox styleClass="button-content">
+                                            <FontAwesomeIconView glyphName="PLUS" styleClass="button-icon"/>
+                                            <Label text="Ajouter une parcelle" styleClass="button-text"/>
+                                        </HBox>
+                                    </graphic>
+                                </Button>
+                            </VBox>
+                        </placeholder>
+                    </TableView>
+                </StackPane>
+            </VBox>
+        </center>
+    </BorderPane>
 </StackPane>

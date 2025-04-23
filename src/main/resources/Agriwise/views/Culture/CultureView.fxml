@@ -5,6 +5,7 @@
 <?import javafx.scene.text.*?>
 <?import javafx.geometry.Insets?>
 <?import java.net.URL?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 
 <VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="Agriwise.controllers.Culture.CultureController">
@@ -12,22 +13,51 @@
         <URL value="@../../css/styles.css" />
     </stylesheets>
 
+    <!-- Main Content -->
+    <VBox spacing="20" style="-fx-padding: 20; -fx-background-color: #f8f9fa;" HBox.hgrow="ALWAYS">
+        <!-- Header with Title -->
+        <HBox alignment="CENTER" spacing="10">
+            <HBox alignment="CENTER_LEFT" spacing="8" HBox.hgrow="ALWAYS">
+                <FontAwesomeIconView glyphName="LEAF" size="18" styleClass="title-icon"/>
+                <Label text="Vos Cultures" styleClass="title-text"/>
+            </HBox>
+            <Button fx:id="addButton" text="Créer une Culture" onAction="#handleAddCulture" />
+        </HBox>
 
-        <!-- Main Content -->
-        <VBox spacing="20" style="-fx-padding: 20; -fx-background-color: #f8f9fa;" HBox.hgrow="ALWAYS">
-            <HBox alignment="CENTER_RIGHT" spacing="10">
-                <Label text="Vos Cultures" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1F4E3D;" />
-                <Region HBox.hgrow="ALWAYS" />
-                <Button fx:id="addButton" text="Créer une Culture" onAction="#handleAddCulture" />
+        <!-- Search and Filter Bar -->
+        <HBox styleClass="search-filter-bar">
+            <!-- Search Field -->
+            <HBox alignment="CENTER_LEFT" spacing="8" styleClass="search-box" HBox.hgrow="ALWAYS">
+                <FontAwesomeIconView glyphName="SEARCH" size="14" styleClass="search-icon"/>
+                <TextField fx:id="searchField" promptText="Rechercher une culture..."
+                           onKeyReleased="#handleSearch" styleClass="search-input" HBox.hgrow="ALWAYS"/>
+                <Button fx:id="clearSearchButton" styleClass="icon-button" onAction="#clearSearch">
+                    <graphic>
+                        <FontAwesomeIconView glyphName="TIMES" size="12"/>
+                    </graphic>
+                </Button>
             </HBox>
 
-            <ScrollPane fx:id="scrollPane" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
-                        style="-fx-background: transparent; -fx-background-color: transparent;">
-                <StackPane>
-                    <FlowPane fx:id="cultureContainer"
-                              hgap="20" vgap="20" alignment="TOP_CENTER"
-                              style="-fx-padding: 20 0 0 0;" />
-                </StackPane>
-            </ScrollPane>
-        </VBox>
+            <!-- Status Filter -->
+            <HBox alignment="CENTER_LEFT" spacing="8" styleClass="filter-box">
+                <FontAwesomeIconView glyphName="FILTER" size="14" styleClass="filter-icon"/>
+                <ComboBox fx:id="statusFilter" promptText="Statut"
+                          onAction="#handleStatusFilter" styleClass="filter-combo"/>
+                <Button fx:id="clearFilterButton" styleClass="icon-button" onAction="#clearFilters">
+                    <graphic>
+                        <FontAwesomeIconView glyphName="TIMES" size="12"/>
+                    </graphic>
+                </Button>
+            </HBox>
+        </HBox>
+
+        <!-- Active Filters Display -->
+        <FlowPane fx:id="activeFiltersContainer" hgap="10" vgap="5" visible="false" managed="false" styleClass="filter-tags"/>
+
+        <!-- Cultures Container -->
+        <ScrollPane fx:id="scrollPane" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
+                    styleClass="content-pane" VBox.vgrow="ALWAYS">
+            <FlowPane fx:id="cultureContainer" hgap="20" vgap="20" styleClass="culture-grid"/>
+        </ScrollPane>
+    </VBox>
 </VBox>

@@ -79,8 +79,7 @@ public class CultureDetailController implements Initializable {
 
     private void addIconToButton(ButtonBase button, FontAwesomeIcon iconType) {
         FontAwesomeIconView icon = new FontAwesomeIconView(iconType);
-        icon.setSize("12px");
-
+        icon.setSize("16px");
         if (button.getStyleClass().contains("btn-light")) {
             icon.setFill(Color.web("#1F4E3D"));
         } else if (button.getStyleClass().contains("btn-primary") ||
@@ -257,17 +256,17 @@ public class CultureDetailController implements Initializable {
             buttonBox.setPadding(new Insets(15, 0, 0, 0));
 
             Button detailsButton = new Button("Détails");
-            detailsButton.getStyleClass().add("btn-info");
+            detailsButton.getStyleClass().addAll("modern-action-button","view-button");
             detailsButton.setOnAction(e -> handleViewRecolteDetails(culture.getRecolte()));
-            addIconToButton(detailsButton, FontAwesomeIcon.INFO_CIRCLE);
+            addIconToButton(detailsButton, FontAwesomeIcon.EYE);
 
             Button editButton = new Button("Modifier");
-            editButton.getStyleClass().add("btn-primary");
+            editButton.getStyleClass().addAll("modern-action-button","edit-button");
             editButton.setOnAction(e -> handleEditRecolte(recolte));
             addIconToButton(editButton, FontAwesomeIcon.EDIT);
 
             Button deleteButton = new Button("Supprimer");
-            deleteButton.getStyleClass().add("btn-danger");
+            deleteButton.getStyleClass().addAll("modern-action-button","delete-button");
             deleteButton.setOnAction(e -> handleDeleteRecolte(recolte));
             addIconToButton(deleteButton, FontAwesomeIcon.TRASH);
 

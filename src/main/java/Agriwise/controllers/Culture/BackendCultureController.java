@@ -7,6 +7,7 @@ import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,6 +16,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -23,6 +25,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -36,10 +39,20 @@ public class BackendCultureController {
     @FXML private TableColumn<Culture, String> statutColumn;
     @FXML private TableColumn<Culture, Parcelle> parcelleColumn;
     @FXML private TableColumn<Culture, Void> actionsColumn;
+    @FXML private TextField searchField;
+    @FXML private Button clearSearchButton;
+    @FXML private ComboBox<String> statusFilter;
+    @FXML private Button clearFilterButton;
+    @FXML private FlowPane activeFiltersContainer;
+    @FXML private Button createButton;
+    @FXML private Label resultsCountLabel;
 
     private CultureService cultureService;
     private ObservableList<Culture> cultureData = FXCollections.observableArrayList();
+    private FilteredList<Culture> filteredData;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+    private String currentSearchTerm = "";
+    private String currentStatusFilter = "";
 
     @FXML
     public void initialize() {
@@ -66,6 +79,10 @@ public class BackendCultureController {
         configureParcelleColumn();
         configureActionsColumn();
 
+        // Setup search and filter components
+        setupSearchField();
+        setupStatusFilter();
+
         // Load data
         loadCultures();
 
@@ -73,8 +90,157 @@ public class BackendCultureController {
         enableSorting();
     }
 
+    private void setupSearchField() {
+        // Make the clear button visible only when there is text
+        clearSearchButton.setVisible(false);
+        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+            clearSearchButton.setVisible(!newValue.isEmpty());
+            currentSearchTerm = newValue.trim().toLowerCase();
+            applyFilters();
+        });
+    }
+
+    private void setupStatusFilter() {
+        // Initially hide the clear filter button
+        clearFilterButton.setVisible(false);
+
+        // Add status options
+        List<String> statusOptions = new ArrayList<>();
+        statusOptions.add("Tous les statuts");
+        statusOptions.add("en_culture");
+        statusOptions.add("terminé");
+
+        statusFilter.setItems(FXCollections.observableArrayList(statusOptions));
+        statusFilter.getSelectionModel().selectFirst();
+
+        statusFilter.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null && !newValue.equals("Tous les statuts")) {
+                currentStatusFilter = newValue;
+                clearFilterButton.setVisible(true);
+            } else {
+                currentStatusFilter = "";
+                clearFilterButton.setVisible(false);
+            }
+            applyFilters();
+        });
+    }
+
+    private void applyFilters() {
+        filteredData.setPredicate(culture -> {
+            // If no filters are active, show all
+            if (currentSearchTerm.isEmpty() && currentStatusFilter.isEmpty()) {
+                return true;
+            }
+
+            // Search term filter
+            boolean matchesSearch = currentSearchTerm.isEmpty() ||
+                    culture.getNomCulture().toLowerCase().contains(currentSearchTerm);
+
+            // Status filter
+            boolean matchesStatus = currentStatusFilter.isEmpty() ||
+                    culture.getStatut().equalsIgnoreCase(currentStatusFilter);
+
+            return matchesSearch && matchesStatus;
+        });
+
+        // Update active filters display
+        updateActiveFiltersDisplay();
+
+        // Update results count
+        updateResultsCount();
+    }
+
+    private void updateResultsCount() {
+        int count = filteredData.size();
+        if (count == 1) {
+            resultsCountLabel.setText("1 résultat trouvé");
+        } else {
+            resultsCountLabel.setText(count + " résultats trouvés");
+        }
+
+        // Show the count only when there are items
+        resultsCountLabel.setVisible(count > 0);
+        resultsCountLabel.setManaged(count > 0);
+    }
+
+    private void updateActiveFiltersDisplay() {
+        activeFiltersContainer.getChildren().clear();
+        boolean hasFilters = false;
+
+        // Add search term filter badge if active
+        if (!currentSearchTerm.isEmpty()) {
+            activeFiltersContainer.getChildren().add(
+                    createFilterBadge("Recherche: " + currentSearchTerm, () -> {
+                        searchField.clear();
+                        currentSearchTerm = "";
+                        applyFilters();
+                    })
+            );
+            hasFilters = true;
+        }
+
+        // Add status filter badge if active
+        if (!currentStatusFilter.isEmpty()) {
+            activeFiltersContainer.getChildren().add(
+                    createFilterBadge("Statut: " + currentStatusFilter, () -> {
+                        statusFilter.getSelectionModel().selectFirst();
+                        currentStatusFilter = "";
+                        clearFilterButton.setVisible(false);
+                        applyFilters();
+                    })
+            );
+            hasFilters = true;
+        }
+
+        // Show/hide the active filters container
+        activeFiltersContainer.setVisible(hasFilters);
+        activeFiltersContainer.setManaged(hasFilters);
+    }
+
+    private HBox createFilterBadge(String text, Runnable onRemove) {
+        HBox badge = new HBox();
+        badge.getStyleClass().add("filter-badge");
+        badge.setAlignment(Pos.CENTER);
+        badge.setSpacing(5);
+
+        Label label = new Label(text);
+
+        Button removeButton = new Button();
+        removeButton.getStyleClass().add("filter-badge-remove");
+        FontAwesomeIconView removeIcon = new FontAwesomeIconView(FontAwesomeIcon.TIMES);
+        removeIcon.setSize("10px");
+        removeButton.setGraphic(removeIcon);
+        removeButton.setOnAction(e -> onRemove.run());
+
+        badge.getChildren().addAll(label, removeButton);
+        return badge;
+    }
+
+    @FXML
+    private void handleSearch() {
+        currentSearchTerm = searchField.getText().trim().toLowerCase();
+        applyFilters();
+    }
+
+    @FXML
+    private void clearSearch() {
+        searchField.clear();
+        currentSearchTerm = "";
+        clearSearchButton.setVisible(false);
+        applyFilters();
+        updateResultsCount();
+    }
+
+    @FXML
+    private void clearFilters() {
+        statusFilter.getSelectionModel().selectFirst();
+        currentStatusFilter = "";
+        clearFilterButton.setVisible(false);
+        applyFilters();
+        updateResultsCount();
+    }
+
     private void styleTableView() {
-        // Make table fit parent width
         cultureTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
         cultureTable.setStyle("-fx-background-color: white; -fx-border-color: #dee2e6; -fx-border-radius: 5px;");
     }
@@ -110,7 +276,6 @@ public class BackendCultureController {
             }
         });
     }
-
 
     private void configureStatutColumn() {
         statutColumn.setCellFactory(column -> new TableCell<Culture, String>() {
@@ -149,8 +314,8 @@ public class BackendCultureController {
             protected void updateItem(Parcelle parcelle, boolean empty) {
                 super.updateItem(parcelle, empty);
                 if (empty || parcelle == null) {
-                    setText("Non associée");
-                    setStyle("-fx-alignment: CENTER;");
+                    setText(null);
+                    setStyle("");
                 } else {
                     setText(parcelle.getNom());
                     setStyle("-fx-alignment: CENTER;");
@@ -213,11 +378,22 @@ public class BackendCultureController {
         cultureData.clear();
         cultureData.addAll(cultureService.getAllCultures());
 
-        SortedList<Culture> sortedData = new SortedList<>(cultureData);
+        // Initialize filtered list with the complete data
+        filteredData = new FilteredList<>(cultureData, p -> true);
+
+        // Wrap the FilteredList in a SortedList
+        SortedList<Culture> sortedData = new SortedList<>(filteredData);
         sortedData.comparatorProperty().bind(cultureTable.comparatorProperty());
+
+        // Apply initial filters
+        applyFilters();
+
+        // Update results count
+        updateResultsCount();
 
         cultureTable.setItems(sortedData);
     }
+
 
     private void enableSorting() {
         cultureTable.getSortOrder().add(idColumn);
@@ -235,9 +411,8 @@ public class BackendCultureController {
             controller.setRefreshCallback(this::refreshCultureList);
 
             Stage stage = new Stage();
-            stage.setScene(new Scene(root));
-            stage.sizeToScene();
             stage.setTitle("Détails de la Culture");
+            stage.setScene(new Scene(root, 650, 650));
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.show();
 
@@ -257,8 +432,8 @@ public class BackendCultureController {
             controller.setRefreshCallback(this::refreshCultureList);
 
             Stage stage = new Stage();
-            stage.setScene(new Scene(root));
             stage.setTitle("Modifier Culture");
+            stage.setScene(new Scene(root));
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.showAndWait();
 
@@ -302,6 +477,7 @@ public class BackendCultureController {
         try {
             List<Culture> updatedCultures = cultureService.getAllCultures();
             cultureData.setAll(updatedCultures);
+            applyFilters();
         } catch (Exception e) {
             showAlert("Erreur", "Actualisation des données",
                     "Impossible de rafraîchir la liste: " + e.getMessage());
@@ -315,6 +491,22 @@ public class BackendCultureController {
         alert.setContentText(content);
         alert.showAndWait();
     }
+
+
+
+    @FXML
+    private void handleStatusFilter() {
+        String selectedStatus = statusFilter.getValue();
+        if (selectedStatus != null && !selectedStatus.equals("Tous les statuts")) {
+            currentStatusFilter = selectedStatus;
+            clearFilterButton.setVisible(true);
+        } else {
+            currentStatusFilter = "";
+            clearFilterButton.setVisible(false);
+        }
+        applyFilters();
+    }
+
 
     @FXML
     private void handleAddCulture() {

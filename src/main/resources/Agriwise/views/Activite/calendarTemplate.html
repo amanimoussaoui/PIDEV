@@ -7,24 +7,13 @@
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="../../css/calendar.css" rel="stylesheet">
-    <style>
-        .activity-type {
-            padding: 3px 8px;
-            border-radius: 4px;
-            color: white;
-            font-weight: bold;
-        }
-        .Semis { background-color: var(--secondary-color); }
-        .Arrosage { background-color: var(--blue-color); }
-        .Fertilisation { background-color: var(--accent-color); }
-        .Récolte { background-color: var(--primary-color); }
-        .Traitement { background-color: var(--warning-color); }
-        .Désherbage { background-color: var(--purple-color); }
-        .Autre { background-color: var(--danger-color); }
-    </style>
 </head>
 <body>
 <div id="calendar-container">
+    <div id="loading-overlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Chargement du calendrier...</div>
+    </div>
     <div id="calendar-wrapper">
         <div id="calendar"></div>
     </div>
@@ -65,6 +54,107 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
+    function callJavaFX(action, param) {
+        if (!window.javafx) {
+            console.error("JavaFX bridge not available yet");
+            setTimeout(() => callJavaFX(action, param), 100);
+            return;
+        }
+
+        try {
+            switch(action) {
+                case 'showDetails':
+                    window.javafx.callShowActivityDetails(param);
+                    break;
+                case 'edit':
+                    window.javafx.callEditActivity(param);
+                    break;
+                case 'delete':
+                    window.javafx.callDeleteActivity(param);
+                    break;
+                case 'add':
+                    window.javafx.callAddActivity(param);
+                    break;
+            }
+        } catch (e) {
+            console.error("Error calling JavaFX:", e);
+        }
+    }
+
+    function hideLoading() {
+        if (window.javafx && typeof window.javafx.log === 'function') {
+            document.getElementById('loading-overlay').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('loading-overlay').style.display = 'none';
+            }, 300); // Match this with the CSS transition time
+        } else {
+            setTimeout(hideLoading, 100);
+        }
+    }
+
+    // Start checking for JavaFX bridge immediately
+    hideLoading();
+
+    window.bridgeState = {
+        ready: false,
+        queue: []
+    };
+
+    // Bridge ready check
+    function checkBridgeReady() {
+        if (typeof window.javafx !== 'undefined' &&
+            typeof window.javafx.ping === 'function') {
+            window.bridgeState.ready = true;
+            window.javafx.ping();
+            processQueue();
+        } else {
+            setTimeout(checkBridgeReady, 100);
+        }
+    }
+
+    // Process queued actions
+    function processQueue() {
+        while (window.bridgeState.queue.length > 0) {
+            const action = window.bridgeState.queue.shift();
+            executeBridgeAction(action.type, action.data);
+        }
+    }
+
+    // Execute or queue action
+    function executeOrQueueAction(type, data) {
+        if (window.bridgeState.ready) {
+            executeBridgeAction(type, data);
+        } else {
+            window.bridgeState.queue.push({type, data});
+        }
+    }
+
+    // Safe execution
+    function executeBridgeAction(type, data) {
+        try {
+            switch(type) {
+                case 'showDetails':
+                    window.javafx.callShowActivityDetails(data);
+                    break;
+                case 'edit':
+                    window.javafx.callEditActivity(data);
+                    break;
+                case 'delete':
+                    window.javafx.callDeleteActivity(data);
+                    break;
+                case 'add':
+                    window.javafx.callAddActivity(data);
+                    break;
+            }
+        } catch (e) {
+            console.error("Bridge action failed:", e);
+            // Optionally retry or show error
+        }
+    }
+
+    // Initialize check
+    checkBridgeReady();
+
     document.addEventListener('DOMContentLoaded', function() {
         setTimeout(function() {
             var calendarEl = document.getElementById('calendar');
@@ -88,20 +178,96 @@
                         day: 'numeric'
                     });
 
+                    // Get the activity ID from the event
+                    const activityId = info.event.id;
+
                     Swal.fire({
                         title: info.event.title,
                         html: `
-                            <div class="activity-details">
-                                <p><strong>Date:</strong> ${eventDate}</p>
-                                <p><strong>Type:</strong> <span class="activity-type ${eventType}">${eventType}</span></p>
-                                <p><strong>Description:</strong> ${info.event.extendedProps.description || 'Aucune description'}</p>
-                            </div>
-                        `,
+            <div class="activity-details">
+                <p><strong>Date:</strong> ${eventDate}</p>
+                <p><strong>Type:</strong> <span class="activity-type ${eventType}">${eventType}</span></p>
+                <p><strong>Description:</strong> ${info.event.extendedProps.description || 'Aucune description'}</p>
+            </div>
+        `,
                         icon: 'info',
-                        confirmButtonText: 'Fermer',
-                        showCloseButton: true
+                        showConfirmButton: false,
+                        showCloseButton: true,
+                        footer: `
+         <div class="activity-actions">
+    <button id="btn-details" class="modern-action-button view-button">
+        <i class="fas fa-info-circle"></i> Détails
+    </button>
+    <button  id="btn-edit"  class="modern-action-button edit-button">
+        <i class="fas fa-edit"></i> Modifier
+    </button>
+    <button  id="btn-delete" class="modern-action-button delete-button">
+        <i class="fas fa-trash"></i> Supprimer
+    </button>
+</div>
+
+        `
+                    });
+                    document.getElementById('btn-details').addEventListener('click', function() {
+                        const activityId = info.event.id;
+                        executeOrQueueAction('showDetails', info.event.id);
+                        callJavaFX('showDetails', activityId);
+                        console.log("Details button clicked for activity ID: " + activityId);
+
+                        // Test if JavaFX bridge exists and functions are available
+                        console.log("JavaFX bridge exists: " + (window.javafx !== undefined));
+                        console.log("callShowActivityDetails function exists: " +
+                            (window.javafx && typeof window.javafx.callShowActivityDetails === 'function'));
+
+                        if (window.javafx && typeof window.javafx.callShowActivityDetails === 'function') {
+                            try {
+                                console.log("Calling JavaFX.callShowActivityDetails");
+                                window.javafx.log("About to call showActivityDetails with ID: " + activityId);
+                                window.javafx.callShowActivityDetails(activityId);
+                                console.log("Call to JavaFX completed");
+                            } catch (e) {
+                                console.error("Error calling JavaFX showActivityDetails: ", e);
+                            }
+                        } else {
+                            console.error("JavaFX bridge or function not available");
+                        }
+
+                        Swal.close();
+
+                    });
+
+                    document.getElementById('btn-edit').addEventListener('click', function() {
+                        console.log("Edit button clicked for activity ID: " + activityId);
+                        Swal.close();
+
+                        if (window.javafx && typeof window.javafx.callEditActivity === 'function') {
+                            try {
+                                window.javafx.callEditActivity(activityId);
+                            } catch (e) {
+                                console.error("Error calling JavaFX editActivity: ", e);
+                            }
+                        } else {
+                            console.error("JavaFX bridge or editActivity function not available");
+                        }
+                    });
+
+                    document.getElementById('btn-delete').addEventListener('click', function() {
+                        console.log("Delete button clicked for activity ID: " + activityId);
+                        Swal.close();
+
+                        if (window.javafx && typeof window.javafx.callDeleteActivity === 'function') {
+                            try {
+                                window.javafx.callDeleteActivity(activityId);
+                            } catch (e) {
+                                console.error("Error calling JavaFX deleteActivity: ", e);
+                            }
+                        } else {
+                            console.error("JavaFX bridge or deleteActivity function not available");
+                        }
                     });
                 },
+
+
                 dateClick: function(info) {
                     const formattedDate = new Date(info.dateStr).toLocaleDateString('fr-FR', {
                         weekday: 'long',
@@ -113,37 +279,35 @@
                     Swal.fire({
                         title: `Nouvelle Activité`,
                         html: `
-                        <div class="activity-details">
-                            <p><strong>Date sélectionnée:</strong> ${formattedDate}</p>
-                            <p>Souhaitez-vous ajouter une nouvelle activité pour cette date?</p>
-                        </div>
-                    `,
+        <div class="activity-details">
+            <p><strong>Date sélectionnée:</strong> ${formattedDate}</p>
+            <p>Souhaitez-vous ajouter une nouvelle activité pour cette date?</p>
+        </div>
+        `,
                         icon: 'question',
                         showCancelButton: true,
                         confirmButtonText: 'Ajouter',
                         cancelButtonText: 'Annuler'
                     }).then((result) => {
-                        debugLog("Dialog result: " + (result.isConfirmed ? "confirmed" : "canceled"));
+                        console.log("Dialog result: " + (result.isConfirmed ? "confirmed" : "canceled"));
 
                         if (result.isConfirmed) {
-                            debugLog("Attempting to call JavaFX bridge");
+                            console.log("Attempting to call JavaFX bridge");
+                            console.log("JavaFX available: " + (window.javafx !== undefined));
 
                             if (window.javafx) {
                                 try {
-                                    debugLog("Calling JavaFX.callAddActivity with: " + info.dateStr);
-                                    const formattedDate = new Date(info.dateStr).toISOString().split('T')[0]; // Converts to yyyy-MM-dd
-                                    if (window.javafx && typeof window.javafx.callAddActivity === 'function') {
-                                        window.javafx.callAddActivity(formattedDate);
-                                    } else {
-                                        console.error("JavaFX bridge is not available or not a function");
-                                    }
+                                    // Format the date as yyyy-MM-dd for Java
+                                    const isoDate = info.dateStr;
+                                    console.log("Calling JavaFX.callAddActivity with date: " + isoDate);
+
+                                    // Direct call with simple string parameter
+                                    window.javafx.callAddActivity(isoDate);
                                 } catch (e) {
-                                    debugLog("Error calling JavaFX: " + e.toString());
                                     console.error("Error calling JavaFX bridge: ", e);
                                     alert("Error communicating with application: " + e.toString());
                                 }
                             } else {
-                                debugLog("JavaFX bridge is not available!");
                                 console.error("JavaFX bridge is not available");
                                 alert("JavaFX bridge is not available");
                             }

@@ -16,7 +16,12 @@ public class ParcelleService implements IParcelleService {
     }
 
     @Override
-    public void addParcelle(Parcelle p) {
+    public void addParcelle(Parcelle p) throws SQLException {
+        // First check if parcelle already exists
+        if (isParcelleExists(p)) {
+            throw new SQLException("Une parcelle avec ces informations existe déjà");
+        }
+
         String req = "INSERT INTO parcelle (nom, superficie, localisation, type_sol) VALUES (?, ?, ?, ?)";
         try {
             PreparedStatement ps = cnx.prepareStatement(req);
@@ -26,7 +31,7 @@ public class ParcelleService implements IParcelleService {
             ps.setString(4, p.getTypeSol());
             ps.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw e; // Re-throw the exception to handle it in the controller
         }
     }
 
@@ -100,4 +105,25 @@ public class ParcelleService implements IParcelleService {
         p.setMapImage(rs.getString("map_image"));
         return p;
     }
+
+
+    public boolean isParcelleExists(Parcelle p) {
+        String req = "SELECT COUNT(*) FROM parcelle WHERE nom = ? AND superficie = ? AND localisation = ? AND type_sol = ?";
+        try {
+            PreparedStatement ps = cnx.prepareStatement(req);
+            ps.setString(1, p.getNom());
+            ps.setDouble(2, p.getSuperficie());
+            ps.setString(3, p.getLocalisation());
+            ps.setString(4, p.getTypeSol());
+
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 }

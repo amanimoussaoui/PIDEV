@@ -441,3 +441,126 @@ html, body {
         font-size: 12px !important;
     }
 }
+
+
+
+.activity-actions {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    gap: 10px;
+}
+
+.modern-action-button {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+    background-color: transparent;
+}
+
+.view-button {
+    background-color: rgba(59, 130, 246, 0.1);
+    color: #3B82F6;
+}
+
+.view-button:hover {
+    background-color: rgba(59, 130, 246, 0.2);
+}
+
+.edit-button {
+    background-color: rgba(16, 185, 129, 0.1);
+    color: #10B981;
+}
+
+.edit-button:hover {
+    background-color: rgba(16, 185, 129, 0.2);
+}
+
+.delete-button {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: #EF4444;
+}
+
+.delete-button:hover {
+    background-color: rgba(239, 68, 68, 0.2);
+}
+
+.modern-action-button i {
+    font-size: 16px;
+}
+
+
+
+ .activity-type {
+     padding: 3px 8px;
+     border-radius: 4px;
+     color: white;
+     font-weight: bold;
+ }
+.Semis { background-color: var(--secondary-color); }
+.Arrosage { background-color: var(--blue-color); }
+.Fertilisation { background-color: var(--accent-color); }
+.Récolte { background-color: var(--primary-color); }
+.Traitement { background-color: var(--warning-color); }
+.Désherbage { background-color: var(--purple-color); }
+.Autre { background-color: var(--danger-color); }
+
+/* New loading styles */
+#loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.8);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    transition: opacity 0.3s ease;
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 15px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+    color: var(--primary-color);
+    font-size: 1.2em;
+    font-weight: bold;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+}
+
+#calendar-container {
+    position: relative;
+    height: 100%;
+}
+
+#calendar-wrapper {
+    height: 100%;
+}

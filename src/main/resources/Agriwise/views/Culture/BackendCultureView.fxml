@@ -29,16 +29,53 @@
             <!-- Main Content -->
             <center>
                 <VBox styleClass="main-content">
+
+                    <!-- Action Bar with Search and Create Button -->
                     <HBox styleClass="action-bar">
-                        <Region HBox.hgrow="ALWAYS" />
+                        <!-- Search and Filter Section -->
+                        <HBox styleClass="search-filter-bar" HBox.hgrow="ALWAYS">
+                            <!-- Search Field -->
+                            <HBox alignment="CENTER_LEFT" spacing="8" styleClass="search-box" HBox.hgrow="ALWAYS">
+                                <FontAwesomeIconView glyphName="SEARCH" size="14" styleClass="search-icon"/>
+                                <TextField fx:id="searchField" promptText="Rechercher une parcelle..."
+                                           onKeyReleased="#handleSearch" styleClass="search-input" HBox.hgrow="ALWAYS"/>
+                                <Button fx:id="clearSearchButton" styleClass="icon-button" onAction="#clearSearch">
+                                    <graphic>
+                                        <FontAwesomeIconView glyphName="TIMES" size="12"/>
+                                    </graphic>
+                                </Button>
+                            </HBox>
+
+                            <!-- Soil Type Filter -->
+                            <HBox alignment="CENTER_LEFT" spacing="8" styleClass="filter-box">
+                                <FontAwesomeIconView glyphName="FILTER" size="14" styleClass="filter-icon"/>
+                                <ComboBox fx:id="statusFilter" promptText="Type de sol"
+                                          onAction="#handleStatusFilter" styleClass="filter-combo"/>
+                                <Button fx:id="clearFilterButton" styleClass="icon-button" onAction="#clearFilters">
+                                    <graphic>
+                                        <FontAwesomeIconView glyphName="TIMES" size="12"/>
+                                    </graphic>
+                                </Button>
+                            </HBox>
+                        </HBox>
+
+                        <!-- Create Button -->
                         <HBox styleClass="right-actions">
-                            <Button text="Créer une nouvelle Culture" styleClass="btn-submit" onAction="#handleAddCulture">
+                            <Button fx:id="createButton" text="Créer une nouvelle Culture" onAction="#handleAddCulture" styleClass="btn-submit">
                                 <graphic>
                                     <FontAwesomeIconView glyphName="PLUS_CIRCLE" styleClass="button-icon"/>
                                 </graphic>
                             </Button>
                         </HBox>
                     </HBox>
+
+
+                    <!-- Active Filters Display -->
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <FlowPane fx:id="activeFiltersContainer" hgap="10" vgap="5" visible="false" managed="false" styleClass="filter-tags"/>
+                        <Label fx:id="resultsCountLabel" styleClass="results-count"/>
+                    </HBox>
+
 
                     <!-- Table Container -->
                     <StackPane styleClass="table-wrapper" VBox.vgrow="ALWAYS">

@@ -12,63 +12,93 @@
         <URL value="@../../css/styles.css" />
     </stylesheets>
 
+    <!-- Main Content -->
+    <BorderPane styleClass="app-container" HBox.hgrow="ALWAYS">
+        <!-- Top Header Bar -->
+        <top>
+            <HBox styleClass="top-bar">
+                <HBox styleClass="page-header">
+                    <Label text="Liste des Récoltes" styleClass="page-title"/>
+                </HBox>
+                <Region HBox.hgrow="ALWAYS" />
+            </HBox>
+        </top>
 
         <!-- Main Content -->
-        <BorderPane styleClass="app-container" HBox.hgrow="ALWAYS">
-            <!-- Top Header Bar -->
-            <top>
-                <HBox styleClass="top-bar">
-                    <HBox styleClass="page-header">
-                        <Label text="Liste des Récoltes" styleClass="page-title"/>
-                    </HBox>
-                    <Region HBox.hgrow="ALWAYS" />
-                </HBox>
-            </top>
-
-            <!-- Main Content -->
-            <center>
-                <VBox styleClass="main-content">
-                    <HBox styleClass="action-bar">
-                        <Region HBox.hgrow="ALWAYS" />
-                        <HBox styleClass="right-actions">
-                            <Button text="Ajouter une Récolte" styleClass="btn-submit" onAction="#handleAddRecolte">
+        <center>
+            <VBox styleClass="main-content">
+                <!-- Action Bar with Search and Filter -->
+                <HBox styleClass="action-bar">
+                    <!-- Search and Filter Section -->
+                    <HBox styleClass="search-filter-bar" HBox.hgrow="ALWAYS">
+                        <!-- Search Field -->
+                        <HBox alignment="CENTER_LEFT" spacing="8" styleClass="search-box" HBox.hgrow="ALWAYS">
+                            <FontAwesomeIconView glyphName="SEARCH" size="14" styleClass="search-icon"/>
+                            <TextField fx:id="searchField" promptText="Rechercher par culture..."
+                                       onKeyReleased="#handleSearch" styleClass="search-input" HBox.hgrow="ALWAYS"/>
+                            <Button fx:id="clearSearchButton" styleClass="icon-button" onAction="#clearSearch">
                                 <graphic>
-                                    <FontAwesomeIconView glyphName="PLUS_CIRCLE" styleClass="button-icon"/>
+                                    <FontAwesomeIconView glyphName="TIMES" size="12"/>
+                                </graphic>
+                            </Button>
+                        </HBox>
+
+                        <!-- Qualité Filter -->
+                        <HBox alignment="CENTER_LEFT" spacing="8" styleClass="filter-box">
+                            <FontAwesomeIconView glyphName="FILTER" size="14" styleClass="filter-icon"/>
+                            <ComboBox fx:id="qualiteFilter" promptText="Qualité"
+                                      onAction="#handleQualiteFilter" styleClass="filter-combo"/>
+                            <Button fx:id="clearFilterButton" styleClass="icon-button" onAction="#clearFilters">
+                                <graphic>
+                                    <FontAwesomeIconView glyphName="TIMES" size="12"/>
                                 </graphic>
                             </Button>
                         </HBox>
                     </HBox>
 
-                    <!-- Table Container -->
-                    <StackPane styleClass="table-wrapper" VBox.vgrow="ALWAYS">
-                        <TableView fx:id="recolteTable" styleClass="modern-table">
-                            <columns>
-                                <TableColumn fx:id="idColumn" text="ID" prefWidth="80" />
-                                <TableColumn fx:id="dateRecolteColumn" text="Date Récolte" prefWidth="120" />
-                                <TableColumn fx:id="quantiteColumn" text="Quantité" prefWidth="100" />
-                                <TableColumn fx:id="qualiteColumn" text="Qualité" prefWidth="120" />
-                                <TableColumn fx:id="prixUnitaireColumn" text="Prix Unitaire" prefWidth="120" />
-                                <TableColumn fx:id="cultureColumn" text="Culture" prefWidth="150" />
-                                <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="180" />
-                            </columns>
-                            <placeholder>
-                                <VBox styleClass="empty-state">
-                                    <FontAwesomeIconView glyphName="SHOPPING_BASKET" styleClass="empty-icon"/>
-                                    <Label text="Aucune récolte trouvée" styleClass="empty-title"/>
-                                    <Label text="Ajoutez votre première récolte pour commencer" styleClass="empty-desc"/>
-                                    <Button styleClass="empty-action" onAction="#handleAddRecolte">
-                                        <graphic>
-                                            <HBox styleClass="button-content">
-                                                <FontAwesomeIconView glyphName="PLUS" styleClass="button-icon"/>
-                                                <Label text="Ajouter une récolte" styleClass="button-text"/>
-                                            </HBox>
-                                        </graphic>
-                                    </Button>
-                                </VBox>
-                            </placeholder>
-                        </TableView>
-                    </StackPane>
-                </VBox>
-            </center>
-        </BorderPane>
+                    <!-- Create Button -->
+                    <HBox styleClass="right-actions">
+                        <Button fx:id="createButton" text="Ajouter une Récolte" styleClass="btn-submit" onAction="#handleAddRecolte">
+                            <graphic>
+                                <FontAwesomeIconView glyphName="PLUS_CIRCLE" styleClass="button-icon"/>
+                            </graphic>
+                        </Button>
+                    </HBox>
+                </HBox>
+
+                <!-- Active Filters Display -->
+                <FlowPane fx:id="activeFiltersContainer" hgap="10" vgap="5" visible="false" managed="false" styleClass="filter-tags"/>
+
+                <!-- Table Container -->
+                <StackPane styleClass="table-wrapper" VBox.vgrow="ALWAYS">
+                    <TableView fx:id="recolteTable" styleClass="modern-table">
+                        <columns>
+                            <TableColumn fx:id="idColumn" text="ID" prefWidth="80" />
+                            <TableColumn fx:id="dateRecolteColumn" text="Date Récolte" prefWidth="120" />
+                            <TableColumn fx:id="quantiteColumn" text="Quantité" prefWidth="100" />
+                            <TableColumn fx:id="qualiteColumn" text="Qualité" prefWidth="120" />
+                            <TableColumn fx:id="prixUnitaireColumn" text="Prix Unitaire" prefWidth="120" />
+                            <TableColumn fx:id="cultureColumn" text="Culture" prefWidth="150" />
+                            <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="180" />
+                        </columns>
+                        <placeholder>
+                            <VBox styleClass="empty-state">
+                                <FontAwesomeIconView glyphName="SHOPPING_BASKET" styleClass="empty-icon"/>
+                                <Label text="Aucune récolte trouvée" styleClass="empty-title"/>
+                                <Label text="Ajoutez votre première récolte pour commencer" styleClass="empty-desc"/>
+                                <Button styleClass="empty-action" onAction="#handleAddRecolte">
+                                    <graphic>
+                                        <HBox styleClass="button-content">
+                                            <FontAwesomeIconView glyphName="PLUS" styleClass="button-icon"/>
+                                            <Label text="Ajouter une récolte" styleClass="button-text"/>
+                                        </HBox>
+                                    </graphic>
+                                </Button>
+                            </VBox>
+                        </placeholder>
+                    </TableView>
+                </StackPane>
+            </VBox>
+        </center>
+    </BorderPane>
 </StackPane>

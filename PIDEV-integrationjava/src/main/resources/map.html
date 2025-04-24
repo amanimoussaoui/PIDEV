@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carte interactive</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css" />
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            font-family: sans-serif;
+        }
+
+        #map {
+            height: 70%;  /* Carte prend 70% de la hauteur */
+            width: 100%;
+        }
+
+        #info {
+            padding: 10px;
+            text-align: center;
+        }
+
+        #confirmBtn {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #confirmBtn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+<div id="map"></div>
+<div id="info">
+    <p id="coords">Cliquez sur la carte pour choisir un emplacement</p>
+    <button id="confirmBtn" style="display: none;">Confirmer l'emplacement</button>
+</div>
+
+<script>
+    let selectedLat = null;
+    let selectedLng = null;
+    let selectedAddress = null;
+
+    var map = L.map('map').setView([51.505, -0.09], 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    var marker = L.marker([51.505, -0.09]).addTo(map);
+
+    map.on('click', function(e) {
+        selectedLat = e.latlng.lat;
+        selectedLng = e.latlng.lng;
+
+        marker.setLatLng([selectedLat, selectedLng]);
+
+        document.getElementById('coords').textContent = `Lat: ${selectedLat.toFixed(5)} | Lng: ${selectedLng.toFixed(5)}`;
+        document.getElementById('confirmBtn').style.display = 'inline-block';
+
+        // Charger l’adresse
+        fetch(`https://nominatim.openstreetmap.org/reverse?lat=${selectedLat}&lon=${selectedLng}&format=json`)
+            .then(res => res.json())
+            .then(data => {
+                selectedAddress = data.display_name || "Adresse inconnue";
+                document.getElementById('coords').textContent += `\n${selectedAddress}`;
+            })
+            .catch(() => {
+                selectedAddress = "Adresse inconnue";
+            });
+    });
+
+    document.getElementById('confirmBtn').addEventListener('click', () => {
+        if (selectedLat && selectedLng && selectedAddress) {
+            window.java.sendCoordinates(selectedLat, selectedLng, selectedAddress);
+            window.close();
+        }
+    });
+</script>
+</body>
+</html>

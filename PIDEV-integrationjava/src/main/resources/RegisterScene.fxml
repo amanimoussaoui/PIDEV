@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #f5f5f5;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.RegisterScene">
+    <children>
+        <!-- Semi-transparent logo -->
+        <ImageView fitHeight="267.0" fitWidth="266.0" layoutY="57.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@/images/logoAgriwise.png" />
+            </image>
+        </ImageView>
+
+        <!-- Title -->
+        <Label layoutX="173.0" layoutY="22.0" style="-fx-font-size: 24px; -fx-text-fill: #2e7d32; -fx-font-weight: bold;" text="Welcome to Agriwise" />
+
+        <!-- Form Labels -->
+        <Label layoutX="296.0" layoutY="74.0" style="-fx-font-size: 14px; -fx-text-fill: #333; -fx-font-weight: bold;" text="Nom" />
+        <Label layoutX="287.0" layoutY="120.0" style="-fx-font-size: 14px; -fx-text-fill: #333; -fx-font-weight: bold;" text="Prenom" />
+        <Label layoutX="295.0" layoutY="165.0" style="-fx-font-size: 14px; -fx-text-fill: #333; -fx-font-weight: bold;" text="Email" />
+        <Label layoutX="269.0" layoutY="263.0" style="-fx-font-size: 14px; -fx-text-fill: #333; -fx-font-weight: bold;" text="Mot de passe" />
+
+        <!-- ComboBox for Role avec les options pré-définies -->
+        <ComboBox fx:id="registerrole" layoutX="411.0" layoutY="200.0" prefWidth="150.0" promptText="Sélectionnez un rôle" style="-fx-background-color: #f0f0f0; -fx-border-color: #cccccc; -fx-border-radius: 4px; -fx-background-radius: 4px; -fx-padding: 5px;">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="ROLE_AGRICULTEUR" />
+                    <String fx:value="ROLE_CLIENT" />
+                </FXCollections>
+            </items>
+        </ComboBox>
+
+        <!-- Text Fields -->
+        <TextField fx:id="registernom" layoutX="412.0" layoutY="69.0" style="-fx-background-color: #f0f0f0; -fx-border-color: #cccccc; -fx-border-radius: 4px; -fx-background-radius: 4px; -fx-padding: 5px;" />
+        <TextField fx:id="registerprenom" layoutX="412.0" layoutY="115.0" style="-fx-background-color: #f0f0f0; -fx-border-color: #cccccc; -fx-border-radius: 4px; -fx-background-radius: 4px; -fx-padding: 5px;" />
+        <TextField fx:id="registeremail" layoutX="412.0" layoutY="160.0" style="-fx-background-color: #f0f0f0; -fx-border-color: #cccccc; -fx-border-radius: 4px; -fx-background-radius: 4px; -fx-padding: 5px;" />
+        <TextField fx:id="registerpassword" layoutX="412.0" layoutY="258.0" style="-fx-background-color: #f0f0f0; -fx-border-color: #cccccc; -fx-border-radius: 4px; -fx-background-radius: 4px; -fx-padding: 5px;" />
+
+        <!-- Register Button -->
+        <Button fx:id="btnregister" layoutX="338.0" layoutY="311.0" mnemonicParsing="false" onAction="#RegisterUser" prefHeight="36.0" prefWidth="148.0" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px; -fx-background-radius: 4px; -fx-cursor: hand;" text="S'inscrire" />
+      <Label layoutX="298.0" layoutY="209.0" style="-fx-font-size: 14px; -fx-text-fill: #333; -fx-font-weight: bold;" text="Role" />
+    </children>
+</AnchorPane>

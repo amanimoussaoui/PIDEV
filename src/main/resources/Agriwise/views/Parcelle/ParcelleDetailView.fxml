@@ -6,8 +6,9 @@
 <?import javafx.geometry.Insets?>
 <?import java.net.URL?>
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
-
 <?import java.lang.String?>
+<?import javafx.scene.web.WebView?>
+
 <VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="Agriwise.controllers.Parcelle.ParcelleDetailController"
       stylesheets="@../../css/styles.css">
@@ -27,14 +28,42 @@
         </HBox>
 
         <!-- Content -->
-        <GridPane fx:id="infoGrid" styleClass="detail-grid" hgap="20" vgap="20">
-            <columnConstraints>
-                <ColumnConstraints percentWidth="25"/>
-                <ColumnConstraints percentWidth="25"/>
-                <ColumnConstraints percentWidth="25"/>
-                <ColumnConstraints percentWidth="25"/>
-            </columnConstraints>
-        </GridPane>
+        <ScrollPane fitToWidth="true" styleClass="transparent-scroll-pane">
+            <VBox spacing="20">
+                <!-- Info Cards -->
+                <GridPane fx:id="infoGrid" styleClass="detail-grid" hgap="20" vgap="20">
+                    <columnConstraints>
+                        <ColumnConstraints percentWidth="25"/>
+                        <ColumnConstraints percentWidth="25"/>
+                        <ColumnConstraints percentWidth="25"/>
+                        <ColumnConstraints percentWidth="25"/>
+                    </columnConstraints>
+                </GridPane>
+
+                <!-- Map Section -->
+                <VBox spacing="10" styleClass="map-section">
+                    <Label text="Cartographie de la Parcelle" styleClass="section-title"/>
+
+                    <!-- Map Container -->
+                    <StackPane fx:id="mapContainer" styleClass="map-container">
+                        <WebView fx:id="mapWebView" prefHeight="500" />
+                    </StackPane>
+
+                    <!-- Coordinates Form -->
+                    <HBox spacing="15" alignment="CENTER_LEFT">
+                        <Label text="Coordonnées:" styleClass="form-label"/>
+                        <Label fx:id="coordinatesLabel" text="Non définies" styleClass="coordinates-value"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button fx:id="saveCoordinatesBtn" text="Enregistrer les Coordonnées"
+                                onAction="#handleSaveCoordinates" styleClass="btn-primary">
+                            <graphic>
+                                <FontAwesomeIconView glyphName="SAVE" styleClass="btn-icon"/>
+                            </graphic>
+                        </Button>
+                    </HBox>
+                </VBox>
+            </VBox>
+        </ScrollPane>
 
         <!-- Footer -->
         <HBox styleClass="detail-footer">

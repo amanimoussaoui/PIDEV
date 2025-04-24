@@ -2,6 +2,10 @@ package Agriwise.entities;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 public class Parcelle {
     private int id;
@@ -88,6 +92,33 @@ public class Parcelle {
         this.boundary = boundary;
     }
 
+
+    // Method to deserialize boundary from JSON string from database
+    public void setBoundaryFromJson(String json) {
+        if (json == null || json.isEmpty()) {
+            this.boundary = new ArrayList<>();
+            return;
+        }
+
+        try {
+            JSONParser parser = new JSONParser();
+            JSONArray boundaryArray = (JSONArray) parser.parse(json);
+
+            List<Float[]> boundaryList = new ArrayList<>();
+            for (Object point : boundaryArray) {
+                JSONArray pointArray = (JSONArray) point;
+                Float lat = Float.parseFloat(pointArray.get(0).toString());
+                Float lng = Float.parseFloat(pointArray.get(1).toString());
+                boundaryList.add(new Float[]{lat, lng});
+            }
+
+            this.boundary = boundaryList;
+        } catch (ParseException e) {
+            e.printStackTrace();
+            this.boundary = new ArrayList<>();
+        }
+    }
+
     public Terrain getTerrain() {
         return terrain;
     }
@@ -130,5 +161,22 @@ public class Parcelle {
         choices.add("limoneux");
         choices.add("humifère");
         return choices;
+    }
+
+    // In your Parcelle.java entity class:
+    public boolean hasCoordinates() {
+        return this.latitude != 0 && this.longitude != 0 && this.boundary != null && !this.boundary.isEmpty();
+    }
+
+    public String getBoundaryJson() {
+        if (boundary == null || boundary.isEmpty()) return "[]";
+        JSONArray array = new JSONArray();
+        for (Float[] point : boundary) {
+            JSONArray coord = new JSONArray();
+            coord.add(point[0]);
+            coord.add(point[1]);
+            array.add(coord);
+        }
+        return array.toJSONString();
     }
 }

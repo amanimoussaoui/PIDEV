@@ -23,6 +23,7 @@ public class Main extends Application {
     public void start(Stage stage) throws Exception {
         primaryStage = stage;
 
+
         // Show mode selection dialog
         showModeSelectionDialog();
 

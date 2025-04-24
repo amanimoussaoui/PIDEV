@@ -486,18 +486,20 @@ public class CultureController implements Initializable {
 
 
     private void showCultureDetails(Culture culture) {
-
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Agriwise/views/Culture/CultureDetailView.fxml"));
             Parent root = loader.load();
 
+            // Get the full culture details with recolte
+            Culture fullCulture = cultureService.getCultureById(culture.getId());
+
             CultureDetailController controller = loader.getController();
-            controller.setCulture(culture);
+            controller.setCulture(fullCulture);  // Pass the fully loaded culture
             controller.setRefreshCallback(this::loadCultures);
 
             Stage stage = new Stage();
             stage.setTitle("Détails de la Culture");
-            stage.setScene(new Scene(root, 650, 650));
+            stage.setScene(new Scene(root, 725, 650));
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.show();
         } catch (IOException e) {

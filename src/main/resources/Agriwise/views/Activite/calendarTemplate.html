@@ -81,6 +81,7 @@
         }
     }
 
+    // Vérifiez que cette fonction est bien présente dans votre HTML
     function hideLoading() {
         if (window.javafx && typeof window.javafx.log === 'function') {
             document.getElementById('loading-overlay').style.opacity = '0';
@@ -91,7 +92,6 @@
             setTimeout(hideLoading, 100);
         }
     }
-
     // Start checking for JavaFX bridge immediately
     hideLoading();
 

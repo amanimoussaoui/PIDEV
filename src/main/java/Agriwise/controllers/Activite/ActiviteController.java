@@ -109,6 +109,7 @@ public class ActiviteController implements Initializable {
         }
     }
 
+    // Dans ActiviteController.java
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         activiteService = new ActiviteService();
@@ -121,8 +122,11 @@ public class ActiviteController implements Initializable {
         setupSearchField();
         setupTypeFilter();
 
-        // Initialize bridge manager with reference to this controller
-        bridgeManager = new BridgeManager(webEngine, this);
+        // Create JavaBridge instance
+        JavaBridge javaBridge = new JavaBridge(this);
+
+        // Initialize bridge manager with reference to this controller and the JavaBridge
+        bridgeManager = new BridgeManager(webEngine, javaBridge);
 
         // Load data and setup bridge
         loadAllActivites();
@@ -134,7 +138,6 @@ public class ActiviteController implements Initializable {
             updateCalendarWithActivities(allActivites);
         });
     }
-
 
     public void safeExecute(Runnable action) {
         Platform.runLater(() -> {
@@ -515,11 +518,11 @@ public class ActiviteController implements Initializable {
             return;
         }
 
+        System.out.println("Loading HTML from: " + htmlUrl.toExternalForm());
         webEngine.load(htmlUrl.toExternalForm());
-
-        // Setup JavaScript bridge after loading the page
-        setupJavaScriptBridge();
+        System.out.println("HTML loading initiated");
     }
+
 
     private void updateCalendarEvents() {
         System.out.println("Updating calendar events with all activities");

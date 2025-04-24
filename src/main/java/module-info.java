@@ -6,6 +6,9 @@ module org.example.gestionagricolejavafx {
     requires java.desktop;
     requires jdk.jsobject;
     requires javafx.web;
+    requires com.google.gson;
+    requires json.simple;
+
 
     opens Agriwise to javafx.fxml;
     opens Agriwise.entities to javafx.base;
@@ -19,6 +22,9 @@ module org.example.gestionagricolejavafx {
     opens Agriwise.controllers.Culture to javafx.fxml;
     exports Agriwise.controllers.Activite;
     opens Agriwise.controllers.Activite to javafx.fxml;
+    exports Agriwise.controllers.Utilisateur;
+    opens Agriwise.controllers.Utilisateur to javafx.fxml;
+
 
     exports Agriwise;
     exports Agriwise.controllers;

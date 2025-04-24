@@ -119,11 +119,10 @@ public class CultureService implements ICultureService {
     public List<Culture> getAllCultures() {
         List<Culture> list = new ArrayList<>();
         String req = "SELECT c.*, p.nom as parcelle_nom, p.superficie as parcelle_superficie, " +
-                "p.localisation as parcelle_localisation, p.type_sol as parcelle_type_sol, " +
-                "r.id as recolte_id, r.date_recolte, r.quantite, r.qualite, r.prix_unitaire " +
+                "p.localisation as parcelle_localisation, p.type_sol as parcelle_type_sol " +
                 "FROM culture c " +
-                "LEFT JOIN parcelle p ON c.parcelle_id = p.id " +
-                "LEFT JOIN recolte r ON c.id = r.culture_id";
+                "LEFT JOIN parcelle p ON c.parcelle_id = p.id";
+
         try {
             Statement st = cnx.createStatement();
             ResultSet rs = st.executeQuery(req);
@@ -146,19 +145,6 @@ public class CultureService implements ICultureService {
                     c.setParcelle(parcelle);
                 }
 
-                // Set Recolte if exists
-                if (rs.getInt("recolte_id") > 0) {
-                    Recolte recolte = new Recolte();
-                    recolte.setId(rs.getInt("recolte_id"));
-                    if (rs.getDate("date_recolte") != null) {
-                        recolte.setDateRecolte(rs.getDate("date_recolte"));
-                    }
-                    recolte.setQuantite(rs.getFloat("quantite"));
-                    recolte.setQualite(rs.getString("qualite"));
-                    recolte.setPrixUnitaire(rs.getFloat("prix_unitaire"));
-                    c.setRecolte(recolte);
-                }
-
                 list.add(c);
             }
         } catch (SQLException e) {
@@ -166,7 +152,6 @@ public class CultureService implements ICultureService {
         }
         return list;
     }
-
 
 
 }

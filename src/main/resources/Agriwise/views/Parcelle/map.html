@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Parcelle Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
+    <style>
+        html, body, #map {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+<div id="map"></div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+    let map, drawnItems;
+    let mapInitialized = false;
+
+    // Prevent duplicate initialization
+    function initMap() {
+        if (mapInitialized) {
+            console.log("Map already initialized, skipping");
+            return;
+        }
+
+        if (typeof L === 'undefined') {
+            console.log("Leaflet not loaded yet, retrying...");
+            setTimeout(initMap, 200);
+            return;
+        }
+
+        console.log("Initializing map");
+        map = L.map('map').setView([36.8065, 10.1815], 8);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        drawnItems = new L.FeatureGroup();
+        map.addLayer(drawnItems);
+
+        const drawControl = new L.Control.Draw({
+            draw: {
+                polygon: {
+                    allowIntersection: false,
+                    drawError: {
+                        color: '#e1e100',
+                        message: '<strong>Erreur:</strong> Les polygones ne peuvent pas se croiser!'
+                    },
+                    shapeOptions: {
+                        color: '#1a9738'
+                    }
+                },
+                circle: false,
+                rectangle: false,
+                marker: false,
+                polyline: false
+            },
+            edit: {
+                featureGroup: drawnItems
+            }
+        });
+        map.addControl(drawControl);
+
+        map.on(L.Draw.Event.CREATED, function(e) {
+            const layer = e.layer;
+            drawnItems.addLayer(layer);
+            updateCoordinates(layer);
+        });
+
+        map.on(L.Draw.Event.EDITED, function(e) {
+            const layers = e.layers;
+            layers.eachLayer(function(layer) {
+                updateCoordinates(layer);
+            });
+        });
+
+        // Flag to prevent re-initialization
+        mapInitialized = true;
+        console.log("Map initialized successfully");
+
+        // If bridge is available, send a ping to verify connection
+        if (window.javafx) {
+            try {
+                window.javafx.ping();
+                console.log("Java bridge connection verified");
+            } catch (e) {
+                console.error("Error connecting to Java bridge:", e);
+            }
+        }
+    }
+
+    function updateCoordinates(layer) {
+        try {
+            const coords = layer.getLatLngs()[0].map(latlng => [latlng.lat, latlng.lng]);
+            const centroid = calculateCentroid(coords);
+
+            console.log("Updating coordinates:", centroid[0], centroid[1]);
+            console.log("Boundary JSON:", JSON.stringify(coords));
+
+            if (window.javafx) {
+                window.javafx.updateCoordinates(
+                    centroid[0],
+                    centroid[1],
+                    JSON.stringify(coords)
+                );
+            } else {
+                console.error("Java bridge not available");
+            }
+        } catch (e) {
+            console.error("Error in updateCoordinates:", e);
+        }
+    }
+
+    function calculateCentroid(coords) {
+        let x = 0, y = 0;
+        for (const [lat, lng] of coords) {
+            x += lat;
+            y += lng;
+        }
+        return [x / coords.length, y / coords.length];
+    }
+
+    function safeInitializePolygon(boundary) {
+        console.log("Initializing polygon with:", boundary);
+        if (!mapInitialized || !drawnItems) {
+            console.error("Map not initialized yet");
+            setTimeout(() => safeInitializePolygon(boundary), 500);
+            return;
+        }
+
+        drawnItems.clearLayers();
+        try {
+            if (boundary && boundary.length > 0) {
+                const polygon = L.polygon(boundary, { color: '#1a9738' }).addTo(drawnItems);
+                map.fitBounds(polygon.getBounds());
+
+                // Also update coordinates in Java
+                updateCoordinates(polygon);
+            }
+        } catch (e) {
+            console.error("Error initializing polygon:", e);
+        }
+    }
+    function captureMapImage() {
+        console.log("Capturing map image");
+
+        // First remove controls for clean capture
+        const controls = document.querySelectorAll('.leaflet-control-container');
+        controls.forEach(control => control.style.display = 'none');
+
+        setTimeout(() => {
+            html2canvas(document.getElementById('map'), {
+                useCORS: true,
+                scale: 1,
+                quality: 0.7,
+                logging: true,
+                backgroundColor: null
+            }).then(canvas => {
+                // Always include the data URL prefix
+                const imageData = canvas.toDataURL('image/jpeg', 0.7);
+
+                // Restore controls
+                controls.forEach(control => control.style.display = 'block');
+
+                if (window.javafx) {
+                    window.javafx.setMapImage(imageData);
+                }
+            });
+        }, 500);
+    }
+
+    // Check if bridge is available
+    function checkBridge() {
+        return typeof window.javafx !== 'undefined';
+    }
+
+    // Don't auto-initialize - let Java call this
+    // initMap();
+</script>
+</body>
+</html>

@@ -348,7 +348,7 @@ public class ParcelleController implements Initializable {
                 String relativePath = fileName.startsWith("/") ? fileName.substring(1) : fileName;
 
                 // Construct the full file path by combining with your base directory
-                Path fullPath = Paths.get("D:\\integration3\\public", relativePath);
+                Path fullPath = Paths.get("C:\\Users\\ASUS\\Desktop\\ParcelleImages", relativePath);
                 // Convert the file path to a valid URI and then to a URL
                 String imageUrl = fullPath.toUri().toURL().toString();
 

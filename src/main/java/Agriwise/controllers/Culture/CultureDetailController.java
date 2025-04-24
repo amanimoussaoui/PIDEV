@@ -1,5 +1,7 @@
 package Agriwise.controllers.Culture;
 
+import Agriwise.controllers.Activite.ActiviteDetailController;
+import Agriwise.controllers.Activite.ActiviteFormController;
 import Agriwise.controllers.Recolte.RecolteDetailController;
 import Agriwise.controllers.Recolte.RecolteFormController;
 import Agriwise.entities.Culture;
@@ -25,10 +27,14 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
+
+import Agriwise.entities.Activite;
+import Agriwise.services.ActiviteService;
+import javafx.scene.layout.StackPane;
+import javafx.scene.control.Separator;
+import javafx.scene.shape.Circle;
+
 
 public class CultureDetailController implements Initializable {
 
@@ -46,6 +52,12 @@ public class CultureDetailController implements Initializable {
     @FXML private Button addRecolteButton;
     @FXML private ScrollPane scrollPane;
 
+    @FXML private VBox activitiesContainer;
+    @FXML private Button addActivityButton;
+
+    private List<Activite> activities;
+    private ActiviteService activiteService;
+
     private Culture culture;
     private CultureService cultureService;
     private Runnable refreshCallback;
@@ -58,9 +70,12 @@ public class CultureDetailController implements Initializable {
             setupRecolteSection();
             setupParcelleSection();
             updateCultureHeader();
-
+            loadActivities(); // Add this line to load activities
         }
     }
+
+
+
 
     public void setRefreshCallback(Runnable callback) {
         this.refreshCallback = callback;
@@ -69,9 +84,12 @@ public class CultureDetailController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         cultureService = new CultureService();
+        activiteService = new ActiviteService(); // Add this line
+
         addIconToButton(backButton, FontAwesomeIcon.ARROW_LEFT);
         addIconToButton(editButton, FontAwesomeIcon.PENCIL);
         addIconToButton(deleteButton, FontAwesomeIcon.TRASH);
+        addIconToButton(addActivityButton, FontAwesomeIcon.PLUS);
 
         Platform.runLater(() -> scrollPane.setVvalue(0.0));
 
@@ -505,6 +523,7 @@ public class CultureDetailController implements Initializable {
         }
     }
 
+
     @FXML
     private void handleAddRecolte() {
         try {
@@ -515,23 +534,20 @@ public class CultureDetailController implements Initializable {
 
             // Create new Recolte and associate with current culture
             Recolte newRecolte = new Recolte();
-
-            newRecolte.setCulture(culture);
+            newRecolte.setCulture(culture);  // This sets the association
 
             controller.setRecolte(newRecolte);
-            newRecolte.setId(0);  // Explicitly mark as new record
-
-            // Set cultureCombo to be disabled since we're already creating it for a specific culture
             controller.disableCultureSelection();
 
+            // Explicitly set the culture in the combo box
+            controller.setInitialCulture(culture);
+
             controller.setRefreshCallback(() -> {
-                System.out.println("Refresh callback triggered");
+                // Refresh the culture data including recolte
                 this.culture = cultureService.getCultureById(culture.getId());
-                System.out.println("Loaded culture from DB. Has recolte: " + (culture.getRecolte() != null));
                 setupRecolteSection();
 
                 if (refreshCallback != null) {
-                    System.out.println("Executing parent refresh callback");
                     refreshCallback.run();
                 }
             });
@@ -546,6 +562,8 @@ public class CultureDetailController implements Initializable {
             showAlert("Erreur", "Impossible d'ouvrir le formulaire", e.getMessage());
         }
     }
+
+
 
     private void handleEditRecolte(Recolte recolte) {
         try {
@@ -653,6 +671,288 @@ public class CultureDetailController implements Initializable {
 
         } catch (IOException e) {
             showAlert("Erreur", "Impossible d'ouvrir les détails", e.getMessage());
+        }
+    }
+
+
+
+
+
+
+    private void loadActivities() {
+        // Fetch activities for this culture
+        activities = activiteService.getActivitiesByCultureId(culture.getId());
+        setupActivitiesTimeline();
+    }
+
+
+    private void setupActivitiesTimeline() {
+        activitiesContainer.getChildren().clear();
+
+        if (activities == null || activities.isEmpty()) {
+            VBox noActivitiesBox = new VBox(10);
+            noActivitiesBox.setAlignment(Pos.CENTER);
+            noActivitiesBox.setPadding(new Insets(30, 0, 30, 0));
+            noActivitiesBox.setStyle("-fx-background-color: #f8f9fa; -fx-background-radius: 8;");
+
+            FontAwesomeIconView iconView = new FontAwesomeIconView(FontAwesomeIcon.CALENDAR_TIMES_ALT);
+            iconView.setSize("36");
+            iconView.setFill(Color.web("#dee2e6"));
+
+            Label noActivitiesLabel = new Label("Aucune activité assignée à cette culture.");
+            noActivitiesLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #6c757d;");
+
+            noActivitiesBox.getChildren().addAll(iconView, noActivitiesLabel);
+            activitiesContainer.getChildren().add(noActivitiesBox);
+            return;
+        }
+
+        // Create main timeline container with vertical line
+        StackPane timelineMainContainer = new StackPane();
+        timelineMainContainer.getStyleClass().add("timeline-main-container");
+
+        // Create the vertical line in the center
+        Region timelineLine = new Region();
+        timelineLine.getStyleClass().add("timeline-vertical-line");
+        timelineLine.setMaxWidth(4);
+        timelineLine.setPrefWidth(4);
+        timelineLine.setStyle("-fx-background-color: linear-gradient(to bottom, #1a9738, #1F4E3D); -fx-background-radius: 2;");
+
+        // Set the line height based on the number of activities
+        timelineLine.setPrefHeight(activities.size() * 160);
+
+        // Create container for timeline entries
+        VBox entriesContainer = new VBox(30);
+        entriesContainer.getStyleClass().add("timeline-container");
+        entriesContainer.setPadding(new Insets(20, 0, 20, 0));
+
+        // Sort activities by date
+        activities.sort((a1, a2) -> a1.getDate().compareTo(a2.getDate()));
+
+        for (int i = 0; i < activities.size(); i++) {
+            Activite activite = activities.get(i);
+            boolean isLeft = (i % 2 == 0); // Alternate left and right
+
+            HBox timelineEntry = createTimelineEntry(activite, isLeft);
+            entriesContainer.getChildren().add(timelineEntry);
+        }
+
+        timelineMainContainer.getChildren().addAll(timelineLine, entriesContainer);
+        activitiesContainer.getChildren().add(timelineMainContainer);
+    }
+
+    private HBox createTimelineEntry(Activite activite, boolean isLeft) {
+        // Main container for this timeline entry
+        HBox entryContainer = new HBox();
+        entryContainer.setAlignment(Pos.CENTER);
+        entryContainer.getStyleClass().add("timeline-entry");
+
+        // Create the timeline card
+        VBox card = new VBox(10);
+        card.getStyleClass().add("timeline-card");
+        card.setPrefWidth(300);
+        card.setMaxWidth(300);
+
+        // Activity date
+        Label dateLabel = new Label(new SimpleDateFormat("dd/MM/yyyy").format(activite.getDate()));
+        dateLabel.getStyleClass().add("timeline-date");
+
+        // Activity type with badge
+        HBox typeBox = new HBox(10);
+        typeBox.setAlignment(Pos.CENTER_LEFT);
+
+        Label typeLabel = new Label("Type d'activité:");
+        typeLabel.setStyle(" -fx-text-fill:#0a1712;-fx-font-weight: bold; -fx-font-size: 12px;");
+
+        Label typeBadge = new Label(activite.getType());
+        typeBadge.getStyleClass().addAll("badge", getActivityBadgeColor(activite.getType()));
+
+        typeBox.getChildren().addAll(typeLabel, typeBadge);
+
+        // Description
+        Label descLabel = new Label(activite.getDescription());
+        descLabel.setWrapText(true);
+        descLabel.setStyle(" -fx-text-fill:#0a1712;-fx-font-size: 12px;");
+
+        // Action buttons
+        HBox actionBox = new HBox(10);
+        actionBox.setAlignment(Pos.CENTER_RIGHT);
+        actionBox.setPadding(new Insets(10, 0, 0, 0));
+
+        Button viewButton = new Button("Détails");
+        viewButton.getStyleClass().addAll("modern-action-button", "view-button");
+        addIconToButton(viewButton, FontAwesomeIcon.EYE);
+        viewButton.setOnAction(e -> handleViewActivity(activite));
+
+        Button editButton = new Button("Modifier");
+        editButton.getStyleClass().addAll("modern-action-button", "edit-button");
+        addIconToButton(editButton, FontAwesomeIcon.EDIT);
+        editButton.setOnAction(e -> handleEditActivity(activite));
+
+        Button deleteButton = new Button("Supprimer");
+        deleteButton.getStyleClass().addAll("modern-action-button", "delete-button");
+        addIconToButton(deleteButton, FontAwesomeIcon.TRASH);
+        deleteButton.setOnAction(e -> handleDeleteActivity(activite));
+
+        actionBox.getChildren().addAll(viewButton, editButton, deleteButton);
+
+        // Add all elements to card
+        card.getChildren().addAll(dateLabel, typeBox, descLabel, actionBox);
+
+        // Create the timeline dot
+        StackPane timelineDot = new StackPane();
+        timelineDot.getStyleClass().add("timeline-circle");
+        timelineDot.setMinSize(25, 25);
+        timelineDot.setMaxSize(25, 25);
+
+        // Create arrow indicator
+        Region arrow = new Region();
+        arrow.setPrefSize(10, 20);
+
+        // Position elements based on left/right
+        if (isLeft) {
+            arrow.getStyleClass().add("timeline-left-arrow");
+            entryContainer.getStyleClass().add("timeline-left");
+
+            Region leftSpacer = new Region();
+            HBox.setHgrow(leftSpacer, Priority.ALWAYS);
+
+            entryContainer.getChildren().addAll(card, arrow, timelineDot, leftSpacer);
+        } else {
+            arrow.getStyleClass().add("timeline-right-arrow");
+            entryContainer.getStyleClass().add("timeline-right");
+
+            Region rightSpacer = new Region();
+            HBox.setHgrow(rightSpacer, Priority.ALWAYS);
+
+            entryContainer.getChildren().addAll(rightSpacer, timelineDot, arrow, card);
+        }
+
+        return entryContainer;
+    }
+
+
+    private String getActivityBadgeColor(String activityType) {
+        switch (activityType) {
+            case "Semis": return "badge-success";
+            case "Plantation": return "badge-primary";
+            case "Arrosage": return "badge-info";
+            case "Fertilisation": return "badge-warning";
+            case "Traitement phytosanitaire": return "badge-secondary";
+            case "Récolte": return "badge-danger";
+            case "Élagage / Taille": return "badge-dark";
+            case "Greffage": return "badge-light";
+            default: return "badge-secondary";
+        }
+    }
+
+
+    @FXML
+    private void handleAddActivity() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Agriwise/views/Activite/ActiviteFormView.fxml"));
+            Parent root = loader.load();
+
+            ActiviteFormController controller = loader.getController();
+
+            // Create new Activité and associate with current culture
+            Activite newActivite = new Activite();
+            newActivite.setCulture(culture);  // Set the current culture
+
+            // Set today's date as default
+            newActivite.setDate(new Date());
+
+            controller.setActivite(newActivite);  // This should set the form to add mode
+
+            // Optionally pre-select the current culture in the combo box
+            controller.setInitialCulture(culture);
+
+            controller.setRefreshCallback(() -> {
+                loadActivities();
+                if (refreshCallback != null) {
+                    refreshCallback.run();
+                }
+            });
+
+            Stage stage = new Stage();
+            stage.setTitle("Nouvelle Activité");
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+
+        } catch (IOException e) {
+            showAlert("Erreur", "Impossible d'ouvrir le formulaire", e.getMessage());
+        }
+    }
+
+
+    private void handleViewActivity(Activite activite) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Agriwise/views/Activite/ActiviteDetailView.fxml"));
+            Parent root = loader.load();
+
+            ActiviteDetailController controller = loader.getController();
+            controller.setActivite(activite);
+
+            Stage stage = new Stage();
+            stage.setTitle("Détails de l'Activité");
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+
+        } catch (IOException e) {
+            showAlert("Erreur", "Impossible d'ouvrir les détails", e.getMessage());
+        }
+    }
+
+    private void handleEditActivity(Activite activite) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Agriwise/views/Activite/ActiviteFormView.fxml"));
+            Parent root = loader.load();
+
+            ActiviteFormController controller = loader.getController();
+            controller.setActivite(activite);
+         //   controller.disableCultureSelection();
+
+            controller.setRefreshCallback(() -> {
+                loadActivities();
+                if (refreshCallback != null) {
+                    refreshCallback.run();
+                }
+            });
+
+            Stage stage = new Stage();
+            stage.setTitle("Modifier l'Activité");
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+
+        } catch (IOException e) {
+            showAlert("Erreur", "Impossible d'ouvrir l'éditeur", e.getMessage());
+        }
+    }
+
+    private void handleDeleteActivity(Activite activite) {
+        Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmation.setTitle("Confirmation de suppression");
+        confirmation.setHeaderText("Supprimer cette activité ?");
+        confirmation.setContentText("Êtes-vous sûr de vouloir supprimer l'activité du " +
+                new SimpleDateFormat("dd/MM/yyyy").format(activite.getDate()) + " ?");
+
+        Optional<ButtonType> result = confirmation.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            try {
+                activiteService.deleteActivite(activite.getId());
+                loadActivities();
+
+                if (refreshCallback != null) {
+                    refreshCallback.run();
+                }
+
+                showAlert("Succès", "Activité supprimée", "L'activité a été supprimée avec succès.");
+            } catch (Exception e) {
+                showAlert("Erreur", "Échec de suppression", e.getMessage());
+            }
         }
     }
 }

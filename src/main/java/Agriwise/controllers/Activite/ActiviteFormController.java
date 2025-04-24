@@ -51,7 +51,8 @@ public class ActiviteFormController implements Initializable {
 
     public void setActivite(Activite activite) {
         this.currentActivite = activite;
-        this.isEditMode = activite != null;
+      //  this.isEditMode = activite != null;
+        this.isEditMode = (activite != null && activite.getId() > 0); // Assuming new activities have ID 0
         populateFields();
         updateUIForMode();
     }
@@ -221,6 +222,13 @@ public class ActiviteFormController implements Initializable {
             throw new IllegalStateException("DatePicker is not initialized");
         }
         datePicker.setValue(date);
+    }
+
+
+    public void setInitialCulture(Culture culture) {
+        if (cultureCombo != null) {
+            cultureCombo.setValue(culture);
+        }
     }
 
 }

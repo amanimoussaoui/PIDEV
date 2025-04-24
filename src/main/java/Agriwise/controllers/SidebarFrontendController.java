@@ -111,8 +111,8 @@ public class SidebarFrontendController {
         buttonPathMap.put(candidatureBtn, "/Agriwise/views/Encheres/CandidatureView.fxml");
 
         // Configure paths for other buttons
-        buttonPathMap.put(profileBtn, "/Agriwise/views/Profile/ProfileView.fxml");
-        buttonPathMap.put(profileIconBtn, "/Agriwise/views/Profile/ProfileView.fxml");
+        buttonPathMap.put(profileBtn, "/Agriwise/views/Utilisateur/ProfileScene.fxml");
+        buttonPathMap.put(profileIconBtn, "/Agriwise/views/Utilisateur/ProfileScene.fxml");
 
         buttonPathMap.put(formationsBtn, "/Agriwise/views/Formation/ListFormationsFront.fxml");
         buttonPathMap.put(formationsIconBtn, "/Agriwise/views/Formation/ListFormationsFront.fxml");

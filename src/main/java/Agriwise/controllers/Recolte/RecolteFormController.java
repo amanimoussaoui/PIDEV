@@ -37,6 +37,10 @@ public class RecolteFormController implements Initializable {
     private Runnable refreshCallback;
     private boolean isEditMode = false;
 
+    private boolean cultureSelectionDisabled = false;
+
+
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         recolteService = new RecolteService();
@@ -68,11 +72,24 @@ public class RecolteFormController implements Initializable {
         this.currentRecolte = recolte;
         this.isEditMode = (recolte != null && recolte.getId() > 0);
 
-        System.out.println("Setting recolte. Edit mode: " + isEditMode +
-                ", ID: " + (recolte != null ? recolte.getId() : "null"));
-
-        // Setup culture combo before populating fields
+        // Initialize the culture combo first
         setupCultureCombo();
+
+        // If this is a new recolte with a pre-set culture, set it in the combo
+        if (!isEditMode && recolte != null && recolte.getCulture() != null) {
+            for (Culture c : cultureCombo.getItems()) {
+                if (c.getId() == recolte.getCulture().getId()) {
+                    cultureCombo.getSelectionModel().select(c);
+                    break;
+                }
+            }
+            // If not found in the list, add it
+            if (cultureCombo.getValue() == null) {
+                cultureCombo.getItems().add(recolte.getCulture());
+                cultureCombo.getSelectionModel().select(recolte.getCulture());
+            }
+        }
+
         populateFields();
         updateUIForMode();
     }
@@ -313,7 +330,28 @@ public class RecolteFormController implements Initializable {
         alert.showAndWait();
     }
 
+
     public void disableCultureSelection() {
-        cultureCombo.setDisable(true);
+        this.cultureSelectionDisabled = true;
+        if (cultureCombo != null) {
+            cultureCombo.setDisable(true);
+        }
     }
+    public void setInitialCulture(Culture culture) {
+        if (cultureCombo != null) {
+            // First try to find the culture in the existing items
+            for (Culture c : cultureCombo.getItems()) {
+                if (c.getId() == culture.getId()) {
+                    cultureCombo.getSelectionModel().select(c);
+                    return;
+                }
+            }
+
+            // If not found, add it to the list and select it
+            cultureCombo.getItems().add(culture);
+            cultureCombo.getSelectionModel().select(culture);
+        }
+    }
+
+
 }

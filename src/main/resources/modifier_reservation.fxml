@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Font?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="tn.esprit.controllers.ReservationFormController"
+      alignment="CENTER" spacing="15" 
+      style="-fx-background-color: white;" prefWidth="550" prefHeight="500">
+      
+    <padding>
+        <Insets top="20" right="40" bottom="20" left="40"/>
+    </padding>
+    
+    <Label fx:id="titleLabel" text="Modifier la Réservation" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #2e8b57;">
+        <font>
+            <Font name="System Bold" size="22.0"/>
+        </font>
+        <VBox.margin>
+            <Insets bottom="10"/>
+        </VBox.margin>
+    </Label>
+    
+    <Separator/>
+    
+    <GridPane hgap="15" vgap="15">
+        <columnConstraints>
+            <ColumnConstraints minWidth="100" prefWidth="150" />
+            <ColumnConstraints prefWidth="250" hgrow="ALWAYS" />
+        </columnConstraints>
+        
+        <!-- Machine -->
+        <Label text="Machine:" style="-fx-font-weight: bold;" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+        <ComboBox fx:id="machineComboBox" GridPane.rowIndex="0" GridPane.columnIndex="1" prefWidth="300" />
+        
+        <!-- ID Utilisateur -->
+        <Label text="ID Utilisateur:" style="-fx-font-weight: bold;" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+        <TextField fx:id="userIdField" promptText="Entrez l'ID de l'utilisateur" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+        
+        <!-- Date Début -->
+        <Label text="Date Début:" style="-fx-font-weight: bold;" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+        <DatePicker fx:id="dateDebutPicker" promptText="Sélectionnez la date de début" GridPane.rowIndex="2" GridPane.columnIndex="1" prefWidth="300" />
+        
+        <!-- Date Fin -->
+        <Label text="Date Fin:" style="-fx-font-weight: bold;" GridPane.rowIndex="3" GridPane.columnIndex="0" />
+        <DatePicker fx:id="dateFinPicker" promptText="Sélectionnez la date de fin" GridPane.rowIndex="3" GridPane.columnIndex="1" prefWidth="300" />
+        
+        <!-- Note Informative -->
+        <Label text="Note:" style="-fx-font-weight: bold;" GridPane.rowIndex="4" GridPane.columnIndex="0" alignment="TOP_LEFT" />
+        <Label text="Une machine réservée pendant une période active sera automatiquement marquée comme 'Non disponible'." 
+               style="-fx-text-fill: #FF6B6B; -fx-wrap-text: true;" GridPane.rowIndex="4" GridPane.columnIndex="1" />
+    </GridPane>
+    
+    <Separator>
+        <VBox.margin>
+            <Insets top="20"/>
+        </VBox.margin>
+    </Separator>
+    
+    <HBox spacing="15" alignment="CENTER_RIGHT">
+        <Button fx:id="cancelBtn" text="Annuler" onAction="#handleCancel"
+                style="-fx-background-color: #e0e0e0; -fx-text-fill: #333333; -fx-cursor: hand;">
+            <padding>
+                <Insets top="10" right="20" bottom="10" left="20"/>
+            </padding>
+        </Button>
+        
+        <Button fx:id="saveBtn" text="Mettre à jour" onAction="#handleSave"
+                style="-fx-background-color: #2e8b57; -fx-text-fill: white; -fx-cursor: hand; -fx-font-weight: bold;">
+            <padding>
+                <Insets top="10" right="20" bottom="10" left="20"/>
+            </padding>
+        </Button>
+    </HBox>
+</VBox> 

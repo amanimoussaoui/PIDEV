@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Font?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="tn.esprit.controllers.ClientModifierMachineController"
+      spacing="20" style="-fx-background-color: white;">
+      
+    <padding>
+        <Insets top="20" right="30" bottom="20" left="30"/>
+    </padding>
+    
+    <!-- En-tête -->
+    <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-padding: 0 0 20 0;">
+        <Button text="Retour" onAction="#goBack"
+                style="-fx-background-color: #f0f0f0; -fx-text-fill: #333333; -fx-cursor: hand; -fx-background-radius: 3;">
+            <padding>
+                <Insets top="8" right="15" bottom="8" left="15"/>
+            </padding>
+        </Button>
+        <Label text="Modifier le Matériel" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2e8b57;">
+            <font>
+                <Font name="System Bold" size="24.0"/>
+            </font>
+        </Label>
+    </HBox>
+    
+    <!-- Formulaire -->
+    <GridPane vgap="15" hgap="10">
+        <padding>
+            <Insets top="10" right="10" bottom="10" left="10"/>
+        </padding>
+        
+        <!-- Nom du matériel -->
+        <Label text="Nom du matériel:" GridPane.columnIndex="0" GridPane.rowIndex="0" 
+               style="-fx-font-weight: bold; -fx-text-fill: #333333;"/>
+        <TextField fx:id="nomField" GridPane.columnIndex="1" GridPane.rowIndex="0" 
+                  style="-fx-background-radius: 3; -fx-border-radius: 3;"/>
+        
+        <!-- Description -->
+        <Label text="Description:" GridPane.columnIndex="0" GridPane.rowIndex="1" 
+               style="-fx-font-weight: bold; -fx-text-fill: #333333;"/>
+        <TextArea fx:id="descriptionArea" GridPane.columnIndex="1" GridPane.rowIndex="1" 
+                 prefRowCount="3" wrapText="true"
+                 style="-fx-background-radius: 3; -fx-border-radius: 3;"/>
+        
+        <!-- Prix -->
+        <Label text="Prix:" GridPane.columnIndex="0" GridPane.rowIndex="2" 
+               style="-fx-font-weight: bold; -fx-text-fill: #333333;"/>
+        <TextField fx:id="prixField" GridPane.columnIndex="1" GridPane.rowIndex="2" 
+                  style="-fx-background-radius: 3; -fx-border-radius: 3;"/>
+        
+        <!-- État -->
+        <Label text="État:" GridPane.columnIndex="0" GridPane.rowIndex="3" 
+               style="-fx-font-weight: bold; -fx-text-fill: #333333;"/>
+        <ComboBox fx:id="etatComboBox" GridPane.columnIndex="1" GridPane.rowIndex="3" 
+                  style="-fx-background-radius: 3; -fx-border-radius: 3;"/>
+        
+        <!-- Disponibilité -->
+        <Label text="Disponibilité:" GridPane.columnIndex="0" GridPane.rowIndex="4" 
+               style="-fx-font-weight: bold; -fx-text-fill: #333333;"/>
+        <ComboBox fx:id="disponibiliteComboBox" GridPane.columnIndex="1" GridPane.rowIndex="4" 
+                  style="-fx-background-radius: 3; -fx-border-radius: 3;"/>
+        
+        <!-- Date de maintenance -->
+        <Label text="Date de maintenance:" GridPane.columnIndex="0" GridPane.rowIndex="5" 
+               style="-fx-font-weight: bold; -fx-text-fill: #333333;"/>
+        <DatePicker fx:id="dateMaintenancePicker" GridPane.columnIndex="1" GridPane.rowIndex="5" 
+                    style="-fx-background-radius: 3; -fx-border-radius: 3;"/>
+    </GridPane>
+    
+    <!-- Boutons -->
+    <HBox spacing="15" alignment="CENTER_RIGHT" style="-fx-padding: 20 0 0 0;">
+        <Button text="Annuler" onAction="#goBack" 
+                style="-fx-background-color: #f0f0f0; -fx-text-fill: #333333; -fx-cursor: hand; -fx-background-radius: 3;">
+            <padding>
+                <Insets top="8" right="20" bottom="8" left="20"/>
+            </padding>
+        </Button>
+        <Button text="Enregistrer" onAction="#modifierMachine" 
+                style="-fx-background-color: #2e8b57; -fx-text-fill: white; -fx-cursor: hand; -fx-background-radius: 3;">
+            <padding>
+                <Insets top="8" right="20" bottom="8" left="20"/>
+            </padding>
+        </Button>
+    </HBox>
+    
+</VBox> 

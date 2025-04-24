@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.FrontendController">
+    <children>
+        <AnchorPane fx:id="main_form" prefHeight="600.0" prefWidth="1100.0">
+            <children>
+                <BorderPane fx:id="mainBorderPane" prefHeight="600.0" prefWidth="1100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <left>
+                        <AnchorPane fx:id="navPane" prefHeight="600.0" prefWidth="222.0" styleClass="nav-form" stylesheets="@mainFormDesign.css">
+                            <children>
+                                <AnchorPane prefHeight="87.0" prefWidth="222.0" styleClass="header" stylesheets="@mainFormDesign.css" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <children>
+                                        <Label fx:id="agriwiseLabel" layoutX="55.0" layoutY="26.0" prefHeight="35.0" prefWidth="100.0" text="Agriwise" textFill="WHITE">
+                                            <font>
+                                                <Font size="24.0" />
+                                            </font>
+                                        </Label>
+                                        <Button fx:id="toggleNavButton" layoutX="160.0" layoutY="26.0" onAction="#toggleNavigation" prefHeight="35.0" prefWidth="35.0" styleClass="toggle-btn" stylesheets="@mainFormDesign.css" text="☰" />
+                                    </children>
+                                </AnchorPane>
+                                <Label fx:id="connecteduser" alignment="CENTER" layoutX="-2.0" layoutY="96.0" prefHeight="31.0" prefWidth="222.0" textFill="WHITE">
+                                    <font>
+                                        <Font size="21.0" />
+                                    </font>
+                                </Label>
+                                <Button fx:id="produits_vendre_btn" layoutX="6.0" layoutY="138.0" mnemonicParsing="false" onAction="#switchForm" prefHeight="40.0" prefWidth="210.0" styleClass="nav-btn" stylesheets="@mainFormDesign.css" text="Produits à vendre" />
+                                <Button fx:id="leurs_commandes_btn" layoutX="6.0" layoutY="196.0" mnemonicParsing="false" onAction="#switchForm" prefHeight="40.0" prefWidth="210.0" styleClass="nav-btn" stylesheets="@mainFormDesign.css" text="Leurs commandes" />
+                                <Button fx:id="votre_produits_btn" layoutX="6.0" layoutY="253.0" mnemonicParsing="false" onAction="#switchForm" prefHeight="40.0" prefWidth="210.0" styleClass="nav-btn" stylesheets="@mainFormDesign.css" text="Votre produits" />
+                                <Button fx:id="machine_btn" layoutX="6.0" layoutY="310.0" mnemonicParsing="false" onAction="#switchForm" prefHeight="40.0" prefWidth="210.0" styleClass="nav-btn" stylesheets="@mainFormDesign.css" text="Gestion Machine" />
+                                <Button fx:id="profil_btn" layoutX="6.0" layoutY="367.0" mnemonicParsing="false" onAction="#switchForm" prefHeight="40.0" prefWidth="210.0" styleClass="nav-btn" stylesheets="@mainFormDesign.css" text="Mon Profil" />
+                                <Button fx:id="formation_btn" layoutX="6.0" layoutY="424.0" mnemonicParsing="false" onAction="#switchForm" prefHeight="40.0" prefWidth="210.0" styleClass="nav-btn" stylesheets="@mainFormDesign.css" text="Gestion Formation" />
+                                <Button fx:id="parcelle_btn" layoutX="6.0" layoutY="481.0" mnemonicParsing="false" onAction="#switchForm" prefHeight="40.0" prefWidth="210.0" styleClass="nav-btn" stylesheets="@mainFormDesign.css" text="Gestion Parcelle" />
+                                <Button fx:id="candidat_btn" layoutX="6.0" layoutY="538.0" mnemonicParsing="false" onAction="#switchForm" prefHeight="40.0" prefWidth="210.0" styleClass="nav-btn" stylesheets="@mainFormDesign.css" text="Gestion Candidat" />
+                                <Button fx:id="logout_btn" layoutX="7.0" layoutY="560.0" mnemonicParsing="false" onAction="#logout" prefHeight="32.0" prefWidth="53.0" stylesheets="@mainFormDesign.css" text="↻" textFill="WHITE" AnchorPane.bottomAnchor="12.0" AnchorPane.leftAnchor="14.0">
+                                    <styleClass>
+                                        <String fx:value="logout" />
+                                        <String fx:value="shadow" />
+                                    </styleClass>
+                                    <font>
+                                        <Font size="17.0" />
+                                    </font>
+                                </Button>
+                                <Label layoutX="69.0" layoutY="595.0" prefHeight="21.0" prefWidth="124.0" text="Se déconnecter" textFill="WHITE" AnchorPane.bottomAnchor="19.0" AnchorPane.leftAnchor="69.0">
+                                    <font>
+                                        <Font size="15.0" />
+                                    </font>
+                                </Label>
+                            </children>
+                        </AnchorPane>
+                    </left>
+                    <center>
+                        <AnchorPane prefHeight="600.0" prefWidth="878.0">
+                            <children>
+                                <AnchorPane fx:id="produits_vendre_form" prefHeight="600.0" prefWidth="878.0" visible="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <children>
+                                        <Label layoutX="14.0" layoutY="14.0" styleClass="white-bg" stylesheets="@mainFormDesign.css">
+                                            <font>
+                                                <Font size="20.0" />
+                                            </font>
+                                        </Label>
+                                    </children>
+                                </AnchorPane>
+                                <AnchorPane fx:id="leurs_commandes_form" prefHeight="600.0" prefWidth="878.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <children>
+                                        <ScrollPane fx:id="commandesScrollPane" prefHeight="600.0" prefWidth="878.0" styleClass="transparent" stylesheets="@mainFormDesign.css">
+                                            <content>
+                                                <VBox fx:id="commandesVBox" alignment="TOP_CENTER" spacing="10.0">
+                                                    <padding>
+                                                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                    </padding>
+                                                </VBox>
+                                            </content>
+                                        </ScrollPane>
+                                    </children>
+                                </AnchorPane>
+                                <AnchorPane fx:id="votre_produits_form" prefHeight="600.0" prefWidth="878.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <children>
+                                        <Label layoutX="14.0" layoutY="14.0" styleClass="white-bg" stylesheets="@mainFormDesign.css">
+                                            <font>
+                                                <Font size="20.0" />
+                                            </font>
+                                        </Label>
+                                    </children>
+                                </AnchorPane>
+                                <AnchorPane fx:id="machine_form" prefHeight="600.0" prefWidth="878.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <children>
+                                        <Label layoutX="14.0" layoutY="14.0" styleClass="white-bg" stylesheets="@mainFormDesign.css">
+                                            <font>
+                                                <Font size="20.0" />
+                                            </font>
+                                        </Label>
+                                    </children>
+                                </AnchorPane>
+                                <AnchorPane fx:id="profil_form" prefHeight="600.0" prefWidth="878.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <children>
+                                        <Label layoutX="14.0" layoutY="14.0" styleClass="white-bg" stylesheets="@mainFormDesign.css">
+                                            <font>
+                                                <Font size="20.0" />
+                                            </font>
+                                        </Label>
+                                    </children>
+                                </AnchorPane>
+                                <AnchorPane fx:id="formation_form" prefHeight="600.0" prefWidth="878.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <children>
+                                        <Label layoutX="14.0" layoutY="14.0" styleClass="white-bg" stylesheets="@mainFormDesign.css">
+                                            <font>
+                                                <Font size="20.0" />
+                                            </font>
+                                        </Label>
+                                    </children>
+                                </AnchorPane>
+                                <AnchorPane fx:id="parcelle_form" prefHeight="600.0" prefWidth="878.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <children>
+                                        <Label layoutX="14.0" layoutY="14.0" styleClass="white-bg" stylesheets="@mainFormDesign.css">
+                                            <font>
+                                                <Font size="20.0" />
+                                            </font>
+                                        </Label>
+                                    </children>
+                                </AnchorPane>
+                                <AnchorPane fx:id="candidat_form" prefHeight="600.0" prefWidth="878.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <children>
+                                        <Label layoutX="14.0" layoutY="14.0" styleClass="white-bg" stylesheets="@mainFormDesign.css">
+                                            <font>
+                                                <Font size="20.0" />
+                                            </font>
+                                        </Label>
+                                    </children>
+                                </AnchorPane>
+                            </children>
+                        </AnchorPane>
+                    </center>
+                </BorderPane>
+            </children>
+        </AnchorPane>
+    </children>
+</StackPane>

@@ -233,4 +233,55 @@ public class ActiviteService implements IActiviteService {
         return activities;
     }
 
+    // Add this method to your ActiviteService class
+    public List<Activite> getActivitesByUserId(int userId) {
+        List<Activite> activities = new ArrayList<>();
+        String req = "SELECT a.*, c.nom_culture as culture_nom, c.date_semis as culture_date_semis, " +
+                "c.duree as culture_duree, c.statut as culture_statut, " +
+                "p.id as parcelle_id, p.nom as parcelle_nom, p.superficie as parcelle_superficie, " +
+                "p.localisation as parcelle_localisation, p.type_sol as parcelle_type_sol " +
+                "FROM activite a " +
+                "LEFT JOIN culture c ON a.culture_id = c.id " +
+                "LEFT JOIN parcelle p ON c.parcelle_id = p.id " +
+                "WHERE p.utilisateur_id = ? " +
+                "ORDER BY a.date DESC";  // Most recent activities first
+
+        try {
+            PreparedStatement ps = cnx.prepareStatement(req);
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Activite activite = new Activite();
+                activite.setId(rs.getInt("id"));
+                activite.setType(rs.getString("type"));
+                activite.setDescription(rs.getString("description"));
+                activite.setDate(rs.getDate("date"));
+
+                // Culture details
+                Culture culture = new Culture();
+                culture.setId(rs.getInt("culture_id"));
+                culture.setNomCulture(rs.getString("culture_nom"));
+                culture.setDateSemis(rs.getDate("culture_date_semis"));
+                culture.setDuree(rs.getInt("culture_duree"));
+                culture.setStatut(rs.getString("culture_statut"));
+
+                // Parcelle details
+                Parcelle parcelle = new Parcelle();
+                parcelle.setId(rs.getInt("parcelle_id"));
+                parcelle.setNom(rs.getString("parcelle_nom"));
+                parcelle.setSuperficie(rs.getFloat("parcelle_superficie"));
+                parcelle.setLocalisation(rs.getString("parcelle_localisation"));
+                parcelle.setTypeSol(rs.getString("parcelle_type_sol"));
+                culture.setParcelle(parcelle);
+
+                activite.setCulture(culture);
+                activities.add(activite);
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la récupération des activités par utilisateur : " + e.getMessage());
+        }
+
+        return activities;
+    }
 }

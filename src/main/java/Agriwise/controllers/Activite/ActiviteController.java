@@ -1,6 +1,7 @@
 package Agriwise.controllers.Activite;
 
 import Agriwise.entities.Activite;
+import Agriwise.entities.UserSession;
 import Agriwise.services.ActiviteService;
 import Agriwise.tools.BridgeManager;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
@@ -237,8 +238,10 @@ public class ActiviteController implements Initializable {
     }
 
     private void loadAllActivites() {
-        // Load all activities from the database and store them
-        allActivites = activiteService.getAllActivites();
+        UserSession userSession = UserSession.getInstance();
+        if (userSession != null) {
+            allActivites = activiteService.getActivitesByUserId(userSession.getUserId());
+        }
 
         // Update the count label with total count
         int totalCount = allActivites.size();

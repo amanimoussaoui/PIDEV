@@ -23,7 +23,6 @@ public class Main extends Application {
     public void start(Stage stage) throws Exception {
         primaryStage = stage;
 
-
         // Show mode selection dialog
         showModeSelectionDialog();
 
@@ -41,9 +40,10 @@ public class Main extends Application {
 
         ButtonType frontendButton = new ButtonType("Frontend");
         ButtonType backendButton = new ButtonType("Backend");
+        ButtonType signInButton = new ButtonType("Sign In");
         ButtonType cancelButton = new ButtonType("Cancel");
 
-        alert.getButtonTypes().setAll(frontendButton, backendButton, cancelButton);
+        alert.getButtonTypes().setAll(frontendButton, backendButton, signInButton, cancelButton);
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent()) {
@@ -51,15 +51,17 @@ public class Main extends Application {
                 loadFrontendInterface();
             } else if (result.get() == backendButton) {
                 loadBackendInterface();
+            } else if (result.get() == signInButton) {
+                loadLoginScene();
             } else {
                 System.exit(0);
             }
         }
     }
 
-    private void loadFrontendInterface() {
+    public static void loadFrontendInterface() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Agriwise/views/Frontend.fxml"));
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource("/Agriwise/views/Frontend.fxml"));
             Parent root = loader.load();
             currentController = loader.getController();
 
@@ -77,9 +79,9 @@ public class Main extends Application {
         }
     }
 
-    private void loadBackendInterface() {
+    public static void loadBackendInterface() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Agriwise/views/Backend.fxml"));
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource("/Agriwise/views/Backend.fxml"));
             Parent root = loader.load();
             currentController = loader.getController();
 
@@ -93,6 +95,22 @@ public class Main extends Application {
         } catch (IOException e) {
             e.printStackTrace();
             showErrorAlert("Failed to load backend interface");
+        }
+    }
+
+    private void loadLoginScene() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Agriwise/views/Utilisateur/LoginScene.fxml"));
+            Parent root = loader.load();
+
+            Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
+            primaryStage.setScene(scene);
+            primaryStage.setTitle("Agriwise - Sign In");
+            primaryStage.setResizable(false);
+            primaryStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Failed to load sign-in scene");
         }
     }
 
@@ -118,7 +136,7 @@ public class Main extends Application {
         }
     }
 
-    private void showErrorAlert(String message) {
+    private static void showErrorAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error");
         alert.setHeaderText(null);

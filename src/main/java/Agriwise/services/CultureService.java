@@ -74,31 +74,15 @@ public class CultureService implements ICultureService {
                 "LEFT JOIN parcelle p ON c.parcelle_id = p.id " +
                 "LEFT JOIN recolte r ON c.id = r.culture_id " +
                 "WHERE c.id=?";
-        Culture c = null;
+
         try {
             PreparedStatement ps = cnx.prepareStatement(req);
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                c = new Culture();
-                c.setId(rs.getInt("id"));
-                c.setNomCulture(rs.getString("nom_culture"));
-                c.setDateSemis(rs.getDate("date_semis"));
-                c.setDuree(rs.getInt("duree"));
-                c.setStatut(rs.getString("statut"));
+                Culture culture = resultSetToCulture(rs);
 
-                // Set Parcelle if exists
-                if (rs.getInt("parcelle_id") > 0) {
-                    Parcelle parcelle = new Parcelle();
-                    parcelle.setId(rs.getInt("parcelle_id"));
-                    parcelle.setNom(rs.getString("parcelle_nom"));
-                    parcelle.setSuperficie(rs.getFloat("parcelle_superficie"));
-                    parcelle.setLocalisation(rs.getString("parcelle_localisation"));
-                    parcelle.setTypeSol(rs.getString("parcelle_type_sol"));
-                    c.setParcelle(parcelle);
-                }
-
-                // Set Recolte if exists
+                // Handle recolte separately since it's not in the standard mapping
                 if (rs.getInt("recolte_id") > 0) {
                     Recolte recolte = new Recolte();
                     recolte.setId(rs.getInt("recolte_id"));
@@ -106,15 +90,16 @@ public class CultureService implements ICultureService {
                     recolte.setQuantite(rs.getFloat("quantite"));
                     recolte.setQualite(rs.getString("qualite"));
                     recolte.setPrixUnitaire(rs.getFloat("prix_unitaire"));
-                    c.setRecolte(recolte);
+                    culture.setRecolte(recolte);
                 }
+
+                return culture;
             }
         } catch (SQLException e) {
             System.out.println("Erreur lors de la récupération : " + e.getMessage());
         }
-        return c;
+        return null;
     }
-
     @Override
     public List<Culture> getAllCultures() {
         List<Culture> list = new ArrayList<>();
@@ -127,31 +112,93 @@ public class CultureService implements ICultureService {
             Statement st = cnx.createStatement();
             ResultSet rs = st.executeQuery(req);
             while (rs.next()) {
-                Culture c = new Culture();
-                c.setId(rs.getInt("id"));
-                c.setNomCulture(rs.getString("nom_culture"));
-                c.setDateSemis(rs.getDate("date_semis"));
-                c.setDuree(rs.getInt("duree"));
-                c.setStatut(rs.getString("statut"));
-
-                // Set Parcelle if exists
-                if (rs.getInt("parcelle_id") > 0) {
-                    Parcelle parcelle = new Parcelle();
-                    parcelle.setId(rs.getInt("parcelle_id"));
-                    parcelle.setNom(rs.getString("parcelle_nom"));
-                    parcelle.setSuperficie(rs.getFloat("parcelle_superficie"));
-                    parcelle.setLocalisation(rs.getString("parcelle_localisation"));
-                    parcelle.setTypeSol(rs.getString("parcelle_type_sol"));
-                    c.setParcelle(parcelle);
-                }
-
-                list.add(c);
+                list.add(resultSetToCulture(rs));
             }
         } catch (SQLException e) {
             System.out.println("Erreur lors de l'affichage : " + e.getMessage());
         }
         return list;
     }
+    public List<Culture> getCulturesByUserId(int userId) {
+        List<Culture> list = new ArrayList<>();
+        String req = "SELECT c.*, p.nom as parcelle_nom, p.superficie as parcelle_superficie, " +
+                "p.localisation as parcelle_localisation, p.type_sol as parcelle_type_sol " +
+                "FROM culture c " +
+                "JOIN parcelle p ON c.parcelle_id = p.id " +
+                "WHERE p.utilisateur_id = ?";
 
+        try {
+            PreparedStatement ps = cnx.prepareStatement(req);
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(resultSetToCulture(rs));
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la récupération par utilisateur : " + e.getMessage());
+        }
+        return list;
+    }
+    // Count cultures by user ID
+    public int countByUserId(int userId) {
+        String req = "SELECT COUNT(c.id) FROM culture c " +
+                "JOIN parcelle p ON c.parcelle_id = p.id " +
+                "WHERE p.utilisateur_id = ?";
+
+        try {
+            PreparedStatement ps = cnx.prepareStatement(req);
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors du comptage : " + e.getMessage());
+        }
+        return 0;
+    }
+
+    // Add this method to your CultureService class
+    private Culture resultSetToCulture(ResultSet rs) throws SQLException {
+        Culture c = new Culture();
+        c.setId(rs.getInt("id"));
+        c.setNomCulture(rs.getString("nom_culture"));
+        c.setDateSemis(rs.getDate("date_semis"));
+        c.setDuree(rs.getInt("duree"));
+        c.setStatut(rs.getString("statut"));
+
+        // Set Parcelle information
+        if (rs.getInt("parcelle_id") > 0) {
+            Parcelle parcelle = new Parcelle();
+            parcelle.setId(rs.getInt("parcelle_id"));
+
+            // Only set these if the columns exist in the result set
+            if (hasColumn(rs, "parcelle_nom")) {
+                parcelle.setNom(rs.getString("parcelle_nom"));
+            }
+            if (hasColumn(rs, "parcelle_superficie")) {
+                parcelle.setSuperficie(rs.getFloat("parcelle_superficie"));
+            }
+            if (hasColumn(rs, "parcelle_localisation")) {
+                parcelle.setLocalisation(rs.getString("parcelle_localisation"));
+            }
+            if (hasColumn(rs, "parcelle_type_sol")) {
+                parcelle.setTypeSol(rs.getString("parcelle_type_sol"));
+            }
+            c.setParcelle(parcelle);
+        }
+
+        return c;
+    }
+
+    // Helper method to check if a column exists in the ResultSet
+    private boolean hasColumn(ResultSet rs, String columnName) {
+        try {
+            rs.findColumn(columnName);
+            return true;
+        } catch (SQLException e) {
+            return false;
+        }
+    }
 
 }

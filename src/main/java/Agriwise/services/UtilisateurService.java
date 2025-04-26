@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import Agriwise.entities.Profile;
 import Agriwise.entities.Utilisateur;
 import Agriwise.interfaces.UtilisateurInterface;
-import Agriwise.util.MaConnexion;
+import Agriwise.tools.MyConnection;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -23,7 +23,7 @@ public class UtilisateurService implements UtilisateurInterface<Utilisateur> {
             String rolesJson = gson.toJson(utilisateur.getRoles());
 
             String requete = "INSERT INTO utilisateurs (nom, prenom, email, password, roles, date_inscription) VALUES (?, ?, ?, ?, ?, NOW())";
-            PreparedStatement pst = MaConnexion.getInstance().getCon().prepareStatement(requete, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement pst = MyConnection.getInstance().getCnx().prepareStatement(requete, Statement.RETURN_GENERATED_KEYS);
 
             pst.setString(1, utilisateur.getNom());
             pst.setString(2, utilisateur.getPrenom());
@@ -72,7 +72,7 @@ public class UtilisateurService implements UtilisateurInterface<Utilisateur> {
     public Utilisateur getUtilisateurByEmail(String email) {
         try {
             String query = "SELECT * FROM utilisateurs WHERE email = ?";
-            PreparedStatement stmt = MaConnexion.getInstance().getCon().prepareStatement(query);
+            PreparedStatement stmt = MyConnection.getInstance().getCnx().prepareStatement(query);
             stmt.setString(1, email);
             ResultSet rs = stmt.executeQuery();
 
@@ -99,7 +99,7 @@ public class UtilisateurService implements UtilisateurInterface<Utilisateur> {
         List<Utilisateur> utilisateurs = new ArrayList<>();
         try {
             String requete = "SELECT * FROM utilisateurs";
-            PreparedStatement pst = MaConnexion.getInstance().getCon().prepareStatement(requete);
+            PreparedStatement pst = MyConnection.getInstance().getCnx().prepareStatement(requete);
             ResultSet rs = pst.executeQuery();
 
             while (rs.next()) {
@@ -128,7 +128,7 @@ public class UtilisateurService implements UtilisateurInterface<Utilisateur> {
             String rolesJson = gson.toJson(utilisateur.getRoles());  // Sérialise la liste des rôles
 
             String requete = "UPDATE utilisateurs SET nom = ?, prenom = ?, email = ?, roles = ? WHERE id = ?";
-            PreparedStatement pst = MaConnexion.getInstance().getCon().prepareStatement(requete);
+            PreparedStatement pst = MyConnection.getInstance().getCnx().prepareStatement(requete);
 
             pst.setString(1, utilisateur.getNom());
             pst.setString(2, utilisateur.getPrenom());
@@ -154,7 +154,7 @@ public class UtilisateurService implements UtilisateurInterface<Utilisateur> {
     public void deleteUtilisateur(int id) {
         try {
             String requete = "DELETE FROM utilisateurs WHERE id = ?";
-            PreparedStatement pst = MaConnexion.getInstance().getCon().prepareStatement(requete);
+            PreparedStatement pst = MyConnection.getInstance().getCnx().prepareStatement(requete);
             pst.setInt(1, id);
 
             pst.executeUpdate();

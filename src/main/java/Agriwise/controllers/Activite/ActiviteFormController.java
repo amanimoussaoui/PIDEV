@@ -2,6 +2,7 @@ package Agriwise.controllers.Activite;
 
 import Agriwise.entities.Activite;
 import Agriwise.entities.Culture;
+import Agriwise.entities.UserSession;
 import Agriwise.services.ActiviteService;
 import Agriwise.services.CultureService;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
@@ -66,7 +67,13 @@ public class ActiviteFormController implements Initializable {
     }
 
     private void setupCultureCombo() {
-        cultureCombo.getItems().addAll(cultureService.getAllCultures());
+        UserSession userSession = UserSession.getInstance();
+        if (userSession != null) {
+            cultureCombo.getItems().addAll(cultureService.getCulturesByUserId(userSession.getUserId()));
+        }
+        else {
+            cultureCombo.getItems().addAll(cultureService.getAllCultures());
+        }
         cultureCombo.setConverter(new StringConverter<Culture>() {
             @Override
             public String toString(Culture culture) {

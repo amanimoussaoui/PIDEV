@@ -1,6 +1,7 @@
 package Agriwise.controllers.Culture;
 
 import Agriwise.entities.Culture;
+import Agriwise.entities.UserSession;
 import Agriwise.services.CultureService;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
@@ -128,8 +129,10 @@ public class CultureController implements Initializable {
     }
 
     private void loadAllCultures() {
-        // Load all cultures from the database and store them
-        allCultures = cultureService.getAllCultures();
+        UserSession userSession = UserSession.getInstance();
+        if (userSession != null) {
+            allCultures = cultureService.getCulturesByUserId(userSession.getUserId());
+        }
         displayCultures(allCultures);
     }
 

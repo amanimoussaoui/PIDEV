@@ -1,6 +1,7 @@
 package Agriwise.controllers.Parcelle;
 
 import Agriwise.entities.Parcelle;
+import Agriwise.entities.UserSession;
 import Agriwise.services.ParcelleService;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
@@ -174,6 +175,11 @@ public class ParcelleFormController implements Initializable {
         newParcelle.setSuperficie(Float.parseFloat(superficieField.getText().trim()));
         newParcelle.setLocalisation(localisationField.getText().trim());
         newParcelle.setTypeSol(typeSolCombo.getValue());
+        // Get the current user ID from UserSession
+        UserSession userSession = UserSession.getInstance();
+        if (userSession != null) {
+            newParcelle.setUserId(userSession.getUserId());
+        }
         parcelleService.addParcelle(newParcelle);
     }
 

@@ -2,6 +2,7 @@ package Agriwise.controllers.Culture;
 
 import Agriwise.entities.Culture;
 import Agriwise.entities.Parcelle;
+import Agriwise.entities.UserSession;
 import Agriwise.services.CultureService;
 import Agriwise.services.ParcelleService;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
@@ -67,7 +68,14 @@ public class CultureFormController implements Initializable {
     }
 
     private void setupParcelleCombo() {
-        parcelleCombo.getItems().addAll(parcelleService.getAllParcelles());
+        UserSession userSession = UserSession.getInstance();
+        if (userSession != null) {
+            parcelleCombo.getItems().addAll(parcelleService.getParcellesByUserId(userSession.getUserId()));
+        }
+        else
+        {
+            parcelleCombo.getItems().addAll(parcelleService.getAllParcelles());
+        }
         parcelleCombo.setConverter(new StringConverter<Parcelle>() {
             @Override
             public String toString(Parcelle parcelle) {

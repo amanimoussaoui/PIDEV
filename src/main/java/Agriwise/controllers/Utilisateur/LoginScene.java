@@ -7,7 +7,7 @@ import java.util.ResourceBundle;
 import Agriwise.entities.UserSession;
 import Agriwise.entities.Utilisateur;
 import Agriwise.services.UtilisateurService;
-
+import Agriwise.Main;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -61,32 +61,23 @@ public class LoginScene {
                 for (String role : user.getRoles()) {
                     if (role.equals("ROLE_ADMIN")) {
                         isAdmin = true;
-                        break; // No need to check further once ROLE_ADMIN is found
+                        break;
                     }
                 }
 
-                // Redirect to Dashboard if the user has ROLE_ADMIN, else to MainmenuScene
-                String fxmlToLoad = isAdmin ? "/Agriwise/views/Utilisateur/Dashboard.fxml" : "/Agriwise/views/MainView.fxml";
-
-                try {
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlToLoad));
-                    Parent root = loader.load();
-
-                    Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-                    stage.setScene(new Scene(root));
-                    stage.show();
-
-                    // Success alert
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Connexion Réussie");
-                    alert.setHeaderText(null);
-                    alert.setContentText("Bienvenue " + user.getNom() + " !");
-                    alert.showAndWait();
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    showAlert("Erreur", "Impossible de charger la scène.");
+                // Call the appropriate method from Main
+                if (isAdmin) {
+                    Main.loadBackendInterface();
+                } else {
+                    Main.loadFrontendInterface();
                 }
+
+                // Success alert
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Connexion Réussie");
+                alert.setHeaderText(null);
+                alert.setContentText("Bienvenue " + user.getNom() + " !");
+                alert.showAndWait();
 
             } else {
                 showAlert("Erreur", "Mot de passe incorrect !");
@@ -96,8 +87,6 @@ public class LoginScene {
             showAlert("Erreur", "Email introuvable !");
         }
     }
-
-
 
     @FXML
     void redirectToRegister(ActionEvent event) {

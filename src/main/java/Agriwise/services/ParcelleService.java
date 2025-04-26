@@ -1,6 +1,7 @@
 package Agriwise.services;
 
 import Agriwise.entities.Parcelle;
+import Agriwise.entities.UserSession;
 import Agriwise.interfaces.IParcelleService;
 import Agriwise.tools.MyConnection;
 
@@ -17,12 +18,18 @@ public class ParcelleService implements IParcelleService {
 
     @Override
     public void addParcelle(Parcelle p) throws SQLException {
+        // Get the current user from UserSession
+        UserSession userSession = UserSession.getInstance();
+        if (userSession == null) {
+            throw new SQLException("No user session found");
+        }
+
         // First check if parcelle already exists
         if (isParcelleExists(p)) {
             throw new SQLException("Une parcelle avec ces informations existe déjà");
         }
 
-        String req = "INSERT INTO parcelle (nom, superficie, localisation, type_sol, latitude, longitude, boundary, map_image) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String req = "INSERT INTO parcelle (nom, superficie, localisation, type_sol, latitude, longitude, boundary, map_image, utilisateur_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try {
             PreparedStatement ps = cnx.prepareStatement(req);
             ps.setString(1, p.getNom());
@@ -33,9 +40,10 @@ public class ParcelleService implements IParcelleService {
             ps.setFloat(6, p.getLongitude());
             ps.setString(7, p.getBoundaryJson());
             ps.setString(8, p.getMapImage());
+            ps.setInt(9, userSession.getUserId()); // Set the user ID
             ps.executeUpdate();
         } catch (SQLException e) {
-            throw e; // Re-throw the exception to handle it in the controller
+            throw e;
         }
     }
 
@@ -112,6 +120,7 @@ public class ParcelleService implements IParcelleService {
         p.setTypeSol(rs.getString("type_sol"));
         p.setLatitude(rs.getFloat("latitude"));
         p.setLongitude(rs.getFloat("longitude"));
+        p.setUserId(rs.getInt("utilisateur_id")); // Add this line
 
         String boundaryJson = rs.getString("boundary");
         if (boundaryJson != null && !boundaryJson.isEmpty()) {
@@ -140,4 +149,21 @@ public class ParcelleService implements IParcelleService {
         }
         return false;
     }
+
+    public List<Parcelle> getParcellesByUserId(int userId) {
+        List<Parcelle> list = new ArrayList<>();
+        String req = "SELECT * FROM parcelle WHERE utilisateur_id = ?";
+        try {
+            PreparedStatement ps = cnx.prepareStatement(req);
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(resultSetToParcelle(rs));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
 }

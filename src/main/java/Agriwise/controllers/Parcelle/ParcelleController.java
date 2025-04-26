@@ -1,6 +1,7 @@
 package Agriwise.controllers.Parcelle;
 
 import Agriwise.entities.Parcelle;
+import Agriwise.entities.UserSession;
 import Agriwise.services.ParcelleService;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
@@ -135,8 +136,10 @@ public class ParcelleController implements Initializable {
     }
 
     private void loadAllParcelles() {
-        // Load all parcelles from the database and store them
-        allParcelles = parcelleService.getAllParcelles();
+        UserSession userSession = UserSession.getInstance();
+        if (userSession != null) {
+            allParcelles = parcelleService.getParcellesByUserId(userSession.getUserId());
+        }
         populateSoilTypeFilter(); // Populate the soil type filter after loading parcelles
         displayParcelles(allParcelles);
     }
@@ -516,7 +519,7 @@ public class ParcelleController implements Initializable {
         // Create a new stage for the detail view
         Stage stage = new Stage();
         stage.setTitle("Détails de la Parcelle");
-        stage.setScene(new Scene(root));
+        stage.setScene(new Scene(root, 1000, 650));
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.show();
     }

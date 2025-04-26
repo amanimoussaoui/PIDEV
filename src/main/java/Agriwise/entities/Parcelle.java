@@ -17,7 +17,7 @@ public class Parcelle {
     private float longitude;
     private List<Float[]> boundary; // Representing geo-boundaries as list of coordinates
     private Terrain terrain;
-    private Utilisateur utilisateur;
+    private int userId;  // Add this field
     private String mapImage;
     private List<Culture> cultures;
 
@@ -127,12 +127,12 @@ public class Parcelle {
         this.terrain = terrain;
     }
 
-    public Utilisateur getUtilisateur() {
-        return utilisateur;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setUtilisateur(Utilisateur utilisateur) {
-        this.utilisateur = utilisateur;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public String getMapImage() {

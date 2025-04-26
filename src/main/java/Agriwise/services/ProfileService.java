@@ -2,7 +2,7 @@ package Agriwise.services;
 
 import Agriwise.entities.Profile;
 import Agriwise.interfaces.ProfileInterface;
-import Agriwise.util.MaConnexion;
+import Agriwise.tools.MyConnection;
 
 import java.sql.*;
 
@@ -13,7 +13,7 @@ public class ProfileService implements ProfileInterface {
         String sql = "INSERT INTO profile (id_user_id, adresse, num_tel, image, bio, date_de_naissance, prenomf) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try {
-            PreparedStatement pst = MaConnexion.getInstance().getCon().prepareStatement(sql);
+            PreparedStatement pst = MyConnection.getInstance().getCnx().prepareStatement(sql);
             pst.setInt(1, profile.getId_user_id());
             pst.setString(2, profile.getAdresse());
             pst.setString(3, profile.getTel());
@@ -40,7 +40,7 @@ public class ProfileService implements ProfileInterface {
 public void modifierProfile(Profile profile, int id) {
     String sql = "UPDATE profile SET adresse = ?, num_tel = ?, bio = ?, date_de_naissance = ?, prenomf = ?, image = ? WHERE id_user_id = ?";
     try {
-        PreparedStatement pst = MaConnexion.getInstance().getCon().prepareStatement(sql);
+        PreparedStatement pst = MyConnection.getInstance().getCnx().prepareStatement(sql);
 
         // Remplir les paramètres de la requête avec les valeurs du profil
         pst.setString(1, profile.getAdresse());       // adresse
@@ -77,7 +77,7 @@ public void modifierProfile(Profile profile, int id) {
     public void supprimerProfile(int id) {
         String sql = "DELETE FROM profile WHERE id_user_id = ?";
         try {
-            PreparedStatement pst = MaConnexion.getInstance().getCon().prepareStatement(sql);
+            PreparedStatement pst = MyConnection.getInstance().getCnx().prepareStatement(sql);
             pst.setInt(1, id);
             pst.executeUpdate();
             System.out.println("Profil supprimé avec succès.");
@@ -91,7 +91,7 @@ public Profile getProfileByUserId(int id_user) {
     Profile profile = null;
     try {
         String query = "SELECT * FROM profile WHERE id_user_id = ?";
-        PreparedStatement pst = MaConnexion.getInstance().getCon().prepareStatement(query);
+        PreparedStatement pst = MyConnection.getInstance().getCnx().prepareStatement(query);
         pst.setInt(1, id_user);
         ResultSet rs = pst.executeQuery();
 

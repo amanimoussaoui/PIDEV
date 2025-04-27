@@ -1,7 +1,10 @@
 package Agriwise.controllers.Parcelle;
 
-import Agriwise.entities.Parcelle;
+import Agriwise.entities.*;
+import Agriwise.services.ActiviteService;
+import Agriwise.services.CultureService;
 import Agriwise.services.ParcelleService;
+import Agriwise.services.RecolteService;
 import Agriwise.tools.BridgeManager;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
@@ -15,6 +18,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.web.WebEngine;
@@ -23,16 +28,17 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
+import Agriwise.tools.PdfReportGenerator;
+import javafx.stage.FileChooser;
 
+import java.awt.*;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Base64;
+import java.util.*;
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.zip.Deflater;
 
 public class ParcelleDetailController implements Initializable {
@@ -45,6 +51,8 @@ public class ParcelleDetailController implements Initializable {
     @FXML private StackPane mapContainer;
     @FXML private Button saveCoordinatesBtn;
     @FXML private Label coordinatesLabel;
+    @FXML private Button generateReportButton;
+
 
     private Parcelle parcelle;
     private ParcelleService parcelleService;
@@ -55,6 +63,7 @@ public class ParcelleDetailController implements Initializable {
     private double longitude;
     private String mapImage;
     private boolean mapInitialized = false;
+
 
     private BridgeManager bridgeManager;
     private JavaConnector javaConnector;
@@ -89,6 +98,8 @@ public class ParcelleDetailController implements Initializable {
 
         // Configure buttons
         configureButtons();
+        generateReportButton.setOnAction(e -> handleGenerateReport());
+
     }
 
     private void updateMapWithParcelleData() {
@@ -450,6 +461,63 @@ public class ParcelleDetailController implements Initializable {
         addIconToButton(editButton, FontAwesomeIcon.EDIT);
         addIconToButton(deleteButton, FontAwesomeIcon.TRASH);
         addIconToButton(saveCoordinatesBtn, FontAwesomeIcon.SAVE);
+        addIconToButton(generateReportButton, FontAwesomeIcon.FILE_PDF_ALT);
+    }
+
+
+
+    private void handleGenerateReport() {
+        try {
+            CultureService cultureService = new CultureService();
+            ActiviteService activiteService = new ActiviteService();
+
+            // Get cultures for this parcelle
+            List<Culture> cultures = cultureService.getCulturesByParcelleId(parcelle.getId());
+
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Enregistrer le rapport PDF");
+            fileChooser.getExtensionFilters().add(
+                    new FileChooser.ExtensionFilter("Fichiers PDF", "*.pdf"));
+            fileChooser.setInitialFileName("rapport_parcelle_" + parcelle.getNom() + ".pdf");
+
+            File file = fileChooser.showSaveDialog(generateReportButton.getScene().getWindow());
+            if (file != null) {
+                String filePath = file.getAbsolutePath();
+                PdfReportGenerator.generateParcelleReport(
+                        parcelle,
+                        cultures,
+                        filePath,
+                        activiteService
+                );
+
+                // Create alert with Open button
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Succès");
+                alert.setHeaderText("Rapport généré");
+                alert.setContentText("Le rapport PDF a été généré avec succès:\n" + filePath);
+
+                // Add Open button
+                ButtonType openButton = new ButtonType("Ouvrir", ButtonBar.ButtonData.OK_DONE);
+                alert.getButtonTypes().setAll(openButton, ButtonType.CLOSE);
+
+                // Handle Open button action
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.isPresent() && result.get() == openButton) {
+                    try {
+                        if (Desktop.isDesktopSupported()) {
+                            Desktop.getDesktop().open(file);
+                        }
+                    } catch (IOException e) {
+                        showAlert("Erreur", "Impossible d'ouvrir le fichier",
+                                "Le fichier PDF n'a pas pu être ouvert:\n" + e.getMessage());
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Échec de génération",
+                    "Une erreur est survenue lors de la génération du rapport:\n" + e.getMessage());
+        }
     }
 
     // You need to include this method to ensure the HTML is available as a fallback

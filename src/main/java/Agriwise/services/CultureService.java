@@ -139,24 +139,29 @@ public class CultureService implements ICultureService {
         }
         return list;
     }
-    // Count cultures by user ID
-    public int countByUserId(int userId) {
-        String req = "SELECT COUNT(c.id) FROM culture c " +
+
+
+    public List<Culture> getCulturesByParcelleId(int parcelleId) {
+        List<Culture> list = new ArrayList<>();
+        String req = "SELECT c.*, p.nom as parcelle_nom, p.superficie as parcelle_superficie, " +
+                "p.localisation as parcelle_localisation, p.type_sol as parcelle_type_sol " +
+                "FROM culture c " +
                 "JOIN parcelle p ON c.parcelle_id = p.id " +
-                "WHERE p.utilisateur_id = ?";
+                "WHERE p.id = ?";
 
         try {
             PreparedStatement ps = cnx.prepareStatement(req);
-            ps.setInt(1, userId);
+            ps.setInt(1, parcelleId);
             ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                return rs.getInt(1);
+            while (rs.next()) {
+                list.add(resultSetToCulture(rs));
             }
         } catch (SQLException e) {
-            System.out.println("Erreur lors du comptage : " + e.getMessage());
+            System.out.println("Erreur lors de la récupération par parcelle : " + e.getMessage());
         }
-        return 0;
+        return list;
     }
+
 
     // Add this method to your CultureService class
     private Culture resultSetToCulture(ResultSet rs) throws SQLException {

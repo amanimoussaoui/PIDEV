@@ -19,4 +19,6 @@ public interface IRecolteService {
 
     // Method to get all Recoltes
     List<Recolte> getAllRecoltes();
+
+    Recolte getRecoltesByCultureId(int cultureId);
 }

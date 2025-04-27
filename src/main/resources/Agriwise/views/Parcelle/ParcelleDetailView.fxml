@@ -25,6 +25,11 @@
                 <Label fx:id="formTitle" styleClass="header-title" text="Détails de la Parcelle"/>
                 <Label styleClass="header-subtitle" text="Consulter les détails de votre parcelle agricole"/>
             </VBox>
+            <Button fx:id="generateReportButton" mnemonicParsing="false" styleClass="btn-light" text="Générer un rapport">
+                <padding>
+                    <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                </padding>
+            </Button>
         </HBox>
 
         <!-- Content -->

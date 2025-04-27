@@ -391,9 +391,8 @@ public class BackendParcelleController {
             controller.setRefreshCallback(this::refreshParcelleList);
 
             Stage stage = new Stage();
-            stage.setScene(new Scene(root));
-            stage.sizeToScene();
             stage.setTitle("Détails de la Parcelle");
+            stage.setScene(new Scene(root, 1000, 650));
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.show();
 

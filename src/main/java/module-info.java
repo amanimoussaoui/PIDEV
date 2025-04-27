@@ -8,6 +8,7 @@ module org.example.gestionagricolejavafx {
     requires javafx.web;
     requires com.google.gson;
     requires json.simple;
+    requires org.apache.pdfbox;
 
 
     opens Agriwise to javafx.fxml;

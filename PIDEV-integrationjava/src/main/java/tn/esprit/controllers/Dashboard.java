@@ -3,6 +3,8 @@ package tn.esprit.controllers;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+
+import javafx.scene.control.Label;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -62,13 +64,16 @@ public class Dashboard {
     private TableView<Utilisateur> tbuserlist;
     @FXML
     private Button btnmainmenu;
-    @FXML
-    private Button btnrecherche;
 
     @FXML
     private TextField recherchetextfield;
     @FXML
     private Button btnexcel;
+    @FXML
+    private Label totalUsersLabel;
+
+    @FXML
+    private Label adminUsersLabel;
 
     /////////////////////////////////////////////////////////////////////////////
     @FXML
@@ -168,21 +173,22 @@ public class Dashboard {
             System.err.println("Erreur lors du chargement de la scène MainmenuScene.fxml");
         }
     }
-    /////////////////////////////////////////////////////////////////////////////////////////////
-    @FXML
-    void rechercheutilisateur(ActionEvent event) {
-        String keyword = recherchetextfield.getText().trim();
-
-        if (!keyword.isEmpty()) {
-            UtilisateurService us = new UtilisateurService();
-            List<Utilisateur> resultats = us.rechercheUtilisateurs(keyword);
-            ObservableList<Utilisateur> observableList = FXCollections.observableArrayList(resultats);
-            tbuserlist.setItems(observableList);
-        } else {
-            loadUserData(); // recharge la liste complète si la recherche est vide
-        }
-    }
 //////////////////////////////////////////////////////////////////////////////////
+@FXML
+void rechercheutilisateur(String keyword) {
+    if (!keyword.isEmpty()) {
+        UtilisateurService us = new UtilisateurService();
+        List<Utilisateur> resultats = us.rechercheUtilisateurs(keyword);
+        ObservableList<Utilisateur> observableList = FXCollections.observableArrayList(resultats);
+        tbuserlist.setItems(observableList);
+    } else {
+        loadUserData(); // reload full list if search field is empty
+    }
+}
+    //////////////////////////////////////////////////////////////////////////////
+    public void rechercheutilisateur(ActionEvent actionEvent) {
+    }
+    //////////////////////////////////////////////////////////////////////////////
 
     @FXML
     void importtoexcel(ActionEvent event) {
@@ -192,33 +198,74 @@ public class Dashboard {
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("Utilisateurs");
 
+        // Create fonts and styles
+        Font headerFont = workbook.createFont();
+        headerFont.setBold(true);
+        headerFont.setFontHeightInPoints((short)12);
+        headerFont.setColor(IndexedColors.WHITE.getIndex());
+
+        CellStyle headerStyle = workbook.createCellStyle();
+        headerStyle.setFont(headerFont);
+        headerStyle.setFillForegroundColor(IndexedColors.DARK_GREEN.getIndex());
+        headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        headerStyle.setAlignment(HorizontalAlignment.CENTER);
+        headerStyle.setBorderBottom(BorderStyle.THIN);
+        headerStyle.setBorderTop(BorderStyle.THIN);
+        headerStyle.setBorderLeft(BorderStyle.THIN);
+        headerStyle.setBorderRight(BorderStyle.THIN);
+
+        // Create data style
+        CellStyle dataStyle = workbook.createCellStyle();
+        dataStyle.setBorderBottom(BorderStyle.THIN);
+        dataStyle.setBorderTop(BorderStyle.THIN);
+        dataStyle.setBorderLeft(BorderStyle.THIN);
+        dataStyle.setBorderRight(BorderStyle.THIN);
+
         // En-tête
         Row headerRow = sheet.createRow(0);
-        headerRow.createCell(0).setCellValue("ID");
-        headerRow.createCell(1).setCellValue("Nom");
-        headerRow.createCell(2).setCellValue("Prénom");
-        headerRow.createCell(3).setCellValue("Email");
-        headerRow.createCell(4).setCellValue("Rôles");
-        headerRow.createCell(5).setCellValue("Date d'inscription");
+        String[] headers = {"ID", "Nom", "Prénom", "Email", "Rôles", "Date d'inscription"};
+        for (int i = 0; i < headers.length; i++) {
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(headers[i]);
+            cell.setCellStyle(headerStyle);
+        }
 
         // Contenu
         int rowNum = 1;
         for (Utilisateur u : utilisateurs) {
             Row row = sheet.createRow(rowNum++);
-            row.createCell(0).setCellValue(u.getId_utilisateur());
-            row.createCell(1).setCellValue(u.getNom());
-            row.createCell(2).setCellValue(u.getPrenom());
-            row.createCell(3).setCellValue(u.getEmail());
-            row.createCell(4).setCellValue(String.join(", ", u.getRoles()));
-            row.createCell(5).setCellValue(u.getDate_inscription().toString());
+
+            Cell idCell = row.createCell(0);
+            idCell.setCellValue(u.getId_utilisateur());
+            idCell.setCellStyle(dataStyle);
+
+            Cell nomCell = row.createCell(1);
+            nomCell.setCellValue(u.getNom());
+            nomCell.setCellStyle(dataStyle);
+
+            Cell prenomCell = row.createCell(2);
+            prenomCell.setCellValue(u.getPrenom());
+            prenomCell.setCellStyle(dataStyle);
+
+            Cell emailCell = row.createCell(3);
+            emailCell.setCellValue(u.getEmail());
+            emailCell.setCellStyle(dataStyle);
+
+            Cell rolesCell = row.createCell(4);
+            rolesCell.setCellValue(String.join(", ", u.getRoles()));
+            rolesCell.setCellStyle(dataStyle);
+
+            Cell dateCell = row.createCell(5);
+            dateCell.setCellValue(u.getDate_inscription().toString());
+            dateCell.setCellStyle(dataStyle);
         }
 
-        for (int i = 0; i < 6; i++) {
+        // Auto-size columns
+        for (int i = 0; i < headers.length; i++) {
             sheet.autoSizeColumn(i);
         }
 
         try {
-            // Chemin de sauvegarde
             File file = new File("utilisateurs.xlsx");
             FileOutputStream fileOut = new FileOutputStream(file);
             workbook.write(fileOut);
@@ -227,7 +274,6 @@ public class Dashboard {
 
             System.out.println("Fichier Excel créé : " + file.getAbsolutePath());
 
-            // Ouvrir le fichier avec Excel
             if (Desktop.isDesktopSupported()) {
                 Desktop.getDesktop().open(file);
             } else {
@@ -264,7 +310,23 @@ public class Dashboard {
         tbemail.setCellValueFactory(new PropertyValueFactory<>("email"));
         tbrole.setCellValueFactory(new PropertyValueFactory<>("rolesAsString"));
         tbdinscription.setCellValueFactory(new PropertyValueFactory<>("date_inscription"));
+        int totalUsers = service.getTotalUsers();
+        int totalAdmins = service.getTotalAdmins();
+
+        totalUsersLabel.setText("Total Users: " + totalUsers);
+        adminUsersLabel.setText("Admins: " + totalAdmins);
+
 
         tbuserlist.setItems(list);
+        // Add listener to the search text field
+        recherchetextfield.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.isEmpty()) {
+                rechercheutilisateur(newValue);  // Call your search method with the new value
+            } else {
+                loadUserData(); // Reload all users when the search field is empty
+            }
+        });
     }
+
+
 }

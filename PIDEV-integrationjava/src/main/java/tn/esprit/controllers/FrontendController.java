@@ -1,8 +1,10 @@
 package tn.esprit.controllers;
 
 import javafx.animation.TranslateTransition;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Worker;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -11,29 +13,40 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import netscape.javascript.JSObject;
 import tn.esprit.models.*;
 import tn.esprit.services.ProfileService;
 import tn.esprit.util.MaConnexion;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
-
+import tn.esprit.models.Profile;
+import tn.esprit.models.UserSession;
+import java.net.URI;
+///////////////////////////////////////////
 public class FrontendController implements Initializable {
 
     @FXML
@@ -54,6 +67,27 @@ public class FrontendController implements Initializable {
     private GridPane list_product;
     @FXML
     private BorderPane mainBorderPane;
+    @FXML
+    private ImageView profileImageView;
+
+    // Labels
+    @FXML
+    private Label profilePrenomLabel;
+
+    @FXML
+    private Label telephoneProfileLabel;
+
+    @FXML
+    private Label adresseProfileLabel;
+
+    @FXML
+    private Label dateNaissanceProfileLabel;
+
+    @FXML
+    private Label ageProfileLabel;
+
+    @FXML
+    private Label bioProfileLabel;
 
     private boolean isNavVisible = true;
     private TranslateTransition navTransition, buttonTransition;
@@ -64,6 +98,7 @@ public class FrontendController implements Initializable {
     private ObservableList<Product> cardListData = FXCollections.observableArrayList();
     @FXML
     private Label connecteduser;
+    /////////////////////////////////////////////////////////////////////////
 
     @FXML
     private void toggleNavigation() {
@@ -211,6 +246,7 @@ public class FrontendController implements Initializable {
                 alert.setContentText("Failed to load market interface: " + e.getMessage());
                 alert.showAndWait();
             }}else if (event.getSource() == leurs_commandes_btn) {
+            profil_form.setVisible(false);
             leurs_commandes_form.setVisible(true);
             System.out.println("Affichage de leurs_commandes_form");
             displayCommandesCards();
@@ -258,6 +294,13 @@ public class FrontendController implements Initializable {
                 alert.showAndWait();
             }
         } else if (event.getSource() == profil_btn) {
+            produits_vendre_form.setVisible(false);
+            leurs_commandes_form.setVisible(false);
+            votre_produits_form.setVisible(false);
+            machine_form.setVisible(false);
+            formation_form.setVisible(true);
+            parcelle_form.setVisible(false);
+            candidat_form.setVisible(false);
             profil_form.setVisible(true);
             System.out.println("Affichage les profile ");
             try {
@@ -313,7 +356,45 @@ public class FrontendController implements Initializable {
             candidat_form.setVisible(true);
         }
     }
+/////////////////////////////////
+public void loadProfileInfo() {
+    UserSession session = UserSession.getInstance();
 
+    if (session != null && session.isLoggedIn()) {
+        int userId = session.getUserId();
+
+        ProfileService profileService = new ProfileService(); // Your service that has getProfileByUserId
+        Profile profile = profileService.getProfileByUserId(userId);
+
+        if (profile != null) {
+            profilePrenomLabel.setText(profile.getPrenomP() != null ? profile.getPrenomP() : "-");
+            telephoneProfileLabel.setText(profile.getTel() != null ? profile.getTel() : "-");
+            adresseProfileLabel.setText(profile.getAdresse() != null ? profile.getAdresse() : "-");
+
+            if (profile.getDate_de_naissance() != null) {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                dateNaissanceProfileLabel.setText(profile.getDate_de_naissance().format(formatter));
+
+                // Calculate and set age
+                int age = Period.between(profile.getDate_de_naissance(), LocalDate.now()).getYears();
+                ageProfileLabel.setText(String.valueOf(age));
+            } else {
+                dateNaissanceProfileLabel.setText("-");
+                ageProfileLabel.setText("-");
+            }
+
+            bioProfileLabel.setText(profile.getBio() != null ? profile.getBio() : "-");
+
+            // Load Image
+            if (profile.getImage() != null && !profile.getImage().isEmpty()) {
+                Image image = new Image("file:" + profile.getImage());
+                profileImageView.setImage(image);
+            }
+        }
+    }
+}
+
+    ////////////////////////////////////////////////
 
 
     @FXML
@@ -585,21 +666,16 @@ public class FrontendController implements Initializable {
             System.out.println("Erreur de redirection vers ProfileScene");
         }
     }
-
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        //user
+        profil_form.setVisible(true);
+        loadProfileInfo();
+        // 🔐 Handle session
         UserSession session = UserSession.getInstance();
         if (session != null) {
             connecteduser.setText("Bienvenue " + session.getUserName() + " !");
         }
-        try {
-            produits_vendre_form.setVisible(true);
-        } catch (Exception e) {
-            System.err.println("Erreur lors de l'initialisation : " + e.getMessage());
-            e.printStackTrace();
-        }
     }
+
 
 }

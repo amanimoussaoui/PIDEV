@@ -1,5 +1,6 @@
 package tn.esprit.controllers;
 
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -22,6 +23,7 @@ import javafx.scene.Node;
 import javafx.stage.Stage;
 import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamResolution;
+import tn.esprit.util.MailUtil;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -48,6 +50,20 @@ public class LoginScene {
 
     @FXML
     private Label redirectionregister;
+
+    @FXML
+    private Label mdpoubli;
+    @FXML
+    private Label hiddenlabel;
+
+    @FXML
+    private TextField hiddentextfield;
+    @FXML
+    private Button btnconfirm;
+
+    private int resetStep = 0;
+    private String resetEmail;
+    private String generatedCode;
 
     private int loginAttempts = 0;
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -140,6 +156,10 @@ private void capturePhoto() {
         webcam.setViewSize(WebcamResolution.VGA.getSize());
         webcam.open();
 
+        Thread.sleep(500);
+
+        webcam.getImage();
+
         BufferedImage image = webcam.getImage();
 
         File dir = new File("profile_pictures");
@@ -152,6 +172,10 @@ private void capturePhoto() {
 
         showAlert("Sécurité", "Photo prise après 3 tentatives :\n" + file.getAbsolutePath());
 
+        // >>> Send the email here
+        String toEmail = tfemail.getText().trim();
+        tn.esprit.util.MailUtil.sendWarningEmail(toEmail, file);
+
     } catch (Exception e) {
         e.printStackTrace();
         showAlert("Erreur", "Échec de la capture photo.");
@@ -161,7 +185,107 @@ private void capturePhoto() {
         }
     }
 }
+//////////////////////////////////////////////////////////////////
+public void envoyermailmdp(javafx.scene.input.MouseEvent mouseEvent) {
+    hiddenlabel.setVisible(true);
+    hiddentextfield.setVisible(true);
+    btnconfirm.setVisible(true);
 
+    hiddenlabel.setText("Entrer votre email pour changer le mot de passe");
+    resetStep = 1; // Start from step 1
+}
+//////////////////////////////////////////////////////////////////
+@FXML
+void confirmAction(ActionEvent event) {
+    String input = hiddentextfield.getText().trim();
+    UtilisateurService us = new UtilisateurService();
+
+    if (resetStep == 1) {
+        // Step 1: Email entered
+        resetEmail = input;
+        Utilisateur user = us.getUtilisateurByEmail(resetEmail);
+
+        if (user != null) {
+            generatedCode = String.valueOf((int)(Math.random() * 9000) + 1000);
+            MailUtil.sendResetCodeEmail(resetEmail, generatedCode);
+
+            hiddenlabel.setText("Entrer le code envoyé");
+            hiddentextfield.clear();
+            resetStep = 2;
+        } else {
+            showAlert("Erreur", "Email introuvable dans la base de données.");
+            resetStep = 1; // Stay in step 1
+        }
+
+    } else if (resetStep == 2) {
+        // Step 2: Code entered
+        if (input.equals(generatedCode)) {
+            hiddenlabel.setText("Saisir le nouveau mot de passe");
+            hiddentextfield.clear();
+            hiddentextfield.setPromptText("8+ caractères, majuscule, minuscule, chiffre, spécial");
+
+            // Ajouter le listener pour la validation en temps réel
+            hiddentextfield.textProperty().addListener((observable, oldValue, newValue) -> {
+                validatePassword(newValue);
+            });
+
+            resetStep = 3;
+        } else {
+            showAlert("Erreur", "Code incorrect !");
+        }
+
+    } else if (resetStep == 3) {
+        // Step 3: New password entered
+        if (!validatePassword(input)) {
+            return; // Le mot de passe ne respecte pas les critères
+        }
+
+        us.updatePassword(resetEmail, input);
+
+        showAlert("Succès", "Mot de passe mis à jour !");
+        hiddenlabel.setVisible(false);
+        hiddentextfield.setVisible(false);
+        btnconfirm.setVisible(false);
+        hiddentextfield.clear();
+        resetStep = 0;
+
+        // Retirer le listener après la validation finale
+        hiddentextfield.textProperty().removeListener((observable, oldValue, newValue) -> {
+            validatePassword(newValue);
+        });
+    }
+}
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    private boolean validatePassword(String password) {
+        if (password.length() < 8) {
+            hiddentextfield.setStyle("-fx-text-fill: red; -fx-border-color: red;");
+            return false;
+        }
+
+        if (!password.matches(".*[A-Z].*")) {
+            hiddentextfield.setStyle("-fx-text-fill: red; -fx-border-color: red;");
+            return false;
+        }
+
+        if (!password.matches(".*[a-z].*")) {
+            hiddentextfield.setStyle("-fx-text-fill: red; -fx-border-color: red;");
+            return false;
+        }
+
+        if (!password.matches(".*[0-9].*")) {
+            hiddentextfield.setStyle("-fx-text-fill: red; -fx-border-color: red;");
+            return false;
+        }
+
+        if (!password.matches(".*[!@#$%^&*(),.?\":{}|<>].*")) {
+            hiddentextfield.setStyle("-fx-text-fill: red; -fx-border-color: red;");
+            return false;
+        }
+
+        // Si tous les critères sont satisfaits
+        hiddentextfield.setStyle("-fx-text-fill: green; -fx-border-color: green;");
+        return true;
+    }
     //////////////////////////////////////////////////////////////////////////////////////////////
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -171,4 +295,13 @@ private void capturePhoto() {
         alert.showAndWait();
     }
     //////////////////////////////////////////////////////////////////////////////////
+    @FXML
+    void initialize() {
+        hiddenlabel.setVisible(false);
+        hiddentextfield.setVisible(false);
+        btnconfirm.setVisible(false);
+        hiddentextfield.setStyle("-fx-border-color: #ccc; -fx-border-radius: 5;");
+    }
+
+
 }

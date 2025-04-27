@@ -5,30 +5,80 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #f0f8ff;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.Updateuser">
+<AnchorPane prefHeight="400.0" prefWidth="600.0"
+            style="-fx-background-color: linear-gradient(to bottom right, #f5f7fa, #e4e8f0);"
+            xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="tn.esprit.controllers.Updateuser">
 
-    <children>
+    <!-- Header Section -->
+    <Label fx:id="upuser" layoutX="24.0" layoutY="24.0" text="Modification de l'utilisateur"
+           style="-fx-text-fill: #263238; -fx-font-weight: bold; -fx-font-size: 20;">
+        <font>
+            <Font size="20.0" />
+        </font>
+    </Label>
 
-        <!-- Input Fields -->
-        <TextField fx:id="upnom" layoutX="300.0" layoutY="98.0" style="-fx-font-size: 14px;" />
-        <TextField fx:id="upprenom" layoutX="301.0" layoutY="147.0" style="-fx-font-size: 14px;" />
-        <TextField fx:id="upemail" layoutX="301.0" layoutY="200.0" style="-fx-font-size: 14px;" />
+    <Line endX="576.0" layoutX="24.0" layoutY="70.0" startX="24.0"
+          stroke="#cfd8dc" strokeWidth="1.5" />
 
-        <!-- Labels -->
-        <Label layoutX="131.0" layoutY="102.0" style="-fx-font-size: 14px; -fx-font-weight: bold;" text="Nom" />
-        <Label layoutX="131.0" layoutY="151.0" style="-fx-font-size: 14px; -fx-font-weight: bold;" text="Prénom" />
-        <Label layoutX="131.0" layoutY="204.0" style="-fx-font-size: 14px; -fx-font-weight: bold;" text="Email" />
-        <Label layoutX="131.0" layoutY="252.0" style="-fx-font-size: 14px; -fx-font-weight: bold;" text="Rôle(s)" />
-        <Label fx:id="upuser" layoutX="200.0" layoutY="37.0" style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Modification de l'utilisateur" />
+    <!-- Input Fields -->
+    <Label layoutX="131.0" layoutY="102.0" text="Nom"
+           style="-fx-text-fill: #37474f; -fx-font-weight: bold; -fx-font-size: 14;"/>
+    <TextField fx:id="upnom" layoutX="300.0" layoutY="98.0"
+               style="-fx-background-color: white;
+                     -fx-border-color: #b0bec5;
+                     -fx-border-radius: 5;
+                     -fx-background-radius: 5;
+                     -fx-padding: 5 10 5 10;
+                     -fx-font-size: 14;
+                     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 3, 0, 0, 1);"/>
 
-        <!-- Checkboxes -->
-        <CheckBox fx:id="uproleadmin" layoutX="253.0" layoutY="252.0" mnemonicParsing="false" style="-fx-font-size: 13px;" text="Admin" />
-        <CheckBox fx:id="uproleagri" layoutX="337.0" layoutY="252.0" mnemonicParsing="false" style="-fx-font-size: 13px;" text="Agriculteur" />
-        <CheckBox fx:id="uproleclient" layoutX="439.0" layoutY="252.0" mnemonicParsing="false" style="-fx-font-size: 13px;" text="Client" />
+    <Label layoutX="131.0" layoutY="151.0" text="Prénom"
+           style="-fx-text-fill: #37474f; -fx-font-weight: bold; -fx-font-size: 14;"/>
+    <TextField fx:id="upprenom" layoutX="301.0" layoutY="147.0"
+               style="-fx-background-color: white;
+                     -fx-border-color: #b0bec5;
+                     -fx-border-radius: 5;
+                     -fx-background-radius: 5;
+                     -fx-padding: 5 10 5 10;
+                     -fx-font-size: 14;
+                     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 3, 0, 0, 1);"/>
 
-        <!-- Modifier Button -->
-        <Button fx:id="btnmodifier" layoutX="260.0" layoutY="319.0" mnemonicParsing="false" onAction="#update" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 5;" text="Modifier" />
+    <Label layoutX="131.0" layoutY="204.0" text="Email"
+           style="-fx-text-fill: #37474f; -fx-font-weight: bold; -fx-font-size: 14;"/>
+    <TextField fx:id="upemail" layoutX="301.0" layoutY="200.0"
+               style="-fx-background-color: white;
+                     -fx-border-color: #b0bec5;
+                     -fx-border-radius: 5;
+                     -fx-background-radius: 5;
+                     -fx-padding: 5 10 5 10;
+                     -fx-font-size: 14;
+                     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 3, 0, 0, 1);"/>
 
-    </children>
+    <!-- Rôle Section -->
+    <Label layoutX="131.0" layoutY="252.0" text="Rôle(s)"
+           style="-fx-text-fill: #37474f; -fx-font-weight: bold; -fx-font-size: 14;"/>
+
+    <CheckBox fx:id="uproleadmin" layoutX="253.0" layoutY="252.0" mnemonicParsing="false" text="Admin"
+              style="-fx-text-fill: #455a64; -fx-font-size: 13; -fx-font-weight: bold;"/>
+    <CheckBox fx:id="uproleagri" layoutX="337.0" layoutY="252.0" mnemonicParsing="false" text="Agriculteur"
+              style="-fx-text-fill: #455a64; -fx-font-size: 13; -fx-font-weight: bold;"/>
+    <CheckBox fx:id="uproleclient" layoutX="439.0" layoutY="252.0" mnemonicParsing="false" text="Client"
+              style="-fx-text-fill: #455a64; -fx-font-size: 13; -fx-font-weight: bold;"/>
+
+    <!-- Modifier Button -->
+    <Button fx:id="btnmodifier" layoutX="260.0" layoutY="319.0" mnemonicParsing="false" onAction="#update" text="Modifier"
+            style="-fx-background-radius: 20;
+                   -fx-border-radius: 20;
+                   -fx-font-weight: bold;
+                   -fx-font-size: 14;
+                   -fx-padding: 8 20 8 20;
+                   -fx-cursor: hand;
+                   -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 3, 0, 0, 1);
+                   -fx-text-fill: white;
+                   -fx-background-color: #42a5f5;"/>
 </AnchorPane>

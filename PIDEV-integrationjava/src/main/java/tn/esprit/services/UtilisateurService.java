@@ -5,6 +5,7 @@ import  tn.esprit.models.Profile;
 import tn.esprit.models.Utilisateur;
 import tn.esprit.interfaces.UtilisateurInterface;
 import tn.esprit.util.MaConnexion;
+import tn.esprit.util.MailUtil;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -215,4 +216,70 @@ public void updateUtilisateur(Utilisateur utilisateur, int id) {
         return utilisateurs;
     }
 ///////////////////////////////////////////////////////////////////////////////
+public static void sendResetCodeEmail(String toEmail, String code) {
+    String subject = "Réinitialisation du mot de passe";
+    String body = "Votre code de réinitialisation est : " + code;
+    MailUtil.sendSimpleEmail(toEmail, subject, body);
+}
+//////////////////////////////////////////////////////////////////////////
+public void updatePassword(String email, String newPassword) {
+    try {
+        Connection cnx = MaConnexion.getInstance().getCon();
+        String query = "UPDATE utilisateur SET password = ? WHERE email = ?";
+        PreparedStatement ps = cnx.prepareStatement(query);
+        ps.setString(1, hashPassword(newPassword)); // Hash it!!
+        ps.setString(2, email);
+        ps.executeUpdate();
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+}
+/////////////////////////////////////////////////////////////////
+public int getTotalUsers() {
+    int total = 0;
+    try {
+        String requete = "SELECT COUNT(*) AS total FROM utilisateurs";
+        PreparedStatement pst = MaConnexion.getInstance().getCon().prepareStatement(requete);
+        ResultSet rs = pst.executeQuery();
+        if (rs.next()) {
+            total = rs.getInt("total");
+        }
+    } catch (SQLException e) {
+        System.out.println("Erreur lors du comptage des utilisateurs : " + e.getMessage());
+    }
+    return total;
+}
+//////////////////////////////////////////////////////////////
+public int getTotalAdmins() {
+    int total = 0;
+    try {
+        String requete = "SELECT COUNT(*) AS total FROM utilisateurs WHERE roles LIKE '%admin%'";
+        PreparedStatement pst = MaConnexion.getInstance().getCon().prepareStatement(requete);
+        ResultSet rs = pst.executeQuery();
+        if (rs.next()) {
+            total = rs.getInt("total");
+        }
+    } catch (SQLException e) {
+        System.out.println("Erreur lors du comptage des admins : " + e.getMessage());
+    }
+    return total;
+}
+
+    //////////////////////////////////////////////////////////
+    public boolean emailExists(String email) {
+        try {
+            String query = "SELECT COUNT(*) FROM utilisateurs WHERE email = ?";
+            PreparedStatement stmt = MaConnexion.getInstance().getCon().prepareStatement(query);
+            stmt.setString(1, email);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 }

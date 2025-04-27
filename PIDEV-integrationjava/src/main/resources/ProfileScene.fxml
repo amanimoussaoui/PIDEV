@@ -7,33 +7,115 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #f5f5f5; -fx-font-family: 'Segoe UI';" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.ProfileScene">
-   <children>
-      <BorderPane layoutX="238.0" layoutY="6.0" prefHeight="385.0" prefWidth="347.0">
-         <center>
-            <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-               <children>
-                  <Label layoutX="49.0" layoutY="27.0" style="-fx-font-weight: bold; -fx-text-fill: #333;" text="Prenom" />
-                  <Label layoutX="42.0" layoutY="67.0" style="-fx-font-weight: bold; -fx-text-fill: #333;" text="Téléphone" />
-                  <Label layoutX="49.0" layoutY="104.0" style="-fx-font-weight: bold; -fx-text-fill: #333;" text="Adresse" />
-                  <Label layoutX="21.0" layoutY="148.0" style="-fx-font-weight: bold; -fx-text-fill: #333;" text="Date de naissance" />
-                  <Label layoutX="62.0" layoutY="251.0" style="-fx-font-weight: bold; -fx-text-fill: #333;" text="Bio" />
+<AnchorPane prefHeight="500.0" prefWidth="700.0"
+            style="-fx-background-color: linear-gradient(to bottom right, #f5f7fa, #e4e8f0);"
+            xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="tn.esprit.controllers.ProfileScene">
 
-                  <TextField fx:id="profileprenom" layoutX="144.0" layoutY="23.0" style="-fx-background-radius: 5; -fx-padding: 5;" />
-                  <TextField fx:id="telephoneprofile" layoutX="144.0" layoutY="63.0" style="-fx-background-radius: 5; -fx-padding: 5;" />
-                  <TextField fx:id="adresseprofile" layoutX="144.0" layoutY="100.0" style="-fx-background-radius: 5; -fx-padding: 5;" onMouseClicked="#handleAdresseClick" />
-                  <TextField fx:id="bioprofile" alignment="TOP_LEFT" layoutX="141.0" layoutY="241.0" prefHeight="106.0" prefWidth="150.0" style="-fx-background-radius: 5; -fx-padding: 5;" />
-                  <DatePicker fx:id="calanderprofile" layoutX="137.0" layoutY="140.0" style="-fx-background-radius: 5; -fx-padding: 5;" />
-                  <Label layoutX="60.0" layoutY="201.0" style="-fx-font-weight: bold; -fx-text-fill: #333;" text="Age" />
-                  <Label fx:id="ageshow" layoutX="205.0" layoutY="201.0" style="-fx-font-weight: bold; -fx-text-fill: #333;" />
-               </children>
-            </AnchorPane>
-         </center>
-      </BorderPane>
+   <!-- Header Section -->
+   <Label layoutX="24.0" layoutY="24.0" text="Modification du Profil"
+          style="-fx-text-fill: #263238; -fx-font-weight: bold; -fx-font-size: 20;">
+      <font>
+         <Font size="20.0" />
+      </font>
+   </Label>
 
-      <Button fx:id="btnupdateprofile" layoutX="70.0" layoutY="297.0" mnemonicParsing="false" onAction="#updateprofile" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-background-radius: 8; -fx-font-weight: bold;" text="Modifier" />
+   <Line endX="676.0" layoutX="24.0" layoutY="70.0" startX="24.0"
+         stroke="#cfd8dc" strokeWidth="1.5" />
 
-      <ImageView fx:id="profilepicture" fitHeight="150.0" fitWidth="200.0" layoutX="21.0" layoutY="39.0" onMouseClicked="#handleImageClick" pickOnBounds="true" preserveRatio="true" style="-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 10, 0, 0, 5);                   -fx-border-color: #cccccc;                   -fx-border-width: 2;                   -fx-border-radius: 10;                   -fx-background-radius: 10;" />
-   </children>
+   <!-- Profile Picture Section -->
+   <ImageView fx:id="profilepicture" fitHeight="180.0" fitWidth="220.0"
+              layoutX="24.0" layoutY="90.0" onMouseClicked="#handleImageClick"
+              pickOnBounds="true" preserveRatio="true"
+              style="-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 8, 0, 0, 2);
+                      -fx-border-color: #b0bec5;
+                      -fx-border-width: 2;
+                      -fx-border-radius: 5;
+                      -fx-background-radius: 5;"/>
+
+   <!-- Profile Form Section -->
+   <BorderPane layoutX="270.0" layoutY="90.0" prefHeight="320.0" prefWidth="400.0"
+               style="-fx-background-color: white;
+                       -fx-background-radius: 8;
+                       -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);">
+      <center>
+         <AnchorPane prefHeight="300.0" prefWidth="380.0" style="-fx-padding: 20;">
+            <children>
+               <!-- Form Fields -->
+               <Label layoutX="20.0" layoutY="30.0" text="Prénom"
+                      style="-fx-text-fill: #37474f; -fx-font-weight: bold; -fx-font-size: 14;"/>
+               <TextField fx:id="profileprenom" layoutX="120.0" layoutY="25.0" prefWidth="240.0"
+                          style="-fx-background-color: white;
+                                     -fx-border-color: #b0bec5;
+                                     -fx-border-radius: 5;
+                                     -fx-background-radius: 5;
+                                     -fx-padding: 5 10 5 10;
+                                     -fx-font-size: 14;"/>
+
+               <Label layoutX="20.0" layoutY="80.0" text="Téléphone"
+                      style="-fx-text-fill: #37474f; -fx-font-weight: bold; -fx-font-size: 14;"/>
+               <TextField fx:id="telephoneprofile" layoutX="120.0" layoutY="75.0" prefWidth="240.0"
+                          style="-fx-background-color: white;
+                                     -fx-border-color: #b0bec5;
+                                     -fx-border-radius: 5;
+                                     -fx-background-radius: 5;
+                                     -fx-padding: 5 10 5 10;
+                                     -fx-font-size: 14;"/>
+
+               <Label layoutX="20.0" layoutY="130.0" text="Adresse"
+                      style="-fx-text-fill: #37474f; -fx-font-weight: bold; -fx-font-size: 14;"/>
+               <TextField fx:id="adresseprofile" layoutX="120.0" layoutY="125.0" prefWidth="240.0"
+                          style="-fx-background-color: white;
+                                     -fx-border-color: #b0bec5;
+                                     -fx-border-radius: 5;
+                                     -fx-background-radius: 5;
+                                     -fx-padding: 5 10 5 10;
+                                     -fx-font-size: 14;"
+                          onMouseClicked="#handleAdresseClick"/>
+
+               <Label layoutX="20.0" layoutY="180.0" text="Date de naissance"
+                      style="-fx-text-fill: #37474f; -fx-font-weight: bold; -fx-font-size: 14;"/>
+               <DatePicker fx:id="calanderprofile" layoutX="120.0" layoutY="175.0" prefWidth="240.0"
+                           style="-fx-background-color: white;
+                                      -fx-border-color: #b0bec5;
+                                      -fx-border-radius: 5;
+                                      -fx-background-radius: 5;
+                                      -fx-padding: 5 10 5 10;
+                                      -fx-font-size: 14;"/>
+
+               <Label layoutX="20.0" layoutY="230.0" text="Bio"
+                      style="-fx-text-fill: #37474f; -fx-font-weight: bold; -fx-font-size: 14;"/>
+               <TextField fx:id="bioprofile" layoutX="120.0" layoutY="225.0" prefWidth="240.0" prefHeight="80.0"
+                          style="-fx-background-color: white;
+                                     -fx-border-color: #b0bec5;
+                                     -fx-border-radius: 5;
+                                     -fx-background-radius: 5;
+                                     -fx-padding: 5 10 5 10;
+                                     -fx-font-size: 14;"/>
+
+               <Label layoutX="20.0" layoutY="315.0" text="Âge"
+                      style="-fx-text-fill: #37474f; -fx-font-weight: bold; -fx-font-size: 14;"/>
+               <Label fx:id="ageshow" layoutX="120.0" layoutY="315.0"
+                      style="-fx-text-fill: #455a64; -fx-font-size: 14;"/>
+            </children>
+         </AnchorPane>
+      </center>
+   </BorderPane>
+
+   <!-- Action Buttons -->
+   <Button fx:id="btnupdateprofile" layoutX="270.0" layoutY="430.0" mnemonicParsing="false"
+           onAction="#updateprofile" text="Enregistrer les modifications"
+           style="-fx-background-radius: 20;
+                   -fx-border-radius: 20;
+                   -fx-font-weight: bold;
+                   -fx-font-size: 14;
+                   -fx-padding: 8 20 8 20;
+                   -fx-cursor: hand;
+                   -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 3, 0, 0, 1);
+                   -fx-text-fill: white;
+                   -fx-background-color: #42a5f5;"/>
 </AnchorPane>

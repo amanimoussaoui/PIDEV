@@ -49,7 +49,7 @@ void RegisterUser(ActionEvent event) {
     String prenom = registerprenom.getText().trim();
     String email = registeremail.getText().trim();
     String password = registerpassword.getText().trim();
-    String role = registerrole.getValue() != null ? registerrole.getValue().toString() : ""; // Check if role is selected
+    String role = registerrole.getValue() != null ? registerrole.getValue().toString() : "";
 
     // Validate fields
     if (nom.isEmpty() || prenom.isEmpty() || email.isEmpty() || password.isEmpty() || role.isEmpty()) {
@@ -100,11 +100,17 @@ void RegisterUser(ActionEvent event) {
         return;
     }
 
+    // Check if email already exists
+    UtilisateurService service = new UtilisateurService();
+    if (service.emailExists(email)) {
+        showAlert("Email existant", "Cet email est déjà utilisé. Veuillez utiliser un autre email.");
+        return;
+    }
+
     // Create a new user object
     Utilisateur nouveauUtilisateur = new Utilisateur(nom, prenom, email, password, new String[]{role});
 
     // Use the service to save the new user
-    UtilisateurService service = new UtilisateurService();
     service.createUtilisateur(nouveauUtilisateur);
 
     // Show success alert

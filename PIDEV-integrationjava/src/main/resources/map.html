@@ -64,7 +64,6 @@
     map.on('click', function(e) {
         selectedLat = e.latlng.lat;
         selectedLng = e.latlng.lng;
-
         marker.setLatLng([selectedLat, selectedLng]);
 
         document.getElementById('coords').textContent = `Lat: ${selectedLat.toFixed(5)} | Lng: ${selectedLng.toFixed(5)}`;

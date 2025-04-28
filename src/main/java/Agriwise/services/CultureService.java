@@ -206,4 +206,22 @@ public class CultureService implements ICultureService {
         }
     }
 
+    public List<String> getAllCultureNames() {
+        List<String> names = new ArrayList<>();
+        String req = "SELECT DISTINCT nom_culture FROM culture";
+
+        try {
+            PreparedStatement ps = cnx.prepareStatement(req);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                names.add(rs.getString("nom_culture"));
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la récupération des noms de culture: " + e.getMessage());
+        }
+
+        return names;
+    }
+
 }

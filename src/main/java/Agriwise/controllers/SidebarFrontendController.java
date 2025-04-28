@@ -44,7 +44,8 @@ public class SidebarFrontendController {
     @FXML private Button accueilBtn, accueilIconBtn;
     @FXML private Button profileBtn, profileIconBtn;
     @FXML private Button gestionAgricoleBtn, gestionAgricoleIconBtn;
-    @FXML private Button parcelleBtn, cultureBtn, activiteBtn;
+    @FXML private Button parcelleBtn, cultureBtn, activiteBtn,rendementBtn;
+    ;
     @FXML private Button marketplaceBtn, marketplaceIconBtn;
     @FXML private Button produitsBtn, panierBtn;
     @FXML private Button encheresBtn, encheresIconBtn;
@@ -93,6 +94,8 @@ public class SidebarFrontendController {
         buttonPathMap.put(parcelleBtn, "/Agriwise/views/Parcelle/ParcelleView.fxml");
         buttonPathMap.put(cultureBtn, "/Agriwise/views/Culture/CultureView.fxml");
         buttonPathMap.put(activiteBtn, "/Agriwise/views/Activite/ActiviteView.fxml");
+        buttonPathMap.put(rendementBtn, "/Agriwise/views/Parcelle/RendementView.fxml");
+
 
         // Configure paths for Marketplace
         buttonPathMap.put(marketplaceBtn, "/Agriwise/views/Marketplace/MarketplaceView.fxml");
@@ -135,10 +138,13 @@ public class SidebarFrontendController {
         buttonCategoryMap.put(parcelleBtn, "gestion_agricole");
         buttonCategoryMap.put(cultureBtn, "gestion_agricole");
         buttonCategoryMap.put(activiteBtn, "gestion_agricole");
+        buttonCategoryMap.put(rendementBtn, "gestion_agricole");
+
 
         submenuParentMap.put(parcelleBtn, gestionAgricoleBtn);
         submenuParentMap.put(cultureBtn, gestionAgricoleBtn);
         submenuParentMap.put(activiteBtn, gestionAgricoleBtn);
+        submenuParentMap.put(rendementBtn, gestionAgricoleBtn);
 
         buttonCategoryMap.put(marketplaceBtn, "marketplace");
         buttonCategoryMap.put(marketplaceIconBtn, "marketplace");

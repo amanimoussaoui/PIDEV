@@ -21,4 +21,6 @@ public interface IRecolteService {
     List<Recolte> getAllRecoltes();
 
     Recolte getRecoltesByCultureId(int cultureId);
+
+    List<Recolte> getRecoltesByUserId(int userId);
 }

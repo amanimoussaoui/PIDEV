@@ -7,17 +7,21 @@ import Agriwise.services.CultureService;
 import Agriwise.services.ParcelleService;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
+import javafx.collections.FXCollections;
+import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Side;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
+import org.controlsfx.control.textfield.TextFields;
 
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.Date;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class CultureFormController implements Initializable {
     @FXML private TextField nomCultureField;
@@ -44,6 +48,9 @@ public class CultureFormController implements Initializable {
         setupStatutCombo();
         setupParcelleCombo();
         setupFormValidation();
+
+
+        setupCultureNameAutocomplete(); // Add this line
     }
 
     public void setStage(Stage stage) {
@@ -235,4 +242,36 @@ public class CultureFormController implements Initializable {
         alert.setContentText(content);
         alert.showAndWait();
     }
+
+
+
+
+    private void setupCultureNameAutocomplete() {
+        // Get existing culture names from database
+        List<String> existingNames = cultureService.getAllCultureNames();
+
+        // Add common culture names (you can expand this list)
+        List<String> commonNames = Arrays.asList(
+                "Blé", "Maïs", "Orge", "Riz", "Soja", "Tournesol", "Pomme de terre",
+                "Tomate", "Carotte", "Oignon", "Ail", "Poivron", "Aubergine", "Courgette",
+                "Concombre", "Haricot", "Pois", "Lentille", "Pomme", "Poire", "Pêche",
+                "Abricot", "Prune", "Cerise", "Fraise", "Framboise", "Myrtille", "Raisin"
+        );
+
+        // Combine both lists
+        List<String> allSuggestions = new ArrayList<>();
+        allSuggestions.addAll(existingNames);
+        allSuggestions.addAll(commonNames);
+
+        // Remove duplicates
+        Set<String> uniqueSuggestions = new HashSet<>(allSuggestions);
+
+        // Bind autocomplete
+        TextFields.bindAutoCompletion(nomCultureField, uniqueSuggestions)
+                .setDelay(100); // Delay in ms before showing suggestions
+    }
+
+
+
+
 }

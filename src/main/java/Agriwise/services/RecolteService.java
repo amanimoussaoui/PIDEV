@@ -246,4 +246,62 @@ public class RecolteService implements IRecolteService {
     }
 
 
+    @Override
+    public List<Recolte> getRecoltesByUserId(int userId) {
+        List<Recolte> list = new ArrayList<>();
+        String req = "SELECT r.*, c.nom_culture as culture_nom, c.date_semis as culture_date_semis, " +
+                "c.duree as culture_duree, c.statut as culture_statut, " +
+                "p.id as parcelle_id, p.nom as parcelle_nom, p.superficie as parcelle_superficie, " +
+                "p.localisation as parcelle_localisation, p.type_sol as parcelle_type_sol, " +
+                "p.utilisateur_id as utilisateur_id " +
+                "FROM recolte r " +
+                "LEFT JOIN culture c ON r.culture_id = c.id " +
+                "LEFT JOIN parcelle p ON c.parcelle_id = p.id " +
+                "WHERE p.utilisateur_id=?";
+
+        try {
+            PreparedStatement ps = cnx.prepareStatement(req);
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Recolte recolte = new Recolte();
+                recolte.setId(rs.getInt("id"));
+                recolte.setDateRecolte(rs.getDate("date_recolte"));
+                recolte.setQuantite(rs.getFloat("quantite"));
+                recolte.setQualite(rs.getString("qualite"));
+                recolte.setPrixUnitaire(rs.getFloat("prix_unitaire"));
+
+                // Create Culture object if there's an association
+                if (rs.getInt("culture_id") > 0) {
+                    Culture culture = new Culture();
+                    culture.setId(rs.getInt("culture_id"));
+                    culture.setNomCulture(rs.getString("culture_nom"));
+                    culture.setDateSemis(rs.getDate("culture_date_semis"));
+                    culture.setDuree(rs.getInt("culture_duree"));
+                    culture.setStatut(rs.getString("culture_statut"));
+
+                    // Create and set Parcelle object if there's an association
+                    if (rs.getInt("parcelle_id") > 0) {
+                        Parcelle parcelle = new Parcelle();
+                        parcelle.setId(rs.getInt("parcelle_id"));
+                        parcelle.setNom(rs.getString("parcelle_nom"));
+                        parcelle.setSuperficie(rs.getFloat("parcelle_superficie"));
+                        parcelle.setLocalisation(rs.getString("parcelle_localisation"));
+                        parcelle.setTypeSol(rs.getString("parcelle_type_sol"));
+                        parcelle.setUserId(rs.getInt("utilisateur_id"));
+                        culture.setParcelle(parcelle);
+                    }
+
+                    recolte.setCulture(culture);
+                }
+
+                list.add(recolte);
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la récupération des récoltes par userId : " + e.getMessage());
+        }
+        return list;
+    }
+
 }

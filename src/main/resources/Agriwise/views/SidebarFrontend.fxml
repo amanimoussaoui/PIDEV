@@ -159,6 +159,19 @@
                                 </HBox>
                             </graphic>
                         </Button>
+
+
+                        <Button fx:id="rendementBtn" styleClass="submenu-button" onAction="#handleNavigation">
+                            <graphic>
+                                <HBox styleClass="submenu-item-content" spacing="12" alignment="CENTER_LEFT">
+                                    <StackPane styleClass="submenu-icon-container">
+                                        <FontAwesomeIconView glyphName="BAR_CHART" styleClass="submenu-icon" size="14"/>
+                                    </StackPane>
+                                    <Label text="Rendement" styleClass="submenu-text"/>
+                                </HBox>
+                            </graphic>
+                        </Button>
+
                     </VBox>
 
 

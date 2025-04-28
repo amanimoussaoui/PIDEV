@@ -2,13 +2,13 @@ module org.example.gestionagricolejavafx {
     requires javafx.fxml;
     requires java.sql;
     requires de.jensd.fx.glyphs.fontawesome;
-    requires javafx.controls;
-    requires java.desktop;
     requires jdk.jsobject;
     requires javafx.web;
     requires com.google.gson;
     requires json.simple;
     requires org.apache.pdfbox;
+    requires org.controlsfx.controls;
+    requires java.desktop;
 
 
     opens Agriwise to javafx.fxml;

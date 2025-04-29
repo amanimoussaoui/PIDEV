@@ -90,6 +90,49 @@
                     </HBox>
                 </VBox>
             </TitledPane>
+
+            <!-- Improved Prediction Results Section -->
+            <VBox fx:id="predictionResultContainer" styleClass="prediction-container" visible="false" managed="false">
+                <VBox styleClass="prediction-card">
+                    <HBox styleClass="prediction-header" alignment="CENTER_LEFT" spacing="15">
+                        <FontAwesomeIconView glyphName="LINE_CHART" styleClass="prediction-icon"/>
+                        <Label text="Prédiction de Récolte" styleClass="prediction-title"/>
+                    </HBox>
+
+                    <HBox styleClass="prediction-content" alignment="CENTER" spacing="20">
+                        <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
+                            <StackPane styleClass="prediction-value-container">
+                                <FontAwesomeIconView glyphName="BALANCE_SCALE" styleClass="prediction-value-icon"/>
+                                <VBox alignment="CENTER">
+                                    <Label fx:id="predictionResultLabel" styleClass="prediction-value" text="0.00"/>
+                                    <Label styleClass="prediction-unit" text="kg"/>
+                                </VBox>
+                            </StackPane>
+                        </VBox>
+
+                        <VBox alignment="CENTER_LEFT" styleClass="prediction-details" HBox.hgrow="ALWAYS">
+                            <Label styleClass="prediction-detail-title" text="Basé sur:"/>
+                            <HBox alignment="CENTER_LEFT" styleClass="prediction-detail-item" spacing="10">
+                                <FontAwesomeIconView glyphName="CHECK_CIRCLE" styleClass="prediction-detail-icon"/>
+                                <Label text="Données historiques de cultures similaires"/>
+                            </HBox>
+                            <HBox alignment="CENTER_LEFT" styleClass="prediction-detail-item" spacing="10">
+                                <FontAwesomeIconView glyphName="CHECK_CIRCLE" styleClass="prediction-detail-icon"/>
+                                <Label text="Caractéristiques de la parcelle"/>
+                            </HBox>
+                            <HBox alignment="CENTER_LEFT" styleClass="prediction-detail-item" spacing="10">
+                                <FontAwesomeIconView glyphName="CHECK_CIRCLE" styleClass="prediction-detail-icon"/>
+                                <Label text="Durée de croissance prévue"/>
+                            </HBox>
+                        </VBox>
+                    </HBox>
+
+                    <HBox styleClass="prediction-footer" alignment="CENTER_LEFT">
+                        <FontAwesomeIconView glyphName="INFO_CIRCLE" styleClass="prediction-info-icon"/>
+                        <Label styleClass="prediction-note" text="Cette estimation est basée sur un modèle de prédiction utilisant les paramètres fournis."/>
+                    </HBox>
+                </VBox>
+            </VBox>
         </VBox>
     </ScrollPane>
 
@@ -101,6 +144,11 @@
             </graphic>
         </Button>
         <Region HBox.hgrow="ALWAYS"/>
+        <Button fx:id="predictButton" onAction="#handlePredict" styleClass="btn-warning" text="Prédire la récolte">
+            <graphic>
+                <FontAwesomeIconView glyphName="LIGHTBULB_ALT" styleClass="button-icon"/>
+            </graphic>
+        </Button>
         <Button fx:id="submitButton" onAction="#handleSubmit" styleClass="btn-submit">
             <graphic>
                 <FontAwesomeIconView glyphName="CHECK" styleClass="button-icon"/>

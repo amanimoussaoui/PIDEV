@@ -9,6 +9,7 @@ module org.example.gestionagricolejavafx {
     requires org.apache.pdfbox;
     requires org.controlsfx.controls;
     requires java.desktop;
+    requires org.json;
 
 
     opens Agriwise to javafx.fxml;

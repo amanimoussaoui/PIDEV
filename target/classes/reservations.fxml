@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Font?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="tn.esprit.controllers.ReservationController"
+      spacing="15" style="-fx-background-color: white;">
+    
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+    
+    <!-- En-tête avec navigation -->
+    <HBox alignment="CENTER_LEFT" spacing="15">
+        <Button fx:id="backButton" text="Retour" onAction="#goToHome" 
+                style="-fx-background-color: #f0f0f0; -fx-text-fill: #333333; -fx-cursor: hand;">
+            <graphic>
+                <Label text="←" style="-fx-font-weight: bold;"/>
+            </graphic>
+            <padding>
+                <Insets top="5" right="10" bottom="5" left="10"/>
+            </padding>
+        </Button>
+        
+        <Label text="Gestion des Réservations" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2e8b57;">
+            <font>
+                <Font name="System Bold" size="20.0"/>
+            </font>
+        </Label>
+        
+        <Region HBox.hgrow="ALWAYS" />
+        
+        <TextField fx:id="searchField" promptText="Rechercher..." prefWidth="250">
+            <HBox.margin>
+                <Insets right="10"/>
+            </HBox.margin>
+        </TextField>
+        
+        <Button text="Rechercher" onAction="#handleSearch" 
+                style="-fx-background-color: #2e8b57; -fx-text-fill: white; -fx-cursor: hand;">
+            <padding>
+                <Insets top="5" right="10" bottom="5" left="10"/>
+            </padding>
+        </Button>
+    </HBox>
+    
+    <Separator/>
+    
+    <HBox spacing="20" VBox.vgrow="ALWAYS">
+        <!-- Liste des matériels -->
+        <VBox spacing="10" minWidth="300" maxWidth="400">
+            <Label text="Matériels Disponibles" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+            
+            <TableView fx:id="machineTable" VBox.vgrow="ALWAYS" 
+                       style="-fx-border-color: #e0e0e0; -fx-border-radius: 5; -fx-background-radius: 5;">
+                <columns>
+                    <TableColumn fx:id="machineIdCol" text="ID" prefWidth="50"/>
+                    <TableColumn fx:id="machineNomCol" text="Nom" prefWidth="150"/>
+                    <TableColumn fx:id="machinePrixCol" text="Prix" prefWidth="100"/>
+                </columns>
+                <placeholder>
+                    <Label text="Aucun matériel disponible" style="-fx-text-fill: #777777;"/>
+                </placeholder>
+            </TableView>
+        </VBox>
+        
+        <!-- Table des réservations -->
+        <VBox spacing="10" HBox.hgrow="ALWAYS">
+            <Label text="Réservations" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+            
+            <TableView fx:id="reservationTable" VBox.vgrow="ALWAYS" 
+                       style="-fx-border-color: #e0e0e0; -fx-border-radius: 5; -fx-background-radius: 5;">
+                <columns>
+                    <TableColumn fx:id="resIdCol" text="ID" prefWidth="50"/>
+                    <TableColumn fx:id="resMachineNomCol" text="Machine" prefWidth="150"/>
+                    <TableColumn fx:id="resUserIdCol" text="ID Utilisateur" prefWidth="80"/>
+                    <TableColumn fx:id="dateDebutCol" text="Date Début" prefWidth="120"/>
+                    <TableColumn fx:id="dateFinCol" text="Date Fin" prefWidth="120"/>
+                </columns>
+                <placeholder>
+                    <Label text="Aucune réservation disponible" style="-fx-text-fill: #777777;"/>
+                </placeholder>
+            </TableView>
+            
+            <!-- Barre d'actions -->
+            <HBox spacing="10" alignment="CENTER_RIGHT">
+                <Button text="Nouvelle Réservation" onAction="#handleAddReservation" 
+                        style="-fx-background-color: #2e8b57; -fx-text-fill: white; -fx-cursor: hand;">
+                    <graphic>
+                        <Label text="+" style="-fx-text-fill: white; -fx-font-weight: bold;"/>
+                    </graphic>
+                    <padding>
+                        <Insets top="5" right="15" bottom="5" left="15"/>
+                    </padding>
+                </Button>
+                
+                <Button fx:id="editBtn" text="Modifier" onAction="#handleEditReservation" 
+                        style="-fx-background-color: #4caf50; -fx-text-fill: white; -fx-cursor: hand;">
+                    <padding>
+                        <Insets top="5" right="15" bottom="5" left="15"/>
+                    </padding>
+                </Button>
+                
+                <Button fx:id="deleteBtn" text="Supprimer" onAction="#handleDeleteReservation" 
+                        style="-fx-background-color: #f44336; -fx-text-fill: white; -fx-cursor: hand;">
+                    <padding>
+                        <Insets top="5" right="15" bottom="5" left="15"/>
+                    </padding>
+                </Button>
+                
+                <Button fx:id="refreshBtn" text="Actualiser" onAction="#handleRefresh" 
+                        style="-fx-background-color: #9e9e9e; -fx-text-fill: white; -fx-cursor: hand;">
+                    <padding>
+                        <Insets top="5" right="15" bottom="5" left="15"/>
+                    </padding>
+                </Button>
+            </HBox>
+        </VBox>
+    </HBox>
+</VBox> 

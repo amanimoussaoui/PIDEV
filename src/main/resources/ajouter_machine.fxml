@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Font?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="tn.esprit.controllers.MachineController"
+      spacing="15" style="-fx-background-color: white;">
+    
+    <padding>
+        <Insets top="30" right="50" bottom="30" left="50"/>
+    </padding>
+    
+    <!-- En-tête avec navigation -->
+    <HBox alignment="CENTER_LEFT" spacing="15">
+        <Button fx:id="backButton" text="Retour" onAction="#goToHome" 
+                style="-fx-background-color: #f0f0f0; -fx-text-fill: #333333; -fx-cursor: hand;">
+            <graphic>
+                <Label text="←" style="-fx-font-weight: bold;"/>
+            </graphic>
+            <padding>
+                <Insets top="5" right="10" bottom="5" left="10"/>
+            </padding>
+        </Button>
+        
+        <Label text="Ajouter une Machine" 
+               style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2e8b57;">
+            <font>
+                <Font name="System Bold" size="24.0"/>
+            </font>
+        </Label>
+    </HBox>
+    
+    <Separator>
+        <VBox.margin>
+            <Insets top="5" bottom="20"/>
+        </VBox.margin>
+    </Separator>
+    
+    <GridPane hgap="20" vgap="15" style="-fx-background-color: #f9f9f9; -fx-background-radius: 5; -fx-padding: 20;">
+        <columnConstraints>
+            <ColumnConstraints minWidth="120" />
+            <ColumnConstraints minWidth="300" />
+        </columnConstraints>
+        
+        <!-- Nom -->
+        <Label text="Nom:" GridPane.rowIndex="0" GridPane.columnIndex="0" 
+               style="-fx-font-weight: bold;"/>
+        <TextField fx:id="nomField" promptText="Saisir le nom de la machine" 
+                  GridPane.rowIndex="0" GridPane.columnIndex="1" />
+        
+        <!-- Description -->
+        <Label text="Description:" GridPane.rowIndex="1" GridPane.columnIndex="0" 
+               style="-fx-font-weight: bold;"/>
+        <TextArea fx:id="descriptionField" promptText="Saisir la description de la machine" 
+                 GridPane.rowIndex="1" GridPane.columnIndex="1" prefHeight="80"/>
+        
+        <!-- Prix -->
+        <Label text="Prix:" GridPane.rowIndex="2" GridPane.columnIndex="0" 
+               style="-fx-font-weight: bold;"/>
+        <VBox spacing="5" GridPane.rowIndex="2" GridPane.columnIndex="1">
+            <TextField fx:id="prixField" promptText="Saisir le prix de la machine" />
+            <Label fx:id="prixErrorLabel" textFill="red" visible="false" 
+                   style="-fx-font-size: 11px;" text="Le prix doit être un nombre positif"/>
+        </VBox>
+        
+        <!-- État -->
+        <Label text="État:" GridPane.rowIndex="3" GridPane.columnIndex="0" 
+               style="-fx-font-weight: bold;"/>
+        <ComboBox fx:id="etatComboBox" promptText="Sélectionner l'état" 
+                 GridPane.rowIndex="3" GridPane.columnIndex="1" prefWidth="300"/>
+        
+        <!-- Disponibilité -->
+        <Label text="Disponibilité:" GridPane.rowIndex="4" GridPane.columnIndex="0" 
+               style="-fx-font-weight: bold;"/>
+        <ComboBox fx:id="dispoComboBox" promptText="Sélectionner la disponibilité" 
+                 GridPane.rowIndex="4" GridPane.columnIndex="1" prefWidth="300"/>
+        
+        <!-- Date Maintenance -->
+        <Label text="Date Maintenance:" GridPane.rowIndex="5" GridPane.columnIndex="0" 
+               style="-fx-font-weight: bold;"/>
+        <DatePicker fx:id="dateMaintenancePicker" promptText="Sélectionner la date" 
+                   GridPane.rowIndex="5" GridPane.columnIndex="1" prefWidth="300"/>
+    </GridPane>
+    
+    <HBox spacing="15" alignment="CENTER_RIGHT">
+        <VBox.margin>
+            <Insets top="20"/>
+        </VBox.margin>
+        
+        <Button fx:id="goToListBtn" text="Voir les machines" onAction="#goToMachines"
+                style="-fx-background-color: #607d8b; -fx-text-fill: white; -fx-cursor: hand;">
+            <padding>
+                <Insets top="8" right="25" bottom="8" left="25"/>
+            </padding>
+        </Button>
+        
+        <Button fx:id="cancelBtn" text="Annuler" onAction="#handleCancel" 
+                style="-fx-background-color: #f0f0f0; -fx-text-fill: #333333; -fx-cursor: hand;">
+            <padding>
+                <Insets top="8" right="25" bottom="8" left="25"/>
+            </padding>
+        </Button>
+        
+        <Button fx:id="saveBtn" text="Enregistrer" onAction="#handleSave" 
+                style="-fx-background-color: #2e8b57; -fx-text-fill: white; -fx-cursor: hand; -fx-font-weight: bold;">
+            <padding>
+                <Insets top="8" right="25" bottom="8" left="25"/>
+            </padding>
+        </Button>
+    </HBox>
+    
+</VBox>

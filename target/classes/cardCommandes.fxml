@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane fx:id="cardPane" prefHeight="200.0" prefWidth="200.0" styleClass="card,shadow" stylesheets="@mainFormDesign.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.CommandeCardController">
+    <children>
+        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="200.0" spacing="6.0">
+            <children>
+                <!-- Image du produit -->
+                <ImageView fx:id="productImageView" fitHeight="102.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="true" />
+                <!-- Nom du produit -->
+                <Label fx:id="productNameLabel" text="Nom Produit">
+                    <font>
+                        <Font name="System Bold" size="16.0" />
+                    </font>
+                </Label>
+                <!-- Quantité totale -->
+                <Label fx:id="quantiteLabel" text="Quantité: 0">
+                    <font>
+                        <Font name="System" size="14.0" />
+                    </font>
+                </Label>
+                <!-- Adresse -->
+                <Label fx:id="adresseLabel" prefWidth="180.0" text="Adresse: Non spécifiée" wrapText="true">
+                    <font>
+                        <Font name="System" size="14.0" />
+                    </font>
+                </Label>
+                <!-- Date de livraison -->
+                <Label fx:id="dateLabel" prefWidth="180.0" text="Date: Non spécifiée">
+                    <font>
+                        <Font name="System" size="14.0" />
+                    </font>
+                </Label>
+                <!-- Boutons d'action -->
+                <HBox alignment="CENTER" spacing="15.0">
+                    <children>
+                        <!-- Bouton Modifier -->
+                        <Button fx:id="updateButton" onAction="#updateCommande" prefHeight="35.0" prefWidth="35.0" styleClass="btn-icon">
+                            <graphic>
+                                <ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true">
+                                    <image>
+                                        <Image url="@/images/update_icon.png" />
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </Button>
+                        <!-- Bouton Supprimer -->
+                        <Button fx:id="deleteButton" onAction="#deleteCommande" prefHeight="35.0" prefWidth="35.0" styleClass="btn-icon">
+                            <graphic>
+                                <ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true">
+                                    <image>
+                                        <Image url="@/images/delete_icon.png" />
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </Button>
+                        <!-- Bouton Détails -->
+                        <Button fx:id="showDetailsButton" onAction="#showDetails" prefHeight="35.0" prefWidth="35.0" styleClass="btn-icon">
+                            <graphic>
+                                <ImageView fitHeight="22.0" fitWidth="22.0" preserveRatio="true">
+                                    <image>
+                                        <Image url="@/images/details_icon.png" />
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </Button>
+                    </children>
+                </HBox>
+            </children>
+            <padding>
+                <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+            </padding>
+        </VBox>
+    </children>
+</AnchorPane>

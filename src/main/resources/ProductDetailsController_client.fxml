@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.collections.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="800.0" prefWidth="1100.0" styleClass="details-background" stylesheets="@style.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.ProductDetailsController_client">
+    <children>
+        <VBox alignment="CENTER" prefHeight="800.0" prefWidth="1100.0" spacing="20.0">
+            <!-- HBox contenant le bouton de retour, le sélecteur de langue et le sélecteur de devise -->
+            <HBox alignment="CENTER_LEFT" prefHeight="40.0" prefWidth="1100.0" spacing="20.0">
+                <children>
+                    <Button fx:id="backButton" onAction="#returnToMarket" styleClass="back-button" stylesheets="@style.css">
+                        <graphic>
+                            <ImageView fitHeight="20.0" fitWidth="20.0" preserveRatio="true">
+                                <image>
+                                    <Image url="@/images/back_arrow.png" />
+                                </image>
+                            </ImageView>
+                        </graphic>
+                        <HBox.margin>
+                            <Insets left="20.0" top="10.0" />
+                        </HBox.margin>
+                    </Button>
+                    <!-- Sélecteur de langue -->
+                    <ComboBox fx:id="languageSelector" onAction="#translateInterface" prefWidth="150.0">
+                        <items>
+                            <FXCollections fx:factory="observableArrayList">
+                                <String fx:value="Français (fr)" />
+                                <String fx:value="Anglais (en)" />
+                                <String fx:value="Espagnol (es)" />
+                                <String fx:value="Allemand (de)" />
+                                <String fx:value="Italien (it)" />
+                                <String fx:value="Arabe (ar)" />
+                            </FXCollections>
+                        </items>
+                        <value>
+                            <String fx:value="Français (fr)" />
+                        </value>
+                        <HBox.margin>
+                            <Insets top="10.0" />
+                        </HBox.margin>
+                    </ComboBox>
+                </children>
+            </HBox>
+            <!-- Titre (Nom du produit) -->
+            <Label fx:id="productNameLabel" styleClass="details-title" text="Nom du Produit">
+                <font>
+                    <Font name="System Bold" size="32.0" />
+                </font>
+                <VBox.margin>
+                    <Insets bottom="10.0" />
+                </VBox.margin>
+            </Label>
+
+            <!-- Conteneur principal avec image et détails -->
+            <HBox alignment="CENTER" prefHeight="350.0" prefWidth="1100.0" spacing="40.0" styleClass="details-main-container">
+                <!-- Image du produit -->
+                <VBox alignment="CENTER" prefHeight="350.0" prefWidth="500.0">
+                    <children>
+                        <ImageView fx:id="productImage" fitHeight="250.0" fitWidth="250.0" pickOnBounds="true" preserveRatio="true" styleClass="details-image" />
+                    </children>
+                </VBox>
+
+                <!-- Détails du produit -->
+                <VBox alignment="CENTER_LEFT" prefHeight="350.0" prefWidth="500.0" spacing="15.0" styleClass="details-info-container">
+                    <!-- Description -->
+                    <HBox alignment="CENTER_LEFT" spacing="10.0">
+                        <ImageView fitHeight="30.0" fitWidth="30.0">
+                            <image>
+                                <Image url="@images/info_icon.png" />
+                            </image>
+                        </ImageView>
+                        <VBox spacing="5.0">
+                            <Label fx:id="descriptionLabel" styleClass="details-label-title" text="Description:" />
+                            <Label fx:id="descriptionValueLabel" styleClass="details-label-value" wrapText="true" />
+                        </VBox>
+                    </HBox>
+                    <!-- Prix -->
+                    <HBox alignment="CENTER_LEFT" spacing="10.0">
+                        <ImageView fitHeight="30.0" fitWidth="30.0">
+                            <image>
+                                <Image url="@images/price_icon.png" />
+                            </image>
+                        </ImageView>
+                        <VBox spacing="5.0">
+                            <Label fx:id="priceLabel" styleClass="details-label-title" text="Prix:" />
+                            <Label fx:id="priceValueLabel" styleClass="details-label-value" />
+                        </VBox>
+                       <!-- Sélecteur de devise -->
+                       <ComboBox fx:id="currencySelector" layoutY="20.0" onAction="#updateCurrency" prefHeight="25.0" prefWidth="172.0">
+                           <items>
+                               <FXCollections fx:factory="observableArrayList">
+                                   <String fx:value="TND (Dinar Tunisien)" />
+                                   <String fx:value="USD (Dollar Américain)" />
+                                   <String fx:value="EUR (Euro)" />
+                                   <String fx:value="GBP (Livre Sterling)" />
+                               </FXCollections>
+                           </items>
+                           <value>
+                               <String fx:value="TND (Dinar Tunisien)" />
+                           </value>
+                           <HBox.margin>
+                               <Insets top="10.0" />
+                           </HBox.margin>
+                       </ComboBox>
+                    </HBox>
+                    <!-- Stock -->
+                    <HBox alignment="CENTER_LEFT" spacing="10.0">
+                        <ImageView fitHeight="30.0" fitWidth="30.0">
+                            <image>
+                                <Image url="@images/stock_icon.png" />
+                            </image>
+                        </ImageView>
+                        <VBox spacing="5.0">
+                            <Label fx:id="stockLabel" styleClass="details-label-title" text="Stock:" />
+                            <Label fx:id="stockValueLabel" styleClass="details-label-value" />
+                        </VBox>
+                    </HBox>
+                    <!-- Catégorie -->
+                    <HBox alignment="CENTER_LEFT" spacing="10.0">
+                        <ImageView fitHeight="30.0" fitWidth="30.0">
+                            <image>
+                                <Image url="@images/category_icon.png" />
+                            </image>
+                        </ImageView>
+                        <VBox spacing="5.0">
+                            <Label fx:id="categoryLabel" styleClass="details-label-title" text="Catégorie:" />
+                            <Label fx:id="categoryValueLabel" styleClass="details-label-value" />
+                        </VBox>
+                    </HBox>
+                    <!-- Mis à jour -->
+                    <HBox alignment="CENTER_LEFT" spacing="10.0">
+                        <ImageView fitHeight="30.0" fitWidth="30.0">
+                            <image>
+                                <Image url="@images/date_icon.png" />
+                            </image>
+                        </ImageView>
+                        <VBox spacing="5.0">
+                            <Label fx:id="updatedAtLabel" styleClass="details-label-title" text="Mis à jour:" />
+                            <Label fx:id="updatedAtValueLabel" styleClass="details-label-value" />
+                        </VBox>
+                    </HBox>
+                </VBox>
+            </HBox>
+
+            <!-- Section "Pourquoi choisir AgriWise ?" -->
+            <VBox alignment="CENTER" prefHeight="93.0" prefWidth="1020.0" spacing="10.0" styleClass="agriwise-section">
+                <children>
+                    <Label fx:id="agriwiseTitleLabel" styleClass="agriwise-title" text="🔎 Pourquoi choisir les produits AgriWise ?">
+                        <font>
+                            <Font name="System Bold" size="18.0" />
+                        </font>
+                    </Label>
+                    <Label fx:id="agriwiseTextLabel" styleClass="agriwise-text" text="✅ AgriWise propose des produits agricoles innovants, durables et de haute qualité, adaptés aux besoins des professionnels, pour une agriculture efficace, écoresponsable et accompagnée par des experts" wrapText="true" />
+                </children>
+                <VBox.margin>
+                    <Insets left="40.0" right="40.0" top="20.0" />
+                </VBox.margin>
+            </VBox>
+
+
+        </VBox>
+    </children>
+</AnchorPane>

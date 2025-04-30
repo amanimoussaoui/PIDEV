@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="600.0" prefWidth="900.0" styleClass="details-background" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.CommandeDetailsController">
+    <children>
+        <VBox alignment="CENTER" prefHeight="600.0" prefWidth="900.0" spacing="15.0">
+            <!-- Bouton de retour et bouton de mode sombre -->
+            <HBox alignment="CENTER_LEFT" prefHeight="40.0" prefWidth="900.0" spacing="20.0">
+                <children>
+                    <Button fx:id="backButton" onAction="#closeDetails" styleClass="back-button">
+                        <graphic>
+                            <ImageView fitHeight="20.0" fitWidth="20.0" preserveRatio="true">
+                                <image>
+                                    <Image url="@/images/back_arrow.png" />
+                                </image>
+                            </ImageView>
+                        </graphic>
+                        <HBox.margin>
+                            <Insets left="20.0" top="10.0" />
+                        </HBox.margin>
+                    </Button>
+
+                </children>
+            </HBox>
+
+            <!-- Titre (ID de la commande) -->
+            <Label fx:id="commandeIdLabel" styleClass="details-title" text="Commande ID">
+                <font>
+                    <Font name="System Bold" size="28.0" />
+                </font>
+                <VBox.margin>
+                    <Insets bottom="15.0" />
+                </VBox.margin>
+            </Label>
+
+            <!-- Conteneur principal avec image et détails -->
+            <HBox alignment="CENTER" prefHeight="400.0" prefWidth="900.0" spacing="30.0" styleClass="details-main-container">
+                <!-- Image du premier produit -->
+                <VBox alignment="CENTER" prefHeight="400.0" prefWidth="400.0">
+                    <children>
+                        <ImageView fx:id="productImage" fitHeight="200.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" styleClass="details-image" />
+                        <Label fx:id="imageCaptionLabel" styleClass="image-caption" text="Image du premier produit" wrapText="true">
+                            <font>
+                                <Font name="System Italic" size="12.0" />
+                            </font>
+                            <VBox.margin>
+                                <Insets top="10.0" />
+                            </VBox.margin>
+                        </Label>
+                    </children>
+                </VBox>
+
+                <!-- Détails de la commande -->
+                <VBox alignment="CENTER_LEFT" prefHeight="400.0" prefWidth="400.0" spacing="12.0" styleClass="details-info-container">
+                    <!-- Utilisateur -->
+                    <HBox alignment="CENTER_LEFT" spacing="10.0">
+                        <ImageView fitHeight="30.0" fitWidth="30.0">
+                            <image>
+                                <Image url="@/images/user_icon.png" />
+                            </image>
+                        </ImageView>
+                        <VBox spacing="5.0">
+                            <Label styleClass="details-label-title" text="Utilisateur:" />
+                            <Label fx:id="userValueLabel" styleClass="details-label-value" wrapText="true" />
+                        </VBox>
+                    </HBox>
+                    <!-- Adresse -->
+                    <HBox alignment="CENTER_LEFT" spacing="10.0">
+                        <ImageView fitHeight="30.0" fitWidth="30.0">
+                            <image>
+                                <Image url="@/images/address_icon.png" />
+                            </image>
+                        </ImageView>
+                        <VBox spacing="5.0">
+                            <Label styleClass="details-label-title" text="Adresse:" />
+                            <Label fx:id="adresseValueLabel" styleClass="details-label-value" wrapText="true" prefWidth="350.0" />
+                        </VBox>
+                    </HBox>
+                    <!-- Date -->
+                    <HBox alignment="CENTER_LEFT" spacing="10.0">
+                        <ImageView fitHeight="30.0" fitWidth="30.0">
+                            <image>
+                                <Image url="@/images/date_icon.png" />
+                            </image>
+                        </ImageView>
+                        <VBox spacing="5.0">
+                            <Label styleClass="details-label-title" text="Date:" />
+                            <Label fx:id="dateValueLabel" styleClass="details-label-value" />
+                        </VBox>
+                    </HBox>
+                    <!-- Quantité totale -->
+                    <HBox alignment="CENTER_LEFT" spacing="10.0">
+                        <ImageView fitHeight="30.0" fitWidth="30.0">
+                            <image>
+                                <Image url="@/images/quantity_icon.png" />
+                            </image>
+                        </ImageView>
+                        <VBox spacing="5.0">
+                            <Label styleClass="details-label-title" text="Quantité totale:" />
+                            <Label fx:id="quantiteValueLabel" styleClass="details-label-value" />
+                        </VBox>
+                    </HBox>
+                    <!-- Total -->
+                    <HBox alignment="CENTER_LEFT" spacing="10.0">
+                        <ImageView fitHeight="30.0" fitWidth="30.0">
+                            <image>
+                                <Image url="@/images/total_icon.png" />
+                            </image>
+                        </ImageView>
+                        <VBox spacing="5.0">
+                            <Label styleClass="details-label-title" text="Total:" />
+                            <Label fx:id="totalValueLabel" styleClass="details-label-value" />
+                        </VBox>
+                    </HBox>
+                </VBox>
+            </HBox>
+
+            <!-- Liste des produits -->
+            <VBox alignment="CENTER" prefHeight="100.0" prefWidth="800.0" spacing="8.0" styleClass="products-section">
+                <children>
+                    <Label styleClass="products-title" text="📦 Produits dans la commande">
+                        <font>
+                            <Font name="System Bold" size="16.0" />
+                        </font>
+                    </Label>
+                    <ScrollPane fitToWidth="true" prefHeight="80.0" prefWidth="750.0">
+                        <content>
+                            <VBox fx:id="productsList" spacing="5.0" styleClass="products-list">
+                                <!-- Les produits seront ajoutés dynamiquement -->
+                            </VBox>
+                        </content>
+                    </ScrollPane>
+                </children>
+                <VBox.margin>
+                    <Insets left="30.0" right="30.0" top="15.0" />
+                </VBox.margin>
+            </VBox>
+        </VBox>
+    </children>
+</AnchorPane>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="tn.esprit.controllers.HomeController"
+      alignment="CENTER" spacing="20" 
+      style="-fx-background-color: white;">
+      
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+    
+    <Label text="Bienvenue sur Agriwise" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #2e8b57;">
+        <font>
+            <Font name="System Bold" size="28.0"/>
+        </font>
+    </Label>
+    
+    <Label text="Votre solution complète pour la gestion agricole" style="-fx-font-size: 16px; -fx-text-fill: #555555;"/>
+    
+    <HBox spacing="30" alignment="CENTER" style="-fx-padding: 30 0 0 0;">
+        <VBox alignment="CENTER" style="-fx-padding: 15; -fx-background-color: #f9f9f9; -fx-background-radius: 5; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);">
+            <padding>
+                <Insets top="15" right="15" bottom="15" left="15"/>
+            </padding>
+            <Label text="Gestion des Machines" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2e8b57;"/>
+            <Label text="Contrôlez votre parc de machines agricoles" style="-fx-text-fill: #555555; -fx-wrap-text: true;" textAlignment="CENTER"/>
+            <Button fx:id="machinesBtn" text="Voir les machines" onAction="#goToMachines" 
+                    style="-fx-background-color: #2e8b57; -fx-text-fill: white; -fx-cursor: hand; -fx-background-radius: 3;">
+                <padding>
+                    <Insets top="8" right="15" bottom="8" left="15"/>
+                </padding>
+                <VBox.margin>
+                    <Insets top="10"/>
+                </VBox.margin>
+            </Button>
+        </VBox>
+        
+        <VBox alignment="CENTER" style="-fx-padding: 15; -fx-background-color: #f9f9f9; -fx-background-radius: 5; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);">
+            <padding>
+                <Insets top="15" right="15" bottom="15" left="15"/>
+            </padding>
+            <Label text="Ajouter une Machine" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2e8b57;"/>
+            <Label text="Enregistrez une nouvelle machine dans le système" style="-fx-text-fill: #555555; -fx-wrap-text: true;" textAlignment="CENTER"/>
+            <Button text="Ajouter" onAction="#goToAddMachine" 
+                    style="-fx-background-color: #2e8b57; -fx-text-fill: white; -fx-cursor: hand; -fx-background-radius: 3;">
+                <padding>
+                    <Insets top="8" right="15" bottom="8" left="15"/>
+                </padding>
+                <VBox.margin>
+                    <Insets top="10"/>
+                </VBox.margin>
+            </Button>
+        </VBox>
+        
+        <VBox alignment="CENTER" style="-fx-padding: 15; -fx-background-color: #f9f9f9; -fx-background-radius: 5; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);">
+            <padding>
+                <Insets top="15" right="15" bottom="15" left="15"/>
+            </padding>
+            <Label text="Gérer les Réservations" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2e8b57;"/>
+            <Label text="Réservez et suivez l'utilisation des machines" style="-fx-text-fill: #555555; -fx-wrap-text: true;" textAlignment="CENTER"/>
+            <Button text="Réservations" onAction="#goToReservations" 
+                    style="-fx-background-color: #2e8b57; -fx-text-fill: white; -fx-cursor: hand; -fx-background-radius: 3;">
+                <padding>
+                    <Insets top="8" right="15" bottom="8" left="15"/>
+                </padding>
+                <VBox.margin>
+                    <Insets top="10"/>
+                </VBox.margin>
+            </Button>
+        </VBox>
+
+        <VBox alignment="CENTER" style="-fx-padding: 15; -fx-background-color: #f9f9f9; -fx-background-radius: 5; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);">
+            <padding>
+                <Insets top="15" right="15" bottom="15" left="15"/>
+            </padding>
+            <Label text="Calendrier de Maintenance" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2e8b57;"/>
+            <Label text="Consultez les dates de maintenance des machines" style="-fx-text-fill: #555555; -fx-wrap-text: true;" textAlignment="CENTER"/>
+            <Button text="Calendrier" onAction="#goToCalendar" 
+                    style="-fx-background-color: #2e8b57; -fx-text-fill: white; -fx-cursor: hand; -fx-background-radius: 3;">
+                <padding>
+                    <Insets top="8" right="15" bottom="8" left="15"/>
+                </padding>
+                <VBox.margin>
+                    <Insets top="10"/>
+                </VBox.margin>
+            </Button>
+        </VBox>
+    </HBox>
+    
+</VBox> 

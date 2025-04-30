@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.web.*?>
+
+<AnchorPane prefHeight="500.0" prefWidth="650.0" styleClass="payment-background" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.PaymentController">
+    <children>
+        <VBox alignment="CENTER" prefHeight="500.0" prefWidth="650.0" spacing="20.0">
+            <!-- Titre -->
+            <Label styleClass="payment-title" text="Paiement en ligne">
+                <font>
+                    <Font name="System Bold" size="24.0" />
+                </font>
+                <VBox.margin>
+                    <Insets top="20.0" />
+                </VBox.margin>
+            </Label>
+
+            <!-- Montant total -->
+            <Label fx:id="totalAmountLabel" styleClass="total-label" text="Total: 0.00 USD">
+                <font>
+                    <Font size="18.0" />
+                </font>
+            </Label>
+
+            <!-- Détails des produits -->
+            <ListView fx:id="cartItemsList" prefHeight="100.0" prefWidth="550.0" />
+
+            <!-- Instructions -->
+            <Label text="Entrez vos informations de paiement ci-dessous :">
+                <font>
+                    <Font size="14.0" />
+                </font>
+            </Label>
+
+            <!-- WebView pour le widget Stripe -->
+            <WebView fx:id="stripeWebView" prefHeight="300.0" prefWidth="550.0" />
+
+            <!-- Indicateur de chargement -->
+            <Label fx:id="loadingLabel" text="Chargement..." visible="false">
+                <font>
+                    <Font size="14.0" />
+                </font>
+            </Label>
+
+            <!-- Bouton de retour -->
+            <Button fx:id="backButton" onAction="#returnToCart" prefHeight="45.0" prefWidth="150.0" styleClass="back-button" text="Retour">
+                <font>
+                    <Font name="System Bold" size="16.0" />
+                </font>
+            </Button>
+        </VBox>
+    </children>
+</AnchorPane>

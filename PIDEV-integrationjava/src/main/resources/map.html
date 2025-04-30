@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carte interactive</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css" />
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            font-family: sans-serif;
+        }
+        #map {
+            height: 70%;
+            width: 100%;
+        }
+        #info {
+            padding: 10px;
+            text-align: center;
+        }
+
+    </style>
+</head>
+<body>
+<div id="map"></div>
+<div id="info">
+    <p id="coords">Cliquez sur la carte pour choisir un emplacement</p>
+</div>
+
+<script>
+    let selectedLat = null;
+    let selectedLng = null;
+    let selectedAddress = null;
+    window.selectedData = null;
+
+    var map = L.map('map').setView([51.505, -0.09], 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    var marker = L.marker([51.505, -0.09]).addTo(map);
+
+    map.on('click', function(e) {
+        selectedLat = e.latlng.lat;
+        selectedLng = e.latlng.lng;
+        marker.setLatLng([selectedLat, selectedLng]);
+
+        document.getElementById('coords').textContent = `Lat: ${selectedLat.toFixed(5)} | Lng: ${selectedLng.toFixed(5)}`;
+
+        fetch(`https://nominatim.openstreetmap.org/reverse?lat=${selectedLat}&lon=${selectedLng}&format=json`)
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error("Erreur lors de la récupération de l'adresse");
+                }
+                return res.json();
+            })
+            .then(data => {
+                selectedAddress = data.display_name || "Adresse inconnue";
+                document.getElementById('coords').textContent = `Lat: ${selectedLat.toFixed(5)} | Lng: ${selectedLng.toFixed(5)}\n${selectedAddress}`;
+                window.selectedData = {
+                    lat: selectedLat,
+                    lng: selectedLng,
+                    address: selectedAddress
+                };
+                console.log("Données stockées :", window.selectedData);
+            })
+            .catch(error => {
+                console.error("Erreur Nominatim :", error.message);
+                selectedAddress = "Adresse inconnue";
+                document.getElementById('coords').textContent = `Lat: ${selectedLat.toFixed(5)} | Lng: ${selectedLng.toFixed(5)}\n${selectedAddress}`;
+                window.selectedData = {
+                    lat: selectedLat,
+                    lng: selectedLng,
+                    address: selectedAddress
+                };
+            });
+    });
+
+    console.log = function(message) {
+        document.getElementById('coords').textContent += '\n' + message;
+    };
+    console.error = function(message) {
+        document.getElementById('coords').textContent += '\nERROR: ' + message;
+    };
+</script>
+</body>
+</html>

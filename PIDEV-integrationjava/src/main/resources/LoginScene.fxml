@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.LoginScene">
+   <children>
+      <BorderPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #ffffff; -fx-border-color: #e0e0e0; -fx-border-width: 1px;">
+         <left>
+            <AnchorPane prefHeight="400.0" prefWidth="200.0" style="-fx-background-color: #f9f9f9;" BorderPane.alignment="CENTER">
+               <children>
+                  <ImageView fitHeight="288.0" fitWidth="389.0" layoutY="56.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@/images/logoAgriwise.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+         </left>
+
+         <right>
+            <AnchorPane prefHeight="400.0" prefWidth="400.0" style="-fx-background-color: #ffffff; -fx-padding: 20px;" BorderPane.alignment="CENTER">
+               <children>
+
+                  <!-- BIG CENTERED TITLE -->
+                  <Label layoutX="50.0" layoutY="10.0" prefWidth="300.0" prefHeight="40.0"
+                         style="-fx-font-size: 26px; -fx-text-fill: #2e7d32; -fx-font-weight: bold; -fx-alignment: center;"
+                         text="Bienvenue à Agriwise" />
+
+                  <Label layoutX="40.0" layoutY="70.0" style="-fx-font-size: 15px; -fx-text-fill: #2e7d32; -fx-font-weight: bold;" text="Email" />
+                  <Label layoutX="40.0" layoutY="120.0" style="-fx-font-size: 15px; -fx-text-fill: #2e7d32; -fx-font-weight: bold;" text="Password" />
+
+                  <TextField fx:id="tfemail" layoutX="130.0" layoutY="64.0" prefWidth="150"
+                             style="-fx-font-size: 14px; -fx-background-color: #f0f0f0; -fx-border-color: #81c784;
+                                          -fx-border-radius: 5px; -fx-background-radius: 5px; -fx-padding: 5px 10px;" />
+                  <PasswordField fx:id="tfpassword" layoutX="130.0" layoutY="114.0" prefWidth="150"
+                                 style="-fx-font-size: 14px; -fx-background-color: #f0f0f0; -fx-border-color: #81c784;
+                                              -fx-border-radius: 5px; -fx-background-radius: 5px; -fx-padding: 5px 10px;" />
+
+                  <Button fx:id="btnlogin" layoutX="112.0" layoutY="170.0" mnemonicParsing="false" onAction="#Login" prefHeight="36.0" prefWidth="133.0"
+                          style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-background-color: #4CAF50; -fx-text-fill: white;
+                                       -fx-background-radius: 8px; -fx-cursor: hand;" text="Connecter" />
+
+                  <Label layoutX="80.0" layoutY="320.0" style="-fx-font-size: 14px; -fx-text-fill: #333333; -fx-font-weight: normal;" text="Tu n'as pas de compte ?" />
+                  <Label layoutX="100.0" layoutY="350.0" style="-fx-font-size: 14px; -fx-text-fill: #1e88e5; -fx-font-weight: bold; -fx-cursor: hand;" text="Créer un compte!" />
+
+                  <Button fx:id="btnRegister" layoutX="106.0" layoutY="380.0" mnemonicParsing="false" onAction="#redirectToRegister" prefHeight="36.0" prefWidth="133.0"
+                          style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-background-color: #388e3c; -fx-text-fill: white;
+                                       -fx-background-radius: 8px; -fx-cursor: hand;" text="S'inscrire" />
+
+                  <Label layoutX="24.0" layoutY="220.0" style="-fx-font-size: 14px; -fx-text-fill: #333333; -fx-font-weight: normal;" text="Tu as oublié ton mot de passe ?" />
+                  <Label fx:id="mdpoubli" layoutX="230.0" layoutY="220.0" prefHeight="20.0" prefWidth="110.0" onMouseClicked="#envoyermailmdp"
+                         style="-fx-font-size: 14px; -fx-text-fill: #1e88e5; -fx-font-weight: bold; -fx-cursor: hand;" text="Clique ici!" />
+
+                  <TextField fx:id="hiddentextfield" layoutX="200.0" layoutY="255.0"
+                             style="-fx-background-color: #f0f0f0; -fx-border-color: #81c784;
+                                          -fx-border-radius: 5px; -fx-background-radius: 5px;" />
+                  <Label fx:id="hiddenlabel" layoutX="24.0" layoutY="259.0" prefHeight="18.0" prefWidth="166.0"
+                         style="-fx-font-size: 12px; -fx-text-fill: #777777;" />
+                  <Button fx:id="btnconfirm" layoutX="250.0" layoutY="290.0" mnemonicParsing="false" onAction="#confirmAction"
+                          style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-background-color: #4CAF50; -fx-text-fill: white;
+                                       -fx-background-radius: 8px; -fx-cursor: hand;" text="Confirm" />
+
+               </children>
+            </AnchorPane>
+         </right>
+      </BorderPane>
+   </children>
+</AnchorPane>

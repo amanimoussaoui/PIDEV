@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.esprit.controllers.ClientMachinesController"
+            prefHeight="600.0" prefWidth="900.0"
+            style="-fx-background-color: #f9f9f9;">
+
+    <!-- En-tête -->
+    <top>
+        <VBox style="-fx-background-color: #2e8b57;">
+            <padding>
+                <Insets top="15" right="20" bottom="15" left="20"/>
+            </padding>
+
+            <HBox alignment="CENTER_LEFT" spacing="20">
+                <Button text="Retour" onAction="#goBack"
+                        style="-fx-background-color: white; -fx-text-fill: #2e8b57; -fx-font-weight: bold; -fx-background-radius: 5; -fx-cursor: hand;">
+                    <padding>
+                        <Insets top="5" right="15" bottom="5" left="15"/>
+                    </padding>
+                </Button>
+
+                <Label text="Agriwise" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: white;">
+                    <font>
+                        <Font name="Arial Bold" size="28.0"/>
+                    </font>
+                </Label>
+
+                <Label text="Espace Client" style="-fx-font-size: 18px; -fx-text-fill: white;">
+                    <font>
+                        <Font name="Arial" size="18.0"/>
+                    </font>
+                </Label>
+
+                <Region HBox.hgrow="ALWAYS" />
+            </HBox>
+        </VBox>
+    </top>
+
+    <!-- Contenu principal -->
+    <center>
+        <VBox spacing="15">
+            <padding>
+                <Insets top="30" right="30" bottom="30" left="30"/>
+            </padding>
+
+            <HBox alignment="CENTER_LEFT" spacing="15">
+                <Label text="Machines disponibles" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #2e8b57;">
+                    <font>
+                        <Font name="Arial Bold" size="22.0"/>
+                    </font>
+                </Label>
+
+                <Region HBox.hgrow="ALWAYS" />
+
+                <TextField fx:id="searchField" promptText="Rechercher une machine..." prefWidth="280" style="-fx-background-radius: 8;">
+                    <HBox.margin>
+                        <Insets right="10"/>
+                    </HBox.margin>
+                </TextField>
+
+                <Button text="Rechercher" onAction="#handleSearch"
+                        style="-fx-background-color: #2e8b57; -fx-text-fill: white; -fx-background-radius: 8; -fx-cursor: hand;">
+                    <padding>
+                        <Insets top="5" right="15" bottom="5" left="15"/>
+                    </padding>
+                </Button>
+            </HBox>
+
+            <Separator/>
+
+            <!-- Zone d'affichage des machines -->
+            <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" style="-fx-background-color: transparent;">
+                <FlowPane fx:id="machinesContainer" hgap="20" vgap="20"
+                          style="-fx-background-color: white; -fx-border-color: #dddddd; -fx-border-radius: 10; -fx-padding: 10;">
+                    <padding>
+                        <Insets top="10" right="10" bottom="10" left="10"/>
+                    </padding>
+                </FlowPane>
+            </ScrollPane>
+        </VBox>
+    </center>
+
+    <!-- Pied de page -->
+    <bottom>
+        <HBox alignment="CENTER" style="-fx-background-color: #eeeeee; -fx-padding: 15;">
+            <Label text="© 2025 Agriwise - Tous droits réservés" style="-fx-text-fill: #555555; -fx-font-size: 12px;"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>

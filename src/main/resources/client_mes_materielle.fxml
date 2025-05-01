@@ -46,6 +46,11 @@
 
     <!-- Boutons d'action -->
     <HBox alignment="CENTER_RIGHT" spacing="10">
+        <Button fx:id="generateQrCodeBtn" onAction="#generateQrCodePdf" style="-fx-background-color: #4286f4; -fx-text-fill: white; -fx-cursor: hand; -fx-background-radius: 3;" text="Générer QR Code (PDF)">
+            <padding>
+                <Insets bottom="8" left="15" right="15" top="8" />
+            </padding>
+        </Button>
         <Button onAction="#supprimerMateriel" style="-fx-background-color: #ff4444; -fx-text-fill: white; -fx-cursor: hand; -fx-background-radius: 3;" text="Supprimer">
             <padding>
                 <Insets bottom="8" left="15" right="15" top="8" />

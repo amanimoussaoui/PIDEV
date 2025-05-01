@@ -1,305 +1,281 @@
 package tn.esprit.services;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
+import tn.esprit.models.WeatherInfo;
 
-/**
- * Service for providing weather information (simulated for offline use)
- */
+import java.io.IOException;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+
 public class WeatherService {
+    // Nouvelle clé API OpenWeatherMap
     
-    // Utilisation de données météo simulées au lieu d'appeler une API externe
-    private final Random random = new Random();
-    
-    // Conditions météo possibles en français
-    private final String[] weatherConditions = {
-        "Ciel dégagé", "Nuageux", "Partiellement nuageux", 
-        "Pluie légère", "Pluie modérée", "Orage", 
-        "Brouillard", "Neige légère", "Ensoleillé"
-    };
-    
-    // Conditions défavorables
-    private final String[] adverseConditions = {
-        "Pluie modérée", "Pluie forte", "Orage", 
-        "Grêle", "Tempête", "Neige abondante"
-    };
-    
-    /**
-     * Gets the current weather information for a specific location
-     * @param latitude location latitude
-     * @param longitude location longitude
-     * @return WeatherInfo object containing weather details
-     */
-    public WeatherInfo getCurrentWeather(double latitude, double longitude) throws IOException, URISyntaxException {
-        System.out.println("Génération de données météo simulées pour lat=" + latitude + ", lon=" + longitude);
+    private static final String BASE_URL = "https://api.openweathermap.org/data/2.5/";
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    public WeatherInfo getWeatherInfo(double latitude, double longitude) throws IOException {
+        System.out.println("=== Début de la récupération des données météo ===");
+        System.out.println("Coordonnées : lat=" + latitude + ", lon=" + longitude);
         
+        String url = String.format("%sweather?lat=%f&lon=%f&appid=%s&units=metric&lang=fr",
+                BASE_URL, latitude, longitude, API_KEY);
+        System.out.println("URL de l'API : " + url);
+
+        try (CloseableHttpClient client = HttpClients.createDefault()) {
+            HttpGet request = new HttpGet(url);
+            System.out.println("Envoi de la requête HTTP...");
+            
+            try (CloseableHttpResponse response = client.execute(request)) {
+                int statusCode = response.getStatusLine().getStatusCode();
+                System.out.println("Code de réponse HTTP : " + statusCode);
+                
+                String json = EntityUtils.toString(response.getEntity());
+                System.out.println("Réponse reçue. Contenu JSON : " + json);
+
+                if (statusCode == 401) {
+                    throw new IOException("Erreur d'authentification avec l'API OpenWeatherMap. Veuillez vérifier votre clé API.");
+                } else if (statusCode != 200) {
+                    throw new IOException("Erreur API OpenWeatherMap. Code : " + statusCode + ", Réponse : " + json);
+                }
+                
+                WeatherInfo info = parseWeatherResponse(json);
+                System.out.println("Données météo analysées avec succès : " + info.toString());
+                return info;
+            }
+        } catch (Exception e) {
+            System.err.println("!!! ERREUR lors de la récupération des données météo !!!");
+            System.err.println("Type d'erreur : " + e.getClass().getName());
+            System.err.println("Message d'erreur : " + e.getMessage());
+            e.printStackTrace();
+            throw new IOException("Erreur lors de la récupération des données météo: " + e.getMessage(), e);
+        }
+    }
+
+    public String checkAdverseWeatherConditions(double latitude, double longitude, 
+                                              LocalDate startDate, LocalDate endDate) throws IOException {
+        System.out.println("=== Début de la vérification des conditions météorologiques ===");
+        System.out.println("Coordonnées : lat=" + latitude + ", lon=" + longitude);
+        System.out.println("Période : du " + startDate + " au " + endDate);
+        
+
+        String url = String.format("%sforecast?lat=%f&lon=%f&appid=%s&units=metric&lang=fr",
+                BASE_URL, latitude, longitude, API_KEY);
+        System.out.println("URL de l'API : " + url);
+
+        try (CloseableHttpClient client = HttpClients.createDefault()) {
+            HttpGet request = new HttpGet(url);
+            System.out.println("Envoi de la requête HTTP...");
+            
+            try (CloseableHttpResponse response = client.execute(request)) {
+                int statusCode = response.getStatusLine().getStatusCode();
+                System.out.println("Code de réponse HTTP : " + statusCode);
+                
+                String json = EntityUtils.toString(response.getEntity());
+                System.out.println("Réponse reçue. Longueur JSON : " + json.length());
+                
+                if (statusCode == 401) {
+                    System.err.println("Erreur d'authentification avec l'API OpenWeatherMap");
+                    throw new IOException("Erreur d'authentification avec l'API OpenWeatherMap. Veuillez vérifier votre clé API.");
+                } else if (statusCode != 200) {
+                    System.err.println("Erreur API OpenWeatherMap. Code : " + statusCode);
+                    throw new IOException("Erreur API OpenWeatherMap. Code : " + statusCode + ", Réponse : " + json);
+                }
+                
+                String conditions = parseAdverseConditions(json, startDate, endDate);
+                if (conditions != null) {
+                    System.out.println("Conditions défavorables détectées : " + conditions);
+                } else {
+                    System.out.println("Aucune condition défavorable détectée");
+                }
+                return conditions;
+            }
+        } catch (Exception e) {
+            System.err.println("!!! ERREUR lors de la vérification des conditions météorologiques !!!");
+            System.err.println("Type d'erreur : " + e.getClass().getName());
+            System.err.println("Message d'erreur : " + e.getMessage());
+            e.printStackTrace();
+            throw new IOException("Erreur lors de la vérification des conditions météorologiques: " + e.getMessage(), e);
+        }
+    }
+
+    private String parseAdverseConditions(String json, LocalDate startDate, LocalDate endDate) throws IOException {
+        System.out.println("Analyse des conditions météorologiques...");
         try {
-            // Simulation d'un court délai pour imiter un appel réseau
-            Thread.sleep(200);
+            JsonNode root = objectMapper.readTree(json);
+            if (!root.has("list")) {
+                throw new IOException("Le nœud 'list' est manquant dans la réponse JSON");
+            }
             
-            // Choisir une condition météo aléatoire
-            String condition = weatherConditions[random.nextInt(weatherConditions.length)];
-            String description = generateDescription(condition);
+            JsonNode list = root.path("list");
+            StringBuilder adverseConditions = new StringBuilder();
+            int conditionsCount = 0;
+
+            for (JsonNode forecast : list) {
+                // Convertir le timestamp en LocalDateTime
+                long timestamp = forecast.path("dt").asLong();
+                LocalDateTime forecastDate = LocalDateTime.ofInstant(
+                    Instant.ofEpochSecond(timestamp),
+                    ZoneId.systemDefault()
+                );
+                LocalDate date = forecastDate.toLocalDate();
+
+                // Vérifier si la date est dans la plage demandée
+                if (!date.isBefore(startDate) && !date.isAfter(endDate)) {
+                    System.out.println("Analyse des prévisions pour le " + date);
+                    
+                    JsonNode weather = forecast.path("weather").get(0);
+                    String description = weather.path("description").asText();
+                    double temperature = forecast.path("main").path("temp").asDouble();
+                    int humidity = forecast.path("main").path("humidity").asInt();
+                    double windSpeed = forecast.path("wind").path("speed").asDouble();
+
+                    System.out.println("Conditions : " + description + ", Temp: " + temperature + 
+                                     "°C, Humidité: " + humidity + "%, Vent: " + windSpeed + " m/s");
+
+                    // Vérifier les conditions défavorables
+                    if (isAdverseCondition(description, temperature, humidity, windSpeed)) {
+                        conditionsCount++;
+                        if (adverseConditions.length() > 0) {
+                            adverseConditions.append("\n");
+                        }
+                        adverseConditions.append(date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
+                                       .append(" à ").append(forecastDate.format(DateTimeFormatter.ofPattern("HH:mm")))
+                                       .append(": ").append(description)
+                                       .append(" (").append(String.format("%.1f°C", temperature)).append(")");
+                        
+                        System.out.println("Condition défavorable détectée !");
+                    }
+                }
+            }
+
+            System.out.println("Nombre total de conditions défavorables trouvées : " + conditionsCount);
+            return adverseConditions.length() > 0 ? adverseConditions.toString() : null;
             
-            // Générer des valeurs météo plausibles
-            double temperature = 15 + (random.nextDouble() * 20) - 10; // Entre 5 et 25°C
-            int humidity = 40 + random.nextInt(60); // Entre 40 et 99%
-            double windSpeed = random.nextDouble() * 10; // Entre 0 et 10 m/s
-            String iconCode = getIconCodeForCondition(condition);
+        } catch (Exception e) {
+            System.err.println("!!! ERREUR lors de l'analyse des conditions météorologiques !!!");
+            System.err.println("JSON reçu : " + json);
+            System.err.println("Message d'erreur : " + e.getMessage());
+            e.printStackTrace();
+            throw new IOException("Erreur lors de l'analyse des conditions météorologiques: " + e.getMessage(), e);
+        }
+    }
+
+    private boolean isAdverseCondition(String description, double temperature, int humidity, double windSpeed) {
+        String desc = description.toLowerCase();
+        
+        // Conditions météorologiques défavorables
+        boolean badWeather = desc.contains("pluie") || desc.contains("orage") || 
+                           desc.contains("neige") || desc.contains("grêle") ||
+                           desc.contains("tempête") || desc.contains("brouillard");
+        
+        // Conditions extrêmes
+        boolean extremeTemp = temperature < 0 || temperature > 35;
+        boolean highHumidity = humidity > 85;
+        boolean strongWind = windSpeed > 10.8; // > 39 km/h
+
+        boolean isAdverse = badWeather || extremeTemp || (highHumidity && strongWind);
+        
+        if (isAdverse) {
+            System.out.println("Condition défavorable détectée:");
+            System.out.println("- Description: " + description);
+            System.out.println("- Température: " + temperature + "°C");
+            System.out.println("- Humidité: " + humidity + "%");
+            System.out.println("- Vitesse du vent: " + windSpeed + " m/s");
+        }
+        
+        return isAdverse;
+    }
+
+    private WeatherInfo parseWeatherResponse(String json) throws IOException {
+        try {
+            System.out.println("Début de l'analyse de la réponse JSON...");
+            JsonNode root = objectMapper.readTree(json);
             
-            WeatherInfo weatherInfo = new WeatherInfo(
-                condition,
-                description,
-                temperature,
-                humidity,
-                windSpeed,
-                iconCode
-            );
+            WeatherInfo weatherInfo = new WeatherInfo();
             
-            System.out.println("Données météo simulées générées: " + weatherInfo);
+            // Vérification des nœuds principaux
+            if (!root.has("main")) {
+                throw new IOException("Le nœud 'main' est manquant dans la réponse JSON");
+            }
+            if (!root.has("weather") || !root.path("weather").isArray() || root.path("weather").size() == 0) {
+                throw new IOException("Le nœud 'weather' est manquant ou invalide dans la réponse JSON");
+            }
+            
+            // Température
+            JsonNode mainNode = root.path("main");
+            weatherInfo.setTemperature(mainNode.path("temp").asDouble());
+            System.out.println("Température récupérée : " + weatherInfo.getTemperature());
+            
+            // Description météo
+            JsonNode weatherNode = root.path("weather").get(0);
+            String description = weatherNode.path("description").asText();
+            weatherInfo.setDescription(description);
+            System.out.println("Description récupérée : " + description);
+            
+            // Humidité
+            weatherInfo.setHumidity(mainNode.path("humidity").asInt());
+            
+            // Vitesse du vent
+            if (root.has("wind")) {
+                weatherInfo.setWindSpeed(root.path("wind").path("speed").asDouble());
+            }
+            
+            // Pression atmosphérique
+            weatherInfo.setPressure(mainNode.path("pressure").asInt());
+            
+            // Couverture nuageuse
+            if (root.has("clouds")) {
+                weatherInfo.setCloudCover(root.path("clouds").path("all").asInt());
+            }
+            
+            // Lever et coucher du soleil
+            if (root.has("sys")) {
+                JsonNode sysNode = root.path("sys");
+                if (sysNode.has("sunrise") && sysNode.has("sunset")) {
+                    long sunriseTimestamp = sysNode.path("sunrise").asLong();
+                    long sunsetTimestamp = sysNode.path("sunset").asLong();
+                    
+                    weatherInfo.setSunrise(LocalDateTime.ofInstant(
+                        Instant.ofEpochSecond(sunriseTimestamp),
+                        ZoneId.systemDefault()
+                    ));
+                    
+                    weatherInfo.setSunset(LocalDateTime.ofInstant(
+                        Instant.ofEpochSecond(sunsetTimestamp),
+                        ZoneId.systemDefault()
+                    ));
+                }
+            }
+            
+            // Icône météo
+            String iconCode = weatherNode.path("icon").asText();
+            weatherInfo.setIconUrl(String.format("http://openweathermap.org/img/w/%s.png", iconCode));
+            System.out.println("URL de l'icône : " + weatherInfo.getIconUrl());
+            
+            // Nom de la ville et pays
+            weatherInfo.setCity(root.path("name").asText());
+            if (root.has("sys")) {
+                weatherInfo.setCountry(root.path("sys").path("country").asText());
+            }
+            
+            System.out.println("Analyse JSON terminée avec succès");
             return weatherInfo;
             
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new IOException("Erreur lors de la génération des données météo simulées");
-        }
-    }
-    
-    /**
-     * Gets the forecast weather for multiple days
-     * @param latitude location latitude
-     * @param longitude location longitude
-     * @param startDate start date for forecast
-     * @param endDate end date for forecast
-     * @return List of ForecastInfo objects containing forecast for each day
-     */
-    public List<ForecastInfo> getForecast(double latitude, double longitude, LocalDate startDate, LocalDate endDate) 
-            throws IOException, URISyntaxException {
-        
-        System.out.println("Génération de prévisions météo simulées de " + startDate + " à " + endDate);
-        List<ForecastInfo> forecasts = new ArrayList<>();
-        
-        try {
-            // Simulation d'un court délai pour imiter un appel réseau
-            Thread.sleep(300);
-            
-            // Générer une prévision pour chaque jour dans la plage de dates
-            LocalDate current = startDate;
-            while (!current.isAfter(endDate)) {
-                // Générer des données météo aléatoires pour ce jour
-                // 20% de chance d'avoir des conditions défavorables
-                String condition;
-                if (random.nextInt(100) < 20) {
-                    condition = adverseConditions[random.nextInt(adverseConditions.length)];
-                } else {
-                    condition = weatherConditions[random.nextInt(weatherConditions.length)];
-                }
-                
-                String description = generateDescription(condition);
-                double temperature = 15 + (random.nextDouble() * 20) - 10;
-                int humidity = 40 + random.nextInt(60);
-                double windSpeed = random.nextDouble() * 10;
-                String iconCode = getIconCodeForCondition(condition);
-                
-                ForecastInfo forecast = new ForecastInfo(
-                    current,
-                    condition,
-                    description,
-                    temperature,
-                    humidity,
-                    windSpeed,
-                    iconCode
-                );
-                
-                forecasts.add(forecast);
-                current = current.plusDays(1);
-            }
-            
-            return forecasts;
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new IOException("Erreur lors de la génération des prévisions météo simulées");
-        }
-    }
-    
-    /**
-     * Checks if there are any adverse weather conditions in the date range
-     * @param latitude location latitude
-     * @param longitude location longitude
-     * @param startDate start date to check
-     * @param endDate end date to check
-     * @return String description of adverse conditions or null if no adverse conditions
-     */
-    public String checkAdverseWeatherConditions(double latitude, double longitude, 
-                                               LocalDate startDate, LocalDate endDate) 
-            throws IOException, URISyntaxException {
-        
-        List<ForecastInfo> forecasts = getForecast(latitude, longitude, startDate, endDate);
-        StringBuilder adverseConditions = new StringBuilder();
-        
-        for (ForecastInfo forecast : forecasts) {
-            String condition = forecast.getCondition().toLowerCase();
-            String description = forecast.getDescription().toLowerCase();
-            
-            if (isAdverseCondition(condition, description)) {
-                if (adverseConditions.length() > 0) {
-                    adverseConditions.append("\n");
-                }
-                adverseConditions.append(forecast.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
-                          .append(": ")
-                          .append(forecast.getDescription())
-                          .append(" (").append(Math.round(forecast.getTemperature())).append("°C)");
-            }
-        }
-        
-        return adverseConditions.length() > 0 ? adverseConditions.toString() : null;
-    }
-    
-    /**
-     * Determines if a weather condition is adverse
-     */
-    private boolean isAdverseCondition(String condition, String description) {
-        return condition.contains("pluie") || condition.contains("orage") || 
-               condition.contains("tempête") || condition.contains("neige") || 
-               condition.contains("grêle") || condition.contains("brouillard") ||
-               description.contains("forte") || description.contains("abondante") ||
-               description.contains("violent");
-    }
-    
-    /**
-     * Generate a detailed description based on condition
-     */
-    private String generateDescription(String condition) {
-        if (condition.contains("Ciel dégagé") || condition.contains("Ensoleillé")) {
-            return "Temps ensoleillé";
-        } else if (condition.contains("Nuageux")) {
-            return "Ciel couvert";
-        } else if (condition.contains("Partiellement")) {
-            return "Éclaircies par moments";
-        } else if (condition.contains("Pluie légère")) {
-            return "Légères averses";
-        } else if (condition.contains("Pluie modérée")) {
-            return "Averses continues";
-        } else if (condition.contains("Orage")) {
-            return "Orages et pluies";
-        } else if (condition.contains("Brouillard")) {
-            return "Visibilité réduite";
-        } else if (condition.contains("Neige")) {
-            return "Chutes de neige";
-        } else if (condition.contains("Grêle")) {
-            return "Risque de grêle";
-        } else if (condition.contains("Tempête")) {
-            return "Vents violents et pluie";
-        } else {
-            return "Conditions variables";
-        }
-    }
-    
-    /**
-     * Map condition to icon code
-     */
-    private String getIconCodeForCondition(String condition) {
-        if (condition.contains("Ciel dégagé") || condition.contains("Ensoleillé")) {
-            return "01d";
-        } else if (condition.contains("Nuageux")) {
-            return "04d";
-        } else if (condition.contains("Partiellement")) {
-            return "02d";
-        } else if (condition.contains("Pluie")) {
-            return "10d";
-        } else if (condition.contains("Orage")) {
-            return "11d";
-        } else if (condition.contains("Brouillard")) {
-            return "50d";
-        } else if (condition.contains("Neige")) {
-            return "13d";
-        } else {
-            return "02d"; // default
-        }
-    }
-    
-    /**
-     * Inner class representing current weather information
-     */
-    public static class WeatherInfo {
-        private final String condition;
-        private final String description;
-        private final double temperature;
-        private final int humidity;
-        private final double windSpeed;
-        private final String iconCode;
-        
-        public WeatherInfo(String condition, String description, double temperature, 
-                          int humidity, double windSpeed, String iconCode) {
-            this.condition = condition;
-            this.description = description;
-            this.temperature = temperature;
-            this.humidity = humidity;
-            this.windSpeed = windSpeed;
-            this.iconCode = iconCode;
-        }
-        
-        public String getCondition() {
-            return condition;
-        }
-        
-        public String getDescription() {
-            return description;
-        }
-        
-        public double getTemperature() {
-            return temperature;
-        }
-        
-        public int getHumidity() {
-            return humidity;
-        }
-        
-        public double getWindSpeed() {
-            return windSpeed;
-        }
-        
-        public String getIconCode() {
-            return iconCode;
-        }
-        
-        public String getIconUrl() {
-            return "https://openweathermap.org/img/wn/" + iconCode + "@2x.png";
-        }
-        
-        @Override
-        public String toString() {
-            return condition + ": " + description + ", " + 
-                   Math.round(temperature) + "°C, " + 
-                   "Humidité: " + humidity + "%, " + 
-                   "Vent: " + Math.round(windSpeed * 10) / 10.0 + " m/s";
-        }
-    }
-    
-    /**
-     * Inner class representing forecast information for a specific date
-     */
-    public static class ForecastInfo extends WeatherInfo {
-        private final LocalDate date;
-        
-        public ForecastInfo(LocalDate date, String condition, String description, 
-                           double temperature, int humidity, double windSpeed, String iconCode) {
-            super(condition, description, temperature, humidity, windSpeed, iconCode);
-            this.date = date;
-        }
-        
-        public LocalDate getDate() {
-            return date;
-        }
-        
-        @Override
-        public String toString() {
-            return date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + ": " + super.toString();
+        } catch (Exception e) {
+            System.err.println("!!! ERREUR lors de l'analyse du JSON !!!");
+            System.err.println("JSON reçu : " + json);
+            System.err.println("Message d'erreur : " + e.getMessage());
+            e.printStackTrace();
+            throw new IOException("Erreur lors de l'analyse des données météo: " + e.getMessage(), e);
         }
     }
 } 

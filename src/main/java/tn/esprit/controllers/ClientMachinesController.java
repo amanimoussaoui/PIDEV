@@ -1,11 +1,5 @@
 package tn.esprit.controllers;
 
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.WriterException;
-import com.google.zxing.client.j2se.MatrixToImageWriter;
-import com.google.zxing.common.BitMatrix;
-import com.google.zxing.qrcode.QRCodeWriter;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -111,56 +105,6 @@ public class ClientMachinesController implements Initializable {
         }
     }
 
-    private ImageView generateQRCode(Machine machine) {
-        try {
-            // Créer le contenu du QR code avec les caractéristiques de la machine
-            // Format amélioré avec des séparateurs clairs et plus d'espace
-            String qrContent = String.format(
-                "=== MACHINE INFO ===\n\n" +
-                "📦 Nom: %s\n\n" +
-                "💰 Prix: %.2f DT/jour\n\n" +
-                "📝 Description:\n%s\n\n" +
-                "========================\n" +
-                "Scanned from Agriwise App",
-                machine.getNom(),
-                machine.getPrix(),
-                machine.getDescription() != null ? machine.getDescription() : "Aucune description"
-            );
-
-            // Augmenter la taille du QR code pour plus de lisibilité
-            QRCodeWriter qrCodeWriter = new QRCodeWriter();
-            BitMatrix bitMatrix = qrCodeWriter.encode(qrContent, BarcodeFormat.QR_CODE, 200, 200);
-            
-            // Convertir en image JavaFX
-            javafx.scene.image.WritableImage qrImage = SwingFXUtils.toFXImage(
-                MatrixToImageWriter.toBufferedImage(bitMatrix),
-                null
-            );
-
-            // Créer et configurer l'ImageView avec une taille plus grande
-            ImageView qrImageView = new ImageView(qrImage);
-            qrImageView.setFitWidth(200);
-            qrImageView.setFitHeight(200);
-            qrImageView.setPreserveRatio(true);
-            
-            // Ajouter un effet de survol pour agrandir le QR code
-            qrImageView.setOnMouseEntered(e -> {
-                qrImageView.setScaleX(1.2);
-                qrImageView.setScaleY(1.2);
-            });
-            
-            qrImageView.setOnMouseExited(e -> {
-                qrImageView.setScaleX(1.0);
-                qrImageView.setScaleY(1.0);
-            });
-            
-            return qrImageView;
-        } catch (WriterException e) {
-            System.err.println("Erreur lors de la génération du QR code: " + e.getMessage());
-            return null;
-        }
-    }
-
     private VBox createMachineCard(Machine machine) {
         VBox card = new VBox();
         card.setStyle("-fx-background-color: white; " +
@@ -170,7 +114,7 @@ public class ClientMachinesController implements Initializable {
                      "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);");
         card.setPrefWidth(280);
         card.setMaxWidth(280);
-        card.setMinHeight(450);
+        card.setMinHeight(400);
         card.setSpacing(15);
         card.setPadding(new Insets(15));
 
@@ -226,18 +170,6 @@ public class ClientMachinesController implements Initializable {
         // Ajouter les informations au conteneur
         infoContainer.getChildren().addAll(nameLabel, prixLabel, descriptionBox);
 
-        // QR Code avec titre
-        VBox qrContainer = new VBox(10);
-        qrContainer.setAlignment(javafx.geometry.Pos.CENTER);
-        
-        Label qrLabel = new Label("Scanner pour plus d'infos");
-        qrLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #666666;");
-        
-        ImageView qrImageView = generateQRCode(machine);
-        if (qrImageView != null) {
-            qrContainer.getChildren().addAll(qrLabel, qrImageView);
-        }
-
         // Bouton de réservation avec style amélioré
         Button reserveButton = new Button("Réserver");
         reserveButton.setStyle("-fx-background-color: #2e8b57; " +
@@ -247,21 +179,12 @@ public class ClientMachinesController implements Initializable {
                              "-fx-background-radius: 5; " +
                              "-fx-padding: 10 20; " +
                              "-fx-min-width: 200;");
-        
-        // Effet hover sur le bouton
-        reserveButton.setOnMouseEntered(e -> 
-            reserveButton.setStyle(reserveButton.getStyle() + "-fx-background-color: #3aa76d;"));
-        reserveButton.setOnMouseExited(e -> 
-            reserveButton.setStyle(reserveButton.getStyle().replace("-fx-background-color: #3aa76d;", 
-                                                                   "-fx-background-color: #2e8b57;")));
-        
         reserveButton.setOnAction(e -> handleReserveMachine(machine));
 
         // Ajouter tous les éléments à la carte
         card.getChildren().addAll(
             imageContainer,
             infoContainer,
-            qrContainer,
             reserveButton
         );
 
@@ -274,22 +197,19 @@ public class ClientMachinesController implements Initializable {
             return;
         }
 
-        String searchText = searchField.getText().trim().toLowerCase();
-        UserSession session = UserSession.getInstance();
+        String searchText = searchField.getText().toLowerCase();
+        List<Machine> filteredMachines;
 
         if (searchText.isEmpty()) {
-            loadMachines();
-            return;
-        }
-
-        List<Machine> filteredMachines = allMachines.stream()
-                .filter(machine -> machine.getId_user() != session.getUserId()) // Exclure les machines de l'utilisateur connecté
-                .filter(machine -> "Disponible".equals(machine.getDisponibilite())) // Ne garder que les machines disponibles
-                .filter(machine ->
+            filteredMachines = allMachines;
+        } else {
+            filteredMachines = allMachines.stream()
+                    .filter(machine -> 
                         machine.getNom().toLowerCase().contains(searchText) ||
-                                (machine.getDescription() != null && machine.getDescription().toLowerCase().contains(searchText))
-                )
-                .collect(Collectors.toList());
+                        (machine.getDescription() != null && machine.getDescription().toLowerCase().contains(searchText))
+                    )
+                    .collect(Collectors.toList());
+        }
 
         displayMachines(filteredMachines);
     }
@@ -302,39 +222,31 @@ public class ClientMachinesController implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/client_reservation_form.fxml"));
             Parent root = loader.load();
-
+            
             ClientReservationFormController controller = loader.getController();
             controller.setMachine(machine);
             controller.setParentController(this);
-
+            
             Stage stage = new Stage();
-            stage.setTitle("Réserver une machine");
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("Réserver " + machine.getNom());
             stage.setScene(new Scene(root));
-            stage.initModality(Modality.APPLICATION_MODAL);  // Make the window modal
-            stage.show();
-
+            stage.showAndWait();
+            
         } catch (IOException e) {
-            AlertUtils.showError("Erreur lors de l'ouverture du formulaire de réservation: " + e.getMessage());
+            System.err.println("Erreur lors du chargement du formulaire de réservation:");
+            e.printStackTrace();
+            AlertUtils.showError("Erreur lors du chargement du formulaire de réservation: " + e.getMessage());
         }
     }
 
     private void handleModifyMachine(Machine machine) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/client_modifier_machine.fxml"));
-            Parent root = loader.load();
-
-            ClientModifierMachineController controller = loader.getController();
-            controller.setMachine(machine);
-            controller.setParentController(this);
-
-            Stage stage = new Stage();
-            stage.setTitle("Modifier " + machine.getNom());
-            stage.setScene(new Scene(root));
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.showAndWait();
-        } catch (IOException e) {
-            AlertUtils.showError("Erreur lors de l'ouverture du formulaire de modification: " + e.getMessage());
+        if (!checkSession()) {
+            return;
         }
+
+        // TODO: Implement machine modification for the owner (if needed)
+        AlertUtils.showInfo("Cette fonctionnalité n'est pas encore disponible");
     }
 
     public void refreshMachines() {
@@ -344,12 +256,13 @@ public class ClientMachinesController implements Initializable {
     @FXML
     private void goBack() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/client_home.fxml"));
-            Parent root = loader.load();
+            Parent root = FXMLLoader.load(getClass().getResource("/client_home.fxml"));
+            Scene scene = new Scene(root);
             Stage stage = (Stage) machinesContainer.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            stage.setScene(scene);
             stage.setTitle("Espace Client - Agriwise");
         } catch (IOException e) {
+            e.printStackTrace();
             AlertUtils.showError("Erreur lors du retour à la page d'accueil: " + e.getMessage());
         }
     }
@@ -357,13 +270,14 @@ public class ClientMachinesController implements Initializable {
     @FXML
     private void goToHome() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/main.fxml"));
-            Parent root = loader.load();
-            Scene scene = machinesContainer.getScene();
-            Stage stage = (Stage) scene.getWindow();
-            stage.setScene(new Scene(root));
+            Parent root = FXMLLoader.load(getClass().getResource("/client_home.fxml"));
+            Scene scene = new Scene(root);
+            Stage stage = (Stage) machinesContainer.getScene().getWindow();
+            stage.setScene(scene);
+            stage.setTitle("Espace Client - Agriwise");
         } catch (IOException e) {
-            AlertUtils.showError("Erreur lors du chargement de la page d'accueil: " + e.getMessage());
+            e.printStackTrace();
+            AlertUtils.showError("Erreur lors du retour à la page d'accueil: " + e.getMessage());
         }
     }
 } 

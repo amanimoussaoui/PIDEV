@@ -66,7 +66,7 @@ public class LoginScene {
                 }
 
                 // Redirect to Dashboard if the user has ROLE_ADMIN, else to MainmenuScene
-                String fxmlToLoad = isAdmin ? "/product_list.fxml" : "/front.fxml";
+                String fxmlToLoad = isAdmin ? "/product_list.fxml" : "/product_list.fxml";
 
                 try {
                     FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlToLoad));

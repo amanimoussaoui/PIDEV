@@ -176,139 +176,92 @@ public class ClientReservationFormController implements Initializable {
 
     @FXML
     private void handleReserve() {
-        if (!validateDates()) {
-            return;
-        }
-
-        // Vérifier la session utilisateur
-        UserSession session = UserSession.getInstance();
-        if (session == null || !session.isLoggedIn()) {
-            AlertUtils.showError("Vous devez être connecté pour faire une réservation");
-            closeWindow();
-            return;
-        }
-
-        int userId = session.getUserId();
-        if (userId <= 0) {
-            AlertUtils.showError("ID utilisateur invalide");
-            closeWindow();
-            return;
-        }
-        
-        // Vérifier les conditions météorologiques avant de finaliser la réservation
-        checkWeatherConditions(userId);
-    }
-    
-    private void checkWeatherConditions(int userId) {
         try {
-            // Récupérer la localisation de l'utilisateur
-            LocationService.LocationInfo location = locationService.getLocation();
-            
-            // Vérifier s'il y a des conditions météorologiques défavorables durant la période de réservation
-            String adverseConditions = weatherService.checkAdverseWeatherConditions(
-                    location.getLatitude(),
-                    location.getLongitude(),
-                    dateDebutPicker.getValue(),
-                    dateFinPicker.getValue()
-            );
-            
-            if (adverseConditions != null) {
-                // Afficher une alerte avec les conditions défavorables et demander confirmation
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("Attention - Conditions Météorologiques");
-                alert.setHeaderText("Conditions météorologiques défavorables détectées");
-                
-                // Créer une zone de texte déroulante pour afficher les détails
-                Label label = new Label("Des conditions météorologiques défavorables sont prévues " +
-                                      "pendant votre période de réservation. Veuillez consulter les détails:");
-                
-                TextArea textArea = new TextArea(adverseConditions);
-                textArea.setEditable(false);
-                textArea.setWrapText(true);
-                textArea.setMaxWidth(Double.MAX_VALUE);
-                textArea.setMaxHeight(Double.MAX_VALUE);
-                
-                GridPane expContent = new GridPane();
-                expContent.setMaxWidth(Double.MAX_VALUE);
-                expContent.add(label, 0, 0);
-                expContent.add(textArea, 0, 1);
-                
-                GridPane.setVgrow(textArea, Priority.ALWAYS);
-                GridPane.setHgrow(textArea, Priority.ALWAYS);
-                
-                alert.getDialogPane().setContent(expContent);
-                alert.getDialogPane().setExpandableContent(null);
-                
-                // Ajouter des boutons personnalisés
-                ButtonType confirmButton = new ButtonType("Continuer quand même", ButtonBar.ButtonData.OK_DONE);
-                ButtonType cancelButton = new ButtonType("Annuler la réservation", ButtonBar.ButtonData.CANCEL_CLOSE);
-                alert.getButtonTypes().setAll(confirmButton, cancelButton);
-                
-                Optional<ButtonType> result = alert.showAndWait();
-                if (result.isPresent() && result.get() == confirmButton) {
-                    // L'utilisateur veut continuer malgré les conditions défavorables
-                    finalizeReservation(userId);
+            // 1. Validation de base
+            if (!validateDates()) {
+                return;
+            }
+
+            // 2. Vérification de la session
+            UserSession session = UserSession.getInstance();
+            if (session == null || !session.isLoggedIn()) {
+                AlertUtils.showError("Vous devez être connecté pour faire une réservation");
+                closeWindow();
+                return;
+            }
+
+            int userId = session.getUserId();
+            if (userId <= 0) {
+                AlertUtils.showError("ID utilisateur invalide");
+                closeWindow();
+                return;
+            }
+
+            // 3. Vérifier les conditions météo
+            try {
+                LocationService.LocationInfo location = locationService.getLocation();
+                if (location != null) {
+                    String adverseConditions = weatherService.checkAdverseWeatherConditions(
+                            location.getLatitude(),
+                            location.getLongitude(),
+                            dateDebutPicker.getValue(),
+                            dateFinPicker.getValue()
+                    );
+                    
+                    if (adverseConditions != null) {
+                        Alert weatherAlert = new Alert(Alert.AlertType.CONFIRMATION);
+                        weatherAlert.setTitle("Conditions Météorologiques");
+                        weatherAlert.setHeaderText("Attention - Conditions Météorologiques Défavorables");
+                        weatherAlert.setContentText("Des conditions météorologiques défavorables sont prévues pendant votre période de réservation:\n\n" 
+                                                 + adverseConditions + "\n\nVoulez-vous continuer avec la réservation?");
+                        
+                        ButtonType btnContinuer = new ButtonType("Continuer la réservation", ButtonBar.ButtonData.OK_DONE);
+                        ButtonType btnAnnuler = new ButtonType("Annuler", ButtonBar.ButtonData.CANCEL_CLOSE);
+                        weatherAlert.getButtonTypes().setAll(btnContinuer, btnAnnuler);
+                        
+                        Optional<ButtonType> result = weatherAlert.showAndWait();
+                        if (result.isPresent() && result.get() == btnAnnuler) {
+                            return; // L'utilisateur a choisi d'annuler
+                        }
+                    }
                 }
-                // Si l'utilisateur a annulé, ne rien faire
-            } else {
-                // Aucune condition défavorable, procéder normalement
-                finalizeReservation(userId);
+            } catch (Exception e) {
+                System.err.println("Erreur lors de la vérification météo: " + e.getMessage());
+                // Continuer même en cas d'erreur météo
             }
-            
-        } catch (Exception e) {
-            System.err.println("Erreur lors de la vérification des conditions météorologiques: " + e.getMessage());
-            e.printStackTrace();
-            
-            // En cas d'erreur, demander à l'utilisateur s'il veut continuer quand même
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Erreur Météo");
-            alert.setHeaderText("Impossible de vérifier les conditions météorologiques");
-            alert.setContentText("Nous n'avons pas pu vérifier les conditions météorologiques pour votre période " +
-                               "de réservation. Voulez-vous continuer quand même?");
-            
-            ButtonType confirmButton = new ButtonType("Continuer quand même", ButtonBar.ButtonData.OK_DONE);
-            ButtonType cancelButton = new ButtonType("Annuler", ButtonBar.ButtonData.CANCEL_CLOSE);
-            alert.getButtonTypes().setAll(confirmButton, cancelButton);
-            
-            Optional<ButtonType> result = alert.showAndWait();
-            if (result.isPresent() && result.get() == confirmButton) {
-                finalizeReservation(userId);
-            }
-        }
-    }
-    
-    private void finalizeReservation(int userId) {
-        try {
-            // Créer la réservation
+
+            // 4. Créer et enregistrer la réservation
             Reservation reservation = new Reservation();
             reservation.setMachine_id(machine.getId());
             reservation.setUser_id(userId);
             reservation.setDate_debut(dateDebutPicker.getValue());
             reservation.setDate_fin(dateFinPicker.getValue());
 
-            System.out.println("Création de réservation pour l'utilisateur ID: " + userId);
-            System.out.println("Machine ID: " + machine.getId());
-            System.out.println("Date début: " + dateDebutPicker.getValue());
-            System.out.println("Date fin: " + dateFinPicker.getValue());
-
-            // Enregistrer la réservation
             reservationService.create(reservation);
 
-            // Afficher une confirmation
-            AlertUtils.showInfo("Votre réservation a été enregistrée avec succès!");
+            // 5. Afficher la confirmation finale
+            Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
+            successAlert.setTitle("Réservation Confirmée");
+            successAlert.setHeaderText(null);
+            successAlert.setContentText("Votre réservation a été enregistrée avec succès!");
+            successAlert.showAndWait();
 
-            // Actualiser la liste des machines disponibles
+            // 6. Actualiser et fermer
             if (parentController != null) {
                 parentController.refreshMachines();
             }
-
-            // Fermer la fenêtre
             closeWindow();
 
-        } catch (Exception e) {
+        } catch (SQLException e) {
             System.err.println("Erreur lors de la création de la réservation:");
             e.printStackTrace();
             errorLabel.setText("Erreur lors de la réservation: " + e.getMessage());
+            
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur");
+            alert.setHeaderText("Erreur lors de la création de la réservation");
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
         }
     }
 

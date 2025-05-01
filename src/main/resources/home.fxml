@@ -21,6 +21,20 @@
     
     <Label style="-fx-font-size: 16px; -fx-text-fill: #555555;" text="Votre solution complète pour la gestion agricole" />
     
+    <!-- Buttons for Statistics and Maintenance Notifications -->
+    <HBox alignment="CENTER" spacing="20">
+        <Button fx:id="statsBtn" onAction="#showStatistics" style="-fx-background-color: #4682B4; -fx-text-fill: white; -fx-cursor: hand; -fx-background-radius: 3;" text="Statistiques des Matériels">
+            <padding>
+                <Insets bottom="8" left="15" right="15" top="8" />
+            </padding>
+        </Button>
+        <Button fx:id="maintenanceNotifBtn" onAction="#sendMaintenanceNotifications" style="-fx-background-color: #FF6B6B; -fx-text-fill: white; -fx-cursor: hand; -fx-background-radius: 3;" text="Envoyer Notifications Maintenance">
+            <padding>
+                <Insets bottom="8" left="15" right="15" top="8" />
+            </padding>
+        </Button>
+    </HBox>
+    
     <HBox alignment="CENTER" spacing="30" style="-fx-padding: 30 0 0 0;">
         <VBox alignment="CENTER" style="-fx-padding: 15; -fx-background-color: #f9f9f9; -fx-background-radius: 5; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);">
             <padding>

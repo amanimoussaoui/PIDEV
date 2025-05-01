@@ -21,7 +21,7 @@
     
     <Label style="-fx-font-size: 16px; -fx-text-fill: #555555;" text="Gérez vos matériels et réservations" />
     
-    <!-- Buttons for GPS and Weather -->
+    <!-- Buttons for GPS, Weather and Statistics -->
     <HBox alignment="CENTER" spacing="20">
         <Button fx:id="locationBtn" onAction="#showLocation" style="-fx-background-color: #4682B4; -fx-text-fill: white; -fx-cursor: hand; -fx-background-radius: 3;" text="Afficher ma Localisation">
             <padding>
@@ -30,6 +30,15 @@
         </Button>
         
         <Button fx:id="weatherBtn" onAction="#showWeather" style="-fx-background-color: #4682B4; -fx-text-fill: white; -fx-cursor: hand; -fx-background-radius: 3;" text="Consulter la Météo">
+            <padding>
+                <Insets bottom="8" left="15" right="15" top="8" />
+            </padding>
+            <graphic>
+                <Label text="🌤️" style="-fx-text-fill: white; -fx-font-size: 14px;"/>
+            </graphic>
+        </Button>
+        
+        <Button fx:id="statsBtn" onAction="#showStatistics" style="-fx-background-color: #4682B4; -fx-text-fill: white; -fx-cursor: hand; -fx-background-radius: 3;" text="Statistiques Matériels">
             <padding>
                 <Insets bottom="8" left="15" right="15" top="8" />
             </padding>

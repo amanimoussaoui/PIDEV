@@ -25,6 +25,15 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.time.format.DateTimeFormatter;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.util.Duration;
+
+// Imports pour l'envoi de SMS
+import com.twilio.rest.api.v2010.account.MessageCreator;
+import com.twilio.type.PhoneNumber;
+import com.twilio.Twilio;
 
 public class MachineController implements Initializable {
 
@@ -83,8 +92,16 @@ public class MachineController implements Initializable {
     private final MachineService machineService = new MachineService();
     private ObservableList<Machine> machineList = FXCollections.observableArrayList();
 
+    // Configuration Twilio
+    private static final String ACCOUNT_SID = "AC444fd1b2826946f57857636361d7b323";
+    private static final String AUTH_TOKEN = "83331d604025ddcb04ee543aa4035621";
+    private static final String TWILIO_PHONE_NUMBER = "+19383884915";
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        // Initialiser Twilio
+        Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
+        
         // Configurer les colonnes de la TableView
         setupTableColumns();
         
@@ -116,6 +133,11 @@ public class MachineController implements Initializable {
                 }
             });
         }
+
+        // Vérifier les machines en retard chaque minute
+        Timeline timeline = new Timeline(new KeyFrame(Duration.minutes(1), e -> checkOverdueMachines()));
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
     }
     
     private void setupTableColumns() {
@@ -333,7 +355,7 @@ public class MachineController implements Initializable {
     @FXML
     private void goToHome() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/main.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/home.fxml"));
             Parent root = loader.load();
             
             // Obtenir la scène actuelle
@@ -417,6 +439,76 @@ public class MachineController implements Initializable {
                 prixErrorLabel.setVisible(true);
                 prixField.setStyle("-fx-border-color: red;");
             }
+        }
+    }
+
+    private void checkOverdueMachines() {
+        try {
+            List<Machine> machines = machineService.readAll();
+            LocalDateTime now = LocalDateTime.now();
+            
+            for (Machine machine : machines) {
+                if (machine.getDateMaintenance().isBefore(now)) {
+                    sendMaintenanceSMS(machine);
+                }
+            }
+        } catch (SQLException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de vérifier les machines: " + e.getMessage());
+        }
+    }
+
+    private void sendMaintenanceSMS(Machine machine) {
+        System.out.println("Tentative d'envoi de SMS pour la machine: " + machine.getNom());
+        System.out.println("Initialisation de Twilio...");
+        
+        try {
+            // Réinitialiser Twilio avec les credentials
+            Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
+            System.out.println("Twilio initialisé avec succès");
+            
+            String messageBody = String.format(
+                "ALERTE: La machine '%s' (ID: %d) nécessite une maintenance. " +
+                "Date de maintenance prévue: %s",
+                machine.getNom(),
+                machine.getId(),
+                machine.getDateMaintenance().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))
+            );
+            
+            System.out.println("Contenu du message: " + messageBody);
+            System.out.println("Envoi du SMS au numéro: +21650542722");
+            
+            try {
+                MessageCreator creator = com.twilio.rest.api.v2010.account.Message.creator(
+                    new PhoneNumber("+21650542722"),
+                    new PhoneNumber(TWILIO_PHONE_NUMBER),
+                    messageBody
+                );
+                
+                System.out.println("Message créé, tentative d'envoi...");
+                com.twilio.rest.api.v2010.account.Message message = creator.create();
+                
+                System.out.println("=== SMS envoyé avec succès ===");
+                System.out.println("SID: " + message.getSid());
+                System.out.println("Statut: " + message.getStatus());
+                System.out.println("Prix: " + message.getPrice());
+                System.out.println("Date d'envoi: " + message.getDateSent());
+                System.out.println("==============================");
+                
+            } catch (com.twilio.exception.ApiException e) {
+                System.err.println("Erreur Twilio API lors de l'envoi du SMS:");
+                System.err.println("Code d'erreur: " + e.getCode());
+                System.err.println("Message d'erreur: " + e.getMessage());
+                System.err.println("Plus de détails: " + e.getMoreInfo());
+                e.printStackTrace();
+            }
+            
+        } catch (Exception e) {
+            System.err.println("=== Erreur critique lors de l'envoi du SMS ===");
+            System.err.println("Type d'erreur: " + e.getClass().getName());
+            System.err.println("Message d'erreur: " + e.getMessage());
+            System.err.println("Trace complète:");
+            e.printStackTrace();
+            System.err.println("==========================================");
         }
     }
 }

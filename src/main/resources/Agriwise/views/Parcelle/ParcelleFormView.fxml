@@ -59,14 +59,21 @@
             <!-- Location Section -->
             <TitledPane text="Emplacement et caractéristiques" styleClass="form-section" expanded="true">
                 <VBox spacing="15">
-                    <!-- Location Field -->
+                    <!-- Location Field with Autocomplete -->
                     <VBox styleClass="field-group">
                         <Label text="Localisation" styleClass="field-label">
                             <graphic>
                                 <FontAwesomeIconView glyphName="MAP_MARKER" styleClass="label-icon"/>
                             </graphic>
                         </Label>
-                        <TextField fx:id="localisationField" promptText="Ex: Ferme Agricole, Tunisie" styleClass="modern-input"/>
+                        <!-- Wrapper for the location field and its dropdown -->
+                        <StackPane>
+                            <VBox>
+                                <TextField fx:id="localisationField" promptText="Ex: Ferme Agricole, Tunisie"
+                                           styleClass="modern-input, location-input" />
+                                <!-- The suggestion box will be added dynamically in code -->
+                            </VBox>
+                        </StackPane>
                     </VBox>
 
                     <!-- Soil Type -->

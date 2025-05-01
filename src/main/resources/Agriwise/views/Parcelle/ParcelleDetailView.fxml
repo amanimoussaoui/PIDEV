@@ -60,9 +60,9 @@
                         <Label fx:id="coordinatesLabel" text="Non définies" styleClass="coordinates-value"/>
                         <Region HBox.hgrow="ALWAYS"/>
                         <Button fx:id="saveCoordinatesBtn" text="Enregistrer les Coordonnées"
-                                onAction="#handleSaveCoordinates" styleClass="btn-primary">
+                                onAction="#handleSaveCoordinates" styleClass="btn-SaveCoordinates">
                             <graphic>
-                                <FontAwesomeIconView glyphName="SAVE" styleClass="btn-icon"/>
+                                <FontAwesomeIconView glyphName="SAVE" styleClass="btn-iconSaveCoordinates"/>
                             </graphic>
                         </Button>
                     </HBox>

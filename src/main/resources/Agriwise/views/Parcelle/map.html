@@ -4,6 +4,8 @@
     <title>Parcelle Map</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
+    <!-- Add geocoder CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
     <style>
         html, body, #map {
             height: 100%;
@@ -11,16 +13,33 @@
             margin: 0;
             padding: 0;
         }
+        /* Add loading indicator */
+        .map-loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            display: none;
+        }
     </style>
 </head>
 <body>
 <div id="map"></div>
+<div class="map-loading">Chargement...</div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<!-- Add geocoder JS -->
+<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
 <script>
     let map, drawnItems;
     let mapInitialized = false;
+    let originalZoom = 8;
 
     // Prevent duplicate initialization
     function initMap() {
@@ -37,6 +56,7 @@
 
         console.log("Initializing map");
         map = L.map('map').setView([36.8065, 10.1815], 8);
+        originalZoom = map.getZoom();
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -67,6 +87,18 @@
             }
         });
         map.addControl(drawControl);
+
+        // Add geocoder control (like in your Symfony version)
+        const geocoder = L.Control.Geocoder.nominatim();
+        L.Control.geocoder({
+            defaultMarkGeocode: false,
+            geocoder: geocoder,
+            placeholder: "Rechercher une adresse...",
+            position: 'topright'
+        }).on('markgeocode', function(e) {
+            const { center, bbox } = e.geocode;
+            map.fitBounds(bbox);
+        }).addTo(map);
 
         map.on(L.Draw.Event.CREATED, function(e) {
             const layer = e.layer;
@@ -140,6 +172,7 @@
             if (boundary && boundary.length > 0) {
                 const polygon = L.polygon(boundary, { color: '#1a9738' }).addTo(drawnItems);
                 map.fitBounds(polygon.getBounds());
+                originalZoom = map.getZoom(); // Store current zoom for later use
 
                 // Also update coordinates in Java
                 updateCoordinates(polygon);
@@ -148,30 +181,46 @@
             console.error("Error initializing polygon:", e);
         }
     }
+
     function captureMapImage() {
         console.log("Capturing map image");
+        document.querySelector('.map-loading').style.display = 'block';
 
         // First remove controls for clean capture
         const controls = document.querySelectorAll('.leaflet-control-container');
         controls.forEach(control => control.style.display = 'none');
 
+        // Store current zoom and zoom out slightly before capture (like in Symfony version)
+        originalZoom = map.getZoom();
+        map.setZoom(originalZoom - 1);
+
         setTimeout(() => {
             html2canvas(document.getElementById('map'), {
                 useCORS: true,
-                scale: 1,
-                quality: 0.7,
-                logging: true,
+                scale: 2,  // Higher resolution like in Symfony version
+                quality: 1.0,
+                logging: false,
                 backgroundColor: null
             }).then(canvas => {
                 // Always include the data URL prefix
-                const imageData = canvas.toDataURL('image/jpeg', 0.7);
+                const imageData = canvas.toDataURL('image/jpeg', 0.9);
+
+                // Restore original zoom
+                map.setZoom(originalZoom);
 
                 // Restore controls
                 controls.forEach(control => control.style.display = 'block');
+                document.querySelector('.map-loading').style.display = 'none';
 
                 if (window.javafx) {
                     window.javafx.setMapImage(imageData);
+                } else {
+                    console.error("Java bridge not available for image capture");
                 }
+            }).catch(err => {
+                console.error("Error capturing image:", err);
+                document.querySelector('.map-loading').style.display = 'none';
+                controls.forEach(control => control.style.display = 'block');
             });
         }, 500);
     }

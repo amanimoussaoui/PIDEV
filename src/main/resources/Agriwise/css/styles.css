@@ -1866,6 +1866,150 @@
 
 
 
+   .location-suggestions-box {
+       -fx-background-color: white;
+       -fx-background-radius: 0 0 10px 10px;
+       -fx-border-color: #e2e8f0;
+       -fx-border-width: 0 1px 1px 1px;
+       -fx-border-radius: 0 0 10px 10px;
+       -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 4, 0, 0, 2);
+       -fx-padding: 0;
+   }
+
+.location-suggestions-list {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+    -fx-border-width: 0;
+}
+
+.location-suggestions-list .list-cell {
+    -fx-background-color: transparent;
+    -fx-padding: 10px 16px;
+    -fx-font-size: 14px;
+    -fx-text-fill: #1f2937;
+    -fx-border-color: transparent transparent #f3f4f6 transparent;
+    -fx-border-width: 0 0 1px 0;
+}
+
+.location-suggestions-list .list-cell:last-visible {
+    -fx-border-width: 0;
+}
+
+.location-suggestions-list .list-cell:hover {
+    -fx-background-color: #f9fafb;
+}
+
+.location-suggestions-list .list-cell:selected {
+    -fx-background-color: #eef2ff;
+    -fx-text-fill: #2A9D8F;
+}
+
+/* Style for the scroll bar in the suggestions list */
+.location-suggestions-list .scroll-bar:vertical {
+    -fx-background-color: transparent;
+    -fx-pref-width: 8px;
+}
+
+.location-suggestions-list .scroll-bar:vertical .thumb {
+    -fx-background-color: #d1d5db;
+    -fx-background-radius: 4px;
+}
+
+.location-suggestions-list .scroll-bar:vertical .track {
+    -fx-background-color: transparent;
+}
+
+.location-suggestions-list .scroll-bar:vertical .increment-button,
+.location-suggestions-list .scroll-bar:vertical .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.location-suggestions-list .scroll-bar:vertical .increment-arrow,
+.location-suggestions-list .scroll-bar:vertical .decrement-arrow {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+/* When suggestions are active, style the input field to show connection */
+.location-input-active {
+    -fx-background-radius: 10px 10px 0 0 !important;
+    -fx-border-radius: 10px 10px 0 0 !important;
+    -fx-border-color: #2A9D8F !important;
+    -fx-border-width: 1px !important;
+}
+
+
+
+
+
+
+/* Map Section Styles */
+.map-section {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 12px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0, 0, 4);
+    -fx-padding: 24px;
+    -fx-spacing: 16px;
+}
+
+/* Map Container */
+.map-container {
+    -fx-background-color: #f7fafc;
+    -fx-background-radius: 8px;
+    -fx-border-color: #e2e8f0;
+    -fx-border-radius: 8px;
+    -fx-border-width: 1px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.04), 5, 0, 0, 2);
+    -fx-min-height: 500px;
+}
+
+.map-container WebView {
+    -fx-background-color: transparent;
+    -fx-background-radius: 6px;
+}
+
+/* Coordinates Section */
+.form-label {
+    -fx-font-family: 'Segoe UI', 'Roboto', sans-serif;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #4a5568;
+}
+
+.coordinates-value {
+    -fx-font-family: 'Segoe UI', 'Roboto', sans-serif;
+    -fx-font-size: 14px;
+    -fx-text-fill: #718096;
+    -fx-padding: 0 0 0 4px;
+}
+
+/* Button Styles */
+.btn-SaveCoordinates {
+    -fx-background-color: #F4A261;
+    -fx-text-fill: white;
+    -fx-background-radius: 6px;
+    -fx-padding: 8px 16px;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgb(236, 143, 70), 10, 0, 0, 4);
+    -fx-transition: all 0.2s ease-in-out;
+}
+
+.btn-SaveCoordinates:hover {
+    -fx-background-color: #E9C46A;
+    -fx-effect: dropshadow(gaussian, rgb(250, 193, 57), 12, 0, 0, 6);
+}
+
+.btn-iconSaveCoordinates {
+    -fx-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 0 6px 0 0;
+}
+
+
 
 
 

@@ -161,11 +161,12 @@ public class ParcelleDetailController implements Initializable {
         if (htmlUrl != null) {
             webEngine.load(htmlUrl.toExternalForm());
         } else {
-            webEngine.loadContent(createMapHtml());
+           webEngine.loadContent(createMapHtml());
+            System.out.println("Map not found");
         }
     }
 
-    // In ParcelleDetailController class
+
     public class JavaConnector {
         public void updateCoordinates(double lat, double lng, String boundary) {
             System.out.println("Coordinates received from JavaScript: " + lat + ", " + lng);
@@ -195,6 +196,8 @@ public class ParcelleDetailController implements Initializable {
 
             // Save coordinates after image capture is complete
             Platform.runLater(() -> {
+                // Remove any progress indicators that might be showing
+                mapContainer.getChildren().removeIf(node -> node instanceof ProgressIndicator);
                 saveCoordinatesToParcelle();
             });
         }
@@ -204,6 +207,7 @@ public class ParcelleDetailController implements Initializable {
             System.out.println("Java bridge ping received!");
         }
     }
+
 
 
     @FXML
@@ -239,6 +243,7 @@ public class ParcelleDetailController implements Initializable {
                     "An error occurred while trying to save coordinates: " + e.getMessage());
         }
     }
+
 
     private void saveCoordinatesToParcelle() {
         try {
@@ -292,22 +297,38 @@ public class ParcelleDetailController implements Initializable {
                 parcelle.setMapImage(fileName); // Just the filename, not full path
             }
 
-
             parcelleService.updateParcelle(parcelle);
 
-            showAlert("Succès", "Coordonnées enregistrées",
-                    "Les coordonnées et l'image de la parcelle ont été enregistrées avec succès.");
+            // Re-enable the save button
+            Platform.runLater(() -> {
+                saveCoordinatesBtn.setDisable(false);
+                showAlert("Succès", "Coordonnées enregistrées",
+                        "Les coordonnées et l'image de la parcelle ont été enregistrées avec succès.");
+            });
 
             // Refresh parcelle data to confirm changes
             this.parcelle = parcelleService.getParcelleById(parcelle.getId());
             System.out.println("Updated parcelle: lat=" + parcelle.getLatitude() + ", lng=" + parcelle.getLongitude());
 
+            // Reset the map interface after saving
+            Platform.runLater(() -> {
+                // Refresh the map to show changes - this will reinitialize the polygon with saved data
+                if (mapInitialized) {
+                    updateMapWithParcelleData();
+                }
+            });
+
         } catch (Exception e) {
             e.printStackTrace();
-            showAlert("Erreur", "Échec de l'enregistrement",
-                    "Une erreur est survenue lors de l'enregistrement des coordonnées: " + e.getMessage());
+            Platform.runLater(() -> {
+                saveCoordinatesBtn.setDisable(false);
+                showAlert("Erreur", "Échec de l'enregistrement",
+                        "Une erreur est survenue lors de l'enregistrement des coordonnées: " + e.getMessage());
+            });
         }
     }
+
+
 
     private void saveImageToFile(String base64Image, String uploadDir, String fileName) throws IOException {
         // Handle both data URLs and raw base64 strings
@@ -689,4 +710,7 @@ public class ParcelleDetailController implements Initializable {
         </html>
         """;
     }
+
+
+
 }

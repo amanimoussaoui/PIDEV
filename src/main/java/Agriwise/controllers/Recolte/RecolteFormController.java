@@ -207,12 +207,6 @@ public class RecolteFormController implements Initializable {
 
     @FXML
     private void handleSubmit() {
-        System.out.println("Form submission triggered"); // This should print when you click the button
-        if (!validateForm()) {
-            System.out.println("Form validation failed");
-            return;
-        }
-
         if (!validateForm()) return;
 
         try {
@@ -227,12 +221,9 @@ public class RecolteFormController implements Initializable {
                 // Create new recolte
                 Culture selectedCulture = cultureCombo.getValue();
                 if (selectedCulture == null) {
-                    System.out.println("No culture selected!");
                     showAlert("Error", "Missing Culture", "Please select a culture");
                     return;
                 }
-
-                System.out.println("Selected Culture ID: " + selectedCulture.getId());
 
                 Recolte newRecolte = new Recolte();
                 newRecolte.setDateRecolte(convertToDate(dateRecoltePicker.getValue()));
@@ -241,9 +232,13 @@ public class RecolteFormController implements Initializable {
                 newRecolte.setPrixUnitaire(Float.parseFloat(prixUnitaireField.getText().trim()));
                 newRecolte.setCulture(selectedCulture);
 
-                System.out.println("About to add recolte to database");
                 recolteService.addRecolte(newRecolte);
-                System.out.println("Recolte added to database");
+
+                // Update culture status to "terminé" when adding a new recolte
+                if (selectedCulture.getStatut().equalsIgnoreCase("en_culture")) {
+                    selectedCulture.setStatut("terminé");
+                    cultureService.updateCulture(selectedCulture);
+                }
             }
 
             if (refreshCallback != null) {
@@ -256,6 +251,7 @@ public class RecolteFormController implements Initializable {
                     "Veuillez vérifier tous les champs obligatoires");
         }
     }
+
 
     private Date convertToDate(LocalDate localDate) {
         if (localDate == null) {

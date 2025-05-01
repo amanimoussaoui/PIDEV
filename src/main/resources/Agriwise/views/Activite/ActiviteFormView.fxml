@@ -1,19 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.geometry.Insets?>
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import java.net.URL?>
-
 <VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="Agriwise.controllers.Activite.ActiviteFormController"
       styleClass="form-card" prefWidth="600" prefHeight="500">
     <stylesheets>
         <URL value="@../../css/styles.css" />
     </stylesheets>
-
     <!-- Header -->
     <HBox styleClass="form-header" spacing="15" alignment="CENTER_LEFT">
         <StackPane styleClass="header-icon-container">
@@ -29,20 +26,11 @@
     <ScrollPane fitToWidth="true" styleClass="form-scroll" vbarPolicy="AS_NEEDED">
         <VBox styleClass="form-content" spacing="15">
             <!-- General Information Section -->
-            <TitledPane text="Informations générales" styleClass="form-section" expanded="true">
-                <VBox spacing="15">
-                    <!-- Description Field -->
-                    <VBox styleClass="field-group">
-                        <Label text="Description" styleClass="field-label">
-                            <graphic>
-                                <FontAwesomeIconView glyphName="FILE_TEXT" styleClass="label-icon"/>
-                            </graphic>
-                        </Label>
-                        <TextField fx:id="descriptionField" promptText="Ex: Arrosage matinal" styleClass="modern-input"/>
-                    </VBox>
-
+            <VBox styleClass="form-section" spacing="15">
+                <!-- Type and Culture in same row -->
+                <HBox spacing="15" alignment="CENTER_LEFT">
                     <!-- Type -->
-                    <VBox styleClass="field-group">
+                    <VBox styleClass="field-group" HBox.hgrow="ALWAYS">
                         <Label text="Type d'activité" styleClass="field-label">
                             <graphic>
                                 <FontAwesomeIconView glyphName="TASKS" styleClass="label-icon"/>
@@ -51,23 +39,8 @@
                         <ComboBox fx:id="typeCombo" promptText="Sélectionnez le type" styleClass="modern-combo"/>
                     </VBox>
 
-                    <!-- Date -->
-                    <VBox styleClass="field-group">
-                        <Label text="Date" styleClass="field-label">
-                            <graphic>
-                                <FontAwesomeIconView glyphName="CALENDAR" styleClass="label-icon"/>
-                            </graphic>
-                        </Label>
-                        <DatePicker fx:id="datePicker" styleClass="modern-datepicker"/>
-                    </VBox>
-                </VBox>
-            </TitledPane>
-
-            <!-- Culture Section -->
-            <TitledPane text="Culture Associée" styleClass="form-section" expanded="true">
-                <VBox spacing="15">
                     <!-- Culture -->
-                    <VBox styleClass="field-group">
+                    <VBox styleClass="field-group" HBox.hgrow="ALWAYS">
                         <Label text="Culture" styleClass="field-label">
                             <graphic>
                                 <FontAwesomeIconView glyphName="LEAF" styleClass="label-icon"/>
@@ -75,8 +48,38 @@
                         </Label>
                         <ComboBox fx:id="cultureCombo" promptText="Sélectionnez une culture" styleClass="modern-combo"/>
                     </VBox>
+                </HBox>
+
+                <!-- Description Field with Generate Button -->
+                <VBox styleClass="field-group">
+                    <Label text="Description" styleClass="field-label">
+                        <graphic>
+                            <FontAwesomeIconView glyphName="FILE_TEXT" styleClass="label-icon"/>
+                        </graphic>
+                    </Label>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <TextField fx:id="descriptionField" promptText="Ex: Arrosage matinal"
+                                   styleClass="modern-input" HBox.hgrow="ALWAYS"/>
+                        <Button fx:id="generateButton" onAction="#handleGenerateDescription"
+                                styleClass="btn-warning" text="Générer">
+                            <graphic>
+                                <FontAwesomeIconView glyphName="MAGIC" styleClass="button-icon"/>
+                            </graphic>
+                        </Button>
+                        <ProgressIndicator fx:id="generateProgress" prefWidth="20" prefHeight="20"/>
+                    </HBox>
                 </VBox>
-            </TitledPane>
+
+                <!-- Date -->
+                <VBox styleClass="field-group">
+                    <Label text="Date" styleClass="field-label">
+                        <graphic>
+                            <FontAwesomeIconView glyphName="CALENDAR" styleClass="label-icon"/>
+                        </graphic>
+                    </Label>
+                    <DatePicker fx:id="datePicker" styleClass="modern-datepicker"/>
+                </VBox>
+            </VBox>
         </VBox>
     </ScrollPane>
 

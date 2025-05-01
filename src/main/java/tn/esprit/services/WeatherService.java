@@ -18,7 +18,7 @@ import java.time.format.DateTimeFormatter;
 
 public class WeatherService {
     // Nouvelle clé API OpenWeatherMap
-    
+
     private static final String BASE_URL = "https://api.openweathermap.org/data/2.5/";
     private final ObjectMapper objectMapper = new ObjectMapper();
 

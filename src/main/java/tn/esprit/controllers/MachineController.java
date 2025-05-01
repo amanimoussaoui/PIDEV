@@ -93,9 +93,8 @@ public class MachineController implements Initializable {
     private ObservableList<Machine> machineList = FXCollections.observableArrayList();
 
     // Configuration Twilio
-    private static final String ACCOUNT_SID = "AC444fd1b2826946f57857636361d7b323";
-    private static final String AUTH_TOKEN = "83331d604025ddcb04ee543aa4035621";
-    private static final String TWILIO_PHONE_NUMBER = "+19383884915";
+
+    
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {

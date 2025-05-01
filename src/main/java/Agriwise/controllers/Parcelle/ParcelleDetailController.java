@@ -4,8 +4,8 @@ import Agriwise.entities.*;
 import Agriwise.services.ActiviteService;
 import Agriwise.services.CultureService;
 import Agriwise.services.ParcelleService;
-import Agriwise.services.RecolteService;
 import Agriwise.tools.BridgeManager;
+import Agriwise.tools.WeatherService;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.application.Platform;
@@ -27,19 +27,18 @@ import javafx.scene.web.WebView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import Agriwise.tools.PdfReportGenerator;
 import javafx.stage.FileChooser;
 
 import java.awt.*;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import java.util.List;
-import java.util.zip.Deflater;
 
 public class ParcelleDetailController implements Initializable {
 
@@ -52,7 +51,17 @@ public class ParcelleDetailController implements Initializable {
     @FXML private Button saveCoordinatesBtn;
     @FXML private Label coordinatesLabel;
     @FXML private Button generateReportButton;
-
+    @FXML private VBox weatherCardContainer;
+    @FXML private Label weatherTempLabel;
+    @FXML private Label weatherDescLabel;
+    @FXML private Label weatherHumidityLabel;
+    @FXML private Label weatherWindLabel;
+    @FXML private FontAwesomeIconView weatherIcon;
+    @FXML private Label weatherCloudsLabel;
+    @FXML private Label weatherPressureLabel;
+    @FXML private Label coordinatesLatLabel;
+    @FXML private Label coordinatesLongLabel;
+    private WeatherService weatherService;
 
     private Parcelle parcelle;
     private ParcelleService parcelleService;
@@ -74,6 +83,11 @@ public class ParcelleDetailController implements Initializable {
             populateInfoCards();
         }
 
+        // Load weather data
+        if (weatherCardContainer != null) {
+            loadWeatherData();
+        }
+
         // Update map only if already initialized
         if (mapInitialized && parcelle != null) {
             updateMapWithParcelleData();
@@ -87,6 +101,8 @@ public class ParcelleDetailController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         parcelleService = new ParcelleService();
+        weatherService = new WeatherService();
+
         webEngine = mapWebView.getEngine();
 
         // Set up the Java connector and bridge
@@ -168,6 +184,7 @@ public class ParcelleDetailController implements Initializable {
 
 
     public class JavaConnector {
+
         public void updateCoordinates(double lat, double lng, String boundary) {
             System.out.println("Coordinates received from JavaScript: " + lat + ", " + lng);
             System.out.println("Boundary received length: " + (boundary != null ? boundary.length() : 0));
@@ -178,7 +195,8 @@ public class ParcelleDetailController implements Initializable {
 
             // Update UI on JavaFX thread
             Platform.runLater(() -> {
-                coordinatesLabel.setText(String.format("Lat: %.6f, Lng: %.6f", lat, lng));
+                coordinatesLatLabel.setText(String.format("Lat: %.6f°", lat));
+                coordinatesLongLabel.setText(String.format("Lng: %.6f°", lng));
                 saveCoordinatesBtn.setDisable(false); // Enable the save button now that we have coordinates
             });
         }
@@ -368,6 +386,7 @@ public class ParcelleDetailController implements Initializable {
 
     private void populateInfoCards() {
         infoGrid.getChildren().clear();
+        addInfoCard(0, 0, FontAwesomeIcon.SNOWFLAKE_ALT, "Nom", parcelle.getNom());
 
         addInfoCard(0, 0, FontAwesomeIcon.TAG, "Nom", parcelle.getNom());
         addInfoCard(1, 0, FontAwesomeIcon.EXPAND, "Superficie", String.format("%.2f m²", parcelle.getSuperficie()));
@@ -712,5 +731,190 @@ public class ParcelleDetailController implements Initializable {
     }
 
 
+
+
+    private void loadWeatherData() {
+        // Only try to load weather if we have valid coordinates
+        if (parcelle != null && parcelle.getLatitude() != 0 && parcelle.getLongitude() != 0) {
+            try {
+                // Show loading state
+                weatherCardContainer.setVisible(true);
+                weatherCardContainer.setManaged(true);
+                weatherTempLabel.setText("Chargement...");
+                weatherDescLabel.setText("");
+
+                // Update coordinates labels
+                coordinatesLatLabel.setText(String.format("Lat: %.6f° N", parcelle.getLatitude()));
+                coordinatesLongLabel.setText(String.format("Long: %.6f° E", parcelle.getLongitude()));
+
+                // Run in background thread to not block UI
+                new Thread(() -> {
+                    try {
+                        // Get current weather data
+                        JSONObject weatherData = weatherService.getWeatherData(
+                                parcelle.getLatitude(),
+                                parcelle.getLongitude()
+                        );
+
+                        // Handle error case
+                        if (weatherData.containsKey("error")) {
+                            Platform.runLater(() -> {
+                                weatherCardContainer.setVisible(false);
+                                weatherCardContainer.setManaged(false);
+                            });
+                            return;
+                        }
+
+                        // Parse weather data
+                        JSONObject main = (JSONObject) weatherData.get("main");
+                        JSONObject wind = (JSONObject) weatherData.get("wind");
+                        JSONObject clouds = (JSONObject) weatherData.get("clouds");
+                        JSONArray weatherArr = (JSONArray) weatherData.get("weather");
+                        JSONObject weather = (JSONObject) weatherArr.get(0);
+
+                        // Get weather icon code and map to FontAwesome icon
+                        String iconCode = weather.get("icon").toString();
+                        String weatherIconName = mapWeatherIconToFontAwesome(iconCode);
+
+                        // Get forecast data
+                        List<JSONObject> forecastData = weatherService.getForecastData(
+                                parcelle.getLatitude(),
+                                parcelle.getLongitude()
+                        );
+
+                        // Update UI on JavaFX thread
+                        Platform.runLater(() -> {
+                            // Update current weather
+                            String temp = String.format("%.1f°C", Double.parseDouble(main.get("temp").toString()));
+                            String desc = capitalize(weather.get("description").toString());
+                            String humidity = main.get("humidity") + "%";
+                            String windSpeed = String.format("%.1f m/s", Double.parseDouble(wind.get("speed").toString()));
+                            String cloudiness = clouds.get("all") + "%";
+                            String pressure = main.get("pressure") + " hPa";
+
+                            // Update weather icon
+                            weatherIcon.setGlyphName(weatherIconName);
+
+                            // Update weather labels
+                            weatherTempLabel.setText(temp);
+                            weatherDescLabel.setText(desc);
+                            weatherHumidityLabel.setText(humidity);
+                            weatherWindLabel.setText(windSpeed);
+                            weatherCloudsLabel.setText(cloudiness);
+                            weatherPressureLabel.setText(pressure);
+
+                            // Update forecast section if forecast data is available
+                            if (forecastData != null && !forecastData.isEmpty()) {
+                                updateForecastDisplay(forecastData);
+                            }
+
+                            weatherCardContainer.setVisible(true);
+                            weatherCardContainer.setManaged(true);
+                        });
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Platform.runLater(() -> {
+                            weatherCardContainer.setVisible(false);
+                            weatherCardContainer.setManaged(false);
+                        });
+                    }
+                }).start();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                weatherCardContainer.setVisible(false);
+                weatherCardContainer.setManaged(false);
+            }
+        } else {
+            // Hide weather card if no coordinates
+            weatherCardContainer.setVisible(false);
+            weatherCardContainer.setManaged(false);
+        }
+    }
+
+    private void updateForecastDisplay(List<JSONObject> forecastData) {
+        // Find the forecast container
+        HBox forecastContainer = (HBox) weatherCardContainer.lookup(".weather-forecast");
+        if (forecastContainer == null) return;
+
+        // Clear existing children
+        forecastContainer.getChildren().clear();
+
+        // Days of the week in French
+        String[] daysOfWeek = {"Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"};
+
+        // Get the current day of the week
+        Calendar calendar = Calendar.getInstance();
+        int todayIndex = calendar.get(Calendar.DAY_OF_WEEK) - 1; // 0-based index
+
+        // Process up to 5 days of forecast
+        for (int i = 0; i < Math.min(forecastData.size(), 5); i++) {
+            JSONObject forecast = forecastData.get(i);
+
+            // Skip if forecast is null
+            if (forecast == null) continue;
+
+            // Create forecast day container
+            VBox dayContainer = new VBox();
+            dayContainer.getStyleClass().add("forecast-item");
+            dayContainer.setAlignment(Pos.CENTER);
+            HBox.setHgrow(dayContainer, Priority.ALWAYS);
+
+            // Set day label (tomorrow, or the day name)
+            String dayLabel = (i == 0) ? "Demain" : daysOfWeek[(todayIndex + i + 1) % 7];
+            Label dayNameLabel = new Label(dayLabel);
+            dayNameLabel.getStyleClass().add("forecast-day");
+
+            // Get weather data for this forecast
+            JSONObject main = (JSONObject) forecast.get("main");
+            JSONArray weatherArr = (JSONArray) forecast.get("weather");
+            JSONObject weather = (JSONObject) weatherArr.get(0);
+            String iconCode = weather.get("icon").toString();
+
+            // Create weather icon
+            FontAwesomeIconView iconView = new FontAwesomeIconView();
+            iconView.setGlyphName(mapWeatherIconToFontAwesome(iconCode));
+            iconView.getStyleClass().add("forecast-icon");
+
+            // Create temperature label
+            double temp = Double.parseDouble(main.get("temp").toString());
+            Label tempLabel = new Label(String.format("%.0f°C", temp));
+            tempLabel.getStyleClass().add("forecast-temp");
+
+            // Add components to container
+            dayContainer.getChildren().addAll(dayNameLabel, iconView, tempLabel);
+
+            // Add to forecast container
+            forecastContainer.getChildren().add(dayContainer);
+        }
+    }
+
+    // Updated method to map OpenWeatherMap icon codes to FontAwesome 4.7.0 icons
+    private String mapWeatherIconToFontAwesome(String iconCode) {
+        // Map weather codes to FontAwesome 4.7.0 icons
+        // OpenWeatherMap icon codes: https://openweathermap.org/weather-conditions
+        switch (iconCode) {
+            case "01d": return "SUN_ALT"; // clear sky day
+            case "01n": return "MOON_ALT"; // clear sky night
+            case "02d":
+            case "02n": return "CLOUD"; // few clouds (FA 4.7 doesn't have sun/moon with cloud)
+            case "03d":
+            case "03n": return "CLOUD"; // scattered clouds
+            case "04d":
+            case "04n": return "CLOUD"; // broken clouds
+            case "09d":
+            case "09n": return "TINT"; // shower rain (droplet icon)
+            case "10d":
+            case "10n": return "CLOUD"; // rain (no rain-specific icon in FA 4.7)
+            case "11d":
+            case "11n": return "BOLT"; // thunderstorm
+            case "13d":
+            case "13n": return "SNOWFLAKE_ALT"; // snow
+            case "50d":
+            case "50n": return "ALIGN_JUSTIFY"; // mist (horizontal lines to represent fog)
+            default: return "CLOUD"; // default
+        }
+    }
 
 }

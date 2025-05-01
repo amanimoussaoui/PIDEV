@@ -8,6 +8,7 @@
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import java.lang.String?>
 <?import javafx.scene.web.WebView?>
+<?import javafx.scene.shape.Circle?>
 
 <VBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="Agriwise.controllers.Parcelle.ParcelleDetailController"
@@ -25,16 +26,20 @@
                 <Label fx:id="formTitle" styleClass="header-title" text="Détails de la Parcelle"/>
                 <Label styleClass="header-subtitle" text="Consulter les détails de votre parcelle agricole"/>
             </VBox>
+            <Region HBox.hgrow="ALWAYS" />
             <Button fx:id="generateReportButton" mnemonicParsing="false" styleClass="btn-light" text="Générer un rapport">
+                <graphic>
+                    <FontAwesomeIconView glyphName="FILE_PDF_ALT" styleClass="btn-icon"/>
+                </graphic>
                 <padding>
-                    <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                    <Insets bottom="8.0" left="16.0" right="16.0" top="8.0" />
                 </padding>
             </Button>
         </HBox>
 
         <!-- Content -->
         <ScrollPane fitToWidth="true" styleClass="transparent-scroll-pane">
-            <VBox spacing="20">
+            <VBox spacing="24">
                 <!-- Info Cards -->
                 <GridPane fx:id="infoGrid" styleClass="detail-grid" hgap="20" vgap="20">
                     <columnConstraints>
@@ -45,9 +50,93 @@
                     </columnConstraints>
                 </GridPane>
 
-                <!-- Map Section -->
-                <VBox spacing="10" styleClass="map-section">
-                    <Label text="Cartographie de la Parcelle" styleClass="section-title"/>
+                <!-- Weather Card Section - Redesigned -->
+                <VBox fx:id="weatherCardContainer" spacing="16" styleClass="weather-card-section">
+                    <Label text="Météo Actuelle" styleClass="section-title"/>
+                    <HBox styleClass="weather-card">
+                        <!-- Left side with main weather info -->
+                        <VBox styleClass="weather-main-info" HBox.hgrow="ALWAYS" alignment="CENTER_LEFT">
+                            <HBox alignment="CENTER_LEFT" spacing="16">
+                                <StackPane styleClass="weather-icon-container">
+                                    <FontAwesomeIconView fx:id="weatherIcon" glyphName="SUN_ALT" styleClass="weather-main-icon"/>
+                                </StackPane>
+                                <VBox>
+                                    <Label fx:id="weatherTempLabel" text="24°C" styleClass="weather-temp"/>
+                                    <Label fx:id="weatherDescLabel" text="Ensoleillé" styleClass="weather-desc"/>
+                                </VBox>
+                            </HBox>
+                        </VBox>
+
+                        <!-- Right side with detailed weather metrics -->
+                        <HBox styleClass="weather-details" spacing="24" alignment="CENTER">
+                            <VBox alignment="CENTER" styleClass="weather-detail-item">
+                                <StackPane styleClass="weather-detail-icon-container">
+                                    <FontAwesomeIconView glyphName="TINT" styleClass="weather-detail-icon"/>
+                                </StackPane>
+                                <Label text="Humidité" styleClass="weather-detail-label"/>
+                                <Label fx:id="weatherHumidityLabel" text="65%" styleClass="weather-detail-value"/>
+                            </VBox>
+                            <VBox alignment="CENTER" styleClass="weather-detail-item">
+                                <StackPane styleClass="weather-detail-icon-container">
+                                    <FontAwesomeIconView glyphName="CLOUD" styleClass="weather-detail-icon"/>
+                                    <FontAwesomeIconView glyphName="CLOUD" styleClass="weather-detail-icon"/>
+                                </StackPane>
+                                <Label text="Nuages" styleClass="weather-detail-label"/>
+                                <Label fx:id="weatherCloudsLabel" text="22%" styleClass="weather-detail-value"/>
+                            </VBox>
+                            <VBox alignment="CENTER" styleClass="weather-detail-item">
+                                <StackPane styleClass="weather-detail-icon-container">
+                                    <FontAwesomeIconView glyphName="DASHBOARD" styleClass="weather-detail-icon"/>
+                                </StackPane>
+                                <Label text="Pression" styleClass="weather-detail-label"/>
+                                <Label fx:id="weatherPressureLabel" text="1015 hPa" styleClass="weather-detail-value"/>
+                            </VBox>
+                            <VBox alignment="CENTER" styleClass="weather-detail-item">
+                                <StackPane styleClass="weather-detail-icon-container">
+                                    <FontAwesomeIconView glyphName="LONG_ARROW_RIGHT" styleClass="weather-detail-icon" rotate="45"/>
+                                </StackPane>
+                                <Label text="Vent" styleClass="weather-detail-label"/>
+                                <Label fx:id="weatherWindLabel" text="3.2 m/s" styleClass="weather-detail-value"/>
+                            </VBox>
+                        </HBox>
+                    </HBox>
+
+                    <!-- Forecast preview row -->
+                        <HBox styleClass="weather-forecast">
+                        <VBox styleClass="forecast-item" HBox.hgrow="ALWAYS">
+                            <Label text="Demain" styleClass="forecast-day"/>
+                            <FontAwesomeIconView glyphName="CLOUD" styleClass="forecast-icon"/>
+                            <Label text="22°C" styleClass="forecast-temp"/>
+                        </VBox>
+                        <VBox styleClass="forecast-item" HBox.hgrow="ALWAYS">
+                            <Label text="Ven" styleClass="forecast-day"/>
+                            <FontAwesomeIconView glyphName="CLOUD" styleClass="forecast-icon"/>
+                            <Label text="19°C" styleClass="forecast-temp"/>
+                        </VBox>
+                        <VBox styleClass="forecast-item" HBox.hgrow="ALWAYS">
+                            <Label text="Sam" styleClass="forecast-day"/>
+                            <FontAwesomeIconView glyphName="SUN_ALT" styleClass="forecast-icon"/>
+                            <Label text="23°C" styleClass="forecast-temp"/>
+                        </VBox>
+                        <VBox styleClass="forecast-item" HBox.hgrow="ALWAYS">
+                            <Label text="Dim" styleClass="forecast-day"/>
+                            <FontAwesomeIconView glyphName="SUN_ALT" styleClass="forecast-icon"/>
+                            <Label text="25°C" styleClass="forecast-temp"/>
+                        </VBox>
+                        <VBox styleClass="forecast-item" HBox.hgrow="ALWAYS">
+                            <Label text="Lun" styleClass="forecast-day"/>
+                            <FontAwesomeIconView glyphName="CLOUD" styleClass="forecast-icon"/>
+                            <Label text="20°C" styleClass="forecast-temp"/>
+                        </VBox>
+                    </HBox>
+                </VBox>
+
+                <!-- Map Section - Improved -->
+                <VBox spacing="16" styleClass="map-section">
+                    <HBox alignment="CENTER_LEFT">
+                        <Label text="Cartographie de la Parcelle" styleClass="section-title"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                    </HBox>
 
                     <!-- Map Container -->
                     <StackPane fx:id="mapContainer" styleClass="map-container">
@@ -55,11 +144,16 @@
                     </StackPane>
 
                     <!-- Coordinates Form -->
-                    <HBox spacing="15" alignment="CENTER_LEFT">
-                        <Label text="Coordonnées:" styleClass="form-label"/>
-                        <Label fx:id="coordinatesLabel" text="Non définies" styleClass="coordinates-value"/>
+                    <HBox spacing="16" alignment="CENTER_LEFT" styleClass="coordinates-container">
+                        <VBox>
+                            <Label text="Coordonnées GPS" styleClass="coordinates-title"/>
+                            <HBox spacing="8" alignment="CENTER_LEFT">
+                                <Label fx:id="coordinatesLatLabel" text="Lat: 48.8566° N" styleClass="coordinates-value"/>
+                                <Label fx:id="coordinatesLongLabel" text="Long: 2.3522° E" styleClass="coordinates-value"/>
+                            </HBox>
+                        </VBox>
                         <Region HBox.hgrow="ALWAYS"/>
-                        <Button fx:id="saveCoordinatesBtn" text="Enregistrer les Coordonnées"
+                        <Button fx:id="saveCoordinatesBtn" text="Enregistrer"
                                 onAction="#handleSaveCoordinates" styleClass="btn-SaveCoordinates">
                             <graphic>
                                 <FontAwesomeIconView glyphName="SAVE" styleClass="btn-iconSaveCoordinates"/>
@@ -73,9 +167,21 @@
         <!-- Footer -->
         <HBox styleClass="detail-footer">
             <Region HBox.hgrow="ALWAYS"/>
-            <Button text="Retour" fx:id="backButton" onAction="#handleBack" styleClass="btn-light"/>
-            <Button text="Modifier" fx:id="editButton" onAction="#handleEdit" styleClass="btn-primary"/>
-            <Button text="Supprimer" fx:id="deleteButton" onAction="#handleDelete" styleClass="btn-danger"/>
+            <Button text="Retour" fx:id="backButton" onAction="#handleBack" styleClass="btn-light">
+                <graphic>
+                    <FontAwesomeIconView glyphName="ARROW_LEFT" styleClass="btn-icon"/>
+                </graphic>
+            </Button>
+            <Button text="Modifier" fx:id="editButton" onAction="#handleEdit" styleClass="btn-primary">
+                <graphic>
+                    <FontAwesomeIconView glyphName="EDIT" styleClass="btn-icon"/>
+                </graphic>
+            </Button>
+            <Button text="Supprimer" fx:id="deleteButton" onAction="#handleDelete" styleClass="btn-danger">
+                <graphic>
+                    <FontAwesomeIconView glyphName="TRASH" styleClass="btn-icon"/>
+                </graphic>
+            </Button>
         </HBox>
     </VBox>
 </VBox>

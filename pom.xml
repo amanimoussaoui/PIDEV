@@ -43,13 +43,6 @@
 
 
     <dependency>
-      <groupId>de.jensd</groupId>
-      <artifactId>fontawesomefx-fontawesome</artifactId>
-      <version>4.7.0-9.1.2</version>
-    </dependency>
-
-
-    <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
       <version>${junit.version}</version>
@@ -98,6 +91,7 @@
       <artifactId>json</artifactId>
       <version>20250107</version>
     </dependency>
+
 
   </dependencies>
 

@@ -1,0 +1,152 @@
+/* Couleurs principales */
+.root {
+    -fx-background-color: #f5f7fa;
+    -fx-font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+/* En-tête */
+.header-box {
+    -fx-background-color: white;
+    -fx-padding: 20px 40px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 4);
+}
+
+.header-title {
+    -fx-font-size: 32px;
+    -fx-text-fill: #2e7d32;
+    -fx-font-weight: 800;
+    -fx-font-family: 'Montserrat', sans-serif;
+}
+
+/* Conteneur principal */
+.main-container {
+    -fx-padding: 30px;
+    -fx-spacing: 20px;
+}
+
+/* Carte principale */
+.card-container {
+    -fx-background-color: white;
+    -fx-background-radius: 12px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 20, 0, 0, 0);
+    -fx-max-width: 1200px;
+    -fx-padding: 0;
+}
+
+.card-content {
+    -fx-padding: 30px;
+    -fx-spacing: 30px;
+}
+
+/* Section image */
+.image-container {
+    -fx-alignment: center;
+    -fx-spacing: 10px;
+}
+
+.formation-image {
+    -fx-fit-width: 350px;
+    -fx-fit-height: 250px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+}
+
+.image-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #666;
+    -fx-font-style: italic;
+}
+
+/* Section informations */
+.info-container {
+    -fx-padding: 10px 0 0 0;
+}
+
+.formation-title {
+    -fx-font-size: 28px;
+    -fx-text-fill: #2e7d32;
+    -fx-font-weight: bold;
+    -fx-wrap-text: true;
+}
+
+.detail-box {
+    -fx-padding: 15px;
+    -fx-background-color: #f9f9f9;
+    -fx-background-radius: 8px;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+}
+
+.detail-label {
+    -fx-font-size: 16px;
+    -fx-text-fill: #2e7d32;
+    -fx-font-weight: bold;
+    -fx-min-width: 100px;
+}
+
+.detail-value {
+    -fx-font-size: 16px;
+    -fx-text-fill: #333;
+    -fx-font-weight: normal;
+}
+
+/* Boutons */
+.button-container {
+    -fx-padding: 20px 0 0 0;
+}
+
+.action-button {
+    -fx-background-color: #2e7d32;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 10px 25px;
+    -fx-background-radius: 6px;
+    -fx-cursor: hand;
+}
+
+.action-button:hover {
+    -fx-background-color: #1b5e20;
+}
+
+.currency-button {
+    -fx-background-color: #388e3c;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 10px 25px;
+    -fx-background-radius: 6px;
+    -fx-cursor: hand;
+}
+
+.currency-button:hover {
+    -fx-background-color: #2e7d32;
+}
+
+/* Section "Pourquoi choisir AgriWise" */
+.why-section {
+    -fx-padding: 20px 0 0 0;
+}
+
+.section-title {
+    -fx-font-size: 22px;
+    -fx-text-fill: #2e7d32;
+    -fx-font-weight: bold;
+    -fx-padding: 0 0 10px 0;
+}
+
+.benefits-text {
+    -fx-padding: 15px;
+    -fx-background-color: #f9f9f9;
+    -fx-background-radius: 8px;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+}
+
+.benefit-paragraph {
+    -fx-font-size: 15px;
+    -fx-line-spacing: 1.5em;
+    -fx-fill: #444;
+    -fx-font-family: 'Segoe UI', Arial, sans-serif;
+}

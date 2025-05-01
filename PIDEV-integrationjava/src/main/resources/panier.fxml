@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="600.0" prefWidth="1100.0" styleClass="panier-background" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.panierController">
+    <children>
+        <VBox alignment="CENTER" prefHeight="600.0" prefWidth="1100.0" spacing="20.0">
+            <!-- Bouton de retour -->
+            <HBox alignment="CENTER_LEFT" prefHeight="40.0" prefWidth="1100.0">
+                <children>
+                    <Button fx:id="backButton" onAction="#returnToMarket" styleClass="back-button" stylesheets="@style.css">
+                        <graphic>
+                            <ImageView fitHeight="20.0" fitWidth="20.0" preserveRatio="true">
+                                <image>
+                                    <Image url="@/images/back_arrow.png" />
+                                </image>
+                            </ImageView>
+                        </graphic>
+                        <HBox.margin>
+                            <Insets left="20.0" top="10.0" />
+                        </HBox.margin>
+                    </Button>
+                </children>
+            </HBox>
+
+            <!-- Titre -->
+            <Label styleClass="panier-title" text="Votre Panier">
+                <font>
+                    <Font name="System Bold" size="28.0" />
+                </font>
+            </Label>
+
+            <!-- Conteneur principal -->
+            <HBox alignment="CENTER" prefHeight="500.0" prefWidth="1100.0" spacing="20.0">
+                <!-- Liste des produits (VBox à gauche) -->
+                <ScrollPane fitToWidth="true" prefHeight="500.0" prefWidth="800.0">
+                    <content>
+                        <VBox fx:id="cartItemsVBox" alignment="CENTER" spacing="10.0" styleClass="cart-items-container" />
+                    </content>
+                </ScrollPane>
+
+                <!-- Total et boutons (à droite) -->
+                <VBox alignment="CENTER" prefHeight="500.0" prefWidth="250.0" spacing="20.0" styleClass="total-container">
+                    <!-- Image au-dessus du total -->
+                    <ImageView fitHeight="100.0" fitWidth="100.0" preserveRatio="true">
+                        <image>
+                            <Image url="@/images/cart_icon.png" />
+                        </image>
+                    </ImageView>
+                    <Label fx:id="totalLabel" styleClass="total-label" text="Total: 0.00 DT" />
+                    <Button fx:id="payButton" onAction="#proceedToPayment" prefHeight="45.0" prefWidth="108.0" styleClass="pay-button" stylesheets="@style.css" text="Payer">
+                        <font>
+                            <Font name="System Bold" size="16.0" />
+                        </font>
+                    </Button>
+                    <Button fx:id="modifyButton" onAction="#modifyItem" prefHeight="45.0" prefWidth="116.0" styleClass="modify-button" stylesheets="@style.css" text="Modifier">
+                        <font>
+                            <Font name="System Bold" size="16.0" />
+                        </font>
+                    </Button>
+                    <Button fx:id="deleteButton" onAction="#deleteItem" styleClass="delete-button" stylesheets="@style.css" text="Supprimer">
+                        <font>
+                            <Font name="System Bold" size="16.0" />
+                        </font>
+                    </Button>
+                </VBox>
+            </HBox>
+        </VBox>
+    </children>
+</AnchorPane>

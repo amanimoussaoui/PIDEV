@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.Label?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="tn.esprit.controllers.StatistiquesFormationsController"
+            prefWidth="600.0" prefHeight="400.0">
+
+    <!-- Titre de la page -->
+    <Label text="Top 3 Formations les Plus Participées" layoutX="150.0" layoutY="20.0"
+           style="-fx-font-size: 20px; -fx-font-weight: bold;" />
+
+    <!-- Le graphique en camembert -->
+    <PieChart fx:id="pieChart" layoutX="50.0" layoutY="70.0" prefWidth="500.0" prefHeight="300.0" />
+
+</AnchorPane>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21"
+            fx:controller="tn.esprit.controllers.FormationController"
+            stylesheets="formations.css">
+
+   <!-- TITLE AT TOP -->
+   <top>
+      <Label text="Ajouter une formation" styleClass="title-label" BorderPane.alignment="CENTER"/>
+   </top>
+
+   <!-- MAIN CONTENT (your existing form) -->
+   <center>
+      <AnchorPane style="-fx-padding: 20;">
+         <Label layoutX="55.0" layoutY="80.0" text="Titre" styleClass="form-label"/>
+         <Label layoutX="37.0" layoutY="289.0" text="Description" styleClass="form-label"/>
+         <Label layoutX="57.0" layoutY="135.0" text="Prix" styleClass="form-label"/>
+         <Label layoutX="55.0" layoutY="183.0" text="Date" styleClass="form-label"/>
+         <Label layoutX="51.0" layoutY="228.0" text="Image" styleClass="form-label"/>
+
+         <TextField fx:id="titreField" layoutX="145.0" layoutY="80.0" styleClass="form-field"/>
+         <TextField fx:id="prixField" layoutX="145.0" layoutY="132.0" styleClass="form-field"/>
+         <DatePicker fx:id="datePicker" layoutX="147.0" layoutY="179.0" styleClass="form-field"/>
+
+         <Button fx:id="choisirImageButton" layoutX="159.0" layoutY="227.0"
+                 styleClass="form-button"
+                 mnemonicParsing="false" onAction="#choisirImage" text="Choisir image" />
+
+         <Label fx:id="imageLabel" layoutX="320.0" layoutY="230.0" text="Aucune image sélectionnée"
+                styleClass="image-label"/>
+
+         <TextArea fx:id="descriptionArea" layoutX="134.0" layoutY="276.0"
+                   prefHeight="66.0" prefWidth="275.0" styleClass="form-textarea"/>
+
+         <Button fx:id="ajouterButton" layoutX="262.0" layoutY="369.0"
+                 styleClass="add-button"
+                 mnemonicParsing="false" onAction="#ajouterFormation" text="Ajouter" />
+      </AnchorPane>
+   </center>
+</BorderPane>

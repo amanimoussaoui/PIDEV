@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.web.WebView?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="tn.esprit.controllers.ListParticipationController"
+      stylesheets="@ListParticipations.css"
+      spacing="15"
+      style="-fx-padding: 20;">
+
+    <!-- Barre de navigation horizontale -->
+    <HBox spacing="15" alignment="CENTER_LEFT">
+        <Button fx:id="btnFormations" text="Liste des Formations" styleClass="sidebar-button" onAction="#redirectToFormations"/>
+        <Button fx:id="btnStatistiques" text="Statistiques" styleClass="sidebar-button" onAction="#redirectToStatistiques"/>
+    </HBox>
+
+    <!-- TableView des participations -->
+    <TableView fx:id="participationTable" style="-fx-max-height: 350;">
+        <columns>
+            <TableColumn fx:id="titreFormationCol" text="Formation" />
+            <TableColumn fx:id="UtilisateurCol" text="Participant" />
+            <TableColumn fx:id="dateCol" text="Date de participation" />
+            <TableColumn fx:id="actionCol" text="Actions" />
+        </columns>
+        <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+        </columnResizePolicy>
+    </TableView>
+
+    <!-- Calendrier -->
+    <Label text="Calendrier des Formations" style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #4CAF50; -fx-padding: 0 0 10 0;"/>
+    <WebView fx:id="webView" prefHeight="500"/>
+</VBox>

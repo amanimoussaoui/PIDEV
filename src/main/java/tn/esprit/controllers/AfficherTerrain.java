@@ -1,26 +1,52 @@
 package tn.esprit.controllers;
 
+import javafx.animation.PauseTransition;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 import javafx.stage.Stage;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Properties;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import javafx.util.Duration;
 import tn.esprit.models.Candidature;
 import tn.esprit.models.Terrain;
+import tn.esprit.models.UserSession;
 import tn.esprit.services.ServiceCandidature;
 import tn.esprit.services.ServiceTerrain;
+import tn.esprit.services.EmailService;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.control.TextField;
 
-import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import tn.esprit.util.MaConnexion;
 
 public class AfficherTerrain {
 
@@ -30,9 +56,6 @@ public class AfficherTerrain {
     @FXML private TextArea textDescription;
     @FXML private Button btnModifier, btnSupprimer;
     @FXML private Button btnVoirCandidatures;
-    private Terrain terrainSelectionne;
-    private final ServiceTerrain service = new ServiceTerrain();
-    private static Stage afficherTerrainStage;
     @FXML private TableView<Candidature> tableCandidatures;
     @FXML private TableColumn<Candidature, Integer> colId;
     @FXML private TableColumn<Candidature, String> colDateDebut;
@@ -40,58 +63,89 @@ public class AfficherTerrain {
     @FXML private TableColumn<Candidature, String> colBut;
     @FXML private TableColumn<Candidature, Double> colMontant;
     @FXML private TableColumn<Candidature, String> colEtat;
-    // Méthode pour ouvrir la fenêtre principale
-    public static void showWindow() throws IOException {
-        if (afficherTerrainStage != null) {
-            afficherTerrainStage.close();
-        }
+    @FXML private TextField txtRecherche;
+    @FXML
+    private WebView webView;  // Assure-toi d'ajouter un WebView dans ton FXML pour afficher la carte
 
-        FXMLLoader loader = new FXMLLoader(AfficherTerrain.class.getResource("/AfficherTerrain.fxml"));
-        Parent root = loader.load();
-
-        AfficherTerrain controller = loader.getController();
-        Scene scene = new Scene(root);
-        scene.setUserData(controller);
-
-        afficherTerrainStage = new Stage();
-        afficherTerrainStage.setScene(scene);
-        afficherTerrainStage.setTitle("Liste des Terrains");
-        afficherTerrainStage.show();
-    }
-
+    private WebEngine webEngine;
+    private Terrain terrainSelectionne;
+    private final ServiceTerrain service = new ServiceTerrain();
+    private final ServiceCandidature serviceCandidature = new ServiceCandidature();
+    private final PauseTransition searchPause = new PauseTransition(Duration.millis(300));
+    private String lastSearch = "";
+    private Stage AfficherTerrainStage;
+    private final EmailService emailService = new EmailService();
     @FXML
     public void initialize() {
-        // Vérifiez que les boutons sont bien injectés
-        if (btnModifier == null || btnSupprimer == null) {
-            throw new IllegalStateException("Les boutons n'ont pas été injectés correctement");
-        }
-
+        // Initialisation des boutons
         btnModifier.setDisable(true);
         btnSupprimer.setDisable(true);
+        btnVoirCandidatures.setDisable(true);
+        AfficherTerrainStage = new Stage();
+        // Configuration des colonnes de la table
+        colId.setCellValueFactory(new PropertyValueFactory<>("id"));
+        colDateDebut.setCellValueFactory(new PropertyValueFactory<>("dateDebut"));
+        colDateFin.setCellValueFactory(new PropertyValueFactory<>("dateFin"));
+        colBut.setCellValueFactory(new PropertyValueFactory<>("but"));
+        colMontant.setCellValueFactory(new PropertyValueFactory<>("montant"));
+        colEtat.setCellValueFactory(new PropertyValueFactory<>("etat"));
+        candidaturesSection.setVisible(false);
+        tableCandidatures.setVisible(true);
 
-        // Initialisez le reste de votre UI
+        // Configuration de la recherche dynamique
+        searchPause.setOnFinished(event -> {
+            String currentSearch = txtRecherche.getText().trim();
+            if (!currentSearch.equals(lastSearch)) {
+                if (currentSearch.isEmpty()) {
+                    chargerTerrains();
+                } else {
+                    rechercherTerrains(currentSearch);
+                }
+                lastSearch = currentSearch;
+            }
+        });
+
+        txtRecherche.textProperty().addListener((observable, oldValue, newValue) -> {
+            searchPause.playFromStart();
+        });
+
+        // Chargement initial des terrains
         chargerTerrains();
+
+        // Charge le fichier HTML dans le WebView
+        WebEngine webEngine = webView.getEngine();
+        webEngine.load(getClass().getResource("/map.html").toExternalForm());
     }
 
-    public void rafraichirListeTerrains() {
-        chargerTerrains(); // Recharge les données depuis la BDD
-        reinitialiserInterface(); // Nettoie les détails affichés
-    }
 
-    public void chargerTerrains() {
-        terrainList.getChildren().clear(); // Fonctionne aussi avec FlowPane
-        List<Terrain> terrains = service.afficher();
+    private void rechercherTerrains(String motCle) {
+        ProgressIndicator progress = new ProgressIndicator();
+        progress.setMaxSize(50, 50);
+        terrainList.getChildren().clear();
+        terrainList.getChildren().add(progress);
 
-        if (terrains.isEmpty()) {
-            Label emptyLabel = new Label("Aucun terrain disponible");
-            emptyLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: gray;");
-            terrainList.getChildren().add(emptyLabel);
-            return;
-        }
+        new Thread(() -> {
+            List<Terrain> terrainsTrouves = service.afficher().stream()
+                    .filter(terrain -> terrain.getLocalisation().toLowerCase().contains(motCle.toLowerCase()) ||
+                            String.valueOf(terrain.getSuperficie()).toLowerCase().contains(motCle.toLowerCase()) ||
+                            String.valueOf(terrain.getPrix()).toLowerCase().contains(motCle.toLowerCase()) ||
+                            terrain.getDescription().toLowerCase().contains(motCle.toLowerCase()))
+                    .collect(Collectors.toList());
 
-        for (Terrain terrain : terrains) {
-            terrainList.getChildren().add(creerCarteTerrain(terrain));
-        }
+            Platform.runLater(() -> {
+                terrainList.getChildren().clear();
+
+                if (terrainsTrouves.isEmpty()) {
+                    Label emptyLabel = new Label("Aucun terrain trouvé pour : " + motCle);
+                    emptyLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: gray;");
+                    terrainList.getChildren().add(emptyLabel);
+                } else {
+                    for (Terrain terrain : terrainsTrouves) {
+                        terrainList.getChildren().add(creerCarteTerrain(terrain));
+                    }
+                }
+            });
+        }).start();
     }
 
     private VBox creerCarteTerrain(Terrain terrain) {
@@ -100,7 +154,7 @@ public class AfficherTerrain {
         card.setUserData(terrain);
         card.setOnMouseClicked(e -> selectionnerTerrain(terrain));
 
-        // Image réduite
+        // Image
         ImageView imgView = new ImageView();
         try {
             if (terrain.getImage() != null && !terrain.getImage().isEmpty()) {
@@ -113,12 +167,12 @@ public class AfficherTerrain {
             imgView.setImage(new Image(getClass().getResource("/images/default-image.png").toExternalForm()));
         }
 
-        // Titre avec police spécifique
+        // Titre
         Label titleLabel = new Label(terrain.getLocalisation());
         titleLabel.setFont(Font.font("Roboto", FontWeight.BOLD, 14));
         titleLabel.setStyle("-fx-text-fill: #2196F3;");
 
-        // Prix avec formatage
+        // Prix
         Label priceLabel = new Label(String.format("%,.2f DT", terrain.getPrix()));
         priceLabel.setFont(Font.font("Roboto", FontWeight.BOLD, 12));
         priceLabel.setStyle("-fx-text-fill: #4CAF50;");
@@ -132,13 +186,14 @@ public class AfficherTerrain {
         afficherDetails(terrain);
         btnModifier.setDisable(false);
         btnSupprimer.setDisable(false);
+        btnVoirCandidatures.setDisable(false);
     }
 
     private void afficherDetails(Terrain terrain) {
-        textPrix.setText("Prix: $" + terrain.getPrix());
-        textLocalisation.setText("Localisation: " + terrain.getLocalisation());
-        textSuperficie.setText("Superficie: " + terrain.getSuperficie() + " m²");
-        textDescription.setText("Description: " + terrain.getDescription());
+        textPrix.setText(String.format("%,.2f DT", terrain.getPrix()));
+        textLocalisation.setText(terrain.getLocalisation());
+        textSuperficie.setText(terrain.getSuperficie() + " m²");
+        textDescription.setText(terrain.getDescription());
 
         try {
             if (terrain.getImage() != null && !terrain.getImage().isEmpty()) {
@@ -147,9 +202,17 @@ public class AfficherTerrain {
         } catch (Exception e) {
             System.err.println("Erreur image détail: " + e.getMessage());
         }
-
-        // Activation du bouton Voir Candidatures
-        btnVoirCandidatures.setDisable(false);
+        // Charger la carte avec les coordonnées
+        if (terrain.getLatitude() != null && terrain.getLongitude() != null) {
+            String mapUrl = "https://www.openstreetmap.org/export/embed.html?" +
+                    "bbox=" + (terrain.getLongitude()-0.01) + "," + (terrain.getLatitude()-0.01) + "," +
+                    (terrain.getLongitude()+0.01) + "," + (terrain.getLatitude()+0.01) +
+                    "&marker=" + terrain.getLatitude() + "," + terrain.getLongitude();
+            webView.getEngine().load(mapUrl);
+        }
+        // Charger la carte avec les coordonnées
+        String mapUrl = "http://maps.google.com/maps?q=" + terrain.getLatitude() + "," + terrain.getLongitude() + "&z=15&output=embed";
+        webView.getEngine().load(mapUrl);
     }
 
     @FXML
@@ -160,7 +223,7 @@ public class AfficherTerrain {
 
             AjouterTerrain controller = loader.getController();
             controller.setParentController(this);
-            controller.setParentStage(afficherTerrainStage);
+            controller.setParentStage(AfficherTerrainStage);
 
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
@@ -177,15 +240,19 @@ public class AfficherTerrain {
             Parent root = loader.load();
 
             AjouterTerrain controller = loader.getController();
-            controller.setTerrainModifier(terrainSelectionne);
-            controller.setParentController(this);
-            controller.setParentStage(afficherTerrainStage);
+            if (terrainSelectionne != null) {
+                controller.setTerrainModifier(terrainSelectionne);
+                controller.setParentController(this);
+                controller.setParentStage(AfficherTerrainStage);
 
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root));
-            stage.showAndWait();
+                Stage stage = new Stage();
+                stage.setScene(new Scene(root));
+                stage.showAndWait();
 
-            chargerTerrains();
+                chargerTerrains();
+            } else {
+                afficherAlerte("Erreur", "Aucun terrain sélectionné.");
+            }
         } catch (IOException e) {
             afficherAlerte("Erreur", "Impossible d'ouvrir le formulaire de modification");
         }
@@ -193,7 +260,16 @@ public class AfficherTerrain {
 
     @FXML
     private void supprimerTerrain() {
-        if (terrainSelectionne == null) return;
+        if (terrainSelectionne == null) {
+            afficherAlerte("Erreur", "Veuillez sélectionner un terrain à supprimer");
+            return;
+        }
+
+        ServiceCandidature serviceCandidature = new ServiceCandidature();
+        if (!serviceCandidature.getCandidaturesByTerrain(terrainSelectionne.getId()).isEmpty()) {
+            afficherAlerte("Erreur", "Impossible de supprimer : ce terrain a des candidatures associées");
+            return;
+        }
 
         Alert confirmation = new Alert(Alert.AlertType.CONFIRMATION);
         confirmation.setTitle("Confirmation");
@@ -205,7 +281,6 @@ public class AfficherTerrain {
                 boolean suppressionReussie = service.supprimer(terrainSelectionne.getId());
 
                 if (suppressionReussie) {
-                    // Solution optimale : suppression locale + rafraîchissement
                     terrainList.getChildren().removeIf(node -> {
                         if (node.getUserData() instanceof Terrain) {
                             return ((Terrain) node.getUserData()).getId() == terrainSelectionne.getId();
@@ -214,14 +289,54 @@ public class AfficherTerrain {
                     });
 
                     reinitialiserInterface();
-                    afficherAlerte("Succès", "Suppression effectuée");
+                    afficherAlerte("Succès", "Terrain supprimé avec succès");
                 } else {
-                    afficherAlerte("Erreur", "Échec de la suppression");
+                    afficherAlerte("Erreur", "Échec de la suppression du terrain");
                 }
             }
         });
     }
 
+    @FXML private VBox candidaturesSection;
+
+    // Modifiez la méthode voirCandidatures()
+    @FXML
+    private void voirCandidatures() {
+        if (terrainSelectionne == null) {
+            afficherAlerte("Erreur", "Veuillez sélectionner un terrain d'abord");
+            return;
+        }
+
+        // Basculer la visibilité
+        boolean doitAfficher = !candidaturesSection.isVisible();
+        candidaturesSection.setVisible(doitAfficher);
+
+        if (doitAfficher) {
+            // Récupérer l'utilisateur connecté
+            UserSession session = UserSession.getInstance();
+            if (session == null) {
+                afficherAlerte("Erreur", "Aucun utilisateur connecté");
+                return;
+            }
+
+            // Vérifier que l'utilisateur est bien le propriétaire
+            if (terrainSelectionne.getUtilisateur().getId_utilisateur() != session.getUserId()) {
+                afficherAlerte("Erreur", "Vous n'êtes pas autorisé à voir les candidatures");
+                return;
+            }
+
+            // Charger les candidatures
+            List<Candidature> candidatures = serviceCandidature.getCandidaturesWithUsers(terrainSelectionne.getId());
+
+            if (candidatures != null && !candidatures.isEmpty()) {
+                tableCandidatures.setItems(FXCollections.observableArrayList(candidatures));
+                tableCandidatures.refresh();
+            } else {
+                afficherAlerte("Information", "Aucune candidature pour ce terrain");
+                candidaturesSection.setVisible(false);
+            }
+        }
+    }
     private void reinitialiserInterface() {
         terrainSelectionne = null;
         textPrix.setText("");
@@ -231,18 +346,14 @@ public class AfficherTerrain {
         imageViewTerrain.setImage(null);
         btnModifier.setDisable(true);
         btnSupprimer.setDisable(true);
+        btnVoirCandidatures.setDisable(true);
+        tableCandidatures.setVisible(false);
     }
-
-
-    // Méthode pour récupérer les candidatures depuis la base de données
-    private List<Candidature> chargerCandidatures(int terrainId) {
-        // Appelez un service qui récupère les candidatures pour ce terrain
-        // Vous devez implémenter cette méthode pour récupérer les candidatures depuis votre base de données
-        return new ServiceCandidature().getCandidaturesByTerrain(terrainId);
+    @FXML
+    private void handleRecherche(KeyEvent event) {
+        // Your logic for handling the key release event
+        System.out.println("Recherche: " + txtRecherche.getText());
     }
-
-
-
     private void afficherAlerte(String titre, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(titre);
@@ -250,36 +361,135 @@ public class AfficherTerrain {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
+    public void rafraichirListeTerrains() {
+        chargerTerrains();
+        reinitialiserInterface();
+    }
+
+
+
+        private void showAlert(Alert.AlertType type, String message) {
+            // Affiche une alerte avec le message spécifié
+            Alert alert = new Alert(type);
+            alert.setTitle("Validation");
+            alert.setHeaderText(null);
+            alert.setContentText(message);
+            alert.showAndWait();
+        }
+
+
+
+//email
+
     @FXML
-    private void voirCandidatures() {
-        // Rendre visible le TableView pour afficher les candidatures
-        tableCandidatures.setVisible(true);
+    private void accepterCandidature() {
+        Candidature selected = tableCandidatures.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            afficherAlerte("Erreur", "Aucune candidature sélectionnée");
+            return;
+        }
 
-        // Lier les colonnes du TableView avec les propriétés de Candidature
-        colId.setCellValueFactory(new PropertyValueFactory<>("id"));
-        colDateDebut.setCellValueFactory(new PropertyValueFactory<>("date_debut"));
-        colDateFin.setCellValueFactory(new PropertyValueFactory<>("date_fin"));
-        colBut.setCellValueFactory(new PropertyValueFactory<>("but"));
-        colMontant.setCellValueFactory(new PropertyValueFactory<>("montant"));
-        colEtat.setCellValueFactory(new PropertyValueFactory<>("etat"));
+        try {
+            // Mettre à jour l'état d'abord
+            selected.setEtat("Acceptée");
+            boolean modificationReussie = serviceCandidature.modifier(selected);
 
-        // Charger toutes les candidatures depuis la base de données
-        ServiceCandidature serviceCandidature = new ServiceCandidature();
-        List<Candidature> candidatures = serviceCandidature.afficherToutesCandidatures();
+            if (!modificationReussie) {
+                afficherAlerte("Erreur", "Échec de la mise à jour de la candidature");
+                return;
+            }
 
-        // Injecter les candidatures dans le TableView
-        tableCandidatures.getItems().setAll(candidatures);
+            // Envoyer l'email seulement si la modification a réussi
+            String emailCandidat = selected.getUtilisateur().getEmail();
+            String nomCandidat = selected.getUtilisateur().getNom();
+            String localisation = terrainSelectionne.getLocalisation();
+            double prix = terrainSelectionne.getPrix();
+
+            emailService.sendAcceptanceEmail(emailCandidat, nomCandidat, localisation, prix);
+
+            // Rafraîchir la table
+            ObservableList<Candidature> candidatures = tableCandidatures.getItems();
+            for (int i = 0; i < candidatures.size(); i++) {
+                if (candidatures.get(i).getId() == selected.getId()) {
+                    candidatures.set(i, selected);
+                    break;
+                }
+            }
+            tableCandidatures.refresh();
+
+            afficherAlerte("Succès", "Candidature acceptée et email envoyé");
+        } catch (Exception e) {
+            afficherAlerte("Erreur", "Erreur lors de l'acceptation: " + e.getMessage());
+        }
     }
 
     @FXML
-    private void afficherCandidatures(ActionEvent event) {
-        ServiceCandidature service = new ServiceCandidature();
-        List<Candidature> candidatures = service.afficher();
+    private void refuserCandidature() {
+        Candidature selected = tableCandidatures.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            afficherAlerte("Erreur", "Aucune candidature sélectionnée");
+            return;
+        }
 
-        for (Candidature c : candidatures) {
-            System.out.println(c); // ou ajouter dans TableView etc.
+        try {
+            // Mettre à jour l'état d'abord
+            selected.setEtat("Refusée");
+            boolean modificationReussie = serviceCandidature.modifier(selected);
+
+            if (!modificationReussie) {
+                afficherAlerte("Erreur", "Échec de la mise à jour de la candidature");
+                return;
+            }
+
+            // Envoyer l'email seulement si la modification a réussi
+            String emailCandidat = selected.getUtilisateur().getEmail();
+            String nomCandidat = selected.getUtilisateur().getNom();
+            String localisation = terrainSelectionne.getLocalisation();
+            double prix = terrainSelectionne.getPrix();
+
+            emailService.sendRejectionEmail(emailCandidat, nomCandidat, localisation, prix);
+
+            // Rafraîchir la table
+            ObservableList<Candidature> candidatures = tableCandidatures.getItems();
+            for (int i = 0; i < candidatures.size(); i++) {
+                if (candidatures.get(i).getId() == selected.getId()) {
+                    candidatures.set(i, selected);
+                    break;
+                }
+            }
+            tableCandidatures.refresh();
+
+            afficherAlerte("Succès", "Candidature refusée et email envoyé");
+        } catch (Exception e) {
+            afficherAlerte("Erreur", "Erreur lors du refus: " + e.getMessage());
         }
     }
 
 
+    // Méthode pour mettre à jour la localisation du terrain
+    public void afficherCarte(double latitude, double longitude) {
+        String script = "var map = L.map('map').setView([" + latitude + ", " + longitude + "], 13);" +
+                "L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {" +
+                "attribution: '&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors'" +
+                "}).addTo(map);" +
+                "L.marker([" + latitude + ", " + longitude + "]).addTo(map)" +
+                ".bindPopup('Terrain Localisé').openPopup();";
+        // Exécute le script JavaScript dans le WebView pour mettre à jour la carte
+        webEngine.executeScript(script);
+    }
+    private void chargerTerrains() {
+        terrainList.getChildren().clear();
+        List<Terrain> terrains = service.afficher(); // Utilisez l'instance 'service' déjà définie
+
+        if (terrains.isEmpty()) {
+            Label emptyLabel = new Label("Aucun terrain disponible");
+            emptyLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: gray;");
+            terrainList.getChildren().add(emptyLabel);
+        } else {
+            for (Terrain terrain : terrains) {
+                terrainList.getChildren().add(creerCarteTerrain(terrain));
+            }
+        }
+    }
 }

@@ -10,10 +10,26 @@ public class Terrain {
     private double prix;
     private String description;
     private String image;
+    private Double latitude;
+    private Double longitude;
+    private double humidite;
+    private Utilisateur proprietaire;
 
+    public Utilisateur getProprietaire() {
+        return proprietaire;
+    }
+    public void setProprietaire(Utilisateur proprietaire) {
+        this.proprietaire = proprietaire;
+    }
+    public String getNomProprietaire() {
+        return proprietaire != null ?
+                proprietaire.getNom() + " " + proprietaire.getPrenom() :
+                "Propriétaire inconnu";
+    }
     public Terrain() {}
 
-    public Terrain(Integer id, Utilisateur utilisateur, String localisation, double superficie, double prix, String description, String image) {
+    public Terrain(Integer id, Utilisateur utilisateur, String localisation, double superficie, double prix,
+                   String description, String image, double latitude, double longitude, double humidite) {
         this.id = id;
         this.utilisateur = utilisateur;
         this.localisation = localisation;
@@ -21,15 +37,44 @@ public class Terrain {
         this.prix = prix;
         this.description = description;
         this.image = image;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.humidite = humidite;
+    }
+    public Terrain(Integer id, String nom, String type, String emplacement, double prix, double superficie, double humidite) {
+        this.id = id;
+        this.description = nom; // ou autre champ pour "nom"
+        this.image = type;      // ou autre champ pour "type"
+        this.localisation = emplacement;
+        this.prix = prix;
+        this.superficie = superficie;
+        this.humidite = humidite;
     }
 
-    public Terrain(Utilisateur utilisateur, String localisation, double superficie, double prix, String description, String image) {
+
+    public Terrain(Utilisateur utilisateur, String localisation, double superficie, double prix, String description, String image, Double latitude, Double longitude, double humidite) {
         this.utilisateur = utilisateur;
         this.localisation = localisation;
         this.superficie = superficie;
         this.prix = prix;
         this.description = description;
         this.image = image;
+        this.latitude = latitude;
+        this.longitude= longitude;
+        this.humidite = humidite;
+    }
+
+    public Terrain(Integer id, Utilisateur utilisateur, String localisation, double superficie, double prix, String description, String image, Double latitude, Double longitude, double humidite) {
+        this.id = id;
+        this.utilisateur = utilisateur;
+        this.localisation = localisation;
+        this.superficie = superficie;
+        this.prix = prix;
+        this.description = description;
+        this.image = image;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.humidite = humidite;
     }
 
     public Integer getId() {
@@ -88,6 +133,31 @@ public class Terrain {
         this.image = image;
     }
 
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+    public String getUtilisateurId() {
+        return utilisateur != null ? String.valueOf(utilisateur.getId_utilisateur()) : "N/A";
+    }
+    public Double getHumidite() {
+        return humidite;
+    }
+
+    public void setHumidite(Double latitude) {
+        this.humidite = humidite;
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -99,8 +169,6 @@ public class Terrain {
                 description.equals(terrain.description);
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(localisation, superficie, prix, description);
-    }
+
+
 }

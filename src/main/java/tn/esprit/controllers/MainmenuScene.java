@@ -153,7 +153,7 @@ public class MainmenuScene {
     @FXML
     private void redirectToCandidatures() {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/GestionCandidature.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/InterfaceAmani.fxml"));
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
             stage.setTitle("Gestion des Candidatures");

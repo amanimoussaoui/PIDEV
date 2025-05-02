@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/8.0.171"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="tn.esprit.controllers.InterfaceTerrains"
+      spacing="20"
+      style="-fx-padding: 20; -fx-background-color: #f5f5f5;">
+
+    <Label text="SUPERVISION D'IRRIGATION"
+           style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+
+    <!-- Indicateurs -->
+    <HBox spacing="40" alignment="CENTER">
+        <!-- Graphique -->
+        <VBox spacing="10">
+            <Label text="Statut Humidité" style="-fx-font-weight: bold;"/>
+            <PieChart fx:id="terrainChart" prefWidth="300" prefHeight="250"/>
+        </VBox>
+
+        <!-- Jauge -->
+        <VBox spacing="10" alignment="CENTER">
+            <ProgressIndicator fx:id="jaugeHumidite"
+                               progress="0"
+                               prefWidth="150" prefHeight="150"/>
+            <Label fx:id="labelHumidite" text="Humidité: 0%"
+                   style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+            <Label fx:id="alerteLabel" text=""
+                   style="-fx-font-size: 14px;"/>
+        </VBox>
+    </HBox>
+
+    <!-- Statut Pompe -->
+    <Label fx:id="statutPompeLabel"
+           text="Pompe: INACTIVE | Mode: AUTO"
+           style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+
+    <!-- Contrôles -->
+    <HBox spacing="20" alignment="CENTER">
+        <Button fx:id="btnActiverPompe" text="Activer Pompe"
+                style="-fx-background-color: #4CAF50; -fx-text-fill: white;"
+                onAction="#activerPompe"/>
+        <Button fx:id="btnDesactiverPompe" text="Désactiver Pompe"
+                style="-fx-background-color: #f44336; -fx-text-fill: white;"
+                onAction="#desactiverPompe"/>
+        <Button text="Mode Auto"
+                style="-fx-background-color: #2196F3; -fx-text-fill: white;"
+                onAction="#setAutoMode"/>
+    </HBox>
+</VBox>

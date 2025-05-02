@@ -10,76 +10,94 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
-
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.ScrollPane?>
+
 <AnchorPane prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.AffichageAdmin">
-    <!-- Barre supérieure avec bouton Retour -->
-    <HBox alignment="CENTER_LEFT" style="-fx-background-color: #34495E; -fx-padding: 10;">
-        <Button fx:id="backButton" text="← Retour" onAction="#handleBackButton" styleClass="back-button">
-            <graphic>
-                <ImageView fitWidth="16" fitHeight="16">
-                    <Image url="@images/back-arrow.png"/>
-                </ImageView>
-            </graphic>
-            <padding>
-                <Insets left="10" right="10" top="5" bottom="5"/>
-            </padding>
-        </Button>
-        <Label text="Tableau de Bord Administrateur" style="-fx-text-fill: white; -fx-font-size: 18; -fx-font-weight: bold;"/>
-    </HBox>
-    <!-- Sidebar avec boutons pour naviguer entre les tables -->
-    <VBox layoutX="0.0" layoutY="0.0" prefWidth="200.0" style="-fx-background-color: #2C3E50; -fx-padding: 20;">
-        <!-- Bouton Liste des Terrains -->
-        <Button text="Liste des Terrains" fx:id="btnTerrains" styleClass="sidebar-button" prefWidth="160.0" onAction="#showTerrains"/>
-        <!-- Bouton Liste des Candidatures -->
-        <Button text="Liste des Candidatures" fx:id="btnCandidatures" styleClass="sidebar-button" prefWidth="160.0" onAction="#showCandidatures"/>
-    </VBox>
 
-    <!-- Conteneur pour les données affichées -->
-    <AnchorPane layoutX="200.0" layoutY="0.0" prefHeight="600.0" prefWidth="700.0">
-        <!-- Fond de l'image de fond -->
-        <ImageView fitHeight="600.0" fitWidth="700.0" pickOnBounds="true" preserveRatio="true">
-            <image>
-                <Image url="@images/pexels-lum3n-44775-295771.jpg" />
-            </image>
-        </ImageView>
+    <!-- Zone de contenu avec scroll -->
+    <AnchorPane layoutX="100.0" layoutY="0.0" prefHeight="700.0" prefWidth="800.0">
+        <ScrollPane layoutX="10.0" layoutY="50.0"
+                    AnchorPane.topAnchor="10.0" AnchorPane.bottomAnchor="10.0"
+                    AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0"
+                    fitToWidth="true" pannable="true">
+            <content>
+                <VBox spacing="20.0" prefWidth="680.0">
 
-        <!-- Zone de contenu avec les tables -->
-        <VBox layoutX="10.0" layoutY="50.0" prefWidth="680.0" spacing="20.0">
+                    <!-- Statistiques -->
+                    <VBox fx:id="statistiquesVBox" visible="true" spacing="20.0">
+                        <Label text="Statistiques Avancées des Terrains" styleClass="table-title"/>
 
-            <!-- Titre et Table des Terrains -->
-            <VBox fx:id="terrainVBox" visible="false">
-                <Label text="Liste des Terrains" styleClass="table-title"/>
-                <TableView fx:id="terrainTableView" prefHeight="250.0" prefWidth="680.0">
-                    <columns>
-                        <TableColumn fx:id="idColumn" text="ID" prefWidth="75.0"/>
-                        <TableColumn fx:id="utilisateurIdColumn" text="Utilisateur ID" prefWidth="90.0"/>
-                        <TableColumn fx:id="localisationColumn" text="Localisation" prefWidth="100.0"/>
-                        <TableColumn fx:id="superficieColumn" text="Superficie (m²)" prefWidth="80.0"/>
-                        <TableColumn fx:id="prixColumn" text="Prix (DT)" prefWidth="70.0"/>
-                        <TableColumn fx:id="descriptionColumn" text="Description" prefWidth="150.0"/>
-                        <TableColumn fx:id="imageColumn" text="Image" prefWidth="100.0"/>
-                    </columns>
-                </TableView>
-            </VBox>
+                        <!-- Conteneur pour les graphiques -->
+                        <HBox spacing="20" alignment="CENTER">
+                            <!-- Graphique des terrains les plus demandés -->
+                            <VBox spacing="5">
+                                <Label text="Terrains les plus demandés" style="-fx-font-weight: bold;"/>
+                                <BarChart fx:id="barChart" title="" prefWidth="330.0" prefHeight="300.0" animated="true">
+                                    <xAxis>
+                                        <CategoryAxis label="Terrains"/>
+                                    </xAxis>
+                                    <yAxis>
+                                        <NumberAxis label="Nombre de Candidatures"/>
+                                    </yAxis>
+                                </BarChart>
+                            </VBox>
 
-            <!-- Titre et Table des Candidatures -->
-            <VBox fx:id="candidatureVBox" visible="false">
-                <Label text="Liste des Candidatures" styleClass="table-title"/>
-                <TableView fx:id="candidatureTableView" prefHeight="250.0" prefWidth="680.0">
-                    <columns>
-                        <TableColumn fx:id="candidatureIdColumn" text="ID" prefWidth="75.0"/>
-                        <TableColumn fx:id="terrainIdColumn" text="Terrain ID" prefWidth="90.0"/>
-                        <TableColumn fx:id="userIdColumn" text="Utilisateur ID" prefWidth="90.0"/>
-                        <TableColumn fx:id="dateDebutColumn" text="Date Début" prefWidth="90.0"/>
-                        <TableColumn fx:id="dateFinColumn" text="Date Fin" prefWidth="90.0"/>
-                        <TableColumn fx:id="butColumn" text="But" prefWidth="90.0"/>
-                        <TableColumn fx:id="montantColumn" text="Montant" prefWidth="80.0"/>
-                        <TableColumn fx:id="etatColumn" text="État" prefWidth="70.0"/>
-                    </columns>
-                </TableView>
-            </VBox>
+                            <!-- Graphique des terrains les plus chers -->
+                            <VBox spacing="5">
+                                <Label text="Terrains les plus chers" style="-fx-font-weight: bold;"/>
+                                <BarChart fx:id="priceChart" title="" prefWidth="330.0" prefHeight="300.0" animated="true">
+                                    <xAxis>
+                                        <CategoryAxis label="Localisation"/>
+                                    </xAxis>
+                                    <yAxis>
+                                        <NumberAxis label="Prix (DT)"/>
+                                    </yAxis>
+                                </BarChart>
+                            </VBox>
+                        </HBox>
 
-        </VBox>
+                        <!-- Détails textuels -->
+                        <Label fx:id="statsDetailsLabel" wrapText="true" style="-fx-font-size: 14;"/>
+                    </VBox>
+                    <!-- Table Terrains -->
+                    <VBox fx:id="terrainVBox" visible="true">
+                        <Label text="Liste des Terrains" styleClass="table-title"/>
+                        <TableView fx:id="terrainTableView" prefHeight="250.0" prefWidth="680.0">
+                            <columns>
+                                <TableColumn fx:id="idColumn" text="ID" prefWidth="75.0"/>
+                                <TableColumn fx:id="utilisateurIdColumn" text="Utilisateur ID" prefWidth="90.0"/>
+                                <TableColumn fx:id="localisationColumn" text="Localisation" prefWidth="100.0"/>
+                                <TableColumn fx:id="superficieColumn" text="Superficie (m²)" prefWidth="80.0"/>
+                                <TableColumn fx:id="prixColumn" text="Prix (DT)" prefWidth="70.0"/>
+                                <TableColumn fx:id="descriptionColumn" text="Description" prefWidth="150.0"/>
+                                <TableColumn fx:id="imageColumn" text="Image" prefWidth="100.0"/>
+                            </columns>
+                        </TableView>
+                    </VBox>
+
+                    <!-- Table Candidatures -->
+                    <VBox fx:id="candidatureVBox" visible="true">
+                        <Label text="Liste des Candidatures" styleClass="table-title"/>
+                        <TableView fx:id="candidatureTableView" prefHeight="250.0" prefWidth="680.0">
+                            <columns>
+                                <TableColumn fx:id="candidatureIdColumn" text="ID" prefWidth="75.0"/>
+                                <TableColumn fx:id="terrainIdColumn" text="Terrain ID" prefWidth="90.0"/>
+                                <TableColumn fx:id="userIdColumn" text="Utilisateur ID" prefWidth="90.0"/>
+                                <TableColumn fx:id="dateDebutColumn" text="Date Début" prefWidth="90.0"/>
+                                <TableColumn fx:id="dateFinColumn" text="Date Fin" prefWidth="90.0"/>
+                                <TableColumn fx:id="butColumn" text="But" prefWidth="90.0"/>
+                                <TableColumn fx:id="montantColumn" text="Montant" prefWidth="80.0"/>
+                                <TableColumn fx:id="etatColumn" text="État" prefWidth="70.0"/>
+                            </columns>
+                        </TableView>
+                    </VBox>
+
+                </VBox>
+            </content>
+        </ScrollPane>
     </AnchorPane>
 </AnchorPane>

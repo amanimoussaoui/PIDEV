@@ -15,7 +15,6 @@
     <top>
         <StackPane style="-fx-background-color: linear-gradient(to right, #2E7D32, #4CAF50);">
             <HBox alignment="CENTER_LEFT" spacing="10">
-                <!-- Bouton Back -->
                 <Button fx:id="backButton" text="← Retour" onAction="#handleBackButton"
                         styleClass="back-button">
                     <graphic>
@@ -23,11 +22,7 @@
                             <Image url="@/images/back-arrow.png"/>
                         </ImageView>
                     </graphic>
-                    <padding>
-                        <Insets left="10" right="10" top="5" bottom="5"/>
-                    </padding>
                 </Button>
-
                 <Label text="🌾 Nos Terrains Agricoles Disponibles 🌾"
                        styleClass="header-title">
                     <effect>
@@ -35,17 +30,12 @@
                     </effect>
                 </Label>
             </HBox>
-            <padding>
-                <Insets top="15" bottom="15" left="15"/>
-            </padding>
         </StackPane>
     </top>
-    <center>
-        <SplitPane dividerPositions="0.6" style="-fx-background-color: #f5f5f5;">
-            <effect>
-                <DropShadow color="#00000020" radius="10" spread="0.2"/>
-            </effect>
 
+    <center>
+        <SplitPane dividerPositions="0.5" style="-fx-background-color: #f5f5f5;">
+            <!-- Partie gauche : Liste des terrains -->
             <ScrollPane fitToWidth="true" style="-fx-background: #f9f9f9;">
                 <content>
                     <FlowPane fx:id="terrainsContainer" hgap="25" vgap="25"
@@ -57,67 +47,67 @@
                 </content>
             </ScrollPane>
 
+            <!-- Partie droite : Détails + Calendrier -->
             <VBox fx:id="detailsPane" styleClass="details-pane" spacing="15">
-                <effect>
-                    <DropShadow color="#00000015" radius="5" spread="0.1"/>
-                </effect>
-
-                <StackPane>
-                    <ImageView fx:id="detailImage" fitWidth="350" fitHeight="220"
-                               preserveRatio="true" styleClass="terrain-image">
-                        <effect>
-                            <DropShadow color="#00000040" radius="10" spread="0.2"/>
-                        </effect>
-                    </ImageView>
-                    <Pane styleClass="image-overlay" visible="false"
-                          fx:id="imageOverlay" StackPane.alignment="CENTER">
-                        <Label text="Agrandir" style="-fx-text-fill: white; -fx-font-weight: bold;"/>
-                    </Pane>
-                </StackPane>
-
-                <VBox spacing="10" style="-fx-padding: 0 15 15 15;">
-                    <Label text="Détails du Terrain" styleClass="details-title"/>
-
-                    <GridPane hgap="15" vgap="12">
+                <!-- Section Calendrier en haut -->
+                <VBox fx:id="calendarContainer" visible="false" spacing="10" style="-fx-padding: 15; -fx-background-color: white; -fx-border-radius: 5;">
+                    <Label text="Périodes de réservation" styleClass="calendar-title"/>
+                    <HBox alignment="CENTER" spacing="15">
+                        <Button fx:id="prevMonthBtn" styleClass="calendar-nav-button" text="&lt;"/>
+                        <Label fx:id="monthYearLabel" styleClass="calendar-month-label"/>
+                        <Button fx:id="nextMonthBtn" styleClass="calendar-nav-button" text="&gt;"/>
+                    </HBox>
+                    <GridPane fx:id="calendarGrid" hgap="2" vgap="2">
                         <columnConstraints>
-                            <ColumnConstraints prefWidth="120" halignment="RIGHT"/>
-                            <ColumnConstraints prefWidth="220"/>
+                            <ColumnConstraints hgrow="ALWAYS" minWidth="40" prefWidth="40"/>
+                            <ColumnConstraints hgrow="ALWAYS" minWidth="40" prefWidth="40"/>
+                            <ColumnConstraints hgrow="ALWAYS" minWidth="40" prefWidth="40"/>
+                            <ColumnConstraints hgrow="ALWAYS" minWidth="40" prefWidth="40"/>
+                            <ColumnConstraints hgrow="ALWAYS" minWidth="40" prefWidth="40"/>
+                            <ColumnConstraints hgrow="ALWAYS" minWidth="40" prefWidth="40"/>
+                            <ColumnConstraints hgrow="ALWAYS" minWidth="40" prefWidth="40"/>
+                        </columnConstraints>
+                    </GridPane>
+                </VBox>
+
+                <!-- Section Détails du terrain -->
+                <VBox style="-fx-background-color: white; -fx-background-radius: 5; -fx-padding: 15;">
+                    <StackPane>
+                        <ImageView fx:id="detailImage" fitWidth="300" fitHeight="180" preserveRatio="true" styleClass="terrain-image"/>
+                    </StackPane>
+
+                    <GridPane hgap="10" vgap="10" style="-fx-padding: 10 0 0 0;">
+                        <columnConstraints>
+                            <ColumnConstraints prefWidth="100" halignment="RIGHT"/>
+                            <ColumnConstraints prefWidth="200"/>
                         </columnConstraints>
 
+                        <!-- Prix avec devise -->
                         <Label text="Prix:" styleClass="detail-label" GridPane.rowIndex="0"/>
                         <HBox spacing="5" alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="0">
                             <Label fx:id="prixLabel" styleClass="detail-value"/>
-                            <Label text="DT/mois" styleClass="detail-unit"/>
+                            <ComboBox fx:id="deviseComboBox" styleClass="devise-combo" prefWidth="120"/>
                         </HBox>
 
+                        <!-- Autres détails -->
                         <Label text="Localisation:" styleClass="detail-label" GridPane.rowIndex="1"/>
-                        <HBox spacing="5" alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                            <Label fx:id="localisationLabel" styleClass="detail-value"/>
-                            <ImageView fitWidth="16" fitHeight="16" pickOnBounds="true" preserveRatio="true">
-                                <Image url="@/images/location-icon.png"/>
-                            </ImageView>
-                        </HBox>
+                        <Label fx:id="localisationLabel" styleClass="detail-value" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
 
                         <Label text="Superficie:" styleClass="detail-label" GridPane.rowIndex="2"/>
-                        <HBox spacing="5" alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="2">
-                            <Label fx:id="superficieLabel" styleClass="detail-value"/>
-                            <Label text="m²" styleClass="detail-unit"/>
-                        </HBox>
+                        <Label fx:id="superficieLabel" styleClass="detail-value" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
 
                         <Label text="Description:" styleClass="detail-label" GridPane.rowIndex="3"/>
                         <TextArea fx:id="descriptionArea" editable="false" wrapText="true"
-                                  GridPane.columnIndex="1" GridPane.rowIndex="3" styleClass="detail-textarea"/>
+                                  styleClass="detail-textarea" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
                     </GridPane>
-
-                    <Button fx:id="candidatureBtn" text="Faire Candidature"
-                            styleClass="candidature-button" onAction="#handleCandidature">
-                        <graphic>
-                            <ImageView fitWidth="20" fitHeight="20" pickOnBounds="true" preserveRatio="true">
-                                <Image url="@/images/application-icon.png"/>
-                            </ImageView>
-                        </graphic>
-                    </Button>
                 </VBox>
+
+                <!-- Boutons d'action -->
+                <HBox spacing="15" alignment="CENTER">
+                    <Button fx:id="candidatureBtn" text="Faire Candidature" styleClass="action-button" onAction="#handleCandidature"/>
+                    <Button fx:id="generateContractBtn" text="Générer Contrat" styleClass="action-button" onAction="#handleGenerateContract"/>
+                </HBox>
+
             </VBox>
         </SplitPane>
     </center>

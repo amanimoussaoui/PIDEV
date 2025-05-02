@@ -3,13 +3,13 @@ package tn.esprit.services;
 import tn.esprit.interfaces.IServiceTerrain;
 import tn.esprit.models.Candidature;
 import tn.esprit.models.Terrain;
-import tn.esprit.models.Utilisateur; // N'oublie pas d'importer Utilisateur !!
+import tn.esprit.models.Utilisateur;
 import tn.esprit.util.MaConnexion;
-
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ServiceTerrain implements IServiceTerrain {
     private Connection cnx = MaConnexion.getInstance().getCon();
@@ -17,19 +17,21 @@ public class ServiceTerrain implements IServiceTerrain {
     @Override
     public void ajouter(Terrain terrain) {
         try {
-            String req = "INSERT INTO terrain(utilisateur_id, localisation, superficie, prix, description, image) VALUES (?, ?, ?, ?, ?, ?)";
+            String req = "INSERT INTO terrain(utilisateur_id, localisation, superficie, prix, description, image, latitude, longitude) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement pst = cnx.prepareStatement(req);
             if (terrain.getUtilisateur() != null) {
                 pst.setInt(1, terrain.getUtilisateur().getId_utilisateur());
             } else {
-                pst.setNull(1, java.sql.Types.INTEGER); // Si pas d'utilisateur
+                pst.setNull(1, java.sql.Types.INTEGER);
             }
             pst.setString(2, terrain.getLocalisation());
             pst.setDouble(3, terrain.getSuperficie());
             pst.setDouble(4, terrain.getPrix());
             pst.setString(5, terrain.getDescription());
             pst.setString(6, terrain.getImage());
-
+            pst.setDouble(7, terrain.getLatitude());
+            pst.setDouble(8, terrain.getLongitude());
             pst.executeUpdate();
             System.out.println("✅ Terrain ajouté !");
         } catch (SQLException e) {
@@ -39,7 +41,12 @@ public class ServiceTerrain implements IServiceTerrain {
 
     @Override
     public void modifier(Terrain terrain) {
-        String req = "UPDATE terrain SET utilisateur_id = ?, localisation = ?, superficie = ?, prix = ?, description = ?, image = ? WHERE id = ?";
+        if (terrain.getId() == 0) {
+            System.out.println("❌ L'ID du terrain est invalide. La modification ne peut pas être effectuée.");
+            return;
+        }
+
+        String req = "UPDATE terrain SET utilisateur_id = ?, localisation = ?, superficie = ?, prix = ?, description = ?, image = ?, latitude = ?, longitude = ? WHERE id = ?";
         try (PreparedStatement pst = cnx.prepareStatement(req)) {
             if (terrain.getUtilisateur() != null) {
                 pst.setInt(1, terrain.getUtilisateur().getId_utilisateur());
@@ -51,7 +58,9 @@ public class ServiceTerrain implements IServiceTerrain {
             pst.setDouble(4, terrain.getPrix());
             pst.setString(5, terrain.getDescription());
             pst.setString(6, terrain.getImage());
-            pst.setInt(7, terrain.getId());
+            pst.setDouble(7, terrain.getLatitude());
+            pst.setDouble(8, terrain.getLongitude());
+            pst.setInt(9, terrain.getId());
 
             int rowsUpdated = pst.executeUpdate();
 
@@ -65,57 +74,105 @@ public class ServiceTerrain implements IServiceTerrain {
         }
     }
 
+
+
+
+
     public boolean supprimer(int id) {
-        try {
-            String req = "DELETE FROM terrain WHERE id = ?";
-            PreparedStatement ps = cnx.prepareStatement(req);
-            ps.setInt(1, id);
-            int rowsAffected = ps.executeUpdate();
-            return rowsAffected > 0;
-        } catch (SQLException e) {
-            System.err.println("Erreur suppression : " + e.getMessage());
+        // Vérifier d'abord s'il y a des candidatures associées
+        if (hasCandidatures(id)) {
+            System.err.println("Impossible de supprimer : ce terrain a des candidatures associées");
             return false;
         }
-    }
 
+        // Utiliser une transaction pour plus de sécurité
+        try {
+            cnx.setAutoCommit(false); // Désactiver l'auto-commit
+
+            String req = "DELETE FROM terrain WHERE id = ?";
+            try (PreparedStatement ps = cnx.prepareStatement(req)) {
+                ps.setInt(1, id);
+                int rowsAffected = ps.executeUpdate();
+
+                if (rowsAffected > 0) {
+                    cnx.commit(); // Valider la transaction
+                    System.out.println("✅ Terrain supprimé avec succès. ID: " + id);
+                    return true;
+                } else {
+                    cnx.rollback(); // Annuler si aucune ligne affectée
+                    System.out.println("⚠️ Aucun terrain trouvé avec l'ID: " + id);
+                    return false;
+                }
+            }
+        } catch (SQLException e) {
+            try {
+                cnx.rollback(); // Annuler en cas d'erreur
+            } catch (SQLException ex) {
+                System.err.println("Erreur lors du rollback: " + ex.getMessage());
+            }
+
+            // Gestion spécifique des erreurs de contrainte
+            if (e.getSQLState().equals("23000")) {
+                System.err.println("❌ Erreur de suppression : contrainte de clé étrangère violée");
+            } else {
+                System.err.println("❌ Erreur SQL lors de la suppression: " + e.getMessage());
+            }
+            return false;
+        } finally {
+            try {
+                cnx.setAutoCommit(true); // Réactiver l'auto-commit
+            } catch (SQLException e) {
+                System.err.println("Erreur lors de la réactivation de l'auto-commit: " + e.getMessage());
+            }
+        }
+    }
+    private boolean hasCandidatures(int terrainId) {
+        String query = "SELECT COUNT(*) FROM candidature WHERE id_terrain_id = ?";
+        try (PreparedStatement ps = cnx.prepareStatement(query)) {
+            ps.setInt(1, terrainId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la vérification des candidatures: " + e.getMessage());
+        }
+        return false;
+    }
     public List<Terrain> afficher() {
         List<Terrain> terrains = new ArrayList<>();
-        String req = "SELECT * FROM terrain";
+        String query = "SELECT t.*, u.nom, u.prenom FROM terrain t " +
+                "JOIN utilisateurs u ON t.utilisateur_id = u.id";
 
-        try {
-            Statement st = cnx.createStatement();
-            ResultSet rs = st.executeQuery(req);
+        try (Statement st = cnx.createStatement();
+             ResultSet rs = st.executeQuery(query)) {
 
             while (rs.next()) {
                 Terrain t = new Terrain();
                 t.setId(rs.getInt("id"));
-
-                // Si tu veux charger aussi l'utilisateur dans l'objet Terrain
-                int utilisateurId = rs.getInt("utilisateur_id");
-                if (!rs.wasNull()) {
-                    Utilisateur utilisateur = new Utilisateur();
-                    utilisateur.setId_utilisateur(utilisateurId);
-                    t.setUtilisateur(utilisateur);
-                } else {
-                    t.setUtilisateur(null);
-                }
-
                 t.setLocalisation(rs.getString("localisation"));
                 t.setSuperficie(rs.getDouble("superficie"));
                 t.setPrix(rs.getDouble("prix"));
                 t.setDescription(rs.getString("description"));
                 t.setImage(rs.getString("image"));
+                t.setLatitude(rs.getDouble("latitude"));
+                t.setLongitude(rs.getDouble("longitude"));
+                t.setHumidite(rs.getDouble("humidite"));
+
+                // Création et initialisation du propriétaire
+                Utilisateur proprietaire = new Utilisateur();
+                proprietaire.setId_utilisateur(rs.getInt("utilisateur_id"));
+                proprietaire.setNom(rs.getString("nom"));
+                proprietaire.setPrenom(rs.getString("prenom"));
+                t.setProprietaire(proprietaire);
 
                 terrains.add(t);
             }
-
         } catch (SQLException e) {
-            System.err.println("Erreur lors de l'affichage : " + e.getMessage());
+            System.err.println("Erreur lors du chargement des terrains: " + e.getMessage());
         }
-
         return terrains;
     }
-
     @Override
     public Terrain getById(int id) {
         String req = "SELECT * FROM terrain WHERE id=?";
@@ -140,6 +197,8 @@ public class ServiceTerrain implements IServiceTerrain {
                 terrain.setPrix(rs.getDouble("prix"));
                 terrain.setDescription(rs.getString("description"));
                 terrain.setImage(rs.getString("image"));
+               terrain.setLatitude(rs.getDouble("latitude"));
+                terrain.setLongitude(rs.getDouble("longitude"));
 
                 return terrain;
             }
@@ -212,4 +271,83 @@ public class ServiceTerrain implements IServiceTerrain {
         }
         return candidatures;
     }
+
+    public List<Terrain> rechercherTerrains(String critere) {
+        List<Terrain> resultats = new ArrayList<>();
+        for (Terrain terrain : afficher()) {
+            if (terrain.getLocalisation().toLowerCase().contains(critere.toLowerCase()) ||
+                    terrain.getDescription().toLowerCase().contains(critere.toLowerCase())) {
+                resultats.add(terrain);
+            }
+        }
+        return resultats;
+    }
+    ServiceCandidature serviceCandidature = new ServiceCandidature();
+    List<Candidature> toutesLesCandidatures = serviceCandidature.afficher();
+
+    public List<Candidature> getCandidaturesByAgriculteur(Utilisateur agriculteur) {
+        ServiceCandidature serviceCandidature = new ServiceCandidature(); // ✅ Instanciation
+        List<Candidature> toutesLesCandidatures = serviceCandidature.afficher(); // ✅ Appel correct
+
+        return toutesLesCandidatures.stream()
+                .filter(c -> c.getTerrain() != null && c.getTerrain().getProprietaire().equals(agriculteur))
+                .collect(Collectors.toList());
+    }
+
+    public List<Terrain> getTopExpensiveTerrains(int limit) {
+        String query = "SELECT * FROM terrain ORDER BY prix DESC LIMIT ?";
+        List<Terrain> terrains = new ArrayList<>();
+
+        try (PreparedStatement pst = cnx.prepareStatement(query)) {
+            pst.setInt(1, limit);
+            ResultSet rs = pst.executeQuery();
+
+            while (rs.next()) {
+                Terrain t = new Terrain();
+                // Remplissez les propriétés du terrain comme dans vos autres méthodes
+                t.setId(rs.getInt("id"));
+                t.setLocalisation(rs.getString("localisation"));
+                t.setSuperficie(rs.getDouble("superficie"));
+                t.setPrix(rs.getDouble("prix"));
+                // ... autres propriétés
+                terrains.add(t);
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la récupération des terrains les plus chers: " + e.getMessage());
+        }
+
+        return terrains;
+    }
+    public List<Terrain> getAll() {
+        List<Terrain> terrains = new ArrayList<>();
+        String query = "SELECT id, localisation, humidite FROM terrain"; // Adaptez selon votre schéma
+
+        try (PreparedStatement pst = cnx.prepareStatement(query);
+             ResultSet rs = pst.executeQuery()) {
+
+            while (rs.next()) {
+                Terrain terrain = new Terrain();
+                terrain.setId(rs.getInt("id"));
+                terrain.setLocalisation(rs.getString("localisation"));
+                terrain.setHumidite(rs.getDouble("humidite"));
+                terrains.add(terrain);
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la récupération des terrains: " + e.getMessage());
+        }
+        return terrains;
+    }
+
+    public void updateHumidite(int terrainId, double humidite) {
+        String query = "UPDATE terrain SET humidite = ? WHERE id = ?";
+
+        try (PreparedStatement pst = cnx.prepareStatement(query)) {
+            pst.setDouble(1, humidite);
+            pst.setInt(2, terrainId);
+            pst.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la mise à jour de l'humidité: " + e.getMessage());
+        }
+    }
+
 }

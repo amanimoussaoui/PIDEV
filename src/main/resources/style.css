@@ -297,3 +297,35 @@
     -fx-font-weight: bold;
     -fx-padding: 10 20;
 }
+.terrain-card {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1;
+    -fx-padding: 10;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 5);
+}
+
+.terrain-card:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);
+    -fx-cursor: hand;
+}
+
+.card-image {
+    -fx-border-radius: 5;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1;
+}
+
+#txtRecherche {
+    -fx-background-color: white;
+    -fx-border-color: #278f57;
+    -fx-border-width: 1;
+    -fx-border-radius: 20;
+}
+
+#txtRecherche:focused {
+    -fx-border-color: #2196F3;
+    -fx-border-width: 2;
+}

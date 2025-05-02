@@ -1,23 +1,36 @@
 package tn.esprit.controllers;
 
+import javafx.scene.control.*;
+import javafx.application.Platform;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import tn.esprit.models.Candidature;
+import tn.esprit.services.ServiceCandidature;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Properties;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import javafx.stage.Stage;
-import tn.esprit.models.Candidature;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.MediaType;
+import okhttp3.Response;
+import javafx.scene.control.Alert;
+import javafx.scene.control.TextArea;
 import tn.esprit.models.Terrain;
 import tn.esprit.models.UserSession;
 import tn.esprit.services.ServiceCandidature;
 import tn.esprit.services.ServiceTerrain;
 import tn.esprit.models.Utilisateur;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-
 public class FaireCandidature {
 
     @FXML private DatePicker dateDebutPicker;
@@ -31,7 +44,11 @@ public class FaireCandidature {
     @FXML private TableColumn<Candidature, String> colEtat;
     @FXML private TextField montantField; // Ajoutez cette ligne si ce n'est pas déjà fait
     @FXML private TextField etatField;
+    @FXML
+    private TextArea recommandationArea;
+    private String accessToken;;
     private int idTerrain;
+
     private int getConnectedUserId() {
         UserSession session = UserSession.getInstance();
         if (session == null) {
@@ -53,15 +70,23 @@ public class FaireCandidature {
     @FXML
 
     public void initialize() {
-        // Configuration des colonnes
-        colDateDebut.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getDateDebut()));
-        colDateFin.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getDateFin()));
-        colBut.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getBut()));
-        colEtat.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getEtat()));
+        // Récupérer l'ID de l'utilisateur connecté
+        int userId = UserSession.getInstance().getUserId();
 
-        // Configuration de la colonne prix
-        colPrixTerrain.setCellValueFactory(data -> {
-            Double prix = data.getValue().getMontant();
+        // Charger seulement les candidatures de cet utilisateur
+        List<Candidature> liste = new ServiceCandidature().getCandidaturesByUtilisateurId(userId);
+        ObservableList<Candidature> data = FXCollections.observableArrayList(liste);
+        tableCandidatures.setItems(data);
+
+// Configuration des colonnes
+        colDateDebut.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getDateDebut()));
+        colDateFin.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getDateFin()));
+        colBut.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getBut()));
+        colEtat.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getEtat()));
+
+// Configuration de la colonne prix
+        colPrixTerrain.setCellValueFactory(cellData -> {
+            Double prix = cellData.getValue().getMontant();
             return new SimpleObjectProperty<>(prix != null ? prix : 0.0);
         });
 
@@ -70,14 +95,14 @@ public class FaireCandidature {
         etatField.setEditable(false);
         etatField.setText("en attente");
 
-        // Charger toutes les candidatures
-        loadCandidatures();
     }
 
     private void loadCandidatures() {
+        int userId = UserSession.getInstance().getUserId();
+
         ServiceCandidature service = new ServiceCandidature();
-        // Récupérer TOUTES les candidatures au lieu de seulement celles de l'utilisateur/terrain
-        List<Candidature> candidatures = service.afficher(); // Utilisez la méthode afficher() qui liste toutes les candidatures
+        // Récupérer les candidatures faites uniquement par l'utilisateur connecté
+        List<Candidature> candidatures = service.getCandidaturesByUtilisateurId(userId);
 
         ServiceTerrain serviceTerrain = new ServiceTerrain();
         for (Candidature candidature : candidatures) {
@@ -90,6 +115,7 @@ public class FaireCandidature {
         ObservableList<Candidature> observableList = FXCollections.observableArrayList(candidatures);
         tableCandidatures.setItems(observableList);
     }
+
 
     @FXML
     private void validerCandidature() {
@@ -213,18 +239,72 @@ public class FaireCandidature {
 
     @FXML
     private void modifierCandidature() {
+        // Sélectionner la candidature dans le TableView
         candidatureSelectionnee = tableCandidatures.getSelectionModel().getSelectedItem();
 
+        // Vérifier si une candidature a bien été sélectionnée
         if (candidatureSelectionnee == null) {
+            // Si aucune candidature n'est sélectionnée, afficher un message d'alerte
             showAlert(Alert.AlertType.WARNING, "Veuillez sélectionner une candidature à modifier");
             return;
         }
 
-        // Remplir le formulaire avec les données sélectionnées
+        // Remplir les champs du formulaire avec les données de la candidature sélectionnée
         dateDebutPicker.setValue(candidatureSelectionnee.getDateDebut());
         dateFinPicker.setValue(candidatureSelectionnee.getDateFin());
         butArea.setText(candidatureSelectionnee.getBut());
+
+        // Une fois les champs remplis, on effectue la modification dans la base de données
+        try {
+            // Récupération des nouvelles valeurs du formulaire
+            LocalDate dateDebut = dateDebutPicker.getValue();
+            LocalDate dateFin = dateFinPicker.getValue();
+            String but = butArea.getText().trim();
+
+            // Contrôle de saisie : vérifier si les valeurs sont valides
+            if (dateDebut == null || dateFin == null || but.isEmpty()) {
+                showAlert(Alert.AlertType.ERROR, "Tous les champs doivent être remplis");
+                return;
+            }
+
+            if (dateDebut.isBefore(LocalDate.now())) {
+                showAlert(Alert.AlertType.ERROR, "La date de début ne peut pas être avant aujourd'hui");
+                return;
+            }
+
+            if (!dateFin.isAfter(dateDebut)) {
+                showAlert(Alert.AlertType.ERROR, "La date de fin doit être après la date de début");
+                return;
+            }
+
+            if (but.length() < 10) {
+                showAlert(Alert.AlertType.ERROR, "Le but doit contenir au moins 10 caractères");
+                return;
+            }
+
+            // Mettre à jour les champs de la candidature sélectionnée
+            candidatureSelectionnee.setDateDebut(dateDebut);
+            candidatureSelectionnee.setDateFin(dateFin);
+            candidatureSelectionnee.setBut(but);
+
+            // Appeler le service pour modifier la candidature dans la base de données
+            ServiceCandidature service = new ServiceCandidature();
+            boolean isUpdated = service.modifier(candidatureSelectionnee);  // On passe la candidature complète
+
+            if (isUpdated) {
+                showAlert(Alert.AlertType.INFORMATION, "Candidature modifiée avec succès !");
+                loadCandidatures();  // Recharger la liste des candidatures pour afficher les modifications
+            } else {
+                showAlert(Alert.AlertType.ERROR, "Échec de la modification de la candidature");
+            }
+
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
+
+
 
     @FXML
     private void supprimerCandidature() {
@@ -260,4 +340,98 @@ public class FaireCandidature {
         alert.setContentText(msg);
         alert.showAndWait();
     }
+
+    @FXML
+    private void genererRecommandation() {
+        Candidature selected = tableCandidatures.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            showAlert(Alert.AlertType.WARNING, "Veuillez sélectionner une candidature d'abord !");
+            return;
+        }
+
+        String but = selected.getBut();
+        String prompt = "Donne des conseils pratiques pour améliorer cette candidature agricole :\n" + but;
+
+        new Thread(() -> {
+            try {
+                OkHttpClient client = new OkHttpClient();
+
+                JSONObject requestBody = new JSONObject();
+                requestBody.put("model", "openai/gpt-4o"); // modèle utilisé
+                requestBody.put("max_tokens", 500);
+
+                JSONArray messages = new JSONArray();
+                JSONObject message = new JSONObject();
+                message.put("role", "user");
+                message.put("content", prompt);
+                messages.put(message);
+
+                requestBody.put("messages", messages);
+
+                Request request = new Request.Builder()
+                        .url("https://openrouter.ai/api/v1/chat/completions")
+                        .post(RequestBody.create(requestBody.toString(), MediaType.get("application/json; charset=utf-8")))
+                        .addHeader("Authorization", "Bearer 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")
+                        .addHeader("Content-Type", "application/json")
+                        .build();
+
+                try (Response response = client.newCall(request).execute()) {
+                    if (!response.isSuccessful()) {
+                        Platform.runLater(() -> showAlert(Alert.AlertType.ERROR, "Erreur API HTTP: " + response.code()));
+                        return;
+                    }
+
+                    String responseBody = response.body().string();
+                    System.out.println("Réponse API brute: " + responseBody);
+
+                    JSONObject jsonResponse = new JSONObject(responseBody);
+
+                    if (jsonResponse.has("error")) {
+                        String errorMessage = jsonResponse.getJSONObject("error").getString("message");
+                        Platform.runLater(() -> showAlert(Alert.AlertType.ERROR, "Erreur API : " + errorMessage));
+                    } else if (jsonResponse.has("choices")) {
+                        String recommendation = jsonResponse
+                                .getJSONArray("choices")
+                                .getJSONObject(0)
+                                .getJSONObject("message")
+                                .getString("content");
+
+                        Platform.runLater(() -> recommandationArea.setText(recommendation));
+                    } else {
+                        Platform.runLater(() -> showAlert(Alert.AlertType.ERROR, "Réponse inattendue de l'API."));
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                Platform.runLater(() -> showAlert(Alert.AlertType.ERROR, "Erreur : " + e.getMessage()));
+            }
+        }).start();
+    }
+
+
+
+    private Properties loadConfig() throws IOException {
+        Properties prop = new Properties();
+        try (InputStream input = getClass().getResourceAsStream("/config.properties")) {
+            if (input == null) {
+                throw new IOException("Fichier config.properties non trouvé dans les ressources");
+            }
+            prop.load(input);
+        }
+        return prop;
+    }
+
+    // Ajoutez cette méthode dans votre classe
+    private String getApiKey() {
+        try {
+            return loadConfig().getProperty("deepseek.api.key");
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur de configuration API");
+            throw new RuntimeException("API key not configured properly");
+        }
+    }
+
+
+
+
 }

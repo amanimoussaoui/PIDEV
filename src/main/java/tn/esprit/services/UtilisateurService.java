@@ -178,5 +178,6 @@ public class UtilisateurService implements UtilisateurInterface<Utilisateur> {
             throw new RuntimeException("Erreur lors du hachage du mot de passe", e);
         }
     }
+
     //////////////////////////////////////////////////////////////////////////////////
 }

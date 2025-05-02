@@ -1,5 +1,10 @@
 package tn.esprit.controllers;
 
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
+import netscape.javascript.JSObject;
+import javafx.application.Platform;
+import javafx.concurrent.Worker;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -9,41 +14,87 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
+import javafx.util.Duration;
 import tn.esprit.models.Terrain;
 import tn.esprit.models.Utilisateur;
 import tn.esprit.models.UserSession;
 import tn.esprit.services.ServiceTerrain;
 
 import java.io.File;
+import java.util.Locale;
 
 public class AjouterTerrain {
 
-    @FXML private TextField txtLocalisation, txtSuperficie, txtPrix;
+    // Champs FXML
+    @FXML private TextField txtLocalisation, txtSuperficie, txtPrix, txtLatitude, txtLongitude, txtLongueur, txtLargeur;
     @FXML private TextArea txtDescription;
     @FXML private ImageView imageView;
     @FXML private Button btnChoisirImage, btnAjouter;
     @FXML private Label lblFileName;
-    private int utilisateurId;
+    @FXML private WebView mapView;
 
+    // Variables d'instance
+    private int utilisateurId;
+    private WebEngine webEngine;
+    private Double selectedLat;
+    private Double selectedLng;
     private File imageFile;
     private Terrain terrainModifier;
     private AfficherTerrain parentController;
     private Stage parentStage;
     private final ServiceTerrain service = new ServiceTerrain();
-    public void setUtilisateurId(int utilisateurId) {
-        this.utilisateurId = utilisateurId;
-    }
 
+    // Initialisation
     @FXML
     private void initialize() {
         setupFieldValidators();
+        initializeMap();
+        setupMapSize();
     }
 
-    private void setupFieldValidators() {
-        txtLocalisation.textProperty().addListener((obs, oldVal, newVal) -> {
-            setFieldStyle(txtLocalisation, newVal.trim().length() >= 6);
+    private void setupMapSize() {
+        mapView.setPrefSize(550, 400);
+    }
+
+    private void initializeMap() {
+        webEngine = mapView.getEngine();
+        webEngine.setJavaScriptEnabled(true);
+
+        webEngine.getLoadWorker().stateProperty().addListener((obs, oldState, newState) -> {
+            if (newState == Worker.State.SUCCEEDED) {
+                JSObject window = (JSObject) webEngine.executeScript("window");
+                window.setMember("javaConnector", new JavaConnector());
+                System.out.println("Carte initialisée avec succès");
+            }
         });
 
+        webEngine.load(getClass().getResource("/map.html").toExternalForm());
+    }
+
+    // Gestion des coordonnées
+    public void setCoordinates(double lat, double lng) {
+        Platform.runLater(() -> {
+            selectedLat = lat;
+            selectedLng = lng;
+            txtLatitude.setText(String.format("%.8f", lat));
+            txtLongitude.setText(String.format("%.8f", lng));
+            txtLocalisation.setText("Position: " + lat + ", " + lng);
+
+            // Feedback visuel
+            txtLatitude.setStyle("-fx-border-color: green;");
+            txtLongitude.setStyle("-fx-border-color: green;");
+        });
+    }
+
+    // Bridge Java-JS
+    public class JavaConnector {
+        public void setCoordinates(double lat, double lng) {
+            AjouterTerrain.this.setCoordinates(lat, lng);
+        }
+    }
+
+    // Validation des champs
+    private void setupFieldValidators() {
         txtSuperficie.textProperty().addListener((obs, oldVal, newVal) -> {
             try {
                 double val = Double.parseDouble(newVal);
@@ -67,6 +118,7 @@ public class AjouterTerrain {
         });
     }
 
+    // Gestion de l'image
     @FXML
     private void choisirImage(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
@@ -91,12 +143,18 @@ public class AjouterTerrain {
         }
     }
 
+    // Ajout du terrain
     @FXML
     private void ajouterTerrain(ActionEvent event) {
+        if (txtLatitude.getText().isEmpty() || txtLongitude.getText().isEmpty()) {
+            showAlert("Erreur", "Veuillez sélectionner une position sur la carte");
+            txtLatitude.setStyle("-fx-border-color: red;");
+            txtLongitude.setStyle("-fx-border-color: red;");
+            return;
+        }
+
         try {
-            if (!validateForm()) {
-                return;
-            }
+            if (!validateForm()) return;
 
             Terrain nouveauTerrain = createTerrainFromInput();
 
@@ -105,126 +163,65 @@ public class AjouterTerrain {
                 return;
             }
 
-            // Ajout du terrain
             service.ajouter(nouveauTerrain);
+            showSuccessAlert("Succès", "Terrain ajouté avec succès");
 
-            // Message de succès avec icône de tick
-            showSuccessAlert("✅ Succès", "Terrain ajouté avec succès");
-
-            // Fermer la fenêtre si c'est une popup
-            if (parentStage != null) {
-                parentStage.close();
-            }
-
-            // Actualiser la liste parente
-            if (parentController != null) {
-                parentController.rafraichirListeTerrains();
-            }
+            if (parentStage != null) parentStage.close();
+            if (parentController != null) parentController.rafraichirListeTerrains();
 
             resetForm();
-
         } catch (Exception e) {
-            showAlert("Erreur", "Une erreur est survenue: " + e.getMessage());
+            showAlert("Erreur Critique", "Erreur: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
-    private void showSuccessAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
+    // Calcul de la superficie
+    @FXML
+    private void calculerSuperficie() {
+        try {
+            double longueur = Double.parseDouble(txtLongueur.getText());
+            double largeur = Double.parseDouble(txtLargeur.getText());
 
-        // Création d'un contenu personnalisé avec icône
-        Label label = new Label(message);
-        label.setGraphic(new ImageView(new Image("/images/tick-icon.png"))); // Chemin vers votre icône
-        label.setStyle("-fx-font-size: 14px; -fx-padding: 10px;");
-
-        alert.getDialogPane().setContent(label);
-        alert.showAndWait();
+            if (longueur > 0 && largeur > 0) {
+                double superficie = longueur * largeur;
+                txtSuperficie.setText(String.format(Locale.US, "%.2f", superficie));
+            } else {
+                txtSuperficie.setText("");
+            }
+        } catch (NumberFormatException e) {
+            txtSuperficie.setText("");
+        }
     }
-    private void showUnicityError(Terrain terrain) {
-        String errorDetails = String.format(
-                "Un terrain identique existe déjà :\n\n" +
-                        "Localisation: %s\n" +
-                        "Superficie: %.2f m²\n" +
-                        "Prix: %.2f DT\n" +
-                        "Description: %s",
-                terrain.getLocalisation(),
-                terrain.getSuperficie(),
-                terrain.getPrix(),
-                terrain.getDescription()
-        );
 
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Erreur d'unicité");
-        alert.setHeaderText("Ce terrain existe déjà");
-
-        // Utilisation d'un TextArea pour un meilleur affichage
-        TextArea textArea = new TextArea(errorDetails);
-        textArea.setEditable(false);
-        textArea.setWrapText(true);
-
-        GridPane gridPane = new GridPane();
-        gridPane.setMaxWidth(Double.MAX_VALUE);
-        gridPane.add(textArea, 0, 0);
-
-        alert.getDialogPane().setContent(gridPane);
-        alert.showAndWait();
-    }
+    // Méthodes utilitaires
     private Terrain createTerrainFromInput() {
-        Utilisateur utilisateurConnecte = UserSession.getInstance().getUtilisateurConnecte();
+        Utilisateur utilisateur = UserSession.getInstance().getUtilisateurConnecte();
 
-        Integer id = (terrainModifier != null) ? terrainModifier.getId() : null;
+        if (selectedLat == null || selectedLng == null) {
+            throw new IllegalStateException("Coordonnées non sélectionnées");
+        }
 
         return new Terrain(
-                id,
-                utilisateurConnecte,
+                (terrainModifier != null) ? terrainModifier.getId() : null,
+                utilisateur,
                 txtLocalisation.getText().trim(),
                 Double.parseDouble(txtSuperficie.getText().trim()),
                 Double.parseDouble(txtPrix.getText().trim()),
                 txtDescription.getText().trim(),
-                imageFile.getAbsolutePath()
+                imageFile != null ? imageFile.getAbsolutePath() : "",
+                selectedLat,
+                selectedLng,
+                0.0
         );
-    }
-
-    private boolean terrainExisteDeja(Terrain terrain) {
-        try {
-            return service.terrainExisteDeja(terrain);
-        } catch (NullPointerException e) {
-            System.err.println("Erreur de vérification d'unicité : ID null");
-            return false;
-        }
-    }
-
-
-    private void highlightDuplicateFields() {
-        setFieldStyle(txtLocalisation, false);
-        setFieldStyle(txtSuperficie, false);
-        setFieldStyle(txtPrix, false);
-        setFieldStyle(txtDescription, false);
-    }
-
-    private void saveTerrain(Terrain terrain) {
-        if (terrainModifier == null) {
-            service.ajouter(terrain);
-            showAlert("Succès", "Terrain ajouté avec succès");
-        } else {
-            service.modifier(terrain);
-            showAlert("Succès", "Terrain modifié avec succès");
-        }
     }
 
     private boolean validateForm() {
         boolean isValid = true;
 
-        // Validation de l'image
         if (imageFile == null) {
             showAlert("Erreur", "Une image est obligatoire");
             setFieldStyle(btnChoisirImage, false);
-            isValid = false;
-        }
-
-        // Validation des autres champs
-        if (!validateTextField(txtLocalisation, 6, "La localisation doit contenir au moins 6 caractères")) {
             isValid = false;
         }
 
@@ -242,6 +239,7 @@ public class AjouterTerrain {
 
         return isValid;
     }
+
     private boolean validateTextField(TextInputControl field, int minLength, String errorMessage) {
         if (field.getText().trim().length() < minLength) {
             showAlert("Erreur", errorMessage);
@@ -270,6 +268,58 @@ public class AjouterTerrain {
         }
     }
 
+    // Affichage des alertes
+    private void showSuccessAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        Label label = new Label(message);
+        label.setGraphic(new ImageView(new Image("/images/tick-icon.png")));
+        label.setStyle("-fx-font-size: 14px; -fx-padding: 10px;");
+        alert.getDialogPane().setContent(label);
+        alert.showAndWait();
+    }
+
+    private void showUnicityError(Terrain terrain) {
+        String errorDetails = String.format(
+                "Un terrain identique existe déjà :\n\n" +
+                        "Localisation: %s\nSuperficie: %.2f m²\nPrix: %.2f DT\nDescription: %s",
+                terrain.getLocalisation(),
+                terrain.getSuperficie(),
+                terrain.getPrix(),
+                terrain.getDescription()
+        );
+
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Erreur d'unicité");
+        alert.setHeaderText("Ce terrain existe déjà");
+        TextArea textArea = new TextArea(errorDetails);
+        textArea.setEditable(false);
+        textArea.setWrapText(true);
+        GridPane gridPane = new GridPane();
+        gridPane.setMaxWidth(Double.MAX_VALUE);
+        gridPane.add(textArea, 0, 0);
+        alert.getDialogPane().setContent(gridPane);
+        alert.showAndWait();
+    }
+
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        TextArea textArea = new TextArea(message);
+        textArea.setEditable(false);
+        textArea.setWrapText(true);
+        GridPane.setVgrow(textArea, Priority.ALWAYS);
+        GridPane.setHgrow(textArea, Priority.ALWAYS);
+        GridPane expContent = new GridPane();
+        expContent.setMaxWidth(Double.MAX_VALUE);
+        expContent.add(textArea, 0, 0);
+        alert.getDialogPane().setContent(expContent);
+        alert.showAndWait();
+    }
+
+    // Gestion du style
     private void setFieldStyle(Control field, boolean isValid) {
         field.getStyleClass().removeAll("error", "success");
         field.getStyleClass().add(isValid ? "success" : "error");
@@ -282,11 +332,16 @@ public class AjouterTerrain {
         }
     }
 
+    // Réinitialisation
     private void resetForm() {
         txtLocalisation.clear();
         txtSuperficie.clear();
         txtPrix.clear();
         txtDescription.clear();
+        txtLatitude.clear();
+        txtLongitude.clear();
+        txtLongueur.clear();
+        txtLargeur.clear();
         imageView.setImage(null);
         lblFileName.setText("Aucune image sélectionnée");
         imageFile = null;
@@ -294,36 +349,9 @@ public class AjouterTerrain {
         resetFieldStyles();
     }
 
-    private void resetAndClose() {
-        resetForm();
-        if (parentStage != null) {
-            parentStage.close();
-        }
-        if (parentController != null) {
-            parentController.rafraichirListeTerrains();
-        }
-    }
-
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-
-        TextArea textArea = new TextArea(message);
-        textArea.setEditable(false);
-        textArea.setWrapText(true);
-        textArea.setMaxWidth(Double.MAX_VALUE);
-        textArea.setMaxHeight(Double.MAX_VALUE);
-
-        GridPane.setVgrow(textArea, Priority.ALWAYS);
-        GridPane.setHgrow(textArea, Priority.ALWAYS);
-
-        GridPane expContent = new GridPane();
-        expContent.setMaxWidth(Double.MAX_VALUE);
-        expContent.add(textArea, 0, 0);
-
-        alert.getDialogPane().setContent(expContent);
-        alert.showAndWait();
+    // Getters/Setters
+    public void setUtilisateurId(int utilisateurId) {
+        this.utilisateurId = utilisateurId;
     }
 
     public void setParentController(AfficherTerrain controller) {
@@ -341,6 +369,11 @@ public class AjouterTerrain {
             txtSuperficie.setText(String.valueOf(terrain.getSuperficie()));
             txtPrix.setText(String.valueOf(terrain.getPrix()));
             txtDescription.setText(terrain.getDescription());
+            txtLatitude.setText(String.valueOf(terrain.getLatitude()));
+            txtLongitude.setText(String.valueOf(terrain.getLongitude()));
+            selectedLat = terrain.getLatitude();
+            selectedLng = terrain.getLongitude();
+
             if (terrain.getImage() != null && !terrain.getImage().isEmpty()) {
                 try {
                     imageFile = new File(terrain.getImage());

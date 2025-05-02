@@ -37,4 +37,5 @@ public class UserSession {
         // Vous pouvez ajuster ceci pour retourner un Utilisateur basé sur les informations de session
         return new Utilisateur(userId,userName); // Remplacez ceci par la logique pour récupérer un utilisateur complet
     }
+
 }

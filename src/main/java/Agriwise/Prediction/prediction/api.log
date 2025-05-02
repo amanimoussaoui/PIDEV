@@ -1,0 +1,81 @@
+2025-05-01 22:11:03,845 - predict_api - INFO - Model file found at prediction\crop_yield_model.onnx
+2025-05-01 22:11:07,729 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.43.194:5000
+2025-05-01 22:11:07,730 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-05-01 22:11:07,762 - werkzeug - INFO -  * Restarting with stat
+2025-05-01 22:11:09,520 - predict_api - INFO - Model file found at prediction\crop_yield_model.onnx
+2025-05-01 22:11:09,564 - werkzeug - WARNING -  * Debugger is active!
+2025-05-01 22:11:09,591 - werkzeug - INFO -  * Debugger PIN: 936-587-319
+2025-05-01 22:14:02,813 - predict_api - INFO - Received prediction request
+2025-05-01 22:14:02,814 - predict_api - INFO - Input data: {'crop_type_Courgette': 0, 'crop_type_Aubergine': 0, 'growth_duration': 170, 'crop_type_Ail': 0, 'latitude': 35.499626, 'crop_type_Orge': 0, 'culture_id': 0, 'yield_quality_Bonne': 0, 'yield_quality_Excellente': 0, 'crop_type_Poire': 0, 'sowing_day': 1, 'crop_type_Maïs': 0, 'crop_type_Raisin': 0, 'crop_type_Poivron': 0, 'status_terminé': 0, 'longitude': 11.059312, 'yield_quality_Moyenne': 1, 'area': 310000, 'crop_type_Riz': 0, 'crop_type_Fraise': 0, 'crop_type_Blé': 1, 'crop_type_Prune': 0, 'crop_type_Lentille': 0, 'crop_type_Pomme': 0, 'harvest_day': 18, 'soil_type_sableux': 0, 'status_en_culture': 1, 'crop_type_Myrtille': 0, 'crop_type_Pois': 0, 'harvest_year': 2025, 'crop_type_Tomate': 0, 'crop_type_Oignon': 0, 'harvest_month': 10, 'crop_type_Carotte': 0, 'crop_type_Cerise': 0, 'soil_type_argileux': 0, 'crop_type_Soja': 0, 'crop_type_Framboise': 0, 'crop_type_Haricot': 0, 'sowing_year': 2025, 'sowing_month': 5, 'crop_type_Concombre': 0, 'crop_type_Abricot': 0, 'crop_type_Pêche': 0, 'crop_type_Tournesol': 0, 'crop_type_Pomme de terre': 0}
+2025-05-01 22:14:02,855 - predict_api - INFO - Loading model from: prediction\crop_yield_model.onnx
+2025-05-01 22:14:02,899 - predict_api - INFO - Preprocessed input shape: (1, 21)
+2025-05-01 22:14:02,900 - predict_api - ERROR - Error during prediction: [ONNXRuntimeError] : 2 : INVALID_ARGUMENT : Got invalid dimensions for input: float_input for the following indices
+ index: 1 Got: 21 Expected: 51
+ Please fix either the inputs/outputs or the model.
+2025-05-01 22:14:03,028 - predict_api - ERROR - Traceback (most recent call last):
+  File "D:\GestionAgricoleJavaMenu\src\main\java\Agriwise\prediction\predict_api.py", line 81, in predict
+    predictions = session.run(None, input_dict)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ASUS\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\onnxruntime\capi\onnxruntime_inference_collection.py", line 266, in run
+    return self._sess.run(output_names, input_feed, run_options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+onnxruntime.capi.onnxruntime_pybind11_state.InvalidArgument: [ONNXRuntimeError] : 2 : INVALID_ARGUMENT : Got invalid dimensions for input: float_input for the following indices
+ index: 1 Got: 21 Expected: 51
+ Please fix either the inputs/outputs or the model.
+
+2025-05-01 22:14:03,029 - werkzeug - INFO - 127.0.0.1 - - [01/May/2025 22:14:03] "[35m[1mPOST /predict HTTP/1.1[0m" 500 -
+2025-05-01 22:19:32,451 - werkzeug - INFO -  * Detected change in 'D:\\GestionAgricoleJavaMenu\\src\\main\\java\\Agriwise\\prediction\\predict_api.py', reloading
+2025-05-01 22:19:32,918 - werkzeug - INFO -  * Restarting with stat
+2025-05-01 22:19:48,308 - predict_api - INFO - Loaded preprocessor from: prediction\preprocessor.joblib
+2025-05-01 22:19:48,318 - predict_api - INFO - Loaded feature names from: prediction\feature_names.joblib
+2025-05-01 22:19:48,319 - predict_api - INFO - Model expects 51 features
+2025-05-01 22:19:48,322 - predict_api - INFO - Model file found at prediction\crop_yield_model.onnx
+2025-05-01 22:19:49,234 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.43.194:5000
+2025-05-01 22:19:49,234 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-05-01 22:19:49,237 - werkzeug - INFO -  * Restarting with stat
+2025-05-01 22:19:51,743 - predict_api - INFO - Loaded preprocessor from: prediction\preprocessor.joblib
+2025-05-01 22:19:51,744 - predict_api - INFO - Loaded feature names from: prediction\feature_names.joblib
+2025-05-01 22:19:51,745 - predict_api - INFO - Model expects 51 features
+2025-05-01 22:19:51,748 - predict_api - INFO - Model file found at prediction\crop_yield_model.onnx
+2025-05-01 22:19:51,760 - werkzeug - WARNING -  * Debugger is active!
+2025-05-01 22:19:51,775 - werkzeug - INFO -  * Debugger PIN: 936-587-319
+2025-05-01 22:20:41,094 - predict_api - INFO - Received prediction request
+2025-05-01 22:20:41,094 - predict_api - INFO - Input data: {'crop_type_Courgette': 0, 'crop_type_Aubergine': 0, 'growth_duration': 111, 'crop_type_Ail': 0, 'latitude': 36.4, 'crop_type_Orge': 1, 'culture_id': 0, 'yield_quality_Bonne': 0, 'yield_quality_Excellente': 0, 'crop_type_Poire': 0, 'sowing_day': 1, 'crop_type_Maïs': 0, 'crop_type_Raisin': 0, 'crop_type_Poivron': 0, 'status_terminé': 0, 'longitude': 10.15, 'yield_quality_Moyenne': 1, 'area': 65000, 'crop_type_Riz': 0, 'crop_type_Fraise': 0, 'crop_type_Blé': 0, 'crop_type_Prune': 0, 'crop_type_Lentille': 0, 'crop_type_Pomme': 0, 'harvest_day': 20, 'soil_type_sableux': 0, 'status_en_culture': 1, 'crop_type_Myrtille': 0, 'crop_type_Pois': 0, 'harvest_year': 2025, 'crop_type_Tomate': 0, 'crop_type_Oignon': 0, 'harvest_month': 8, 'crop_type_Carotte': 0, 'crop_type_Cerise': 0, 'soil_type_argileux': 0, 'crop_type_Soja': 0, 'crop_type_Framboise': 0, 'crop_type_Haricot': 0, 'sowing_year': 2025, 'sowing_month': 5, 'crop_type_Concombre': 0, 'crop_type_Abricot': 0, 'crop_type_Pêche': 0, 'crop_type_Tournesol': 0, 'crop_type_Pomme de terre': 0}
+2025-05-01 22:20:41,104 - predict_api - INFO - Creating engineered features
+2025-05-01 22:20:41,110 - predict_api - ERROR - Error calculating growing days: to assemble mappings requires at least that [year, month, day] be specified: [day,month,year] is missing
+2025-05-01 22:20:41,111 - predict_api - INFO - Using preprocessor for input transformation
+2025-05-01 22:20:41,113 - predict_api - ERROR - Error using preprocessor: columns are missing: {'yield_quality', 'crop_type', 'soil_type', 'status'}
+2025-05-01 22:20:41,113 - predict_api - INFO - Falling back to manual preprocessing
+2025-05-01 22:20:41,113 - predict_api - INFO - Using manual preprocessing
+2025-05-01 22:20:41,114 - predict_api - WARNING - Missing feature soil_type_Argileux, adding with default value 0
+2025-05-01 22:20:41,115 - predict_api - WARNING - Missing feature soil_type_Calcaire, adding with default value 0
+2025-05-01 22:20:41,115 - predict_api - WARNING - Missing feature soil_type_Limoneux, adding with default value 0
+2025-05-01 22:20:41,116 - predict_api - WARNING - Missing feature soil_type_Sableux, adding with default value 0
+2025-05-01 22:20:41,118 - predict_api - INFO - Loading model from: prediction\crop_yield_model.onnx
+2025-05-01 22:20:41,151 - predict_api - INFO - Model input name: float_input, shape: [None, 51]
+2025-05-01 22:20:41,152 - predict_api - INFO - Processed input shape: (1, 51)
+2025-05-01 22:20:41,180 - predict_api - INFO - Prediction result: 7536.208984375
+2025-05-01 22:20:41,181 - werkzeug - INFO - 127.0.0.1 - - [01/May/2025 22:20:41] "POST /predict HTTP/1.1" 200 -
+2025-05-01 22:21:00,950 - predict_api - INFO - Received prediction request
+2025-05-01 22:21:00,951 - predict_api - INFO - Input data: {'crop_type_Courgette': 0, 'crop_type_Aubergine': 0, 'growth_duration': 100, 'crop_type_Ail': 0, 'latitude': 36.4, 'crop_type_Orge': 0, 'culture_id': 0, 'yield_quality_Bonne': 0, 'yield_quality_Excellente': 0, 'crop_type_Poire': 0, 'sowing_day': 1, 'crop_type_Maïs': 1, 'crop_type_Raisin': 0, 'crop_type_Poivron': 0, 'status_terminé': 0, 'longitude': 10.15, 'yield_quality_Moyenne': 1, 'area': 65000, 'crop_type_Riz': 0, 'crop_type_Fraise': 0, 'crop_type_Blé': 0, 'crop_type_Prune': 0, 'crop_type_Lentille': 0, 'crop_type_Pomme': 0, 'harvest_day': 9, 'soil_type_sableux': 0, 'status_en_culture': 1, 'crop_type_Myrtille': 0, 'crop_type_Pois': 0, 'harvest_year': 2025, 'crop_type_Tomate': 0, 'crop_type_Oignon': 0, 'harvest_month': 8, 'crop_type_Carotte': 0, 'crop_type_Cerise': 0, 'soil_type_argileux': 0, 'crop_type_Soja': 0, 'crop_type_Framboise': 0, 'crop_type_Haricot': 0, 'sowing_year': 2025, 'sowing_month': 5, 'crop_type_Concombre': 0, 'crop_type_Abricot': 0, 'crop_type_Pêche': 0, 'crop_type_Tournesol': 0, 'crop_type_Pomme de terre': 0}
+2025-05-01 22:21:00,968 - predict_api - INFO - Creating engineered features
+2025-05-01 22:21:00,971 - predict_api - ERROR - Error calculating growing days: to assemble mappings requires at least that [year, month, day] be specified: [day,month,year] is missing
+2025-05-01 22:21:00,972 - predict_api - INFO - Using preprocessor for input transformation
+2025-05-01 22:21:00,974 - predict_api - ERROR - Error using preprocessor: columns are missing: {'yield_quality', 'crop_type', 'soil_type', 'status'}
+2025-05-01 22:21:00,975 - predict_api - INFO - Falling back to manual preprocessing
+2025-05-01 22:21:00,975 - predict_api - INFO - Using manual preprocessing
+2025-05-01 22:21:00,975 - predict_api - WARNING - Missing feature soil_type_Argileux, adding with default value 0
+2025-05-01 22:21:00,976 - predict_api - WARNING - Missing feature soil_type_Calcaire, adding with default value 0
+2025-05-01 22:21:00,977 - predict_api - WARNING - Missing feature soil_type_Limoneux, adding with default value 0
+2025-05-01 22:21:00,979 - predict_api - WARNING - Missing feature soil_type_Sableux, adding with default value 0
+2025-05-01 22:21:00,983 - predict_api - INFO - Loading model from: prediction\crop_yield_model.onnx
+2025-05-01 22:21:00,988 - predict_api - INFO - Model input name: float_input, shape: [None, 51]
+2025-05-01 22:21:00,990 - predict_api - INFO - Processed input shape: (1, 51)
+2025-05-01 22:21:00,993 - predict_api - INFO - Prediction result: 7832.0927734375
+2025-05-01 22:21:00,995 - werkzeug - INFO - 127.0.0.1 - - [01/May/2025 22:21:00] "POST /predict HTTP/1.1" 200 -

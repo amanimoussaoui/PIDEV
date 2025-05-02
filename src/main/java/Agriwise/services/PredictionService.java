@@ -5,6 +5,7 @@ import Agriwise.entities.Parcelle;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -14,14 +15,17 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class PredictionService {
     private final CultureService cultureService;
+    private static final String API_URL = "http://localhost:5000/predict";
+    private static final Logger logger = Logger.getLogger(PredictionService.class.getName());
 
     public PredictionService(CultureService cultureService) {
         this.cultureService = cultureService;
     }
-    private static final String API_URL = "http://localhost:5000/predict";
 
     /**
      * Predicts the yield for a culture
@@ -30,16 +34,28 @@ public class PredictionService {
      * @throws Exception If there's an error during prediction
      */
     public double predictYield(Culture culture) throws Exception {
+        // Log the prediction request
+        logger.info("Starting yield prediction for culture: " + culture.getId());
+
         // Validate input
         if (culture == null || culture.getParcelle() == null) {
+            logger.severe("Culture or Parcelle is null");
             throw new IllegalArgumentException("Culture and Parcelle cannot be null");
         }
 
         // Create JSON payload
         JSONObject payload = createPredictionPayload(culture);
+        logger.info("Created prediction payload: " + payload.toString());
 
         // Call Python API
-        return callPythonApi(payload);
+        try {
+            double result = callPythonApi(payload);
+            logger.info("Prediction successful: " + result);
+            return result;
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Error during prediction", e);
+            throw new Exception("Failed to get prediction: " + e.getMessage(), e);
+        }
     }
 
     /**
@@ -48,12 +64,14 @@ public class PredictionService {
     private JSONObject createPredictionPayload(Culture culture) throws Exception {
         // Get valid crop names from database
         List<String> validCrops = cultureService.getAllCultureNames();
+        logger.info("Valid crops: " + validCrops);
 
         // Validate input crop
         String nomCulture = culture.getNomCulture();
         if (!validCrops.contains(nomCulture)) {
-            throw new IllegalArgumentException("Culture non supportée: " + nomCulture +
-                    ". Cultures valides: " + validCrops);
+            String errorMsg = "Culture non supportée: " + nomCulture + ". Cultures valides: " + validCrops;
+            logger.severe(errorMsg);
+            throw new IllegalArgumentException(errorMsg);
         }
 
         Parcelle parcelle = culture.getParcelle();
@@ -73,11 +91,11 @@ public class PredictionService {
         SimpleDateFormat dayFormat = new SimpleDateFormat("dd");
 
         JSONObject inputData = new JSONObject();
-        inputData.put("culture_id", 0);
+        inputData.put("culture_id", culture.getId() != 0 ? culture.getId() : 0);
 
         // Add all crop type fields dynamically
         for (String crop : validCrops) {
-            String columnName = "crop_type_" + crop.replace(" ", "_");
+            String columnName = "crop_type_" + crop;
             inputData.put(columnName, nomCulture.equals(crop) ? 1 : 0);
         }
 
@@ -96,8 +114,12 @@ public class PredictionService {
 
         // Add parcelle data
         inputData.put("area", parcelle.getSuperficie());
-        inputData.put("soil_type_argileux", parcelle.getTypeSol().equals("argileux") ? 1 : 0);
-        inputData.put("soil_type_sableux", parcelle.getTypeSol().equals("sableux") ? 1 : 0);
+
+        // Handle soil type
+        String soilType = parcelle.getTypeSol();
+        inputData.put("soil_type_argileux", soilType.equals("argileux") ? 1 : 0);
+        inputData.put("soil_type_sableux", soilType.equals("sableux") ? 1 : 0);
+
         inputData.put("latitude", parcelle.getLatitude());
         inputData.put("longitude", parcelle.getLongitude());
 
@@ -117,35 +139,77 @@ public class PredictionService {
      * Calls the Python API with the prepared payload
      */
     private double callPythonApi(JSONObject payload) throws Exception {
-        URL url = new URL(API_URL);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("POST");
-        connection.setRequestProperty("Content-Type", "application/json");
-        connection.setDoOutput(true);
+        HttpURLConnection connection = null;
+        try {
+            // Create connection
+            URL url = new URL(API_URL);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setConnectTimeout(5000);  // 5 seconds timeout for connection
+            connection.setReadTimeout(10000);    // 10 seconds timeout for read
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Content-Type", "application/json");
+            connection.setDoOutput(true);
 
-        // Send the request
-        try (OutputStream os = connection.getOutputStream()) {
-            byte[] input = payload.toString().getBytes(StandardCharsets.UTF_8);
-            os.write(input, 0, input.length);
-        }
+            // Send the request
+            String requestPayload = payload.toString();
+            logger.info("Sending request to " + API_URL + ": " + requestPayload);
 
-        // Get the response
-        int responseCode = connection.getResponseCode();
-        if (responseCode == HttpURLConnection.HTTP_OK) {
-            try (BufferedReader br = new BufferedReader(new InputStreamReader(
-                    connection.getInputStream(), StandardCharsets.UTF_8))) {
-                StringBuilder response = new StringBuilder();
-                String responseLine;
-                while ((responseLine = br.readLine()) != null) {
-                    response.append(responseLine.trim());
-                }
-
-                // Parse the JSON response
-                JSONObject jsonResponse = new JSONObject(response.toString());
-                return jsonResponse.getDouble("predicted_yield");
+            try (OutputStream os = connection.getOutputStream()) {
+                byte[] input = requestPayload.getBytes(StandardCharsets.UTF_8);
+                os.write(input, 0, input.length);
             }
-        } else {
-            throw new Exception("HTTP error code: " + responseCode);
+
+            // Get the response code
+            int responseCode = connection.getResponseCode();
+            logger.info("Response code: " + responseCode);
+
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                // Read the response
+                try (BufferedReader br = new BufferedReader(new InputStreamReader(
+                        connection.getInputStream(), StandardCharsets.UTF_8))) {
+                    StringBuilder response = new StringBuilder();
+                    String responseLine;
+                    while ((responseLine = br.readLine()) != null) {
+                        response.append(responseLine.trim());
+                    }
+
+                    String responseStr = response.toString();
+                    logger.info("Response from API: " + responseStr);
+
+                    // Parse the JSON response
+                    JSONObject jsonResponse = new JSONObject(responseStr);
+                    return jsonResponse.getDouble("predicted_yield");
+                }
+            } else {
+                // Read the error response
+                String errorResponse = readErrorStream(connection);
+                logger.severe("API error response: " + errorResponse);
+                throw new Exception("HTTP error code: " + responseCode + ", Response: " + errorResponse);
+            }
+        } catch (IOException e) {
+            logger.log(Level.SEVERE, "IO error during API call", e);
+            throw new Exception("IO error during API call: " + e.getMessage(), e);
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
+    }
+
+    /**
+     * Reads the error stream from the connection
+     */
+    private String readErrorStream(HttpURLConnection connection) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(
+                connection.getErrorStream(), StandardCharsets.UTF_8))) {
+            StringBuilder response = new StringBuilder();
+            String responseLine;
+            while ((responseLine = br.readLine()) != null) {
+                response.append(responseLine.trim());
+            }
+            return response.toString();
+        } catch (Exception e) {
+            return "Could not read error stream: " + e.getMessage();
         }
     }
 }

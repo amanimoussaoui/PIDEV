@@ -186,8 +186,6 @@ public class CultureFormController implements Initializable {
     }
 
 
-// If you're still having issues with CSS loading, use this alternative approach
-// which applies styles directly to the elements using inline styling
 
     @FXML
     private void handlePredict() {

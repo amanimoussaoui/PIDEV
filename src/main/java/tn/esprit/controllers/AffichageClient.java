@@ -223,23 +223,24 @@ public class AffichageClient implements Initializable {
         String[] mois = {"Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
                 "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"};
         monthYearLabel.setText(mois[currentYearMonth.getMonthValue()-1] + " " + currentYearMonth.getYear());
-
-        // Filtrer seulement les candidatures acceptées
-        List<Candidature> candidaturesAcceptees = currentCandidatures.stream()
-                .filter(c -> c.getEtat() != null && c.getEtat().equalsIgnoreCase("acceptée"))
-                .collect(Collectors.toList());
+        monthYearLabel.getStyleClass().add("calendar-month-title");
 
         // En-têtes des jours
         String[] dayNames = {"Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"};
         for (int i = 0; i < 7; i++) {
             Label dayLabel = new Label(dayNames[i]);
-            dayLabel.setStyle("-fx-font-weight: bold; -fx-alignment: center;");
+            dayLabel.getStyleClass().add("calendar-header-day");
             calendarGrid.add(dayLabel, i, 0);
         }
 
+        // Filtrer seulement les candidatures acceptées
+        List<Candidature> candidaturesAcceptees = currentCandidatures.stream()
+                .filter(c -> c != null && c.getEtat() != null && c.getEtat().equalsIgnoreCase("acceptée"))
+                .collect(Collectors.toList());
+
         // Remplir les jours du mois
         LocalDate firstOfMonth = currentYearMonth.atDay(1);
-        int dayOfWeek = firstOfMonth.getDayOfWeek().getValue(); // 1=Lundi, 7=Dimanche
+        int dayOfWeek = firstOfMonth.getDayOfWeek().getValue();
         int daysInMonth = currentYearMonth.lengthOfMonth();
 
         int row = 1;
@@ -257,39 +258,36 @@ public class AffichageClient implements Initializable {
             }
         }
     }
-
     private StackPane createDayPane(int day, LocalDate date, List<Candidature> candidaturesAcceptees) {
         StackPane pane = new StackPane();
         pane.setPrefSize(50, 50);
-        pane.setStyle("-fx-border-color: #ddd; -fx-border-width: 1px;");
+        pane.getStyleClass().add("calendar-day"); // Classe de base
 
         Label dayLabel = new Label(String.valueOf(day));
-        dayLabel.setStyle("-fx-font-size: 14px; -fx-alignment: center;");
+        dayLabel.getStyleClass().add("calendar-day-label");
         pane.getChildren().add(dayLabel);
 
         // Vérifier si la date est dans une période de candidature acceptée
-        boolean isInAcceptedPeriod = false;
         for (Candidature c : candidaturesAcceptees) {
-            if (!date.isBefore(c.getDateDebut()) && !date.isAfter(c.getDateFin())) {
-                isInAcceptedPeriod = true;
+            if ((date.isEqual(c.getDateDebut()) || date.isEqual(c.getDateFin())) ||
+                    (date.isAfter(c.getDateDebut()) && date.isBefore(c.getDateFin()))) {
+
+                pane.getStyleClass().add("calendar-day-booked");
+
+                // Style spécial pour le premier et dernier jour
+                if (date.isEqual(c.getDateDebut())) {
+                    pane.getStyleClass().add("calendar-day-start");
+                }
+                if (date.isEqual(c.getDateFin())) {
+                    pane.getStyleClass().add("calendar-day-end");
+                }
+
+                // Tooltip avec les détails
+                Tooltip tooltip = new Tooltip("Réservé du " + c.getDateDebut() + " au " + c.getDateFin());
+                Tooltip.install(pane, tooltip);
+
                 break;
             }
-        }
-
-        if (isInAcceptedPeriod) {
-            pane.setStyle("-fx-background-color: rgba(255, 165, 0, 0.5); " + // Orange transparent
-                    "-fx-border-color: #ff8c00; " +
-                    "-fx-border-width: 1px; " +
-                    "-fx-background-radius: 3px;");
-
-            // Ajouter un tooltip avec les détails
-            String tooltipText = candidaturesAcceptees.stream()
-                    .filter(c -> !date.isBefore(c.getDateDebut()) && !date.isAfter(c.getDateFin()))
-                    .map(c -> "Réservé du " + c.getDateDebut() + " au " + c.getDateFin())
-                    .collect(Collectors.joining("\n"));
-
-            Tooltip tooltip = new Tooltip(tooltipText);
-            Tooltip.install(pane, tooltip);
         }
 
         return pane;

@@ -8,6 +8,7 @@ import tn.esprit.util.MaConnexion;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -127,7 +128,7 @@ public class ServiceTerrain implements IServiceTerrain {
         }
     }
     private boolean hasCandidatures(int terrainId) {
-        String query = "SELECT COUNT(*) FROM candidature WHERE id_terrain_id = ?";
+        String query = "SELECT COUNT(*) FROM candidature WHERE idTerrainId = ?";
         try (PreparedStatement ps = cnx.prepareStatement(query)) {
             ps.setInt(1, terrainId);
             ResultSet rs = ps.executeQuery();
@@ -253,8 +254,6 @@ public class ServiceTerrain implements IServiceTerrain {
         // Correction du constructeur en passant l'objet Utilisateur
         return new Candidature(id, idTerrainId, utilisateur, dateDebut, dateFin, but, montant, etat, recommandation);
     }
-
-
     public List<Candidature> getCandidaturesByTerrain(int terrainId) {
         List<Candidature> candidatures = new ArrayList<>();
         String query = "SELECT * FROM Candidature WHERE idTerrainId = ?";
@@ -271,6 +270,7 @@ public class ServiceTerrain implements IServiceTerrain {
         }
         return candidatures;
     }
+
 
     public List<Terrain> rechercherTerrains(String critere) {
         List<Terrain> resultats = new ArrayList<>();
@@ -293,7 +293,7 @@ public class ServiceTerrain implements IServiceTerrain {
                 .filter(c -> c.getTerrain() != null && c.getTerrain().getProprietaire().equals(agriculteur))
                 .collect(Collectors.toList());
     }
-
+/*
     public List<Terrain> getTopExpensiveTerrains(int limit) {
         String query = "SELECT * FROM terrain ORDER BY prix DESC LIMIT ?";
         List<Terrain> terrains = new ArrayList<>();
@@ -317,7 +317,7 @@ public class ServiceTerrain implements IServiceTerrain {
         }
 
         return terrains;
-    }
+    }*/
     public List<Terrain> getAll() {
         List<Terrain> terrains = new ArrayList<>();
         String query = "SELECT id, localisation, humidite FROM terrain"; // Adaptez selon votre schéma
@@ -349,5 +349,11 @@ public class ServiceTerrain implements IServiceTerrain {
             System.err.println("Erreur lors de la mise à jour de l'humidité: " + e.getMessage());
         }
     }
-
+    public List<Terrain> getTopExpensiveTerrains(int limit) {
+        List<Terrain> terrains = afficher();
+        return terrains.stream()
+                .sorted(Comparator.comparingDouble(Terrain::getPrix).reversed())
+                .limit(limit)
+                .collect(Collectors.toList());
+    }
 }

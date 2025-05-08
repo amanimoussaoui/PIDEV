@@ -1,4 +1,6 @@
 package tn.esprit.controllers;
+import javafx.animation.FadeTransition;
+import javafx.animation.ScaleTransition;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -6,6 +8,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.BarChart;
@@ -17,6 +20,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import tn.esprit.models.Candidature;
 import tn.esprit.models.Terrain;
 import tn.esprit.models.UserSession;
@@ -30,7 +34,10 @@ import java.util.stream.Collectors;
 public class AffichageAdmin {
     @FXML private TableView<Terrain> terrainTableView;
     @FXML private TableColumn<Terrain, Integer> idColumn;
-
+    @FXML private PieChart pieChart;
+    @FXML private Label totalTerrainsLabel;
+    @FXML private Label activeCandidaturesLabel;
+    @FXML private Label revenueLabel;
     @FXML private TableColumn<Terrain, String> localisationColumn;
     @FXML private TableColumn<Terrain, Double> superficieColumn;
     @FXML private TableColumn<Terrain, Double> prixColumn;
@@ -39,10 +46,6 @@ public class AffichageAdmin {
     @FXML private TableView<Candidature> candidatureTableView;
     @FXML private TableColumn<Candidature, Integer> candidatureIdColumn;
     @FXML private TableColumn<Candidature, Integer> terrainIdColumn;
-    @FXML private PieChart pieChart;
-    @FXML private Label totalTerrainsLabel;
-    @FXML private Label activeCandidaturesLabel;
-    @FXML private Label revenueLabel;
     @FXML private TableColumn<Candidature, String> dateDebutColumn;
     @FXML private TableColumn<Candidature, String> dateFinColumn;
     @FXML private TableColumn<Candidature, String> butColumn;
@@ -58,7 +61,7 @@ public class AffichageAdmin {
     private final ServiceCandidature serviceCandidature = new ServiceCandidature();
     @FXML
     private TableColumn<Terrain, String> utilisateurIdColumn; // Changé de Integer à String
-
+    @FXML private BarChart<String, Number> pyramidChart;
     @FXML
     private TableColumn<Candidature, String> userIdColumn; // Changé de Integer à String
     @FXML private Label stat1Label;
@@ -72,6 +75,8 @@ public class AffichageAdmin {
         loadCandidatures();  // Charger candidatures au début
         calculerEtAfficherStatistiques();
         showTopExpensiveTerrains();
+
+        setupAnimations();
     }
 
     private void chargerDonnees() {
@@ -192,18 +197,75 @@ public class AffichageAdmin {
         // 1. Calcul des statistiques
         Map<Integer, Integer> stats = calculerTopTerrainsParCandidatures();
 
-        // 2. Affichage dans le BarChart
+        // 2. Affichage dans les graphiques
         afficherStatistiquesDansChart(stats);
+        afficherPieChartCandidatures();
+        afficherStatistiquesResume();
 
         // 3. Affichage textuel
         afficherStatistiquesTextuelles(stats);
     }
 
-    private Map<Integer, Integer> calculerTopTerrainsParCandidatures() {
-        // Récupérer toutes les candidatures
-        List<Candidature> toutesCandidatures = serviceCandidature.afficher();
+    private void afficherPieChartCandidatures() {
+        List<Candidature> candidatures = serviceCandidature.afficher();
 
-        // Compter les candidatures par terrain
+        // Compter les candidatures par état
+        Map<String, Long> countByEtat = candidatures.stream()
+                .collect(Collectors.groupingBy(
+                        Candidature::getEtat,
+                        Collectors.counting()
+                ));
+
+        ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList();
+        countByEtat.forEach((etat, count) -> {
+            pieChartData.add(new PieChart.Data(etat + " (" + count + ")", count));
+        });
+
+        pieChart.setData(pieChartData);
+        pieChart.setTitle("Répartition des Candidatures par État");
+
+        // Appliquer des couleurs personnalisées
+        applyCustomColors();
+    }
+
+    private void applyCustomColors() {
+        String[] colors = {"#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF", "#FF9F40"};
+
+        int i = 0;
+        for (PieChart.Data data : pieChart.getData()) {
+            String color = colors[i % colors.length]; // Rotation si plus de données que de couleurs
+            Node node = data.getNode();
+            if (node != null) {
+                node.setStyle("-fx-pie-color: " + color + ";");
+            }
+            i++;
+        }
+    }
+
+
+
+
+    private void afficherStatistiquesResume() {
+        // Nombre total de terrains
+        int totalTerrains = serviceTerrain.afficher().size();
+        totalTerrainsLabel.setText("Total Terrains: " + totalTerrains);
+
+        // Nombre de candidatures actives
+        long activeCandidatures = serviceCandidature.afficher().stream()
+                .filter(c -> "Acceptée".equals(c.getEtat()))
+                .count();
+        activeCandidaturesLabel.setText("Candidatures Actives: " + activeCandidatures);
+
+        // Revenu total estimé
+        double totalRevenue = serviceCandidature.afficher().stream()
+                .filter(c -> "Acceptée".equals(c.getEtat()))
+                .mapToDouble(Candidature::getMontant)
+                .sum();
+        revenueLabel.setText(String.format("Revenu Total: %.2f DT", totalRevenue));
+    }
+
+    private Map<Integer, Integer> calculerTopTerrainsParCandidatures() {
+        List<Candidature> toutesCandidatures = serviceCandidature.afficher();
         Map<Integer, Integer> compteur = new HashMap<>();
 
         for (Candidature c : toutesCandidatures) {
@@ -211,42 +273,10 @@ public class AffichageAdmin {
             compteur.put(terrainId, compteur.getOrDefault(terrainId, 0) + 1);
         }
 
-        // Trier et garder le top 3
-        return compteur.entrySet().stream()
-                .sorted(Map.Entry.<Integer, Integer>comparingByValue().reversed())
-                .limit(3)
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        Map.Entry::getValue,
-                        (e1, e2) -> e1,
-                        LinkedHashMap::new
-                ));
+        return compteur;
     }
 
-    private void afficherStatistiquesDansChart(Map<Integer, Integer> stats) {
-        XYChart.Series<String, Number> series = new XYChart.Series<>();
-        series.setName("Top Terrains");
 
-        // Récupérer les noms des terrains pour l'affichage
-        Map<Integer, String> nomsTerrains = serviceTerrain.afficher().stream()
-                .collect(Collectors.toMap(
-                        Terrain::getId,
-                        Terrain::getLocalisation
-                ));
-
-        for (Map.Entry<Integer, Integer> entry : stats.entrySet()) {
-            String nomTerrain = nomsTerrains.getOrDefault(entry.getKey(), "Terrain " + entry.getKey());
-            series.getData().add(new XYChart.Data<>(nomTerrain, entry.getValue()));
-        }
-
-        barChart.getData().clear();
-        barChart.getData().add(series);
-
-        // Personnalisation du graphique
-        barChart.setTitle("Top 3 Terrains par Nombre de Candidatures");
-        barChart.getYAxis().setLabel("Nombre de Candidatures");
-        barChart.getXAxis().setLabel("Terrains");
-    }
 
     private void afficherStatistiquesTextuelles(Map<Integer, Integer> stats) {
         // Récupérer les terrains pour avoir plus d'infos
@@ -298,38 +328,79 @@ public class AffichageAdmin {
 
 
     private void showTopExpensiveTerrains() {
-        List<Terrain> expensiveTerrains = serviceTerrain.getTopExpensiveTerrains(5); // Top 5
-
-        // Créer une nouvelle série pour le graphique
-        XYChart.Series<String, Number> series = new XYChart.Series<>();
-        series.setName("Terrains les plus chers");
-
-        for (Terrain terrain : expensiveTerrains) {
-            series.getData().add(new XYChart.Data<>(
-                    terrain.getLocalisation(),
-                    terrain.getPrix()
-            ));
-        }
-
-        // Configurer le graphique
         priceChart.getData().clear();
-        priceChart.getData().add(series);
-        priceChart.setTitle("Top 5 des Terrains les plus chers");
-        priceChart.getYAxis().setLabel("Prix (DT)");
-        priceChart.getXAxis().setLabel("Localisation");
 
-        // Afficher aussi dans le label
-        StringBuilder sb = new StringBuilder();
-        sb.append("Top 5 des Terrains les plus chers:\n\n");
-        int rank = 1;
-        for (Terrain terrain : expensiveTerrains) {
-            sb.append(String.format("%d. %s - %.2f DT\n",
-                    rank++,
-                    terrain.getLocalisation(),
-                    terrain.getPrix()));
-        }
-        statsDetailsLabel.setText(sb.toString());
+        List<Terrain> terrains = serviceTerrain.afficher();
+
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        series.setName("Prix (DT)");
+
+        terrains.stream()
+                .sorted(Comparator.comparingDouble(Terrain::getPrix).reversed())
+                .limit(5)
+                .forEach(t -> {
+                    String label = "Terrain " + t.getId();
+                    series.getData().add(new XYChart.Data<>(label, t.getPrix()));
+                });
+
+        priceChart.getData().add(series);
+        priceChart.setTitle("Top 5 Terrains les Plus Chers");
     }
 
+
+    private void setupAnimations() {
+        // Animation pour les graphiques
+        animateChart(barChart);
+        animateChart(priceChart);
+        animatePieChart(pieChart);
+
+        // Animation pour les labels
+        animateLabel(totalTerrainsLabel);
+        animateLabel(activeCandidaturesLabel);
+        animateLabel(revenueLabel);
+        animateLabel(statsDetailsLabel);
+    }
+
+    private void animateChart(BarChart<?, ?> chart) {
+        FadeTransition ft = new FadeTransition(Duration.millis(1500), chart);
+        ft.setFromValue(0.0);
+        ft.setToValue(1.0);
+        ft.play();
+    }
+
+    private void animatePieChart(PieChart chart) {
+        ScaleTransition st = new ScaleTransition(Duration.millis(1000), chart);
+        st.setFromX(0.5);
+        st.setFromY(0.5);
+        st.setToX(1.0);
+        st.setToY(1.0);
+        st.play();
+    }
+
+    private void animateLabel(Label label) {
+        FadeTransition ft = new FadeTransition(Duration.millis(1000), label);
+        ft.setFromValue(0.0);
+        ft.setToValue(1.0);
+        ft.play();
+    }
+    private void afficherStatistiquesDansChart(Map<Integer, Integer> stats) {
+        // Vider l'ancien contenu
+        barChart.getData().clear();
+
+        // Top 3 par nombre de candidatures
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        series.setName("Candidatures");
+
+        stats.entrySet().stream()
+                .sorted(Map.Entry.<Integer, Integer>comparingByValue().reversed())
+                .limit(3)
+                .forEach(entry -> {
+                    String terrainName = "Terrain " + entry.getKey();
+                    series.getData().add(new XYChart.Data<>(terrainName, entry.getValue()));
+                });
+
+        barChart.getData().add(series);
+        barChart.setTitle("Top 3 Terrains par Nombre de Candidatures");
+    }
 
 }

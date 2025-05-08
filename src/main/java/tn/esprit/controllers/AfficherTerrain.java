@@ -20,6 +20,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Properties;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -89,7 +90,7 @@ public class AfficherTerrain {
         colBut.setCellValueFactory(new PropertyValueFactory<>("but"));
         colMontant.setCellValueFactory(new PropertyValueFactory<>("montant"));
         colEtat.setCellValueFactory(new PropertyValueFactory<>("etat"));
-        candidaturesSection.setVisible(false);
+        candidaturesSection.setVisible(true);
         tableCandidatures.setVisible(true);
 
         // Configuration de la recherche dynamique
@@ -299,19 +300,11 @@ public class AfficherTerrain {
 
     @FXML private VBox candidaturesSection;
 
-    // Modifiez la méthode voirCandidatures()
     @FXML
     private void voirCandidatures() {
-        if (terrainSelectionne == null) {
-            afficherAlerte("Erreur", "Veuillez sélectionner un terrain d'abord");
-            return;
-        }
+        try {
+            tableCandidatures.setVisible(true);
 
-        // Basculer la visibilité
-        boolean doitAfficher = !candidaturesSection.isVisible();
-        candidaturesSection.setVisible(doitAfficher);
-
-        if (doitAfficher) {
             // Récupérer l'utilisateur connecté
             UserSession session = UserSession.getInstance();
             if (session == null) {
@@ -319,22 +312,27 @@ public class AfficherTerrain {
                 return;
             }
 
-            // Vérifier que l'utilisateur est bien le propriétaire
+            // Vérifier que l'utilisateur connecté est bien le propriétaire du terrain
             if (terrainSelectionne.getUtilisateur().getId_utilisateur() != session.getUserId()) {
-                afficherAlerte("Erreur", "Vous n'êtes pas autorisé à voir les candidatures");
+                afficherAlerte("Erreur", "Vous n'êtes pas autorisé à voir les candidatures de ce terrain");
                 return;
             }
 
-            // Charger les candidatures
+            // Récupérer les candidatures avec les utilisateurs COMPLETS
             List<Candidature> candidatures = serviceCandidature.getCandidaturesWithUsers(terrainSelectionne.getId());
 
-            if (candidatures != null && !candidatures.isEmpty()) {
-                tableCandidatures.setItems(FXCollections.observableArrayList(candidatures));
-                tableCandidatures.refresh();
-            } else {
-                afficherAlerte("Information", "Aucune candidature pour ce terrain");
-                candidaturesSection.setVisible(false);
+            // Vérifier que les données sont complètes avant affichage
+            if (candidatures != null) {
+                for (Candidature c : candidatures) {
+                    if (c.getUtilisateur() == null || c.getUtilisateur().getEmail() == null) {
+                        System.err.println("Attention: Candidature ID " + c.getId() + " a un utilisateur incomplet");
+                    }
+                }
+                tableCandidatures.getItems().setAll(candidatures);
             }
+        } catch (Exception e) {
+            System.err.println("Erreur critique dans voirCandidatures: " + e.getMessage());
+            afficherAlerte("Erreur", "Impossible de charger les candidatures");
         }
     }
     private void reinitialiserInterface() {

@@ -104,41 +104,66 @@
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 1);
 }
 /* Style de base des jours */
-/* Style pour le calendrier */
+/* ========== STYLES DU CALENDRIER ========== */
 .calendar-day {
-    -fx-alignment: center;
-    -fx-font-size: 14px;
-}
-
-.calendar-day.accepted {
-    -fx-background-color: rgba(255, 165, 0, 0.5);
-    -fx-border-color: #ff8c00;
+    -fx-border-color: #e0e0e0;
     -fx-border-width: 1px;
-    -fx-background-radius: 3px;
+    -fx-alignment: center;
+    -fx-background-color: white;
 }
 
-.calendar-header {
+.calendar-day-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #333;
+}
+
+/* Jours réservés */
+.calendar-day-booked {
+    -fx-background-color: rgba(76, 175, 80, 0.2);
+    -fx-border-color: #4CAF50;
+}
+
+/* Premier jour de réservation */
+.calendar-day-start {
+    -fx-background-color: rgba(76, 175, 80, 0.4);
+    -fx-border-color: #2E7D32;
+    -fx-border-width: 2px;
+}
+
+/* Dernier jour de réservation */
+.calendar-day-end {
+    -fx-background-color: rgba(76, 175, 80, 0.4);
+    -fx-border-color: #2E7D32;
+    -fx-border-width: 2px;
+}
+
+/* En-têtes des jours */
+.calendar-header-day {
     -fx-font-weight: bold;
+    -fx-text-fill: #4CAF50;
     -fx-alignment: center;
     -fx-padding: 5px;
 }
 
+/* Titre du mois */
+.calendar-month-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2E7D32;
+}
+
+/* Boutons de navigation */
 .calendar-nav-button {
     -fx-background-color: #4CAF50;
     -fx-text-fill: white;
     -fx-font-weight: bold;
-    -fx-padding: 5px 10px;
     -fx-background-radius: 5px;
+    -fx-padding: 5px 10px;
+    -fx-cursor: hand;
 }
 
 .calendar-nav-button:hover {
-    -fx-background-color: #3e8e41;
-}
-
-.calendar-month-label {
-    -fx-font-size: 16px;
-    -fx-font-weight: bold;
-    -fx-padding: 0 10px;
+    -fx-background-color: #388E3C;
 }
 /* Boutons Signature */
 .signature-button {

@@ -578,46 +578,6 @@ public class ServiceCandidature implements IServiceCandidature {
         }
 
     }
-    public Candidature getCandidatureById(int id) {
-        String query = "SELECT c.*, u.nom, u.prenom FROM candidature c " +
-                "JOIN utilisateurs u ON c.utilisateur_id = u.id " +
-                "WHERE c.id = ?";
-
-        try (PreparedStatement pst = cnx.prepareStatement(query)) {
-            pst.setInt(1, id);
-            ResultSet rs = pst.executeQuery();
-
-            if (rs.next()) {
-                // Création de l'utilisateur
-                Utilisateur user = new Utilisateur();
-                user.setId_utilisateur(rs.getInt("utilisateur_id"));
-                user.setNom(rs.getString("nom"));
-                user.setPrenom(rs.getString("prenom"));
-
-                // Création de la candidature
-                Candidature c = new Candidature(
-                        rs.getInt("id"),
-                        rs.getInt("id_terrain_id"),
-                        user,
-                        rs.getDate("date_debut").toLocalDate(),
-                        rs.getDate("date_fin").toLocalDate(),
-                        rs.getString("but"),
-                        rs.getDouble("montant"),
-                        rs.getString("etat"),
-                        rs.getString("recommandation")
-                );
-
-                // Ajout des chemins de signature
-                c.setCheminSignatureClient(rs.getString("chemin_signature_client"));
-                c.setCheminSignatureAgriculteur(rs.getString("chemin_signature_agriculteur"));
-
-                return c;
-            }
-        } catch (SQLException e) {
-            System.err.println("Erreur lors de la récupération de la candidature: " + e.getMessage());
-        }
-        return null;
-    }
     public String generateContratPDF(Candidature candidature, Terrain terrain,
                                      String agriculteurSignaturePath,
                                      String clientSignaturePath,
@@ -717,6 +677,31 @@ public class ServiceCandidature implements IServiceCandidature {
             throw new Exception("Erreur lors de la génération du PDF: " + e.getMessage());
         }
     }
+    public Candidature getCandidatureById(int id) {
+        Connection connection = null;
+        try {
+            connection = MaConnexion.getInstance().getCon();
+            String req = "SELECT * FROM candidature WHERE id = ?";
+
+            try (PreparedStatement pst = connection.prepareStatement(req)) {
+                pst.setInt(1, id);
+                ResultSet rs = pst.executeQuery();
+
+                if (rs.next()) {
+                    Candidature c = new Candidature();
+                    c.setId(rs.getInt("id"));
+                    c.setCheminSignatureClient(rs.getString("chemin_signature_client"));
+                    c.setCheminSignatureAgriculteur(rs.getString("chemin_signature_agriculteur"));
+                    // ... autres champs ...
+                    return c;
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur SQL: " + e.getMessage());
+        }
+        return null;
+    }
+
     public Candidature refreshCandidature(Candidature c) {
         if (c == null) return null;
 

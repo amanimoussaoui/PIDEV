@@ -1,5 +1,6 @@
 package tn.esprit.controllers;
 
+import javafx.scene.layout.VBox;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
@@ -50,6 +51,8 @@ public class AjouterTerrain {
         setupFieldValidators();
         initializeMap();
         setupMapSize();
+        VBox.setVgrow(mapView, Priority.ALWAYS);
+
     }
 
     private void setupMapSize() {

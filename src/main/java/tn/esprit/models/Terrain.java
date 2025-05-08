@@ -16,14 +16,17 @@ public class Terrain {
     private Utilisateur proprietaire;
 
     public Utilisateur getProprietaire() {
-        return proprietaire;
+        return utilisateur; // Au lieu de proprietaire
     }
+
     public void setProprietaire(Utilisateur proprietaire) {
-        this.proprietaire = proprietaire;
+        this.utilisateur = proprietaire; // Au lieu de this.proprietaire
     }
+
+    // Modifier le getNomProprietaire
     public String getNomProprietaire() {
-        return proprietaire != null ?
-                proprietaire.getNom() + " " + proprietaire.getPrenom() :
+        return utilisateur != null ?
+                utilisateur.getNom() + " " + utilisateur.getPrenom() :
                 "Propriétaire inconnu";
     }
     public Terrain() {}
